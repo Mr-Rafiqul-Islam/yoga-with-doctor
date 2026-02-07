@@ -1,27 +1,71 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons+Outlined");
+
+.material-icons-outlined {
+  font-family: "Material Icons Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+  Yoga With Doctor — Design tokens
+  Clinical Zen: medical authority + calm wellness.
+  Light mode = default; dark mode = .dark on <html>
+*/
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Brand & UI */
+    --color-primary: #00a86b;
+    --color-primary-variant: #007a4d;
+    --color-secondary: #e8f5e9;
+    --color-accent: #d4af37;
+
+    /* Surfaces */
+    --color-background: #f8f9fa;
+    --color-surface: #ffffff;
+
+    /* Text (foreground = primary headings/body; muted = metadata/captions) */
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #666666;
+
+    /* Feedback & borders */
+    --color-error: #ef5350;
+    --color-border: #eeeeee;
+
+    /* Sage (medical insight bar) */
+    --color-sage-light: #e8f5e9;
+    --color-sage-dark: #1b3320;
+    --color-primary-dark: #008f5b;
   }
-}
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
+  .dark {
+    --color-background: #121212;
+    --color-surface: #1e1e1e;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #b0b0b0;
+    --color-border: #333333;
+    /* primary, primary-variant, secondary, accent, error unchanged for contrast */
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+    /* Medical Insight section (dark mode) */
+    --color-sage-dark: #2f4f3d;
+    --color-sage-dark-icon-bg: #3e634d;
+    --color-sage-dark-title: #dce7d6;
+    --color-sage-dark-desc: #a3b5aa;
+    --color-primary-on-dark: #50b07f;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
   }
 }

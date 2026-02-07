@@ -1,0 +1,10 @@
+export { HeroSection } from "./HeroSection";
+export { MedicalInsightSection } from "./MedicalInsightSection";
+export { TrendingTagsSection } from "./TrendingTagsSection";
+export { FreeVideosSection } from "./FreeVideosSection";
+export { VideoCard } from "./VideoCard";
+export type { VideoCardProps } from "./VideoCard";
+export { PremiumCollectionSection } from "./PremiumCollectionSection";
+export { TrendingCoursesSection } from "./TrendingCoursesSection";
+export { CourseCard } from "./CourseCard";
+export type { CourseCardProps } from "./CourseCard";
