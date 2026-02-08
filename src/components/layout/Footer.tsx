@@ -120,7 +120,7 @@ export function Footer() {
                 id="footer-email"
                 type="email"
                 placeholder="Your email"
-                className="w-full rounded-l-lg border-none bg-gray-800 text-sm text-white placeholder:text-gray-500 focus:ring-1 focus:ring-primary"
+                className="w-full rounded-l-lg border-none bg-gray-800 px-4 py-2 text-sm text-white placeholder:text-gray-500 focus:ring-1 focus:ring-primary"
                 autoComplete="email"
               />
               <button

@@ -17,7 +17,7 @@ export function HeroSection() {
           <div className="mx-auto mt-10 sm:mt-12 md:mt-16 lg:mt-20 xl:mt-28">
             <div className="sm:text-center lg:text-left">
               {/* Badge */}
-              <span className="mb-6 inline-flex items-center rounded-radius-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-caption font-semibold text-primary">
+              <span className="mb-6 inline-flex items-center rounded-radius-full border border-[#00a86b4d] bg-[#00a86b1a] px-3 py-1 text-caption font-semibold text-primary">
                 <span
                   className="mr-2 h-2 w-2 flex-shrink-0 rounded-full bg-primary"
                   aria-hidden
