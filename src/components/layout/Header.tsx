@@ -8,7 +8,7 @@ import { useUIStore } from "@/stores";
 const mainNavItems = [
   { href: "/", label: "Home" },
   { href: "/courses", label: "Courses" },
-  { href: "/shop", label: "Shop" },
+  { href: "https://biohealingbd.com/", label: "Shop", external: true },
   { href: "/community", label: "Community" },
   { href: "/articles", label: "Articles" },
 ] as const;
@@ -89,21 +89,33 @@ export function Header() {
           className="hidden shrink-0 md:flex"
         >
           <ul className="flex items-center gap-8">
-            {mainNavItems.map(({ href, label }) => {
-              const isActive = pathname === href;
+            {mainNavItems.map((item) => {
+              const { href, label } = item;
+              const external = "external" in item && item.external;
+              const isActive = !external && pathname === href;
+              const linkClass = `rounded-radius-sm px-1 py-2 text-body-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                isActive ? "text-primary" : "text-foreground hover:text-primary"
+              }`;
               return (
                 <li key={href}>
-                  <Link
-                    href={href}
-                    className={`rounded-radius-sm px-1 py-2 text-body-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                      isActive
-                        ? "text-primary"
-                        : "text-foreground hover:text-primary"
-                    }`}
-                    aria-current={isActive ? "page" : undefined}
-                  >
-                    {label}
-                  </Link>
+                  {external ? (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={linkClass}
+                    >
+                      {label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={href}
+                      className={linkClass}
+                      aria-current={isActive ? "page" : undefined}
+                    >
+                      {label}
+                    </Link>
+                  )}
                 </li>
               );
             })}
@@ -203,22 +215,37 @@ export function Header() {
         }`}
       >
         <ul className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          {mainNavItems.map(({ href, label }) => {
-            const isActive = pathname === href;
+          {mainNavItems.map((item) => {
+            const { href, label } = item;
+            const external = "external" in item && item.external;
+            const isActive = !external && pathname === href;
+            const linkClass = `block rounded-radius-sm px-4 py-3 text-body-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset ${
+              isActive
+                ? "bg-secondary text-primary"
+                : "text-foreground hover:bg-secondary/70"
+            }`;
             return (
               <li key={href}>
-                <Link
-                  href={href}
-                  onClick={closeMobileMenu}
-                  className={`block rounded-radius-sm px-4 py-3 text-body-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset ${
-                    isActive
-                      ? "bg-secondary text-primary"
-                      : "text-foreground hover:bg-secondary/70"
-                  }`}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  {label}
-                </Link>
+                {external ? (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={linkClass}
+                    onClick={closeMobileMenu}
+                  >
+                    {label}
+                  </a>
+                ) : (
+                  <Link
+                    href={href}
+                    onClick={closeMobileMenu}
+                    className={linkClass}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {label}
+                  </Link>
+                )}
               </li>
             );
           })}

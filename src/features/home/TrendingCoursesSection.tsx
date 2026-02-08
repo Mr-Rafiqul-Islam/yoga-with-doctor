@@ -11,8 +11,10 @@ const TRENDING_COURSES = [
     instructorAvatarSrc:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCcCPXblS8FdKk_trqEsEscmah-35VqgwkRX_bvp_bmBDKLHrRxNJH7DTuV-j4mdjK7BqjYOlF2MFFVSDoo6BMFqlB_XwL4gWJxx-WHDIVECFZ2kIwyWxS_miy3FrdDyo8TT6nDzAHqdfbIcfgt5H65XCDXaWySLEhfXXPZ2wKoh5kvvY8tNSetwYaftrF-67lB9A5faoB2ahLwTdw7Hs-NWfRk2cgojoOwtF2svDzWejtly4w90hBuSnUYbUDgV25ZP3mwWkcILQ",
     price: "৳ 2,500",
-    badge: "New Course",
-    badgeVariant: "blue" as const,
+    imageBadge: "BESTSELLER",
+    imageBadgeVariant: "green" as const,
+    contentTag: "New Course",
+    contentTagVariant: "blue" as const,
     rating: "4.9",
     imageSrc:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuAl5sh3m1JkzS6vXJf1AiHbQ7HbkwXmogEuoUNu89BY4FiNl-Jt6VNdrATCw48Ac6bKq6C1YvGUXzH96rvEzBziDcgVzL-pJjtdJcVx_p1yD10XgC9c0VDiOyesOlruYCZj4p22QmZ5AKgFe3EQI6zrfWtB8yFNpLb612L9bPIC-yOtQsP4AyS0ZuSi-X8HYLGenWyxVeOwjZ1ffveWdIp1tfaU_SkZM3SyEqvwCFiTK37yuKpKL9rjVPo_Ksy0y246nsk76c2SCg",
@@ -27,8 +29,10 @@ const TRENDING_COURSES = [
     instructorAvatarSrc:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuAaeIKDB_CNf-nNcubY2BP5dpybYevP51rzL3_wgmphX7WM_6--LZXN2So9gXdUPQircQ2wX7QTYbYGQ6ZkbSVLRoicMc0apT2QMgCjoLR4I_1yZ5HTUa8KytSfQPqQuhoBoFEVbluPC6DafejugL3Pp4clr_1d5W9lI-SSdwNMNKHXpYY8gsQH7GHqZWtDK6ytlAu705M3KLVO3bW_-HAeeMLrnsmIkCvYUyYM9Mc2ubvN-mQ8t75gfc3Q7qRW7WX9tHBvM0f8kQ",
     price: "৳ 3,200",
-    badge: "MEDICAL INSIGHT",
-    badgeVariant: "blue" as const,
+    imageBadge: "MEDICAL INSIGHT",
+    imageBadgeVariant: "blue" as const,
+    contentTag: "Updated",
+    contentTagVariant: "purple" as const,
     rating: "4.8",
     imageSrc:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCXenBRNUIpbGZ3QkXPBagzXQtePaEveSt8c589bfMqRryVB8OmOtnJq6FYFvqhlqTZ3v2XIs5OXZnHV0ce8s_blNR0mnvMtRNBgpt40NzcVo8HWxU_JV5yaoQan-IuBUrZCbdhsjI03mCEk7DeohAKGa4MnBydTcmMBefwrHD_bLJk0Af4qV2S0e5MI3jM9eK48gzaDK-JEAhkGCZGMkJCkeGRvXUOZh4Xm3mB5RbGoaURhOdrnmuTc6umsO7g2p1pbJt_iaaJUA",
@@ -46,17 +50,17 @@ export function TrendingCoursesSection() {
         <div>
           <h2
             id="trending-courses-heading"
-            className="font-serif text-3xl font-bold text-foreground"
+            className="font-display text-3xl font-bold text-foreground dark:text-white"
           >
             Trending Courses
           </h2>
-          <p className="mt-2 text-body-md text-muted">
+          <p className="mt-2 text-sm text-muted dark:text-gray-400">
             Comprehensive programs to transform your health
           </p>
         </div>
         <Link
           href="/courses"
-          className="text-body-md font-medium text-primary transition-colors hover:text-primary-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-radius-sm shrink-0"
+          className="shrink-0 text-sm font-medium text-primary transition-colors hover:text-primary-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-radius-sm dark:text-primary"
         >
           View Catalog
         </Link>
