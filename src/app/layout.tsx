@@ -44,7 +44,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${inter.variable}`} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+(function() {
+  var key = 'ywd-theme';
+  var stored = localStorage.getItem(key);
+  var dark;
+  if (stored === 'dark') dark = true;
+  else if (stored === 'light') dark = false;
+  else {
+    dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    localStorage.setItem(key, dark ? 'dark' : 'light');
+  }
+  document.documentElement.classList.toggle('dark', dark);
+})();
+            `.trim(),
+          }}
+        />
+      </head>
       <body className="flex min-h-screen flex-col font-sans">
         <QueryProvider>
           <a

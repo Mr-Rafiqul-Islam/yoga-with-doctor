@@ -23,6 +23,22 @@ export function Header() {
   const menuId = useId();
   const buttonId = useId();
 
+  const STORAGE_KEY = "ywd-theme";
+
+  // Sync store from localStorage on mount (so store matches script-applied theme)
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === "dark" || stored === "light") {
+      setTheme(stored);
+    } else {
+      const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const initial = dark ? "dark" : "light";
+      setTheme(initial);
+      localStorage.setItem(STORAGE_KEY, initial);
+    }
+  }, [setTheme]);
+
+  // Apply theme to document
   useEffect(() => {
     const root = document.documentElement;
     if (theme === "dark") {
@@ -36,7 +52,11 @@ export function Header() {
   }, [theme]);
 
   const isDark = theme === "dark";
-  const toggleTheme = () => setTheme(isDark ? "light" : "dark");
+  const toggleTheme = () => {
+    const next = isDark ? "light" : "dark";
+    setTheme(next);
+    localStorage.setItem(STORAGE_KEY, next);
+  };
 
   return (
     <header
