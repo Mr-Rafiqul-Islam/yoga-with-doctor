@@ -43,9 +43,7 @@ export function CoursesPageContent({
     setCurrentPage(1);
   }, []);
 
-  const onViewChange = useCallback((_mode: ViewMode) => {
-    // viewMode state is updated by SortBar; no need to reset page
-  }, []);
+  
 
   const filtered = useMemo(
     () => filterCourses(courses, filters),
