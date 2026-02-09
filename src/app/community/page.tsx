@@ -1,12 +1,43 @@
+import {
+  UserProfileCard,
+  CommunitySidebarNav,
+  CreatePostInput,
+  PostFeedSection,
+  TrendingDiscussionsWidget,
+  LiveSessionsWidget,
+} from "@/features/community/components";
+
 export default function CommunityPage() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <h1 className="font-serif text-h1 font-semibold text-foreground">
-        Community
-      </h1>
-      <p className="mt-4 text-body-lg text-muted">
-        Community content coming soon.
-      </p>
+    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        {/* Left column: profile + community nav */}
+        <aside
+          className="hidden space-y-6 lg:block lg:col-span-3"
+          aria-label="Community sidebar"
+        >
+          <UserProfileCard />
+          <CommunitySidebarNav />
+        </aside>
+
+        {/* Center column: create post + feed */}
+        <section
+          className="col-span-1 space-y-6 lg:col-span-6"
+          aria-label="Community feed"
+        >
+          <CreatePostInput />
+          <PostFeedSection />
+        </section>
+
+        {/* Right column: widgets */}
+        <aside
+          className="hidden space-y-6 lg:block lg:col-span-3"
+          aria-label="Community widgets"
+        >
+          <TrendingDiscussionsWidget />
+          <LiveSessionsWidget />
+        </aside>
+      </div>
     </div>
   );
 }
