@@ -2,3 +2,6 @@ export { AuthHeroSection } from "./AuthHeroSection";
 export { LoginForm } from "./LoginForm";
 export { VerifyIdentityForm } from "./VerifyIdentityForm";
 export { LoginPageContent } from "./LoginPageContent";
+export { RegisterHeroSection } from "./RegisterHeroSection";
+export { RegisterForm } from "./RegisterForm";
+export { RegisterPageContent } from "./RegisterPageContent";

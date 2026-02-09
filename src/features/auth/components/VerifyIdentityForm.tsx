@@ -1,18 +1,28 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 type VerifyIdentityFormProps = {
   phone?: string;
   email?: string; // Keep for future use
   onBack?: () => void;
+  isFromRegister?: boolean;
+  onComplete?: () => void;
 };
 
 /**
  * VerifyIdentityForm - Component for phone/email verification.
  * Displays 6-digit code input fields, timer, resend link, and verify button.
  */
-export function VerifyIdentityForm({ phone, email, onBack }: VerifyIdentityFormProps = {}) {
+export function VerifyIdentityForm({
+  phone,
+  email,
+  onBack,
+  isFromRegister = false,
+  onComplete,
+}: VerifyIdentityFormProps = {}) {
+  const router = useRouter();
   const [code, setCode] = useState<string[]>(["", "", "", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState(119); // 1:59 in seconds
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -79,6 +89,15 @@ export function VerifyIdentityForm({ phone, email, onBack }: VerifyIdentityFormP
     if (fullCode.length === 6) {
       // TODO: Implement verification logic
       console.log("Verifying code:", fullCode);
+      
+      // If from register page, redirect to login after successful verification
+      if (isFromRegister) {
+        if (onComplete) {
+          onComplete();
+        } else {
+          router.push("/auth/login");
+        }
+      }
     }
   };
 
@@ -117,7 +136,7 @@ export function VerifyIdentityForm({ phone, email, onBack }: VerifyIdentityFormP
 
         {/* 6-Digit Code Input */}
         <form onSubmit={handleSubmit} className="mb-6">
-          <div className="mb-6 flex justify-center gap-2">
+          <div className="mb-6 flex justify-center gap-1 sm:gap-2">
             {code.map((digit, index) => (
               <input
                 key={index}
@@ -131,7 +150,7 @@ export function VerifyIdentityForm({ phone, email, onBack }: VerifyIdentityFormP
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={handlePaste}
-                className={`h-14 w-14 rounded-lg border-2 text-center text-xl font-semibold text-foreground transition-all focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 ${
+                className={`h-10 w-9 sm:h-12 sm:w-10 xl:h-14 xl:w-14 rounded-lg border-2 text-center text-base sm:text-xl font-semibold text-foreground transition-all focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 ${
                   index === 0 || (digit && index === code.findIndex((c) => c === ""))
                     ? "border-primary ring-2 ring-primary/20"
                     : "border-border dark:border-gray-700"
@@ -163,11 +182,11 @@ export function VerifyIdentityForm({ phone, email, onBack }: VerifyIdentityFormP
             disabled={code.join("").length !== 6}
           >
             <span className="material-icons-outlined text-lg">check</span>
-            <span>Verify & Login</span>
+            <span>{isFromRegister ? "Complete Registration" : "Verify & Login"}</span>
           </button>
         </form>
 
-        {/* Back to Login Link */}
+        {/* Back Link */}
         {onBack && (
           <button
             type="button"
@@ -175,7 +194,7 @@ export function VerifyIdentityForm({ phone, email, onBack }: VerifyIdentityFormP
             className="flex w-full items-center justify-center gap-1 text-sm text-muted hover:text-foreground"
           >
             <span className="material-icons-outlined text-base">arrow_back</span>
-            <span>Back to Login</span>
+            <span>{isFromRegister ? "Back to Register" : "Back to Login"}</span>
           </button>
         )}
       </div>
