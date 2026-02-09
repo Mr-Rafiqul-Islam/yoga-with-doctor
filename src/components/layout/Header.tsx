@@ -3,7 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useId, useEffect } from "react";
-import { useUIStore } from "@/stores";
+import {
+  useAppSelector,
+  useAppDispatch,
+  toggleMobileMenu,
+  closeMobileMenu,
+  setTheme,
+  type ThemeMode,
+} from "@/stores";
 
 const mainNavItems = [
   { href: "/", label: "Home" },
@@ -15,11 +22,9 @@ const mainNavItems = [
 
 export function Header() {
   const pathname = usePathname();
-  const mobileMenuOpen = useUIStore((s) => s.mobileMenuOpen);
-  const toggleMobileMenu = useUIStore((s) => s.toggleMobileMenu);
-  const closeMobileMenu = useUIStore((s) => s.closeMobileMenu);
-  const theme = useUIStore((s) => s.theme);
-  const setTheme = useUIStore((s) => s.setTheme);
+  const dispatch = useAppDispatch();
+  const mobileMenuOpen = useAppSelector((state) => state.ui.mobileMenuOpen);
+  const theme = useAppSelector((state) => state.ui.theme);
   const menuId = useId();
   const buttonId = useId();
 
@@ -29,14 +34,14 @@ export function Header() {
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === "dark" || stored === "light") {
-      setTheme(stored);
+      dispatch(setTheme(stored as ThemeMode));
     } else {
       const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       const initial = dark ? "dark" : "light";
-      setTheme(initial);
+      dispatch(setTheme(initial));
       localStorage.setItem(STORAGE_KEY, initial);
     }
-  }, [setTheme]);
+  }, [dispatch]);
 
   // Apply theme to document
   useEffect(() => {
@@ -54,7 +59,7 @@ export function Header() {
   const isDark = theme === "dark";
   const toggleTheme = () => {
     const next = isDark ? "light" : "dark";
-    setTheme(next);
+    dispatch(setTheme(next));
     localStorage.setItem(STORAGE_KEY, next);
   };
 
@@ -180,7 +185,7 @@ export function Header() {
             aria-controls={menuId}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             className="flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center gap-1.5 rounded-radius-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:hidden"
-            onClick={toggleMobileMenu}
+            onClick={() => dispatch(toggleMobileMenu())}
           >
             <span
               className={`h-0.5 w-6 bg-current transition-transform ${
@@ -232,14 +237,14 @@ export function Header() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={linkClass}
-                    onClick={closeMobileMenu}
+                    onClick={() => dispatch(closeMobileMenu())}
                   >
                     {label}
                   </a>
                 ) : (
                   <Link
                     href={href}
-                    onClick={closeMobileMenu}
+                    onClick={() => dispatch(closeMobileMenu())}
                     className={linkClass}
                     aria-current={isActive ? "page" : undefined}
                   >
