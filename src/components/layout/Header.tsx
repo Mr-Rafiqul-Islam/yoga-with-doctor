@@ -155,15 +155,15 @@ export function Header() {
           </button>
 
           {/* Profile */}
-          <button
-            type="button"
+          <Link
+            href="/auth/login"
             className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:bg-gray-700 dark:border-gray-600"
-            aria-label="Open profile menu"
+            aria-label="Go to login page"
           >
             <span className="material-icons-outlined text-xl" aria-hidden>
               person
             </span>
-          </button>
+          </Link>
 
           {/* Theme toggle */}
           <button
