@@ -37,6 +37,7 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
       const platform: "web" = "web";
 
       const result = await register({
+        name: fullName,
         phone,
         password,
         deviceId,
@@ -131,7 +132,7 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
               const formatted = formatPhoneNumber(e.target.value);
               setPhone(formatted);
             }}
-            placeholder="+1 (555) 123-4567"
+            placeholder="01712345678"
             className="h-14 w-full rounded-xl border border-border bg-surface px-4 text-base text-foreground outline-none transition-all placeholder:text-muted focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-[#12241d]"
             required
             aria-required="true"

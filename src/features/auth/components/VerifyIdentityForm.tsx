@@ -158,7 +158,7 @@ export function VerifyIdentityForm({
         <p className="mb-8 text-center text-sm leading-relaxed text-muted">
           We&apos;ve sent a 6-digit code to{" "}
           {phone && <span className="font-medium text-foreground">{phone}</span>}
-          {email && <span className="font-medium text-foreground">{email}</span>}
+          {/* {email && <span className="font-medium text-foreground">{email}</span>} */}
           {!phone && !email && "your registered phone number"} to ensure your health data remains
           secure.
         </p>

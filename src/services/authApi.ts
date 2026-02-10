@@ -89,6 +89,7 @@ export interface LoginCredentials {
 }
 
 export interface RegisterCredentials {
+  name: string;
   phone: string;
   password: string;
   deviceId: string;
