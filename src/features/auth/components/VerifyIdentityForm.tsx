@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useVerifyRegisterOTPMutation } from "@/services/authApi";
 
 type VerifyIdentityFormProps = {
   phone?: string;
@@ -26,10 +27,13 @@ export function VerifyIdentityForm({
   const [code, setCode] = useState<string[]>(["", "", "", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState(119); // 1:59 in seconds
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [verifyRegisterOTP, { isLoading: isVerifyingRegister }] =
+    useVerifyRegisterOTPMutation();
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
+      setTimeLeft((prev: number) => {
         if (prev <= 0) {
           clearInterval(timer);
           return 0;
@@ -83,20 +87,45 @@ export function VerifyIdentityForm({
     inputRefs.current[Math.min(pastedData.length, 5)]?.focus();
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fullCode = code.join("");
-    if (fullCode.length === 6) {
-      // TODO: Implement verification logic
-      console.log("Verifying code:", fullCode);
-      
-      // If from register page, redirect to login after successful verification
-      if (isFromRegister) {
-        if (onComplete) {
-          onComplete();
-        } else {
-          router.push("/auth/login");
+    if (fullCode.length !== 6) return;
+
+    setError(null);
+
+    if (isFromRegister && phone) {
+      try {
+        const deviceId = "web-browser";
+        const platform: "web" = "web";
+
+        const result = await verifyRegisterOTP({
+          phone,
+          otp: fullCode,
+          deviceId,
+          platform,
+        }).unwrap();
+
+        if (result.success) {
+          if (onComplete) {
+            onComplete();
+          } else {
+            router.push("/auth/login");
+          }
         }
+      } catch (err: any) {
+        const message =
+          err?.data?.message ||
+          err?.error ||
+          "Unable to verify code. Please try again.";
+        setError(message);
+      }
+    } else {
+      // Fallback: just log and optionally navigate
+      if (onComplete) {
+        onComplete();
+      } else {
+        router.push("/auth/login");
       }
     }
   };
@@ -137,7 +166,7 @@ export function VerifyIdentityForm({
         {/* 6-Digit Code Input */}
         <form onSubmit={handleSubmit} className="mb-6">
           <div className="mb-6 flex justify-center gap-1 sm:gap-2">
-            {code.map((digit, index) => (
+            {code.map((digit: string, index: number) => (
               <input
                 key={index}
                 ref={(el) => {
@@ -151,7 +180,9 @@ export function VerifyIdentityForm({
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={handlePaste}
                 className={`h-10 w-9 sm:h-12 sm:w-10 xl:h-14 xl:w-14 rounded-lg border-2 text-center text-base sm:text-xl font-semibold text-foreground transition-all focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 ${
-                  index === 0 || (digit && index === code.findIndex((c) => c === ""))
+                  index === 0 ||
+                  (digit &&
+                    index === code.findIndex((c: string) => c === ""))
                     ? "border-primary ring-2 ring-primary/20"
                     : "border-border dark:border-gray-700"
                 }`}
@@ -179,12 +210,25 @@ export function VerifyIdentityForm({
           <button
             type="submit"
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-bold text-white transition-all hover:bg-primary-dark"
-            disabled={code.join("").length !== 6}
+            disabled={isVerifyingRegister || code.join("").length !== 6}
           >
             <span className="material-icons-outlined text-lg">check</span>
-            <span>{isFromRegister ? "Complete Registration" : "Verify & Login"}</span>
+            <span>
+              {isVerifyingRegister
+                ? "Verifying..."
+                : isFromRegister
+                  ? "Complete Registration"
+                  : "Verify & Login"}
+            </span>
           </button>
         </form>
+
+        {/* Error */}
+        {error && (
+          <p className="mt-3 text-center text-sm text-error" role="alert">
+            {error}
+          </p>
+        )}
 
         {/* Back Link */}
         {onBack && (
