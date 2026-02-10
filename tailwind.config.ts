@@ -36,7 +36,7 @@ const config: Config = {
         soft: "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
       },
       colors: {
-        primary: "var(--color-primary)",
+        primary: "rgb(var(--color-primary-rgb) / <alpha-value>)",
         "primary-variant": "var(--color-primary-variant)",
         "primary-dark": "var(--color-primary-dark)",
         secondary: "var(--color-secondary)",

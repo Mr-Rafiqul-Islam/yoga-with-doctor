@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRegisterMutation } from "@/services/authApi";
 
 // Phone number formatting helper - allows common phone formats
 const formatPhoneNumber = (value: string): string => {
@@ -24,13 +25,34 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
   const [phone, setPhone] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [register, { isLoading }] = useRegisterMutation();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: Implement actual registration API call
-    // For now, simulate success and move to verification step
-    if (onRegisterSuccess) {
-      onRegisterSuccess(email, phone);
+    setError(null);
+
+    try {
+      const deviceId = "web-browser";
+      const platform: "web" = "web";
+
+      const result = await register({
+        name: fullName,
+        phone,
+        password,
+        deviceId,
+        platform,
+      }).unwrap();
+
+      if (result.success && result.message === "OTP_SENT" && onRegisterSuccess) {
+        onRegisterSuccess(email, phone);
+      }
+    } catch (err: any) {
+      const message =
+        err?.data?.message ||
+        err?.error ||
+        "Unable to create account. Please try again.";
+      setError(message);
     }
   };
 
@@ -110,7 +132,7 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
               const formatted = formatPhoneNumber(e.target.value);
               setPhone(formatted);
             }}
-            placeholder="+1 (555) 123-4567"
+            placeholder="01712345678"
             className="h-14 w-full rounded-xl border border-border bg-surface px-4 text-base text-foreground outline-none transition-all placeholder:text-muted focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-[#12241d]"
             required
             aria-required="true"
@@ -164,10 +186,16 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
         <button
           type="submit"
           className="mt-4 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-primary font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={!isPasswordValid || !fullName || !email || !phone}
+          disabled={isLoading || !isPasswordValid || !fullName || !email || !phone}
         >
-          <span>Create Account</span>
+          <span>{isLoading ? "Creating..." : "Create Account"}</span>
         </button>
+
+        {error && (
+          <p className="text-sm text-error" role="alert">
+            {error}
+          </p>
+        )}
       </form>
 
       {/* Security Indicators */}
