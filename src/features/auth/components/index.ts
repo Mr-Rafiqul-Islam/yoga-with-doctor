@@ -5,3 +5,5 @@ export { LoginPageContent } from "./LoginPageContent";
 export { RegisterHeroSection } from "./RegisterHeroSection";
 export { RegisterForm } from "./RegisterForm";
 export { RegisterPageContent } from "./RegisterPageContent";
+export { ForgotPasswordForm } from "./ForgotPasswordForm";
+export { ResetPasswordForm } from "./ResetPasswordForm";
