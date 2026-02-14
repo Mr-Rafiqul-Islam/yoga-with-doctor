@@ -145,3 +145,33 @@ export function VideoCard({
 
   return <article className={wrapperClassName}>{content}</article>;
 }
+
+/**
+ * Skeleton placeholder for VideoCard during initial load.
+ * Matches card layout with pulse animation.
+ */
+export function VideoCardSkeleton() {
+  return (
+    <article
+      className="flex flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-soft dark:border-gray-700"
+      aria-hidden
+    >
+      <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted/60 animate-pulse" />
+      <div className="flex flex-1 flex-col gap-3 p-4">
+        <div className="flex justify-between gap-2">
+          <div className="h-3 w-24 rounded bg-muted/60 animate-pulse" />
+          <div className="h-5 w-12 rounded bg-muted/50 animate-pulse" />
+        </div>
+        <div className="h-5 w-full max-w-[90%] rounded bg-muted/50 animate-pulse" />
+        <div className="space-y-2">
+          <div className="h-3 w-full rounded bg-muted/40 animate-pulse" />
+          <div className="h-3 w-[80%] rounded bg-muted/40 animate-pulse" />
+        </div>
+        <div className="mt-auto flex items-center gap-2">
+          <div className="h-8 w-8 shrink-0 rounded-full bg-muted/50 animate-pulse" />
+          <div className="h-4 w-28 rounded bg-muted/40 animate-pulse" />
+        </div>
+      </div>
+    </article>
+  );
+}

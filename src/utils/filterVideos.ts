@@ -1,4 +1,4 @@
-import type { VideoCardProps } from "../components/VideoCard";
+import type { VideoCardProps } from "../features/videos/free/components/VideoCard";
 
 /** Parse duration string "MM:SS" or "M:SS" to total minutes (e.g. "15:00" -> 15, "05:30" -> 5.5). */
 export function durationToMinutes(duration: string | undefined): number {

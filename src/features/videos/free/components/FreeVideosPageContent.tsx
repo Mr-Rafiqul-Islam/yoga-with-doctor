@@ -1,22 +1,29 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FREE_VIDEOS } from "../data/freeVideosData";
-import { filterVideos } from "../utils/filterVideos";
+import { filterVideos } from "@/utils/filterVideos";
 import { FilterAndSearchSection } from "./FilterAndSearchSection";
 import { VideoGridSection } from "./VideoGridSection";
 
 const PAGE_SIZE = 6;
+const INITIAL_LOAD_MS = 700;
 
 /**
- * Client wrapper for the Free Videos page: filter state + load more.
+ * Client wrapper for the Free Videos page: filter state + load more + initial skeleton.
  * Renders FilterAndSearchSection (controlled) and VideoGridSection with filtered list.
  */
 export function FreeVideosPageContent() {
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [durationFilter, setDurationFilter] = useState("");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+  useEffect(() => {
+    const t = setTimeout(() => setIsInitialLoading(false), INITIAL_LOAD_MS);
+    return () => clearTimeout(t);
+  }, []);
 
   const filterParams = useMemo(
     () => ({
@@ -38,6 +45,8 @@ export function FreeVideosPageContent() {
   );
 
   const hasMore = visibleCount < filteredVideos.length;
+  const showShowLess = visibleCount > PAGE_SIZE;
+  const hasNoResults = !isInitialLoading && filteredVideos.length === 0;
 
   const handleLoadMore = useCallback(() => {
     setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, filteredVideos.length));
@@ -58,6 +67,10 @@ export function FreeVideosPageContent() {
     setVisibleCount(PAGE_SIZE);
   }, []);
 
+  const handleShowLess = useCallback(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, []);
+
   return (
     <>
       <FilterAndSearchSection
@@ -68,11 +81,25 @@ export function FreeVideosPageContent() {
         durationFilter={durationFilter}
         onDurationChange={handleDurationChange}
       />
-      <VideoGridSection
-        videos={displayedVideos}
-        onLoadMore={handleLoadMore}
-        hasMore={hasMore}
-      />
+      {hasNoResults ? (
+        <section
+          className="mx-auto max-w-6xl px-4 py-16 text-center sm:px-6 lg:px-8"
+          aria-label="No results"
+        >
+          <p className="text-body-lg text-muted">
+            No videos to show. Try adjusting your search or filters.
+          </p>
+        </section>
+      ) : (
+        <VideoGridSection
+          videos={displayedVideos}
+          isLoading={isInitialLoading}
+          onLoadMore={handleLoadMore}
+          hasMore={hasMore}
+          showShowLess={showShowLess}
+          onShowLess={handleShowLess}
+        />
+      )}
     </>
   );
 }
