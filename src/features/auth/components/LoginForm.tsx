@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useLoginMutation } from "@/services/authApi";
 
 // Phone number formatting helper - allows common phone formats
 const formatPhoneNumber = (value: string): string => {
@@ -17,19 +19,50 @@ type LoginFormProps = {
 /**
  * LoginForm - Right panel component for login page.
  * Contains phone number and password inputs, login button, social auth, and signup link.
- * Uses phone number to send OTP for authentication after login.
+ * Uses RTK Query login mutation; on OTP_REQUIRED moves to verify step, on direct success redirects.
  */
 export function LoginForm({ onLoginSuccess }: LoginFormProps = {}) {
+  const router = useRouter();
   const [phone, setPhone] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [login, { isLoading }] = useLoginMutation();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: Implement actual login API call to send OTP
-    // For now, simulate success and move to OTP step
-    if (onLoginSuccess) {
-      onLoginSuccess(phone);
+    setError(null);
+    try {
+      const result = await login({
+        phone,
+        password,
+        deviceId: "web-browser",
+        platform: "web",
+      }).unwrap();
+
+      if (result.message === "OTP_REQUIRED") {
+        if (onLoginSuccess) {
+          const phoneToVerify =
+            "data" in result && result.data && "phone" in result.data
+              ? (result.data as { phone: string }).phone
+              : phone;
+          onLoginSuccess(phoneToVerify);
+        }
+        return;
+      }
+
+      const data = "data" in result ? result.data : null;
+      if (data && "accessToken" in data && data.accessToken) {
+        router.push("/");
+        return;
+      }
+    } catch (err: unknown) {
+      const message =
+        (err as { data?: { message?: string }; error?: string })?.data
+          ?.message ||
+        (err as { error?: string })?.error ||
+        "Login failed. Please check your credentials.";
+      setError(message);
     }
   };
 
@@ -43,6 +76,15 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps = {}) {
           Enter your credentials to access your wellness dashboard.
         </p>
       </div>
+
+      {error && (
+        <div
+          className="rounded-xl border border-error/30 bg-error/10 px-4 py-3 text-sm text-error"
+          role="alert"
+        >
+          {error}
+        </div>
+      )}
 
       <form className="space-y-5" onSubmit={handleSubmit}>
         {/* Phone Number Field */}
@@ -114,10 +156,17 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps = {}) {
         {/* Login Button */}
         <button
           type="submit"
-          className="mt-4 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-primary font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary-dark"
+          disabled={isLoading}
+          className="mt-4 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-primary font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary-dark disabled:opacity-70"
         >
-          <span>Login</span>
-          <span className="material-icons-outlined text-lg">arrow_forward</span>
+          {isLoading ? (
+            <span>Signing in…</span>
+          ) : (
+            <>
+              <span>Login</span>
+              <span className="material-icons-outlined text-lg">arrow_forward</span>
+            </>
+          )}
         </button>
       </form>
 

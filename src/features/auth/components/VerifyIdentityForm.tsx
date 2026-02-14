@@ -2,7 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useVerifyRegisterOTPMutation } from "@/services/authApi";
+import {
+  useVerifyRegisterOTPMutation,
+  useVerifyLoginOTPMutation,
+} from "@/services/authApi";
 
 type VerifyIdentityFormProps = {
   phone?: string;
@@ -30,6 +33,10 @@ export function VerifyIdentityForm({
   const [error, setError] = useState<string | null>(null);
   const [verifyRegisterOTP, { isLoading: isVerifyingRegister }] =
     useVerifyRegisterOTPMutation();
+  const [verifyLoginOTP, { isLoading: isVerifyingLogin }] =
+    useVerifyLoginOTPMutation();
+
+  const isVerifying = isVerifyingRegister || isVerifyingLogin;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -94,11 +101,11 @@ export function VerifyIdentityForm({
 
     setError(null);
 
+    const deviceId = "web-browser";
+    const platform: "web" = "web";
+
     if (isFromRegister && phone) {
       try {
-        const deviceId = "web-browser";
-        const platform: "web" = "web";
-
         const result = await verifyRegisterOTP({
           phone,
           otp: fullCode,
@@ -113,20 +120,48 @@ export function VerifyIdentityForm({
             router.push("/auth/login");
           }
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         const message =
-          err?.data?.message ||
-          err?.error ||
+          (err as { data?: { message?: string }; error?: string })?.data
+            ?.message ||
+          (err as { error?: string })?.error ||
           "Unable to verify code. Please try again.";
         setError(message);
       }
-    } else {
-      // Fallback: just log and optionally navigate
-      if (onComplete) {
-        onComplete();
-      } else {
-        router.push("/auth/login");
+      return;
+    }
+
+    if (!isFromRegister && phone) {
+      try {
+        const result = await verifyLoginOTP({
+          phone,
+          otp: fullCode,
+          deviceId,
+          platform,
+        }).unwrap();
+
+        if (result.success) {
+          if (onComplete) {
+            onComplete();
+          } else {
+            router.push("/");
+          }
+        }
+      } catch (err: unknown) {
+        const message =
+          (err as { data?: { message?: string }; error?: string })?.data
+            ?.message ||
+          (err as { error?: string })?.error ||
+          "Unable to verify code. Please try again.";
+        setError(message);
       }
+      return;
+    }
+
+    if (onComplete) {
+      onComplete();
+    } else {
+      router.push("/auth/login");
     }
   };
 
@@ -210,11 +245,11 @@ export function VerifyIdentityForm({
           <button
             type="submit"
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-bold text-white transition-all hover:bg-primary-dark"
-            disabled={isVerifyingRegister || code.join("").length !== 6}
+            disabled={isVerifying || code.join("").length !== 6}
           >
             <span className="material-icons-outlined text-lg">check</span>
             <span>
-              {isVerifyingRegister
+              {isVerifying
                 ? "Verifying..."
                 : isFromRegister
                   ? "Complete Registration"

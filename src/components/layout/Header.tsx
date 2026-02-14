@@ -1,16 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useId, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useId, useEffect, useState } from "react";
 import {
   useAppSelector,
   useAppDispatch,
   toggleMobileMenu,
   closeMobileMenu,
   setTheme,
+  setLoading,
   type ThemeMode,
 } from "@/stores";
+import { getToken } from "@/utils/tokenStore";
+import { useGetCurrentUserQuery, useLogoutMutation } from "@/services/authApi";
 
 const mainNavItems = [
   { href: "/", label: "Home" },
@@ -22,11 +25,35 @@ const mainNavItems = [
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const mobileMenuOpen = useAppSelector((state) => state.ui.mobileMenuOpen);
   const theme = useAppSelector((state) => state.ui.theme);
+  const { user, isAuthenticated, isLoading: authLoading } = useAppSelector(
+    (state) => state.auth
+  );
+  const [hasToken, setHasToken] = useState(false);
+  useGetCurrentUserQuery(undefined, { skip: !hasToken });
+  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
+
+  useEffect(() => {
+    setHasToken(!!getToken());
+    if (!getToken()) dispatch(setLoading(false));
+  }, [dispatch]);
+
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+      router.push("/auth/login");
+    } catch {
+      router.push("/auth/login");
+    }
+  };
+
   const menuId = useId();
   const buttonId = useId();
+  const profileMenuId = useId();
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const STORAGE_KEY = "ywd-theme";
 
@@ -154,16 +181,72 @@ export function Header() {
             <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-error" aria-hidden />
           </button>
 
-          {/* Profile */}
-          <Link
-            href="/auth/login"
-            className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:bg-gray-700 dark:border-gray-600"
-            aria-label="Go to login page"
-          >
-            <span className="material-icons-outlined text-xl" aria-hidden>
-              person
-            </span>
-          </Link>
+          {/* Profile / Login */}
+          {!authLoading && (
+            <>
+              {isAuthenticated && user ? (
+                <div className="relative flex flex-shrink-0">
+                  <button
+                    type="button"
+                    id={profileMenuId}
+                    aria-expanded={profileOpen}
+                    aria-haspopup="true"
+                    onClick={() => setProfileOpen((o) => !o)}
+                    onBlur={() =>
+                      setTimeout(() => setProfileOpen(false), 150)
+                    }
+                    className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:bg-gray-700 dark:border-gray-600"
+                    aria-label="Account menu"
+                  >
+                    {user.profilePicture ? (
+                      <img
+                        src={user.profilePicture}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <span className="material-icons-outlined text-xl" aria-hidden>
+                        person
+                      </span>
+                    )}
+                  </button>
+                  {profileOpen && (
+                    <div
+                      role="menu"
+                      aria-labelledby={profileMenuId}
+                      className="absolute right-0 top-full z-50 mt-2 min-w-[160px] rounded-radius-md border border-border bg-surface py-1 shadow-elevation-md dark:bg-[#1a2e26]"
+                    >
+                      <div className="border-b border-border px-4 py-2 text-sm text-muted dark:border-gray-700">
+                        {user.name || user.phone}
+                      </div>
+                      <button
+                        type="button"
+                        role="menuitem"
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                        className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-foreground hover:bg-secondary focus:outline-none focus:ring-inset focus:ring-2 focus:ring-primary disabled:opacity-70"
+                      >
+                        <span className="material-icons-outlined text-lg">
+                          logout
+                        </span>
+                        {isLoggingOut ? "Signing out…" : "Logout"}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  href="/auth/login"
+                  className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:bg-gray-700 dark:border-gray-600"
+                  aria-label="Go to login page"
+                >
+                  <span className="material-icons-outlined text-xl" aria-hidden>
+                    person
+                  </span>
+                </Link>
+              )}
+            </>
+          )}
 
           {/* Theme toggle */}
           <button

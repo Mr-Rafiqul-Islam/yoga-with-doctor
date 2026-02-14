@@ -155,6 +155,38 @@ export interface VerifyRegisterOTPResponse {
   };
 }
 
+export interface VerifyLoginOTPCredentials {
+  phone: string;
+  otp: string;
+  deviceId: string;
+  platform: "web" | "android" | "ios";
+}
+
+export interface VerifyLoginOTPResponse {
+  success: boolean;
+  message: string;
+  data: {
+    user: {
+      id: string;
+      phone: string;
+      name: string;
+      email?: string | null;
+      isPremium?: boolean;
+      isActive?: boolean;
+      profilePicture?: string | null;
+    };
+    accessToken: string;
+    refreshToken: string;
+  };
+}
+
+export interface CurrentUserResponse {
+  success: boolean;
+  data: {
+    user: LoginSuccessData["user"];
+  };
+}
+
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: baseQueryWithReauth,
@@ -189,11 +221,78 @@ export const authApi = createApi({
         }
       },
     }),
+    login: builder.mutation<LoginResponse, LoginCredentials>({
+      query: (credentials) => ({
+        url: "/api/v1/client/login",
+        method: "POST",
+        body: credentials,
+      }),
+      invalidatesTags: ["Auth"],
+      async onQueryStarted(_credentials, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (
+            data.success &&
+            "data" in data &&
+            "accessToken" in data.data &&
+            data.data.accessToken
+          ) {
+            saveToken(data.data.accessToken, data.data.refreshToken);
+          }
+        } catch {
+          // handled in UI
+        }
+      },
+    }),
+    verifyLoginOTP: builder.mutation<
+      VerifyLoginOTPResponse,
+      VerifyLoginOTPCredentials
+    >({
+      query: (credentials) => ({
+        url: "/api/v1/client/login/verify",
+        method: "POST",
+        body: credentials,
+      }),
+      invalidatesTags: ["Auth"],
+      async onQueryStarted(_credentials, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data.success && data.data.accessToken) {
+            saveToken(data.data.accessToken, data.data.refreshToken);
+          }
+        } catch {
+          // handled in UI
+        }
+      },
+    }),
+    logout: builder.mutation<{ success: boolean }, void>({
+      query: () => ({
+        url: "/api/v1/client/logout",
+        method: "POST",
+      }),
+      invalidatesTags: ["Auth"],
+      async onQueryStarted(_arg, { queryFulfilled, dispatch }) {
+        try {
+          await queryFulfilled;
+        } finally {
+          removeToken();
+          dispatch({ type: "auth/logout" });
+        }
+      },
+    }),
+    getCurrentUser: builder.query<CurrentUserResponse, void>({
+      query: () => ({ url: "/api/v1/client/me" }),
+      providesTags: ["Auth"],
+    }),
   }),
 });
 
 export const {
   useRegisterMutation,
   useVerifyRegisterOTPMutation,
+  useLoginMutation,
+  useVerifyLoginOTPMutation,
+  useLogoutMutation,
+  useGetCurrentUserQuery,
 } = authApi;
 
