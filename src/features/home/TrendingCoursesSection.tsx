@@ -11,6 +11,7 @@ const TRENDING_COURSES = [
     instructorAvatarSrc:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCcCPXblS8FdKk_trqEsEscmah-35VqgwkRX_bvp_bmBDKLHrRxNJH7DTuV-j4mdjK7BqjYOlF2MFFVSDoo6BMFqlB_XwL4gWJxx-WHDIVECFZ2kIwyWxS_miy3FrdDyo8TT6nDzAHqdfbIcfgt5H65XCDXaWySLEhfXXPZ2wKoh5kvvY8tNSetwYaftrF-67lB9A5faoB2ahLwTdw7Hs-NWfRk2cgojoOwtF2svDzWejtly4w90hBuSnUYbUDgV25ZP3mwWkcILQ",
     price: "৳ 2,500",
+    slug: "30-days-morning-challenge",
     imageBadge: "BESTSELLER",
     imageBadgeVariant: "green" as const,
     contentTag: "New Course",
@@ -29,6 +30,7 @@ const TRENDING_COURSES = [
     instructorAvatarSrc:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuAaeIKDB_CNf-nNcubY2BP5dpybYevP51rzL3_wgmphX7WM_6--LZXN2So9gXdUPQircQ2wX7QTYbYGQ6ZkbSVLRoicMc0apT2QMgCjoLR4I_1yZ5HTUa8KytSfQPqQuhoBoFEVbluPC6DafejugL3Pp4clr_1d5W9lI-SSdwNMNKHXpYY8gsQH7GHqZWtDK6ytlAu705M3KLVO3bW_-HAeeMLrnsmIkCvYUyYM9Mc2ubvN-mQ8t75gfc3Q7qRW7WX9tHBvM0f8kQ",
     price: "৳ 3,200",
+    slug: "spine-health-posture",
     imageBadge: "MEDICAL INSIGHT",
     imageBadgeVariant: "blue" as const,
     contentTag: "Updated",
