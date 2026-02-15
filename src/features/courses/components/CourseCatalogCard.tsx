@@ -1,5 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { useAppSelector } from "@/stores/hooks";
+import { Modal } from "@/components/Modal";
 
 export type CourseCatalogCardProps = {
   title: string;
@@ -11,9 +16,12 @@ export type CourseCatalogCardProps = {
   price: string;
   /** Strikethrough price when discounted */
   originalPrice?: string;
-  /** "Enroll Now" (primary) or "Details" (outline) */
-  action: "enroll" | "details";
+  /** When true, show "Details" and card links to detail page. When false (default), show "Enroll Now" (for future enroll flow); card still links to detail page. */
+  isEnrolled?: boolean;
+  /** URL for the card link. If omitted, built from slug as /courses/[slug]. */
   href?: string;
+  /** Course slug for detail page; used to build href when href is not set */
+  slug?: string;
   /** Badge on image: BESTSELLER (green) or NEW (light) */
   imageBadge?: "BESTSELLER" | "NEW";
   /** Show bookmark icon top-right */
@@ -32,17 +40,31 @@ export function CourseCatalogCard({
   instructorAvatarSrc,
   price,
   originalPrice,
-  action,
-  href = "#",
+  isEnrolled = false,
+  href,
+  slug,
   imageBadge,
   showBookmark = true,
   duration,
   rating,
 }: CourseCatalogCardProps) {
-  const isEnroll = action === "enroll";
+  const linkHref = href ?? (slug ? `/courses/${slug}` : "#");
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const handleEnrollClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+    } else {
+      // Future: open enroll / checkout flow
+    }
+  };
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-elevation-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation-md dark:border-gray-800 dark:bg-surface">
+      <Link href={linkHref} className="flex flex-1 flex-col outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-2xl">
       {/* Image */}
       <div className="relative h-48 shrink-0 overflow-hidden">
         <Image
@@ -123,18 +145,48 @@ export function CourseCatalogCard({
               {price}
             </span>
           </div>
-          <Link
-            href={href}
-            className={
-              isEnroll
-                ? "rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-                : "rounded-lg border border-border bg-gray-100 px-4 py-2 text-body-md font-medium text-foreground transition-colors hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-primary dark:focus:ring-offset-gray-900"
-            }
-          >
-            {isEnroll ? "Enroll Now" : "Details"}
-          </Link>
+          {isEnrolled ? (
+            <span className="rounded-lg border border-border bg-gray-100 px-4 py-2 text-body-md font-medium text-foreground dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              Details
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={handleEnrollClick}
+              className="rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+            >
+              Enroll Now
+            </button>
+          )}
         </div>
       </div>
+      </Link>
+
+      <Modal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        title="Login required"
+      >
+        <p className="text-muted mb-6">
+          Please log in to enroll in this course.
+        </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            onClick={() => setShowLoginModal(false)}
+            className="order-2 sm:order-1 rounded-lg border border-border px-4 py-2 text-body-md font-medium text-foreground transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            Cancel
+          </button>
+          <Link
+            href="/auth/login"
+            onClick={() => setShowLoginModal(false)}
+            className="order-1 sm:order-2 inline-flex justify-center rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          >
+            Go to Login
+          </Link>
+        </div>
+      </Modal>
     </article>
   );
 }

@@ -36,7 +36,7 @@ export function PremiumAccessCTASection({
   heading = DEFAULT_HEADING,
   description = DEFAULT_DESCRIPTION,
   buttonLabel = DEFAULT_BUTTON_LABEL,
-  buttonHref,
+  buttonHref ="/videos/premium",
   onButtonClick,
   disclaimer = DEFAULT_DISCLAIMER,
   className = "",

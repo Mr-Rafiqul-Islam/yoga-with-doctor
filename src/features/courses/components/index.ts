@@ -21,3 +21,7 @@ export {
   CoursesPageContent,
   type CoursesPageContentProps,
 } from "./CoursesPageContent";
+export {
+  CourseDetailContent,
+  type CourseDetailContentProps,
+} from "./CourseDetailContent";
