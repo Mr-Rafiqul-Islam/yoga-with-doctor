@@ -354,7 +354,7 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
               ))}
             </div>
             <Link
-              href="/premium"
+              href="/videos/premium"
               className="mt-6 flex w-full items-center justify-center rounded-lg border border-primary py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white"
             >
               Unlock Premium Access
