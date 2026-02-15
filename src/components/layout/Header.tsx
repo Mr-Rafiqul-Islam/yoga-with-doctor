@@ -100,7 +100,7 @@ export function Header() {
         <div className="flex flex-1 items-center md:min-w-0">
           <Link
             href="/"
-            className="flex items-center gap-2 rounded-radius-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="flex items-center gap-2 rounded-radius-sm focus:outline-none"
             aria-label="YogaDr. — Home"
           >
             <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-radius-md bg-primary text-white">
@@ -125,7 +125,7 @@ export function Header() {
               const { href, label } = item;
               const external = "external" in item && item.external;
               const isActive = !external && pathname === href;
-              const linkClass = `rounded-radius-sm px-1 py-2 text-body-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+              const linkClass = `rounded-radius-sm px-1 py-2 text-body-md font-medium transition-colors  ${
                 isActive ? "text-primary" : "text-foreground hover:text-primary"
               }`;
               return (
@@ -172,7 +172,7 @@ export function Header() {
           {/* Notification */}
           <button
             type="button"
-            className="relative rounded-radius-sm p-2 text-muted transition-colors hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="relative rounded-radius-sm p-2 text-muted transition-colors hover:text-foreground focus:outline-none "
             aria-label="Notifications"
           >
             <span className="material-icons-outlined text-xl" aria-hidden>
@@ -195,7 +195,7 @@ export function Header() {
                     onBlur={() =>
                       setTimeout(() => setProfileOpen(false), 150)
                     }
-                    className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:bg-gray-700 dark:border-gray-600"
+                    className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none  dark:bg-gray-700 dark:border-gray-600"
                     aria-label="Account menu"
                   >
                     {user.profilePicture ? (
@@ -237,7 +237,7 @@ export function Header() {
               ) : (
                 <Link
                   href="/auth/login"
-                  className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:bg-gray-700 dark:border-gray-600"
+                  className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none  dark:bg-gray-700 dark:border-gray-600"
                   aria-label="Go to login page"
                 >
                   <span className="material-icons-outlined text-xl" aria-hidden>
@@ -252,7 +252,7 @@ export function Header() {
           <button
             type="button"
             onClick={toggleTheme}
-            className="rounded-radius-sm p-2 text-muted transition-colors hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="rounded-radius-sm p-2 text-muted transition-colors hover:text-foreground focus:outline-none "
             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
           >
             <span className="material-icons-outlined text-xl" aria-hidden>
@@ -267,7 +267,7 @@ export function Header() {
             aria-expanded={mobileMenuOpen}
             aria-controls={menuId}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-            className="flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center gap-1.5 rounded-radius-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:hidden"
+            className="flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center gap-1.5 rounded-radius-sm text-foreground focus:outline-none  md:hidden"
             onClick={() => dispatch(toggleMobileMenu())}
           >
             <span

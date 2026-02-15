@@ -35,7 +35,7 @@ export function Footer() {
           <div className="md:col-span-1">
             <Link
               href="/"
-              className="mb-4 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-900 rounded-radius-sm"
+              className="mb-4 flex items-center gap-2 focus:outline-none focus:ring-offset-gray-900 rounded-radius-sm"
               aria-label="YogaDr. — Home"
             >
               <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-primary text-white">
@@ -57,7 +57,7 @@ export function Footer() {
                 <a
                   key={icon}
                   href={href}
-                  className="text-gray-400 transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-900 rounded-radius-sm"
+                  className="text-gray-400 transition-colors hover:text-white focus:outline-none focus:ring-offset-gray-900 rounded-radius-sm"
                   aria-label={label}
                 >
                   <span className="material-icons-outlined" aria-hidden>
@@ -76,7 +76,7 @@ export function Footer() {
                 <li key={label}>
                   <Link
                     href={href}
-                    className="text-gray-400 transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-900 rounded-radius-sm"
+                    className="text-gray-400 transition-colors hover:text-primary focus:outline-none focus:ring-offset-gray-900 rounded-radius-sm"
                   >
                     {label}
                   </Link>
@@ -93,7 +93,7 @@ export function Footer() {
                 <li key={label}>
                   <Link
                     href={href}
-                    className="text-gray-400 transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-900 rounded-radius-sm"
+                    className="text-gray-400 transition-colors hover:text-primary focus:outline-none focus:ring-offset-gray-900 rounded-radius-sm"
                   >
                     {label}
                   </Link>
@@ -125,7 +125,7 @@ export function Footer() {
               />
               <button
                 type="submit"
-                className="rounded-r-lg bg-primary px-4 text-white transition-colors hover:bg-primary-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-900"
+                className="rounded-r-lg bg-primary px-4 text-white transition-colors hover:bg-primary-variant focus:outline-none focus:ring-offset-gray-900"
                 aria-label="Subscribe"
               >
                 <span className="material-icons-outlined text-sm" aria-hidden>
