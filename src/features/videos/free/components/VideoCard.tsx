@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export interface VideoCardProps {
   /** Thumbnail image URL (optional; shows placeholder if missing) */
@@ -19,6 +20,8 @@ export interface VideoCardProps {
   isFree?: boolean;
   /** Optional link for the card (wraps thumbnail + content in anchor if set) */
   href?: string;
+  /** URL slug for details page (e.g. "morning-sunshine-flow"). Used to build href when href not set. */
+  slug?: string;
 }
 
 /**
@@ -131,14 +134,20 @@ export function VideoCard({
     "flex flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-soft transition-shadow hover:shadow-elevation-sm dark:border-gray-700";
 
   if (href) {
+    const isInternal = href.startsWith("/");
+    const linkClass =
+      "flex flex-1 flex-col outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl";
     return (
       <article className={wrapperClassName}>
-        <a
-          href={href}
-          className="flex flex-1 flex-col outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl"
-        >
-          {content}
-        </a>
+        {isInternal ? (
+          <Link href={href} className={linkClass}>
+            {content}
+          </Link>
+        ) : (
+          <a href={href} className={linkClass} target="_blank" rel="noopener noreferrer">
+            {content}
+          </a>
+        )}
       </article>
     );
   }

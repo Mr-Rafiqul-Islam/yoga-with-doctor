@@ -3,6 +3,21 @@ import type { VideoCardProps } from "../components/VideoCard";
 /** Default free wellness videos from Figma/HTML design. Image URLs hotlinked from design source. */
 export const FREE_VIDEOS: VideoCardProps[] = [
   {
+    slug: "morning-sunshine-flow",
+    thumbnailUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuB1IpTFbBbp0_qWB91TCxBz4UgTTJNCu-X3xTAYqM12dVTAHbYIaSKMYs5VukrNpA41PFvS8bbPCLR78FHywt0fHirPJnieYwmZI4_tFrdpFukU9rpmxilzTTNP6rPzwBxMBLH68RK_1njcaGfeB0z4XtplWF0knVGAqmJ8SxcxZvI54qBzc-xrPswlc6OEs6H46rz9D8Zmv4UFhjKhW3XfYqVUMO_HuMLSjgzOgV34R9yQEV4cinendrKEN0MBUvAdIMRZG5wPew",
+    duration: "15:00",
+    category: "Yoga Therapy",
+    title: "Morning Sunshine Flow",
+    description:
+      "Start your day with gentle movements designed to wake up your spine and joints.",
+    authorName: "Sarah Jenkins",
+    authorAvatarUrl:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBGuYqjgSRaJx2pVpYTY7OzMVYfA1z5IHkE6YAQocqA-1CbpA80jbfNBfFVAHt5SRivYJ-HuAgIbj8hFoFl9gpGmTBIy88nXfwBFyTktL3yXSiIhE39xjvDtl_ZhFCo8LVNrndqep4gB1xM9sDNjayzRFpw2Xhw-ltt30nRt7rLNeEArqlThcADqhjA7tHZ09PMRC366iKntapanophdHGSzCuOEy0LBq22eIgZTcv1lm0xUsa3uol0YDGmRVyPo8tSnz3XL9UYhg",
+    isFree: true,
+  },
+  {
+    slug: "morning-spine-relief-mobility",
     thumbnailUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuD1MHMTq1GB1JQmv4Q2KHx4AyPkoCbNTwUb1PeLTVljDxTQZ4GcGbRGfzAmo_IHgZ6-_YI_ffEgoAcYnuk_vpJJwWRt9lw8rOUpO1VsOtMHrt7I_NiEcxhGFESOxbozg05SthnQD0SHUN90k96igWfPbLLseGJCE2i3SjEm8FitmP18cTRBhyRMxTFg4oUXxtRZ0zWLHkSnD3NHylTAaXcAslvYpU8ekHCbfYQBT0jQ4hh8zTx4x8vHgjAhCWI05ko9_tVZI_rtqEhY",
     duration: "15:00",
@@ -16,6 +31,7 @@ export const FREE_VIDEOS: VideoCardProps[] = [
     isFree: true,
   },
   {
+    slug: "anxiety-reduction-breathwork",
     thumbnailUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDVYq02mnVRiNIgM0mx9UowtVxPINUvtjQPHfbfuUP5UrfiRLWw_gdOjZIMs4prfieeaf5Sg_HbtS5ZlsoY6HFVbdbUyTWsPYdthWAvIy3mRqTuasl_Pci5ey0c8uK-TDORLiS5rfqqOo5I3y9qA1id_aIymUWPrvsPK83pulf3SVXZ_pPBBtFU5Ncs_ZndhUjaPl_IYFQv7puzbVjWwYO83p6AqO4f7nAhpvVp6pBr4-OjC5q4mjUS7fjrN_LmLUjeUC6ZqvEnLTPH",
     duration: "10:00",
@@ -29,6 +45,7 @@ export const FREE_VIDEOS: VideoCardProps[] = [
     isFree: true,
   },
   {
+    slug: "anti-inflammatory-breakfast-ideas",
     thumbnailUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDpXfR3P9eeCXCEkP2HuVHRWMFkWghMQrWjtU2l21-ybFbek0d_DwgSNZN8-gax46bKDM6UDElHjfXJuZ7WcxupqaqLtcM0wuUyjdMxVks9wJ6LIPXfOQiakaI05mzMXAGlApj7jEOKkSlpddyg1K9DWHMm_69c30deCuNdEEPNi2xWC8tMwJT1bk0-HjwJ9wa8ztHGcxp8mXdClqS7Bqhw-EsOq4KYGVVvs_ppwp9oMPRhjV8g8Xf0WBPJt2KShW3rRFUxb7EMcij1",
     duration: "05:30",
@@ -42,6 +59,7 @@ export const FREE_VIDEOS: VideoCardProps[] = [
     isFree: true,
   },
   {
+    slug: "lower-back-recovery-sequence",
     thumbnailUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuD82iUQR-DRIMncyYqYluerXmiEKk0fllaptVauThM1ojRIUt9GgaC0NuVe46TNcTRGxG249JEc112t2h_nE2x65LC5kN8WempFZSpKPCbf4g1uHjStlSk6WgrkGmhaNO3-LrBhJQZkA4OumoSplPnHai6omdAtu4WN5CjY-VNMX9iDycqq-CI7oZpw9EU3dyUwMZMZs4_5WHMrVnfAWI95AWKVFKm6T5bx2wHI231g4QtFWZ2_tsE5g5pOEscpgg4m4tw0NfyPzA7R",
     duration: "22:00",
@@ -55,6 +73,7 @@ export const FREE_VIDEOS: VideoCardProps[] = [
     isFree: true,
   },
   {
+    slug: "mindfulness-for-better-sleep",
     thumbnailUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCRoA7--VcNE7sLQDUIFAKTUMggRbRk3oFAlmE272mov0ooicE5zzWdaQ0eusX4TVH9zl3iMCJhaZYXZKrKjSZEBKXCNF2tLwHPYhkPna1Tkd_7pT11jFEl1MX_J9R77t7XX5AVanc4O8jDRwekKUN26mDm0hQ5igRn4UuClgECCcpUhTemru5JsFalxI5JPE4YVi69_66jUk5HaJ1of7KhsH7R5k5G6I-lIkFnFa40rgz9hB-ptfFjype80w9fzI10WeVl7miaQgUt",
     duration: "18:00",
@@ -68,6 +87,7 @@ export const FREE_VIDEOS: VideoCardProps[] = [
     isFree: true,
   },
   {
+    slug: "desk-job-mobility-routine",
     thumbnailUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuASA9s_sFSS_Kb4ResknwPD5ty_6VFxnVCC7DCGU0_uN2wI4vwXloH828ATnucE3UTk9yUkitjsy-Sqlv0yvEyFsdRy0D9gnzUrd4LeE7p85w3b0WB-eGGKH3wXfZP0Jig-vrd3gaCcuVX-2xTQ_y8GUMDFjdxfuoHYCRSZRkUi8iAU19sIXO9IWFwSh-ZHLc-uAHDWoeIg0D15Jh3dK-er7R29HGZGgVlliEoGh96DyYNDIwNIVBLdRcLWY0olM_6H1rB70QAjrSXN",
     duration: "08:00",
@@ -82,6 +102,7 @@ export const FREE_VIDEOS: VideoCardProps[] = [
   },
   // Additional videos for Load More (entries 7–12)
   {
+    slug: "evening-wind-down-stretch",
     thumbnailUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuD1MHMTq1GB1JQmv4Q2KHx4AyPkoCbNTwUb1PeLTVljDxTQZ4GcGbRGfzAmo_IHgZ6-_YI_ffEgoAcYnuk_vpJJwWRt9lw8rOUpO1VsOtMHrt7I_NiEcxhGFESOxbozg05SthnQD0SHUN90k96igWfPbLLseGJCE2i3SjEm8FitmP18cTRBhyRMxTFg4oUXxtRZ0zWLHkSnD3NHylTAaXcAslvYpU8ekHCbfYQBT0jQ4hh8zTx4x8vHgjAhCWI05ko9_tVZI_rtqEhY",
     duration: "12:00",
@@ -97,6 +118,7 @@ export const FREE_VIDEOS: VideoCardProps[] = [
   {
     thumbnailUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDVYq02mnVRiNIgM0mx9UowtVxPINUvtjQPHfbfuUP5UrfiRLWw_gdOjZIMs4prfieeaf5Sg_HbtS5ZlsoY6HFVbdbUyTWsPYdthWAvIy3mRqTuasl_Pci5ey0c8uK-TDORLiS5rfqqOo5I3y9qA1id_aIymUWPrvsPK83pulf3SVXZ_pPBBtFU5Ncs_ZndhUjaPl_IYFQv7puzbVjWwYO83p6AqO4f7nAhpvVp6pBr4-OjC5q4mjUS7fjrN_LmLUjeUC6ZqvEnLTPH",
+    slug: "quick-calm-5-minute-reset",
     duration: "08:00",
     category: "Meditation",
     title: "Quick Calm: 5-Minute Reset",
@@ -110,6 +132,7 @@ export const FREE_VIDEOS: VideoCardProps[] = [
   {
     thumbnailUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDpXfR3P9eeCXCEkP2HuVHRWMFkWghMQrWjtU2l21-ybFbek0d_DwgSNZN8-gax46bKDM6UDElHjfXJuZ7WcxupqaqLtcM0wuUyjdMxVks9wJ6LIPXfOQiakaI05mzMXAGlApj7jEOKkSlpddyg1K9DWHMm_69c30deCuNdEEPNi2xWC8tMwJT1bk0-HjwJ9wa8ztHGcxp8mXdClqS7Bqhw-EsOq4KYGVVvs_ppwp9oMPRhjV8g8Xf0WBPJt2KShW3rRFUxb7EMcij1",
+    slug: "green-smoothies-for-energy",
     duration: "07:00",
     category: "Nutrition",
     title: "Green Smoothies for Energy",
@@ -123,6 +146,7 @@ export const FREE_VIDEOS: VideoCardProps[] = [
   {
     thumbnailUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuD82iUQR-DRIMncyYqYluerXmiEKk0fllaptVauThM1ojRIUt9GgaC0NuVe46TNcTRGxG249JEc112t2h_nE2x65LC5kN8WempFZSpKPCbf4g1uHjStlSk6WgrkGmhaNO3-LrBhJQZkA4OumoSplPnHai6omdAtu4WN5CjY-VNMX9iDycqq-CI7oZpw9EU3dyUwMZMZs4_5WHMrVnfAWI95AWKVFKm6T5bx2wHI231g4QtFWZ2_tsE5g5pOEscpgg4m4tw0NfyPzA7R",
+    slug: "hip-openers-for-sedentary-lifestyles",
     duration: "25:00",
     category: "Yoga Therapy",
     title: "Hip Openers for Sedentary Lifestyles",
@@ -136,6 +160,7 @@ export const FREE_VIDEOS: VideoCardProps[] = [
   {
     thumbnailUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCRoA7--VcNE7sLQDUIFAKTUMggRbRk3oFAlmE272mov0ooicE5zzWdaQ0eusX4TVH9zl3iMCJhaZYXZKrKjSZEBKXCNF2tLwHPYhkPna1Tkd_7pT11jFEl1MX_J9R77t7XX5AVanc4O8jDRwekKUN26mDm0hQ5igRn4UuClgECCcpUhTemru5JsFalxI5JPE4YVi69_66jUk5HaJ1of7KhsH7R5k5G6I-lIkFnFa40rgz9hB-ptfFjype80w9fzI10WeVl7miaQgUt",
+    slug: "body-scan-for-sleep",
     duration: "20:00",
     category: "Meditation",
     title: "Body Scan for Sleep",
@@ -149,6 +174,7 @@ export const FREE_VIDEOS: VideoCardProps[] = [
   {
     thumbnailUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuASA9s_sFSS_Kb4ResknwPD5ty_6VFxnVCC7DCGU0_uN2wI4vwXloH828ATnucE3UTk9yUkitjsy-Sqlv0yvEyFsdRy0D9gnzUrd4LeE7p85w3b0WB-eGGKH3wXfZP0Jig-vrd3gaCcuVX-2xTQ_y8GUMDFjdxfuoHYCRSZRkUi8iAU19sIXO9IWFwSh-ZHLc-uAHDWoeIg0D15Jh3dK-er7R29HGZGgVlliEoGh96DyYNDIwNIVBLdRcLWY0olM_6H1rB70QAjrSXN",
+    slug: "full-body-flow-for-flexibility",
     duration: "50:00",
     category: "Yoga Therapy",
     title: "Full Body Flow for Flexibility",
@@ -160,3 +186,8 @@ export const FREE_VIDEOS: VideoCardProps[] = [
     isFree: true,
   },
 ];
+
+/** Get a free video by slug, or undefined if not found. */
+export function getFreeVideoBySlug(slug: string): VideoCardProps | undefined {
+  return FREE_VIDEOS.find((v) => v.slug === slug);
+}

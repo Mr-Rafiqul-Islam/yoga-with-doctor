@@ -65,6 +65,7 @@ export function VideoGridSection({
                 <VideoCard
                   key={`${item.title ?? index}-${index}`}
                   {...item}
+                  href={item.slug ? `/videos/free/${item.slug}` : item.href}
                 />
               ))}
       </div>
