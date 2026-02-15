@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 type ModalProps = {
   isOpen: boolean;
@@ -12,10 +13,21 @@ type ModalProps = {
 };
 
 /**
- * Accessible modal: overlay + panel, close on overlay click or Escape.
+ * Accessible modal: rendered in a portal (document.body) so it is not clipped by
+ * parent overflow/transform. Overlay + panel with smooth enter animation.
  */
 export function Modal({ isOpen, onClose, title, children, className = "" }: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const [entered, setEntered] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setEntered(false);
+    const id = requestAnimationFrame(() => {
+      requestAnimationFrame(() => setEntered(true));
+    });
+    return () => cancelAnimationFrame(id);
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -32,9 +44,9 @@ export function Modal({ isOpen, onClose, title, children, className = "" }: Moda
 
   if (!isOpen) return null;
 
-  return (
+  const content = (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
@@ -42,12 +54,16 @@ export function Modal({ isOpen, onClose, title, children, className = "" }: Moda
       <button
         type="button"
         onClick={onClose}
-        className="absolute inset-0 bg-black/50 transition-opacity"
+        className={`absolute inset-0 bg-black/50 transition-all duration-300 ease-out ${
+          entered ? "opacity-100" : "opacity-0"
+        }`}
         aria-label="Close modal"
       />
       <div
         ref={panelRef}
-        className={`relative z-10 w-full max-w-md rounded-2xl border border-border bg-surface shadow-elevation-md ${className}`}
+        className={`relative z-10 w-full max-w-lg rounded-2xl border border-border bg-surface shadow-elevation-md transition-all duration-300 ease-out ${
+          entered ? "scale-100 opacity-100" : "scale-95 opacity-0"
+        } ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-border px-6 py-4 dark:border-gray-700">
@@ -67,4 +83,7 @@ export function Modal({ isOpen, onClose, title, children, className = "" }: Moda
       </div>
     </div>
   );
+
+  if (typeof document === "undefined") return null;
+  return createPortal(content, document.body);
 }
