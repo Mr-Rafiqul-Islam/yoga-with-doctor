@@ -79,7 +79,7 @@ export function VideoCard({
             <span className="h-3 w-20 rounded bg-muted/50" aria-hidden />
           )}
           {isFree ? (
-            <span className="rounded bg-foreground/90 px-2 py-0.5 text-caption font-medium text-white dark:bg-gray-700">
+            <span className="rounded bg-neutral-800/40 px-2 py-0.5 text-caption font-medium text-white dark:bg-gray-700">
               FREE
             </span>
           ) : null}
