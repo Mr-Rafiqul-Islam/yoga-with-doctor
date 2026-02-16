@@ -29,16 +29,23 @@ export function Header() {
   const dispatch = useAppDispatch();
   const mobileMenuOpen = useAppSelector((state) => state.ui.mobileMenuOpen);
   const theme = useAppSelector((state) => state.ui.theme);
+
   const { user, isAuthenticated, isLoading: authLoading } = useAppSelector(
     (state) => state.auth
   );
+
   const [hasToken, setHasToken] = useState(false);
-  useGetCurrentUserQuery(undefined, { skip: !hasToken });
+  const { isLoading: isFetchingUser } = useGetCurrentUserQuery(undefined, {
+    skip: !hasToken,
+  });
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
   useEffect(() => {
-    setHasToken(!!getToken());
-    if (!getToken()) dispatch(setLoading(false));
+    const token = getToken();
+    setHasToken(!!token);
+    if (!token) {
+      dispatch(setLoading(false));
+    }
   }, [dispatch]);
 
   const handleLogout = async () => {
@@ -181,8 +188,15 @@ export function Header() {
             <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-error" aria-hidden />
           </button>
 
-          {/* Profile / Login */}
-          {!authLoading && (
+          {/* Profile / Login: hide until we know auth state; while restoring session (hasToken + fetching) show placeholder */}
+          {(authLoading || (hasToken && isFetchingUser)) ? (
+            <div
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-radius-full border-2 border-border bg-muted/50 dark:bg-gray-700"
+              aria-hidden
+            >
+              <span className="material-icons-outlined text-xl text-muted">person</span>
+            </div>
+          ) : (
             <>
               {isAuthenticated && user ? (
                 <div className="relative flex flex-shrink-0">
@@ -205,8 +219,8 @@ export function Header() {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <span className="material-icons-outlined text-xl" aria-hidden>
-                        person
+                      <span className="text-xl" aria-hidden>
+                       {user.name.charAt(0).toUpperCase()}
                       </span>
                     )}
                   </button>

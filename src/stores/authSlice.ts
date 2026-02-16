@@ -41,6 +41,17 @@ export const authSlice = createSlice({
     setLoading(state, action: { payload: boolean }) {
       state.isLoading = action.payload;
     },
+    /** Restore user from localStorage on app load so UI shows authenticated immediately. */
+    rehydrate(state, action: { payload: AuthUser | null }) {
+      if (action.payload) {
+        state.user = action.payload;
+        state.isAuthenticated = true;
+      } else {
+        state.user = null;
+        state.isAuthenticated = false;
+      }
+      state.isLoading = false;
+    },
     logout(state) {
       state.user = null;
       state.isAuthenticated = false;
@@ -93,6 +104,8 @@ export const authSlice = createSlice({
       .addMatcher(authApi.endpoints.getCurrentUser.matchFulfilled, (state, { payload }) => {
         if (payload.success && payload.data?.user) {
           setUserFromData(state, payload.data.user);
+        } else {
+          state.isLoading = false;
         }
       })
       .addMatcher(authApi.endpoints.getCurrentUser.matchRejected, (state) => {
@@ -111,5 +124,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setUser, setLoading, logout: logoutAction } = authSlice.actions;
+export const { setUser, setLoading, rehydrate, logout: logoutAction } = authSlice.actions;
 export default authSlice.reducer;
