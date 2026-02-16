@@ -55,7 +55,12 @@ export const authPersistMiddleware: Middleware = () => (next) => (action) => {
     }
   } else if (authApi.endpoints.getCurrentUser.matchRejected(action)) {
     clearStoredUser();
-  } else if (action.type === "auth/logout") {
+  } else if (
+    typeof action === "object" &&
+    action !== null &&
+    "type" in action &&
+    (action as { type?: unknown }).type === "auth/logout"
+  ) {
     clearStoredUser();
   }
 
