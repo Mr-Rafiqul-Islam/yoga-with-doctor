@@ -9,12 +9,12 @@ import { generateToc } from "@/lib/generateToc";
 
 type ArticleDetailsViewProps = {
   article: ArticleCardItem;
-  // relatedArticles: ArticleCardItem[];
+  relatedArticles: ArticleCardItem[];
 };
 
 export function ArticleDetailsView({
   article,
-  // relatedArticles,
+  relatedArticles,
 }: ArticleDetailsViewProps) {
   const {
     imageSrc,
@@ -199,59 +199,61 @@ export function ArticleDetailsView({
       </section>
 
       {/* Related articles */}
-      {/* <section className="border-t border-border pt-16">
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <h2 className="font-display text-3xl font-bold text-foreground dark:text-white">
-            Related Articles
-          </h2>
-          <Link
-            href="/articles"
-            className="hidden items-center font-medium text-muted transition-colors hover:text-primary sm:inline-flex"
-          >
-            View all
-            <span className="material-icons-outlined ml-1">arrow_forward</span>
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {relatedArticles.map((related) => (
+      {relatedArticles.length > 0 && (
+        <section className="border-t border-border pt-16">
+          <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+            <h2 className="font-display text-3xl font-bold text-foreground dark:text-white">
+              Related Articles
+            </h2>
             <Link
-              key={related.slug}
-              href={related.href}
-              className="group block"
+              href="/articles"
+              className="hidden items-center font-medium text-muted transition-colors hover:text-primary sm:inline-flex"
             >
-              <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-xl">
-                <Image
-                  src={related.imageSrc}
-                  alt={related.imageAlt}
-                  width={400}
-                  height={300}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <span
-                  className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase ${
-                    related.badge === "PREMIUM"
-                      ? "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300"
-                      : "bg-white/90 text-foreground backdrop-blur-sm dark:bg-black/70 dark:text-white"
-                  }`}
-                >
-                  {related.badge === "PREMIUM" && (
-                    <span className="material-icons-outlined mr-1 text-[10px]">
-                      lock
-                    </span>
-                  )}
-                  {related.category}
-                </span>
-              </div>
-              <h3 className="mb-2 font-display text-xl font-bold leading-tight text-foreground transition-colors group-hover:text-primary dark:text-white">
-                {related.title}
-              </h3>
-              <p className="line-clamp-2 text-body-md text-muted">
-                {related.description}
-              </p>
+              View all
+              <span className="material-icons-outlined ml-1">arrow_forward</span>
             </Link>
-          ))}
-        </div>
-      </section> */}
+          </div>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {relatedArticles.map((related) => (
+              <Link
+                key={related.slug}
+                href={related.href}
+                className="group block"
+              >
+                <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-xl">
+                  <Image
+                    src={related.imageSrc}
+                    alt={related.imageAlt}
+                    width={400}
+                    height={300}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <span
+                    className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase ${
+                      related.badge === "PREMIUM"
+                        ? "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300"
+                        : "bg-white/90 text-foreground backdrop-blur-sm dark:bg-black/70 dark:text-white"
+                    }`}
+                  >
+                    {related.badge === "PREMIUM" && (
+                      <span className="material-icons-outlined mr-1 text-[10px]">
+                        lock
+                      </span>
+                    )}
+                    {related.category}
+                  </span>
+                </div>
+                <h3 className="mb-2 font-display text-xl font-bold leading-tight text-foreground transition-colors group-hover:text-primary dark:text-white">
+                  {related.title}
+                </h3>
+                <p className="line-clamp-2 text-body-md text-muted">
+                  {related.description}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   );
 }

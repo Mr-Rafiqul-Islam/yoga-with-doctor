@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import {
-  getArticleCardBySlug,
   getArticleDetailsBySlug,
   getRelatedArticles,
 } from "@/features/articles/data/dummyArticles";
@@ -12,14 +11,13 @@ type Props = {
 
 export default async function ArticleDetailsPage({ params }: Props) {
   const { slug } = await params;
-  const article = getArticleCardBySlug(slug);
-  console.log(article);
+  const article = getArticleDetailsBySlug(slug);
 
   if (!article) {
     notFound();
   }
 
-  // const relatedArticles = getRelatedArticles(article.relatedArticleSlugs);
+  const relatedArticles = getRelatedArticles(slug);
 
-  return <ArticleDetailsView article={article}  />;
+  return <ArticleDetailsView article={article} relatedArticles={relatedArticles} />;
 }
