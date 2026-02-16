@@ -21,13 +21,14 @@ export type ArticleCardItem = {
   slug: string;
   imageSrc: string;
   imageAlt: string;
-  badge: "FREE" | "PREMIUM";
+  badge?: "FREE" | "PREMIUM";
+  readTime?: string;
   category: string;
-  timeAgo: string;
+  timeAgo?: string;
   title: string;
   description: string;
   author: ArticleAuthor;
-  actionLabel: string;
+  actionLabel?: string;
   href: string;
   tags: string[];
   detailsContent: string; // HTML string from rich text editor
@@ -202,6 +203,7 @@ export const dummyArticleCards: ArticleCardItem[] = [
     badge: "FREE",
     category: "FLEXIBILITY",
     timeAgo: "2 hours ago",
+    readTime: "5 min read",
     title: "Advanced Yoga Techniques for Lower Back Pain Relief",
     description:
       "A comprehensive guide tailored by physiotherapists to safely strengthen your lumbar region.",
@@ -272,6 +274,7 @@ pain is a signal to stop and adjust.
     badge: "PREMIUM",
     category: "NUTRITION",
     timeAgo: "1 day ago",
+    readTime: "5 min read",
     title: "The Anti-Inflammatory Diet: Essential Foods for Yogis",
     description:
       "Optimize your recovery and energy levels with this science-backed nutritional plan specifically for practitioners.",
@@ -342,6 +345,7 @@ Limiting these supports both your practice and overall well-being.
     badge: "FREE",
     category: "LIFESTYLE",
     timeAgo: "3 days ago",
+    readTime: "5 min read",
     title: "Integrating Mindfulness into a Busy Corporate Life",
     description:
       "Practical micro-habits you can build at your desk to reduce stress without leaving the office.",
@@ -412,6 +416,7 @@ add another. Small, consistent actions create lasting change.
     badge: "PREMIUM",
     category: "SLEEP",
     timeAgo: "1 week ago",
+    readTime: "5 min read",
     title: "The Physiology of Sleep: Yoga Nidra Explained",
     description:
       "Deep dive into the non-sleep deep rest (NSDR) protocols that can replace hours of lost sleep.",

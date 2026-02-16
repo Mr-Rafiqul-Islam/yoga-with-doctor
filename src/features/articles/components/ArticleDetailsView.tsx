@@ -3,40 +3,38 @@
 import Image from "next/image";
 import Link from "next/link";
 import type {
-  ArticleDetails,
   ArticleCardItem,
 } from "@/features/articles/data/dummyArticles";
+import { generateToc } from "@/lib/generateToc";
 
 type ArticleDetailsViewProps = {
-  article: ArticleDetails;
-  relatedArticles: ArticleCardItem[];
+  article: ArticleCardItem;
+  // relatedArticles: ArticleCardItem[];
 };
 
 export function ArticleDetailsView({
   article,
-  relatedArticles,
+  // relatedArticles,
 }: ArticleDetailsViewProps) {
   const {
-    heroImage,
+    imageSrc,
+    imageAlt,
     category,
-    readTime,
     title,
     author,
-    leadParagraph,
-    tableOfContents,
-    sections,
-    numberedList,
     tags,
+    detailsContent,
+    description
   } = article;
-
+  const { toc, contentWithIds } = generateToc(detailsContent);
   return (
     <main className="relative z-20 mx-auto mb-20 w-full max-w-7xl flex-grow px-4 sm:px-6 lg:px-8">
       {/* Hero */}
       <div className="relative h-[50vh] min-h-[400px] w-full overflow-hidden">
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <Image
-          src={heroImage.src}
-          alt={heroImage.alt}
+          src={imageSrc}
+          alt={imageAlt}
           fill
           className="object-cover"
           sizes="100vw"
@@ -58,7 +56,7 @@ export function ArticleDetailsView({
               <span className="material-icons-outlined text-sm" aria-hidden>
                 schedule
               </span>
-              {readTime}
+              {/* {readTime} */} 3 min
             </span>
           </div>
           <h1 className="mb-8 font-display text-2xl font-bold leading-tight text-foreground md:text-4xl lg:text-6xl dark:text-white">
@@ -99,7 +97,7 @@ export function ArticleDetailsView({
                 Table of Contents
               </h3>
               <ul className="ml-1 space-y-3 border-l-2 border-border text-body-md">
-                {tableOfContents.map((item, index) => (
+                {toc.map((item, index) => (
                   <li key={item.id}>
                     <Link
                       href={`#${item.id}`}
@@ -109,7 +107,7 @@ export function ArticleDetailsView({
                           : "border-transparent text-muted hover:border-gray-300 hover:text-foreground dark:hover:text-gray-200"
                       }`}
                     >
-                      {item.label}
+                      {item.text}
                     </Link>
                   </li>
                 ))}
@@ -140,94 +138,14 @@ export function ArticleDetailsView({
             </div>
           </div>
         </aside>
-
-        <article className="prose prose-lg max-w-none lg:col-span-8 lg:col-start-4 dark:prose-invert prose-headings:font-display prose-headings:font-bold prose-h2:text-foreground prose-p:text-muted prose-p:leading-relaxed prose-strong:text-primary">
+        <div className="lg:col-span-8 lg:col-start-4">
           <p className="lead mb-8 text-body-lg leading-relaxed text-muted">
-            {leadParagraph}
+            {description}
           </p>
-
-          {sections.map((section) => (
-            <section key={section.id} id={section.id}>
-              <h2 className="font-display text-h1 font-bold text-foreground dark:text-white my-2">
-                {section.heading}
-              </h2>
-              {section.paragraphs.map((para, i) => (
-                <p key={i} className="text-muted">
-                  {para}
-                </p>
-              ))}
-              {section.medicalInsight && (
-                <div className="my-10 rounded-r-xl border-l-4 border-primary bg-sage-light p-6 dark:bg-emerald-900/10">
-                  <div className="flex items-start gap-4">
-                    <span
-                      className="material-icons-outlined text-3xl text-primary"
-                      aria-hidden
-                    >
-                      medical_services
-                    </span>
-                    <div>
-                      <h4 className="mb-2 mt-0 text-caption font-bold uppercase tracking-wider text-primary">
-                        {section.medicalInsight.title}
-                      </h4>
-                      <p className="m-0 text-body-lg leading-relaxed text-foreground dark:text-gray-300">
-                        {section.medicalInsight.body}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              {section.figure && (
-                <figure className="my-8">
-                  <div className="relative h-64 w-full overflow-hidden rounded-2xl shadow-elevation-md">
-                    <Image
-                      src={section.figure.imageSrc}
-                      alt={section.figure.imageAlt}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 66vw"
-                    />
-                  </div>
-                  <figcaption className="mt-3 text-center text-caption italic text-muted">
-                    {section.figure.caption}
-                  </figcaption>
-                </figure>
-              )}
-              {section.quote && (
-                <blockquote className="relative my-8 border-l-0 py-8 pl-0">
-                  <span
-                    className="absolute left-0 top-0 font-display text-6xl text-primary opacity-20"
-                    aria-hidden
-                  >
-                    &ldquo;
-                  </span>
-                  <p className="px-8 text-center font-display text-2xl font-medium italic leading-tight text-foreground md:text-3xl dark:text-white">
-                    {section.quote.text}
-                  </p>
-                  <cite className="mt-4 block text-center text-caption font-bold not-italic text-muted">
-                    {section.quote.cite}
-                  </cite>
-                </blockquote>
-              )}
-            </section>
-          ))}
-
-          {numberedList && numberedList.length > 0 && (
-            <ul className="mt-8 list-none space-y-4 pl-0">
-              {numberedList.map((item, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <span className="mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
-                    {index + 1}
-                  </span>
-                  <span className="text-muted">
-                    <strong className="text-foreground dark:text-white">
-                      {item.title}:
-                    </strong>{" "}
-                    {item.description}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
+          <article
+            className="prose prose-lg max-w-none lg:col-span-8 lg:col-start-4 dark:prose-invert prose-headings:font-display prose-headings:font-bold prose-h2:text-foreground prose-p:text-muted prose-p:leading-relaxed prose-strong:text-primary"
+            dangerouslySetInnerHTML={{ __html: contentWithIds }}
+          />
 
           <div className="mt-12 border-t border-border pt-8">
             <div className="flex flex-wrap gap-2">
@@ -241,7 +159,7 @@ export function ArticleDetailsView({
               ))}
             </div>
           </div>
-        </article>
+        </div>
       </div>
 
       {/* Author bio */}
@@ -266,9 +184,7 @@ export function ArticleDetailsView({
             <p className="text-body-md font-medium uppercase tracking-wide text-primary mb-4">
               Medical Doctor & Yoga Therapist
             </p>
-            <p className="mb-6 leading-relaxed text-muted">
-              {author.fullBio}
-            </p>
+            <p className="mb-6 leading-relaxed text-muted">{author.fullBio}</p>
             <Link
               href={author.profileLink}
               className="inline-flex items-center font-semibold text-primary transition-colors hover:text-primary-dark group"
@@ -283,7 +199,7 @@ export function ArticleDetailsView({
       </section>
 
       {/* Related articles */}
-      <section className="border-t border-border pt-16">
+      {/* <section className="border-t border-border pt-16">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <h2 className="font-display text-3xl font-bold text-foreground dark:text-white">
             Related Articles
@@ -335,7 +251,7 @@ export function ArticleDetailsView({
             </Link>
           ))}
         </div>
-      </section>
+      </section> */}
     </main>
   );
 }
