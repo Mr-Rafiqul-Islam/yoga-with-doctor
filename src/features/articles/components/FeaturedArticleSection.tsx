@@ -17,9 +17,7 @@ export function FeaturedArticleSection({ article }: FeaturedArticleSectionProps)
     readTime,
     title,
     description,
-    authorName,
-    authorTitle,
-    authorAvatarSrc,
+    author,
     href,
   } = article;
 
@@ -54,7 +52,7 @@ export function FeaturedArticleSection({ article }: FeaturedArticleSectionProps)
           <div className="mt-auto flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Image
-                src={authorAvatarSrc}
+                src={author.avatarSrc}
                 alt=""
                 width={40}
                 height={40}
@@ -62,9 +60,9 @@ export function FeaturedArticleSection({ article }: FeaturedArticleSectionProps)
               />
               <div>
                 <p className="text-body-md font-semibold text-foreground">
-                  {authorName}
+                  {author.name}
                 </p>
-                <p className="text-caption text-muted">{authorTitle}</p>
+                <p className="text-caption text-muted">{author.title}</p>
               </div>
             </div>
             <Link

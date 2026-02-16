@@ -1,6 +1,7 @@
 export { ArticlesPageHeader } from "./ArticlesPageHeader";
 export { FeaturedArticleSection } from "./FeaturedArticleSection";
 export { ArticleCard } from "./ArticleCard";
+export { ArticleDetailsView } from "./ArticleDetailsView";
 export { ArticleGridSection } from "./ArticleGridSection";
 export { Modal } from "../../../components/Modal";
 export {

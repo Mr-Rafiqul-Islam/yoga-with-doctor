@@ -18,7 +18,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
     timeAgo,
     title,
     description,
-    authorName,
+    author,
     actionLabel,
     href,
   } = article;
@@ -67,7 +67,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
         </div>
         <div className="flex items-center justify-between border-t border-border pt-4 dark:border-gray-700">
           <span className="text-caption font-medium text-foreground dark:text-gray-300">
-            By {authorName}
+            By {author.name}
           </span>
           <Link
             href={href}
