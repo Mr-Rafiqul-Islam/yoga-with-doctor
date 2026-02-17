@@ -12,6 +12,12 @@
   white-space: nowrap;
   direction: ltr;
 }
+html {
+  scroll-behavior: smooth;
+}
+.prose h2 {
+  scroll-margin-top: 112px;
+}
 
 @tailwind base;
 @tailwind components;

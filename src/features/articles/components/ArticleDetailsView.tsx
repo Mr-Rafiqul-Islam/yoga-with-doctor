@@ -6,6 +6,8 @@ import type {
   ArticleCardItem,
 } from "@/features/articles/data/dummyArticles";
 import { generateToc } from "@/lib/generateToc";
+import { useScrollSpy } from "@/hooks/useScrollSpy";
+import { useEffect, useState } from "react";
 
 type ArticleDetailsViewProps = {
   article: ArticleCardItem;
@@ -26,7 +28,16 @@ export function ArticleDetailsView({
     detailsContent,
     description
   } = article;
-  const { toc, contentWithIds } = generateToc(detailsContent);
+  // const { toc, contentWithIds } = generateToc(detailsContent);
+  const [toc, setToc] = useState<{ id: string; text: string }[]>([]);
+  const [content, setContent] = useState(detailsContent);
+  const activeId = useScrollSpy(toc.map((item) => item.id));
+
+  useEffect(() => {
+    const { toc, contentWithIds } = generateToc(detailsContent);
+    setToc(toc);
+    setContent(contentWithIds);
+  }, [detailsContent]);
   return (
     <main className="relative z-20 mx-auto mb-20 w-full max-w-7xl flex-grow px-4 sm:px-6 lg:px-8">
       {/* Hero */}
@@ -97,12 +108,14 @@ export function ArticleDetailsView({
                 Table of Contents
               </h3>
               <ul className="ml-1 space-y-3 border-l-2 border-border text-body-md">
-                {toc.map((item, index) => (
+                {toc.map((item, index) => {
+                  const isActive = item.id === activeId;
+                  return (
                   <li key={item.id}>
                     <Link
                       href={`#${item.id}`}
                       className={`block border-l-2 pl-4 -ml-0.5 transition-colors ${
-                        index === 0
+                        isActive
                           ? "border-primary font-medium text-primary"
                           : "border-transparent text-muted hover:border-gray-300 hover:text-foreground dark:hover:text-gray-200"
                       }`}
@@ -110,7 +123,7 @@ export function ArticleDetailsView({
                       {item.text}
                     </Link>
                   </li>
-                ))}
+                )})}
               </ul>
             </div>
             <div>
@@ -144,7 +157,7 @@ export function ArticleDetailsView({
           </p>
           <article
             className="prose prose-lg max-w-none lg:col-span-8 lg:col-start-4 dark:prose-invert prose-headings:font-display prose-headings:font-bold prose-h2:text-foreground prose-p:text-muted prose-p:leading-relaxed prose-strong:text-primary"
-            dangerouslySetInnerHTML={{ __html: contentWithIds }}
+            dangerouslySetInnerHTML={{ __html: content }}
           />
 
           <div className="mt-12 border-t border-border pt-8">
