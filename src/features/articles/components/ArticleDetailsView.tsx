@@ -3,15 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import type {
-  ArticleCardItem,
+  ArticleDetails,
 } from "@/features/articles/data/dummyArticles";
 import { generateToc } from "@/lib/generateToc";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { useEffect, useState } from "react";
 
 type ArticleDetailsViewProps = {
-  article: ArticleCardItem;
-  relatedArticles: ArticleCardItem[];
+  article: ArticleDetails;
+  relatedArticles: ArticleDetails[];
 };
 
 export function ArticleDetailsView({
@@ -19,7 +19,7 @@ export function ArticleDetailsView({
   relatedArticles,
 }: ArticleDetailsViewProps) {
   const {
-    imageSrc,
+    image,
     imageAlt,
     category,
     title,
@@ -28,7 +28,6 @@ export function ArticleDetailsView({
     detailsContent,
     description
   } = article;
-  // const { toc, contentWithIds } = generateToc(detailsContent);
   const [toc, setToc] = useState<{ id: string; text: string }[]>([]);
   const [content, setContent] = useState(detailsContent);
   const activeId = useScrollSpy(toc.map((item) => item.id));
@@ -44,7 +43,7 @@ export function ArticleDetailsView({
       <div className="relative h-[50vh] min-h-[400px] w-full overflow-hidden">
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <Image
-          src={imageSrc}
+          src={image}
           alt={imageAlt}
           fill
           className="object-cover"
@@ -235,7 +234,7 @@ export function ArticleDetailsView({
               >
                 <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-xl">
                   <Image
-                    src={related.imageSrc}
+                    src={related.image}
                     alt={related.imageAlt}
                     width={400}
                     height={300}

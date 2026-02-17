@@ -16,11 +16,11 @@ import {
   type ArticleSortValue,
 } from "@/lib/filterSortArticles";
 import type { FeaturedArticle } from "@/features/articles/data/dummyArticles";
-import type { ArticleCardItem } from "@/features/articles/data/dummyArticles";
+import type { ArticleDetails } from "@/features/articles/data/dummyArticles";
 
 type ArticlesPageContentProps = {
   featuredArticle: FeaturedArticle;
-  articles: ArticleCardItem[];
+  articles: ArticleDetails[];
 };
 
 export function ArticlesPageContent({

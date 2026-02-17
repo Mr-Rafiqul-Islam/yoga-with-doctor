@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ArticleCardItem } from "@/features/articles/data/dummyArticles";
+import type { ArticleDetails } from "@/features/articles/data/dummyArticles";
 
 type ArticleCardProps = {
-  article: ArticleCardItem;
+  article: ArticleDetails;
 };
 
 /**
@@ -11,7 +11,7 @@ type ArticleCardProps = {
  */
 export function ArticleCard({ article }: ArticleCardProps) {
   const {
-    imageSrc,
+    image,
     imageAlt,
     badge,
     category,
@@ -29,7 +29,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
     <article className="group flex h-64 flex-row overflow-hidden rounded-2xl border border-border bg-surface shadow-elevation-sm transition-all duration-300 hover:shadow-elevation-md">
       <div className="relative w-1/3 shrink-0 overflow-hidden">
         <Image
-          src={imageSrc}
+          src={image}
           alt={imageAlt}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"

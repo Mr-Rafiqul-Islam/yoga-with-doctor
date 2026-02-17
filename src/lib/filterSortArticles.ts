@@ -1,4 +1,4 @@
-import type { ArticleCardItem } from "@/features/articles/data/dummyArticles";
+import type { ArticleDetails } from "@/features/articles/data/dummyArticles";
 
 export type ArticleBadgeFilter = "all" | "FREE" | "PREMIUM";
 
@@ -18,9 +18,9 @@ export type ArticleSortValue =
  * Empty categories = show all categories. badge "all" = show both FREE and PREMIUM.
  */
 export function filterArticles(
-  articles: ArticleCardItem[],
+  articles: ArticleDetails[],
   filters: ArticleFiltersState
-): ArticleCardItem[] {
+): ArticleDetails[] {
   const { categories, badge } = filters;
   return articles.filter((article) => {
     const categoryMatch =
@@ -36,9 +36,9 @@ export function filterArticles(
  * category-asc / category-desc sort by category string.
  */
 export function sortArticles(
-  articles: ArticleCardItem[],
+  articles: ArticleDetails[],
   sortValue: ArticleSortValue
-): ArticleCardItem[] {
+): ArticleDetails[] {
   const copy = [...articles];
   switch (sortValue) {
     case "newest":

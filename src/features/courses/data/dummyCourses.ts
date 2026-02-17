@@ -5,7 +5,7 @@ const IMG = "https://lh3.googleusercontent.com/aida-public";
 export const dummyCourses: CourseWithMeta[] = [
   {
     title: "Morning Sunshine Flow for Beginners",
-    imageSrc: `${IMG}/AB6AXuC1niabbyl6sRL9o0E72XzGDlMT8pgUCqFgBJeIFXXeX1sS7QfHw8Gpv8kqb6elwmeumti1ZK82tCorlFpA1yPfs_Br4oUx3ZAq_FAf4rRzzeYXaMqsULnIJUm6RCO6kRa3Iz8rGlR2EtKLpe4v5Kgkh2JkA3-d53XgPLBDzxM8f5pUk5YgiuxN-hCbiHLFRxcE1iLcgxcYCuW7nahqC9Ou4uomZ9zE2nKlQdqPvnKzF_YCS-8T6qILvVwRXjN2EfnLqAHbQqu88g`,
+    bannerImage: `${IMG}/AB6AXuC1niabbyl6sRL9o0E72XzGDlMT8pgUCqFgBJeIFXXeX1sS7QfHw8Gpv8kqb6elwmeumti1ZK82tCorlFpA1yPfs_Br4oUx3ZAq_FAf4rRzzeYXaMqsULnIJUm6RCO6kRa3Iz8rGlR2EtKLpe4v5Kgkh2JkA3-d53XgPLBDzxM8f5pUk5YgiuxN-hCbiHLFRxcE1iLcgxcYCuW7nahqC9Ou4uomZ9zE2nKlQdqPvnKzF_YCS-8T6qILvVwRXjN2EfnLqAHbQqu88g`,
     imageAlt: "Morning Sunshine Flow",
     category: "MINDFULNESS",
     instructorName: "Dr. Sarah West",
@@ -21,7 +21,7 @@ export const dummyCourses: CourseWithMeta[] = [
   },
   {
     title: "Deep Stretch & Wake Up Routine",
-    imageSrc: `${IMG}/AB6AXuAhQO0cMqToV1hs9n0Z88Zuf1LpwvvcT4pYXBH__igFZOabHfgTHPVgjfsEfHpfy3sV9Yvjs9kyOJ4jzgbiePWuPJFZG9jonJPYgj4U1jx6qOyxItKcdsp79w_mkxdsqzKgjBIJpaTPaHpMO_IDC4m607z-Cd_gOJko2GZYultd-mh9FY8v3E658_NZlktETxXnJAq00pQxdvTtsNooxrjLStmudOEhiyifOnWJP4mXMAJc-4y4zjiI4du4A2sejJ1rcs81hc3IGQ`,
+    bannerImage: `${IMG}/AB6AXuAhQO0cMqToV1hs9n0Z88Zuf1LpwvvcT4pYXBH__igFZOabHfgTHPVgjfsEfHpfy3sV9Yvjs9kyOJ4jzgbiePWuPJFZG9jonJPYgj4U1jx6qOyxItKcdsp79w_mkxdsqzKgjBIJpaTPaHpMO_IDC4m607z-Cd_gOJko2GZYultd-mh9FY8v3E658_NZlktETxXnJAq00pQxdvTtsNooxrjLStmudOEhiyifOnWJP4mXMAJc-4y4zjiI4du4A2sejJ1rcs81hc3IGQ`,
     imageAlt: "Deep Stretch",
     category: "FLEXIBILITY",
     instructorName: "Master Yogi",
@@ -35,7 +35,7 @@ export const dummyCourses: CourseWithMeta[] = [
   },
   {
     title: "Mindfulness Mastery: Finding Peace",
-    imageSrc: `${IMG}/AB6AXuDV3YuAsUHqJk1WqRUhNsK1-MI4M8HWOZw3xLjUVdaS0N5Obk-qK14hnab2fdNvujxUbdS0uiZE-KH_Gr7t3G58LVLmA_4SikfPjaSRh0W3hmfXt8-l_HZFJIkzzd29-Xuz28lhDzu1bV7Q70qbCiaYXJHWnaPhjbmw2whT0gx_jGnSQXJvtfsEZQeCYAj-6juacEHw8-LBbc15IRTly90ogeAv1j1V_zt4NA-xj9dU1nSni2ZlsVcRU0TBCxs7CBvJIFhoTjxKKw`,
+    bannerImage: `${IMG}/AB6AXuDV3YuAsUHqJk1WqRUhNsK1-MI4M8HWOZw3xLjUVdaS0N5Obk-qK14hnab2fdNvujxUbdS0uiZE-KH_Gr7t3G58LVLmA_4SikfPjaSRh0W3hmfXt8-l_HZFJIkzzd29-Xuz28lhDzu1bV7Q70qbCiaYXJHWnaPhjbmw2whT0gx_jGnSQXJvtfsEZQeCYAj-6juacEHw8-LBbc15IRTly90ogeAv1j1V_zt4NA-xj9dU1nSni2ZlsVcRU0TBCxs7CBvJIFhoTjxKKw`,
     imageAlt: "Meditation",
     category: "MEDITATION",
     instructorName: "Dr. Sarah West",
@@ -50,7 +50,7 @@ export const dummyCourses: CourseWithMeta[] = [
   },
   {
     title: "Advanced Flow for Back Pain Relief",
-    imageSrc: `${IMG}/AB6AXuCLJAHwUYj-DVz9wKe65A2wbfyFveEOU2AETE18wGmqA6O83jSjTFgcul9wG7GmHK6imrtMEWxJwCGDbe7TYsDxsaX44c_OV4bgQn2xB_Mifw0CYZ2QfrzDGtUZ7--pcEBa4ro7vjRATuwfy-x8dQovWFfUMsFMxH1OoUvEE-o5rgJh6PG-oed4zU3yaHo8bUn8pTts4pekcNV2TQ9BHt5BEcljuK2cDNe7hWVOu6b3aYaTSBBGTv_jvxizsBF_9CRrYLmiDnoTvQ`,
+    bannerImage: `${IMG}/AB6AXuCLJAHwUYj-DVz9wKe65A2wbfyFveEOU2AETE18wGmqA6O83jSjTFgcul9wG7GmHK6imrtMEWxJwCGDbe7TYsDxsaX44c_OV4bgQn2xB_Mifw0CYZ2QfrzDGtUZ7--pcEBa4ro7vjRATuwfy-x8dQovWFfUMsFMxH1OoUvEE-o5rgJh6PG-oed4zU3yaHo8bUn8pTts4pekcNV2TQ9BHt5BEcljuK2cDNe7hWVOu6b3aYaTSBBGTv_jvxizsBF_9CRrYLmiDnoTvQ`,
     imageAlt: "Back Pain",
     category: "THERAPY",
     instructorName: "Alex Chen, PT",
@@ -64,7 +64,7 @@ export const dummyCourses: CourseWithMeta[] = [
   },
   {
     title: "The Science of Morning Meditation",
-    imageSrc: `${IMG}/AB6AXuBZmmLYDYtfxPnsfXyf6-bFWQg6cV4amevrXPXXYmlEUPilSaUH_z6xhYGZmJDrFE8J_BbQVvzk00lHzfyc2CO0vNjOsc090K_Wa9KwlIUpqjjT5P5h9qHmvTpbGhwOQzy-LPpEEhEc24a7WOsh_-fTdVWRD2mYUn4p0aruJqRNPWdtzQ_a1cpNSe8N8Z2nJ4NAaNsw6iz8YWxPi9yE8EPvdQ3bVU5DhA-YE6iWHkVGcXsObUXFvaJB8dY71S3po47sZQikQNgkNA`,
+    bannerImage: `${IMG}/AB6AXuBZmmLYDYtfxPnsfXyf6-bFWQg6cV4amevrXPXXYmlEUPilSaUH_z6xhYGZmJDrFE8J_BbQVvzk00lHzfyc2CO0vNjOsc090K_Wa9KwlIUpqjjT5P5h9qHmvTpbGhwOQzy-LPpEEhEc24a7WOsh_-fTdVWRD2mYUn4p0aruJqRNPWdtzQ_a1cpNSe8N8Z2nJ4NAaNsw6iz8YWxPi9yE8EPvdQ3bVU5DhA-YE6iWHkVGcXsObUXFvaJB8dY71S3po47sZQikQNgkNA`,
     imageAlt: "Sleep Yoga",
     category: "SLEEP",
     instructorName: "Dr. Sarah West",
@@ -78,7 +78,7 @@ export const dummyCourses: CourseWithMeta[] = [
   },
   {
     title: "Gentle Moves for Expecting Moms",
-    imageSrc: `${IMG}/AB6AXuAdLMpJNJNhj5qnzc3xSjPSBGA8Gi-8g48VII4NxjQ89Yc5U_KTXQSbkkA6rs-RY1orPE_rNEcgHrM4tWP-xbc3FHCb-7s7M6uY-cE0bctOuW9s7yABy7MVqQZkOq4UfHPSqMfSOKrdeIrOSu87ZFCTLZzavF_RlpqpSOgLj7IvsX417txaZ9Iy2_L2O0VJRsmykDoj6swU_k11p9sRToB71yfBgqTfCSISgmnmz34mtMXafWbCFobd5Wmm6oFRwGnb-jDP5P1tig`,
+    bannerImage: `${IMG}/AB6AXuAdLMpJNJNhj5qnzc3xSjPSBGA8Gi-8g48VII4NxjQ89Yc5U_KTXQSbkkA6rs-RY1orPE_rNEcgHrM4tWP-xbc3FHCb-7s7M6uY-cE0bctOuW9s7yABy7MVqQZkOq4UfHPSqMfSOKrdeIrOSu87ZFCTLZzavF_RlpqpSOgLj7IvsX417txaZ9Iy2_L2O0VJRsmykDoj6swU_k11p9sRToB71yfBgqTfCSISgmnmz34mtMXafWbCFobd5Wmm6oFRwGnb-jDP5P1tig`,
     imageAlt: "Prenatal",
     category: "PRENATAL",
     instructorName: "Linda Green",

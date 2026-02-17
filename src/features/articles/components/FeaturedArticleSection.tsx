@@ -11,7 +11,7 @@ type FeaturedArticleSectionProps = {
  */
 export function FeaturedArticleSection({ article }: FeaturedArticleSectionProps) {
   const {
-    imageSrc,
+    image,
     imageAlt,
     category,
     readTime,
@@ -26,7 +26,7 @@ export function FeaturedArticleSection({ article }: FeaturedArticleSectionProps)
       <div className="group relative flex h-auto flex-col overflow-hidden rounded-3xl border border-border bg-surface shadow-elevation-md md:h-[450px] md:flex-row">
         <div className="relative h-64 w-full shrink-0 overflow-hidden md:h-full md:w-3/5">
           <Image
-            src={imageSrc}
+            src={image}
             alt={imageAlt}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-105"

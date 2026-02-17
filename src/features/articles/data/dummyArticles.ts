@@ -4,7 +4,7 @@ const IMG = "https://lh3.googleusercontent.com/aida-public";
 
 export type FeaturedArticle = {
   slug: string;
-  imageSrc: string;
+  image: string;
   imageAlt: string;
   category: string;
   readTime: string;
@@ -14,13 +14,13 @@ export type FeaturedArticle = {
   tags: string[];
   href: string;
   detailsContent: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
-export type ArticleCardItem = {
+export type ArticleDetails = {
   slug: string;
-  imageSrc: string;
+  image: string;
   imageAlt: string;
   badge?: "FREE" | "PREMIUM";
   readTime?: string;
@@ -46,45 +46,12 @@ export type ArticleAuthor = {
   profileLink: string;
 };
 
-export type TableOfContentsItem = {
-  id: string;
-  label: string;
-};
-
-export type ArticleSection = {
-  id: string;
-  heading: string;
-  paragraphs: string[];
-  medicalInsight?: { title: string; body: string };
-  figure?: { imageSrc: string; imageAlt: string; caption: string };
-  quote?: { text: string; cite: string };
-};
-
-export type NumberedListItem = {
-  title: string;
-  description: string;
-};
-
-export type ArticleDetails = {
-  slug: string;
-  heroImage: { src: string; alt: string };
-  category: string;
-  readTime: string;
-  title: string;
-  author: ArticleAuthor;
-  leadParagraph: string;
-  tableOfContents: TableOfContentsItem[];
-  sections: ArticleSection[];
-  numberedList?: NumberedListItem[];
-  tags: string[];
-  relatedArticleSlugs: string[];
-};
 
 // ---------- Featured article (list) ----------
 
 export const featuredArticle: FeaturedArticle = {
   slug: "the-science-of-morning-meditation",
-  imageSrc: `${IMG}/AB6AXuD3rWWjBSOe7Z_1EqIrq2-TMzV5aFpDysK9W4952JWtHES4kZLMNKV9pJAkA1K725BBcWIsKtwF19r2tuP0QaymlfwNp9rB5qocTH3L6bkU92zo35H6dPbryTjzjrOn0d09iWbOB6rHfLTnhJJOQleH-EcVAXzbeVbTRVSiYuuJuMZqs_pyzsb6oUR99Z2ot26ONxqvX4q83cjk54j7KasFsZtrpQLN4aVFaJsX84W3jIOVUhLE5BgUSpKlS9afAAQB9HnPH0a85w`,
+  image: `${IMG}/AB6AXuD3rWWjBSOe7Z_1EqIrq2-TMzV5aFpDysK9W4952JWtHES4kZLMNKV9pJAkA1K725BBcWIsKtwF19r2tuP0QaymlfwNp9rB5qocTH3L6bkU92zo35H6dPbryTjzjrOn0d09iWbOB6rHfLTnhJJOQleH-EcVAXzbeVbTRVSiYuuJuMZqs_pyzsb6oUR99Z2ot26ONxqvX4q83cjk54j7KasFsZtrpQLN4aVFaJsX84W3jIOVUhLE5BgUSpKlS9afAAQB9HnPH0a85w`,
   imageAlt: "Woman meditating in morning sunlight",
   category: "Mental Health",
   readTime: "5 min read",
@@ -198,10 +165,10 @@ you bypass the decision fatigue that often derails evening practices.
 
 // ---------- Article cards (grid) ----------
 
-export const dummyArticleCards: ArticleCardItem[] = [
+export const dummyArticleCards: ArticleDetails[] = [
   {
     slug: "the-science-of-morning-meditation",
-    imageSrc: `${IMG}/AB6AXuD3rWWjBSOe7Z_1EqIrq2-TMzV5aFpDysK9W4952JWtHES4kZLMNKV9pJAkA1K725BBcWIsKtwF19r2tuP0QaymlfwNp9rB5qocTH3L6bkU92zo35H6dPbryTjzjrOn0d09iWbOB6rHfLTnhJJOQleH-EcVAXzbeVbTRVSiYuuJuMZqs_pyzsb6oUR99Z2ot26ONxqvX4q83cjk54j7KasFsZtrpQLN4aVFaJsX84W3jIOVUhLE5BgUSpKlS9afAAQB9HnPH0a85w`,
+    image: `${IMG}/AB6AXuD3rWWjBSOe7Z_1EqIrq2-TMzV5aFpDysK9W4952JWtHES4kZLMNKV9pJAkA1K725BBcWIsKtwF19r2tuP0QaymlfwNp9rB5qocTH3L6bkU92zo35H6dPbryTjzjrOn0d09iWbOB6rHfLTnhJJOQleH-EcVAXzbeVbTRVSiYuuJuMZqs_pyzsb6oUR99Z2ot26ONxqvX4q83cjk54j7KasFsZtrpQLN4aVFaJsX84W3jIOVUhLE5BgUSpKlS9afAAQB9HnPH0a85w`,
     imageAlt: "Woman meditating in morning sunlight",
     category: "Mental Health",
     readTime: "5 min read",
@@ -316,7 +283,7 @@ you bypass the decision fatigue that often derails evening practices.
   },
   {
     slug: "advanced-yoga-lower-back-pain",
-    imageSrc: `${IMG}/AB6AXuCy8gPPmpwwL1jof9Sz8UldKmChU0jc2Oc6tc2sHLcPLKzNn7E59ZiXXWpyI_QFij_wLDNvFQwsWm9WWtNid6BfVKgoeBN07P3xDr27ZVa56tZAPsdf30S2DKrNZy-clM7209D-JJbY2sNfqOb5KTKHVhWreFP1UwEPRqu8JEfu_IdjInRiq9ih51URs-SKNrebWyc2jA3VT5mlOe0XoRlUipOeUfEhGshKdOQu6sub6gGa-_cXHJPX3P1UbMs842f3X43yr_ZGNA`,
+    image: `${IMG}/AB6AXuCy8gPPmpwwL1jof9Sz8UldKmChU0jc2Oc6tc2sHLcPLKzNn7E59ZiXXWpyI_QFij_wLDNvFQwsWm9WWtNid6BfVKgoeBN07P3xDr27ZVa56tZAPsdf30S2DKrNZy-clM7209D-JJbY2sNfqOb5KTKHVhWreFP1UwEPRqu8JEfu_IdjInRiq9ih51URs-SKNrebWyc2jA3VT5mlOe0XoRlUipOeUfEhGshKdOQu6sub6gGa-_cXHJPX3P1UbMs842f3X43yr_ZGNA`,
     imageAlt: "Yoga stretch",
     badge: "FREE",
     category: "FLEXIBILITY",
@@ -389,7 +356,7 @@ pain is a signal to stop and adjust.
   },
   {
     slug: "anti-inflammatory-diet-yogis",
-    imageSrc: `${IMG}/AB6AXuA7b0YECIAWCZL5j9G9vVDAE2rCIVbQZuLI8nxlCfufzpqirdtOOt6ljWrlH6ndlERVT47_UtLNawWgY5V4AeTeFxr2EtKLriVO06CRmq5ElieAu6d2kayArJIV3hMeIzP9IpiKNmWTOmxTc_f6xjs-kyy6Trqxwx2hmsk0WCRBdJyrZjhx1vRvhgHimuQ9PclVafds9tTlpVlIcLOAdrWUXtQvOnvgjv4VRJQDQfCPF1PYxHWhXv0XzHpVuE21zjNNwXT6lNTjag`,
+    image: `${IMG}/AB6AXuA7b0YECIAWCZL5j9G9vVDAE2rCIVbQZuLI8nxlCfufzpqirdtOOt6ljWrlH6ndlERVT47_UtLNawWgY5V4AeTeFxr2EtKLriVO06CRmq5ElieAu6d2kayArJIV3hMeIzP9IpiKNmWTOmxTc_f6xjs-kyy6Trqxwx2hmsk0WCRBdJyrZjhx1vRvhgHimuQ9PclVafds9tTlpVlIcLOAdrWUXtQvOnvgjv4VRJQDQfCPF1PYxHWhXv0XzHpVuE21zjNNwXT6lNTjag`,
     imageAlt: "Healthy smoothie bowl",
     badge: "PREMIUM",
     category: "NUTRITION",
@@ -462,7 +429,7 @@ Limiting these supports both your practice and overall well-being.
   },
   {
     slug: "integrating-mindfulness-corporate-life",
-    imageSrc: `${IMG}/AB6AXuDmyxoefgit0eX7UXZsRMIrbSGPe8QDVaK0Vm8vc6ZlmhNJ52EEXDKavc0GpULLt6SK9SjkEctxDQTeK_Rz3fCH_nd5bxoxEvQDDFN115EaayUVx6nBQSGh_DofxV9RMsOzYGE---aedkqRq9vdejM7rydgWtPND7YMBCJUZ3229gvcrlIA9Jdi4IiJ8-qyi5brPrzSIy-nHltSnVv-vPuu-CmUoDKI3ZWROcJ4_kCazFSjjr8XMgyxTTaoVxXI5CozAcwJwMV9MA`,
+    image: `${IMG}/AB6AXuDmyxoefgit0eX7UXZsRMIrbSGPe8QDVaK0Vm8vc6ZlmhNJ52EEXDKavc0GpULLt6SK9SjkEctxDQTeK_Rz3fCH_nd5bxoxEvQDDFN115EaayUVx6nBQSGh_DofxV9RMsOzYGE---aedkqRq9vdejM7rydgWtPND7YMBCJUZ3229gvcrlIA9Jdi4IiJ8-qyi5brPrzSIy-nHltSnVv-vPuu-CmUoDKI3ZWROcJ4_kCazFSjjr8XMgyxTTaoVxXI5CozAcwJwMV9MA`,
     imageAlt: "Yoga retreat",
     badge: "FREE",
     category: "LIFESTYLE",
@@ -535,7 +502,7 @@ add another. Small, consistent actions create lasting change.
   },
   {
     slug: "physiology-of-sleep-yoga-nidra",
-    imageSrc: `${IMG}/AB6AXuAL2At9VNIDV2jYPUYacUgeb5QuCRcdIMpQoiEzjSGgKU-g6-WKDO7WjTs8XOrU2DjC8PZuHGPpgvDGYobaL2mawEpeWE6PMnB6nHJQHjDmY7cp0reGTafNmQ1-lCO9Cepew_ULT8rKzLe9HB09r76HCogIfoPPgcaiNbjRX6TZSFenHv1iYXo9fcTc1LlDgox6O5EYxTueXx1FGL0lew5dZpQD-cCYkbRq2x40kB-QyS2ZgQgONZx04zmeY_CzfOmSrulIinsMiw`,
+    image: `${IMG}/AB6AXuAL2At9VNIDV2jYPUYacUgeb5QuCRcdIMpQoiEzjSGgKU-g6-WKDO7WjTs8XOrU2DjC8PZuHGPpgvDGYobaL2mawEpeWE6PMnB6nHJQHjDmY7cp0reGTafNmQ1-lCO9Cepew_ULT8rKzLe9HB09r76HCogIfoPPgcaiNbjRX6TZSFenHv1iYXo9fcTc1LlDgox6O5EYxTueXx1FGL0lew5dZpQD-cCYkbRq2x40kB-QyS2ZgQgONZx04zmeY_CzfOmSrulIinsMiw`,
     imageAlt: "Sleep meditation",
     badge: "PREMIUM",
     category: "SLEEP",
@@ -613,7 +580,7 @@ you into deep relaxation.
   },
   {
     slug: "building-core-stability-asana",
-    imageSrc: `${IMG}/AB6AXuAGcbH_kIu67wIhsqgdymXuarItV68HLuzKiW5ZoS9bbATq5n6kdcqROnz5c4SiMDxB3IRLzS3TbqtfMx3rlpyC-_iZDGDTH4aHW3dCYiw_BVIrmgw3mMM9PI-9K-w9KUoDsjZNSvvb6iGU3Os39diTQ6UYPqVG2gmsDMFWBKconjEy6YBNUbB94u5WkQL7yzWILVLBFMoCfRdukwygMUofTHcPXc3K-8oKPEp7tDZN6O7ncrcIBliMvaNWBdmZIR9TKtDfqNf2Cw`,
+    image: `${IMG}/AB6AXuAGcbH_kIu67wIhsqgdymXuarItV68HLuzKiW5ZoS9bbATq5n6kdcqROnz5c4SiMDxB3IRLzS3TbqtfMx3rlpyC-_iZDGDTH4aHW3dCYiw_BVIrmgw3mMM9PI-9K-w9KUoDsjZNSvvb6iGU3Os39diTQ6UYPqVG2gmsDMFWBKconjEy6YBNUbB94u5WkQL7yzWILVLBFMoCfRdukwygMUofTHcPXc3K-8oKPEp7tDZN6O7ncrcIBliMvaNWBdmZIR9TKtDfqNf2Cw`,
     imageAlt: "Strength training",
     badge: "FREE",
     category: "STRENGTH",
@@ -690,7 +657,7 @@ and protecting your spine.
   },
   {
     slug: "pranayama-for-anxiety-doctors-perspective",
-    imageSrc: `${IMG}/AB6AXuAT3K0Iynma3Ll_ZahX8MptcKhQmX4LZc3Y_eSgx0cWHIv4AT8TKxUhZ8q0v076XUFgJr3ctGzpEkRRXxTbrZmde5cdgp-V-FtNj8q7Nyi2PMYmaQu8Y46XbjILN2fSfDhumenMfNtpG9CvEGdaynSO05-I2nJSeXcwEB3BuKVvU8mLLu6c6h2xAj130rUQ66g8IYSvnZp11SmtPEUucldf29h90VP05yR8NwyTME68RZeWTRnc-i4q3KTitCzqbifiK1AQVCqevQ`,
+    image: `${IMG}/AB6AXuAT3K0Iynma3Ll_ZahX8MptcKhQmX4LZc3Y_eSgx0cWHIv4AT8TKxUhZ8q0v076XUFgJr3ctGzpEkRRXxTbrZmde5cdgp-V-FtNj8q7Nyi2PMYmaQu8Y46XbjILN2fSfDhumenMfNtpG9CvEGdaynSO05-I2nJSeXcwEB3BuKVvU8mLLu6c6h2xAj130rUQ66g8IYSvnZp11SmtPEUucldf29h90VP05yR8NwyTME68RZeWTRnc-i4q3KTitCzqbifiK1AQVCqevQ`,
     imageAlt: "Breathing exercises",
     badge: "FREE",
     category: "BREATHWORK",
@@ -780,7 +747,7 @@ of acute anxiety. The more you practice, the more effective they become.
 /**
  * Get article card by slug (from list/grid).
  */
-export function getArticleDetailsBySlug(slug: string): ArticleCardItem | null {
+export function getArticleDetailsBySlug(slug: string): ArticleDetails | null {
   return dummyArticleCards.find((a) => a.slug === slug) ?? null;
 }
 
@@ -794,7 +761,7 @@ export function getArticleDetailsBySlug(slug: string): ArticleCardItem | null {
 export function getRelatedArticles(
   slug: string,
   limit: number = 3,
-): ArticleCardItem[] {
+): ArticleDetails[] {
   const currentArticle = getArticleDetailsBySlug(slug);
 
   if (

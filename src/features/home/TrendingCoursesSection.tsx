@@ -17,7 +17,7 @@ const TRENDING_COURSES = [
     contentTag: "New Course",
     contentTagVariant: "blue" as const,
     rating: "4.9",
-    imageSrc:
+    bannerImage:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuAl5sh3m1JkzS6vXJf1AiHbQ7HbkwXmogEuoUNu89BY4FiNl-Jt6VNdrATCw48Ac6bKq6C1YvGUXzH96rvEzBziDcgVzL-pJjtdJcVx_p1yD10XgC9c0VDiOyesOlruYCZj4p22QmZ5AKgFe3EQI6zrfWtB8yFNpLb612L9bPIC-yOtQsP4AyS0ZuSi-X8HYLGenWyxVeOwjZ1ffveWdIp1tfaU_SkZM3SyEqvwCFiTK37yuKpKL9rjVPo_Ksy0y246nsk76c2SCg",
     imageAlt: "30 Days Morning Challenge",
   },
@@ -36,7 +36,7 @@ const TRENDING_COURSES = [
     contentTag: "Updated",
     contentTagVariant: "purple" as const,
     rating: "4.8",
-    imageSrc:
+    bannerImage:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCXenBRNUIpbGZ3QkXPBagzXQtePaEveSt8c589bfMqRryVB8OmOtnJq6FYFvqhlqTZ3v2XIs5OXZnHV0ce8s_blNR0mnvMtRNBgpt40NzcVo8HWxU_JV5yaoQan-IuBUrZCbdhsjI03mCEk7DeohAKGa4MnBydTcmMBefwrHD_bLJk0Af4qV2S0e5MI3jM9eK48gzaDK-JEAhkGCZGMkJCkeGRvXUOZh4Xm3mB5RbGoaURhOdrnmuTc6umsO7g2p1pbJt_iaaJUA",
     imageAlt: "Spine Health & Posture",
   },

@@ -1,8 +1,8 @@
-import type { ArticleCardItem } from "@/features/articles/data/dummyArticles";
+import type { ArticleDetails } from "@/features/articles/data/dummyArticles";
 import { ArticleCard } from "./ArticleCard";
 
 type ArticleGridSectionProps = {
-  articles: ArticleCardItem[];
+  articles: ArticleDetails[];
 };
 
 /**

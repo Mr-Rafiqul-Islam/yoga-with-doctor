@@ -20,7 +20,7 @@ export type CourseCardProps = {
   contentTag?: string;
   contentTagVariant?: "blue" | "purple";
   rating?: string;
-  imageSrc: string;
+  bannerImage: string;
   imageAlt: string;
   /** Course slug for detail page; when set, card body links to /courses/[slug] */
   slug?: string;
@@ -52,7 +52,7 @@ export function CourseCard({
   contentTag,
   contentTagVariant = "blue",
   rating,
-  imageSrc,
+  bannerImage,
   imageAlt,
   slug,
   href = "/courses",
@@ -81,7 +81,7 @@ export function CourseCard({
         {/* Image area — left */}
         <div className="relative h-48 flex-shrink-0 sm:w-2/5 sm:h-auto">
           <Image
-            src={imageSrc}
+            src={bannerImage}
             alt={imageAlt}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"

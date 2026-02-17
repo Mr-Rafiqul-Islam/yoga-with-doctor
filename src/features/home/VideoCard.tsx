@@ -6,7 +6,7 @@ export type VideoCardProps = {
   duration: string;
   level: string;
   instructor: string;
-  imageSrc: string;
+  thumbnail: string;
   imageAlt: string;
   href?: string;
 };
@@ -16,7 +16,7 @@ export function VideoCard({
   duration,
   level,
   instructor,
-  imageSrc,
+  thumbnail,
   imageAlt,
   href = "#",
 }: VideoCardProps) {
@@ -24,7 +24,7 @@ export function VideoCard({
     <>
       <div className="relative h-48">
         <Image
-          src={imageSrc}
+          src={thumbnail}
           alt={imageAlt}
           fill
           className="object-cover"

@@ -8,7 +8,7 @@ import { Modal } from "@/components/Modal";
 
 export type CourseCatalogCardProps = {
   title: string;
-  imageSrc: string;
+  bannerImage: string;
   imageAlt: string;
   category: string;
   instructorName: string;
@@ -33,7 +33,7 @@ export type CourseCatalogCardProps = {
 
 export function CourseCatalogCard({
   title,
-  imageSrc,
+  bannerImage,
   imageAlt,
   category,
   instructorName,
@@ -68,7 +68,7 @@ export function CourseCatalogCard({
       {/* Image */}
       <div className="relative h-48 shrink-0 overflow-hidden">
         <Image
-          src={imageSrc}
+          src={bannerImage}
           alt={imageAlt}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
