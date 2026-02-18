@@ -34,6 +34,7 @@ const config: Config = {
         "elevation-sm": "0 4px 12px rgba(0, 0, 0, 0.05)",
         "elevation-md": "0 8px 24px rgba(0, 0, 0, 0.12)",
         soft: "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+        card: "0 2px 10px rgba(0, 0, 0, 0.03)",
       },
       colors: {
         primary: "rgb(var(--color-primary-rgb) / <alpha-value>)",
