@@ -210,8 +210,11 @@ export function Header() {
                       aria-labelledby={profileMenuId}
                       className="absolute right-0 top-full z-50 mt-2 min-w-[160px] rounded-radius-md border border-border bg-surface py-1 shadow-elevation-md dark:bg-[#1a2e26]"
                     >
-                      <Link href="/dashboard" className="border-b border-border px-4 py-2 text-sm text-muted dark:border-gray-700">
+                      <p className="border-b border-border px-4 py-2 text-sm text-muted dark:border-gray-700">
                         {user.name || user.phone}
+                      </p>
+                      <Link href="/dashboard" className="block rounded-radius-sm px-4 py-2 text-body-md font-medium transition-colors  text-foreground hover:text-primary">
+                        Dashboard
                       </Link>
                       <button
                         type="button"

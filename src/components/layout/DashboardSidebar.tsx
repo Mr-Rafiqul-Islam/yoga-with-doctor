@@ -296,7 +296,7 @@ export default function DashboardSidebar() {
         onClick={closeDrawer}
       />
       <div
-        className={`fixed left-0 top-20 z-[70] flex h-[calc(100vh-80px)] w-[250px] max-w-[85vw] flex-col rounded-b-radius-sm border-r border-sky-200 bg-surface p-5 shadow-elevation-md transition-transform duration-200 ease-out md:hidden ${
+        className={`fixed left-0 top-20 z-[70] flex h-[calc(100vh-80px)] w-[250px] max-w-[85vw] flex-col rounded-b-radius-sm border-r border-sky-200 dark:border-gray-700 bg-surface p-5 shadow-elevation-md transition-transform duration-200 ease-out md:hidden ${
           drawerOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         role="dialog"
