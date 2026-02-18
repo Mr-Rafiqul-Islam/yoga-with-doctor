@@ -65,9 +65,9 @@ function SidebarContent({
     pathname?.startsWith("/dashboard/library") ?? false;
 
   return (
-    <>
+    <div className="flex h-full flex-col overflow-hidden">
       <nav
-        className="flex flex-1 flex-col gap-0.5 pt-2"
+        className="flex flex-1 flex-col gap-0.5 overflow-y-auto pt-2"
         aria-label="Dashboard navigation"
       >
         <ul className="flex flex-col gap-0.5" role="list">
@@ -155,7 +155,7 @@ function SidebarContent({
         </ul>
       </nav>
 
-      <div className="mt-auto flex items-center gap-3 border-t border-border pt-4 dark:border-gray-700">
+      <div className="mt-auto shrink-0 flex items-center gap-3 border-t border-border pt-4 dark:border-gray-700">
         <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
           <span className="flex h-full w-full items-center justify-center text-muted">
             <span className="material-icons-outlined text-xl">person</span>
@@ -178,7 +178,7 @@ function SidebarContent({
           <span className="material-icons-outlined text-[22px]">logout</span>
         </button>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -256,7 +256,7 @@ export default function DashboardSidebar() {
         ref={drawerRef}
         className="flex h-full w-full flex-col md:block"
       >
-        <div className="hidden h-full flex-col md:flex md:min-h-0">
+        <div className="hidden h-full flex-col overflow-hidden md:flex">
           <SidebarContent
             libraryExpanded={libraryExpanded}
             setLibraryExpanded={setLibraryExpanded}
@@ -266,14 +266,14 @@ export default function DashboardSidebar() {
 
       {/* Mobile/tablet drawer */} 
       <div
-        className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-200 md:hidden ${
+        className={`fixed inset-0 z-[60] bg-black/50 transition-opacity duration-200 md:hidden ${
           drawerOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         aria-hidden={!drawerOpen}
         onClick={closeDrawer}
       />
       <div
-        className={`fixed inset-y-0 left-0 z-50 flex w-[250px] max-w-[85vw] flex-col rounded-b-radius-sm border-r border-sky-200 bg-surface p-5 shadow-elevation-md transition-transform duration-200 ease-out md:hidden ${
+        className={`fixed left-0 top-20 z-[70] flex h-[calc(100vh-80px)] w-[250px] max-w-[85vw] flex-col rounded-b-radius-sm border-r border-sky-200 bg-surface p-5 shadow-elevation-md transition-transform duration-200 ease-out md:hidden ${
           drawerOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         role="dialog"

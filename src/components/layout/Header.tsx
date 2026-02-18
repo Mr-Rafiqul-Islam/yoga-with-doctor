@@ -230,9 +230,9 @@ export function Header() {
                       aria-labelledby={profileMenuId}
                       className="absolute right-0 top-full z-50 mt-2 min-w-[160px] rounded-radius-md border border-border bg-surface py-1 shadow-elevation-md dark:bg-[#1a2e26]"
                     >
-                      <div className="border-b border-border px-4 py-2 text-sm text-muted dark:border-gray-700">
+                      <Link href="/dashboard" className="border-b border-border px-4 py-2 text-sm text-muted dark:border-gray-700">
                         {user.name || user.phone}
-                      </div>
+                      </Link>
                       <button
                         type="button"
                         role="menuitem"
