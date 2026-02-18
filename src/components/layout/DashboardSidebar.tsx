@@ -5,10 +5,8 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "Home", icon: "home" },
-  { href: "/dashboard/feed", label: "Feed", icon: "rss_feed" },
-  { href: "/dashboard/courses", label: "Courses", icon: "menu_book" },
-  { href: "/dashboard/shop", label: "Shop", icon: "shopping_bag" },
+  { href: "/dashboard", label: "Dashboard", icon: "dashboard" },
+  { href: "/dashboard/profile", label: "Profile", icon: "person" },
 ] as const;
 
 const LIBRARY_SUB_ITEMS = [
@@ -17,7 +15,7 @@ const LIBRARY_SUB_ITEMS = [
 ] as const;
 
 const BOTTOM_NAV_ITEMS = [
-  { href: "/dashboard/profile", label: "Profile", icon: "person" },
+  
   { href: "/dashboard/certificates", label: "Certificates", icon: "verified" },
   { href: "/dashboard/subscription", label: "Subscription", icon: "credit_card" },
 ] as const;
@@ -257,10 +255,6 @@ export default function DashboardSidebar() {
         id="dashboard-drawer"
         ref={drawerRef}
         className="flex h-full w-full flex-col md:block"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Dashboard navigation"
-        hidden={undefined}
       >
         <div className="hidden h-full flex-col md:flex md:min-h-0">
           <SidebarContent
@@ -270,26 +264,30 @@ export default function DashboardSidebar() {
         </div>
       </div>
 
-      {drawerOpen && (
-        <>
-          <div
-            className="fixed inset-0 z-40 bg-black/50 md:hidden"
-            aria-hidden="true"
-            onClick={closeDrawer}
+      {/* Mobile/tablet drawer */} 
+      <div
+        className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-200 md:hidden ${
+          drawerOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        aria-hidden={!drawerOpen}
+        onClick={closeDrawer}
+      />
+      <div
+        className={`fixed inset-y-0 left-0 z-50 flex w-[250px] max-w-[85vw] flex-col rounded-b-radius-sm border-r border-sky-200 bg-surface p-5 shadow-elevation-md transition-transform duration-200 ease-out md:hidden ${
+          drawerOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Dashboard navigation"
+      >
+        <div className="flex flex-1 flex-col overflow-y-auto">
+          <SidebarContent
+            onNavigate={closeDrawer}
+            libraryExpanded={libraryExpanded}
+            setLibraryExpanded={setLibraryExpanded}
           />
-          <div
-            className="fixed inset-y-0 left-0 z-50 flex w-[250px] max-w-[85vw] flex-col rounded-b-radius-sm border-r border-sky-200 bg-surface p-5 shadow-elevation-md md:hidden"
-          >
-            <div className="flex flex-1 flex-col overflow-y-auto">
-              <SidebarContent
-                onNavigate={closeDrawer}
-                libraryExpanded={libraryExpanded}
-                setLibraryExpanded={setLibraryExpanded}
-              />
-            </div>
-          </div>
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 }
