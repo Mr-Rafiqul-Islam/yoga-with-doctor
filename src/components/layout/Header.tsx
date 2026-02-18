@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname} from "next/navigation";
 import { useId, useEffect, useState } from "react";
 import {
   useAppSelector,
@@ -12,8 +12,8 @@ import {
   setLoading,
   type ThemeMode,
 } from "@/stores";
-import { getToken } from "@/utils/tokenStore";
-import { useGetCurrentUserQuery, useLogoutMutation } from "@/services/authApi";
+
+import { useAuthSession } from "@/hooks/useAuthSession";
 
 const mainNavItems = [
   { href: "/", label: "Home" },
@@ -25,37 +25,17 @@ const mainNavItems = [
 
 export function Header() {
   const pathname = usePathname();
-  const router = useRouter();
   const dispatch = useAppDispatch();
   const mobileMenuOpen = useAppSelector((state) => state.ui.mobileMenuOpen);
   const theme = useAppSelector((state) => state.ui.theme);
 
-  const { user, isAuthenticated, isLoading: authLoading } = useAppSelector(
-    (state) => state.auth
-  );
-
-  const [hasToken, setHasToken] = useState(false);
-  const { isLoading: isFetchingUser } = useGetCurrentUserQuery(undefined, {
-    skip: !hasToken,
-  });
-  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
-
-  useEffect(() => {
-    const token = getToken();
-    setHasToken(!!token);
-    if (!token) {
-      dispatch(setLoading(false));
-    }
-  }, [dispatch]);
-
-  const handleLogout = async () => {
-    try {
-      await logout().unwrap();
-      router.push("/auth/login");
-    } catch {
-      router.push("/auth/login");
-    }
-  };
+  const {
+    user,
+    isAuthenticated,
+    isRestoringSession,
+    isLoggingOut,
+    handleLogout,
+  } = useAuthSession();
 
   const menuId = useId();
   const buttonId = useId();
@@ -189,7 +169,7 @@ export function Header() {
           </button>
 
           {/* Profile / Login: hide until we know auth state; while restoring session (hasToken + fetching) show placeholder */}
-          {(authLoading || (hasToken && isFetchingUser)) ? (
+          {isRestoringSession ? (
             <div
               className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-radius-full border-2 border-border bg-muted/50 dark:bg-gray-700"
               aria-hidden
