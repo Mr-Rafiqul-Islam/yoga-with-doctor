@@ -1,5 +1,7 @@
 "use client";
 
+import { useAuthSession } from "@/hooks/useAuthSession";
+import { useAppSelector } from "@/stores";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -15,9 +17,12 @@ const LIBRARY_SUB_ITEMS = [
 ] as const;
 
 const BOTTOM_NAV_ITEMS = [
-  
   { href: "/dashboard/certificates", label: "Certificates", icon: "verified" },
-  { href: "/dashboard/subscription", label: "Subscription", icon: "credit_card" },
+  {
+    href: "/dashboard/subscription",
+    label: "Subscription",
+    icon: "credit_card",
+  },
 ] as const;
 
 const LIBRARY_HREFS = LIBRARY_SUB_ITEMS.map((i) => i.href);
@@ -61,8 +66,12 @@ function SidebarContent({
   setLibraryExpanded: (v: boolean) => void;
 }) {
   const pathname = usePathname();
-  const isLibraryActive =
-    pathname?.startsWith("/dashboard/library") ?? false;
+  const isLibraryActive = pathname?.startsWith("/dashboard/library") ?? false;
+  const {
+    user,
+    handleLogout,
+    isLoggingOut,
+  } = useAuthSession();
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -97,7 +106,10 @@ function SidebarContent({
                 id="library-button"
               >
                 <span className="flex items-center gap-3">
-                  <span className="material-icons-outlined text-[22px]" aria-hidden>
+                  <span
+                    className="material-icons-outlined text-[22px]"
+                    aria-hidden
+                  >
                     library_books
                   </span>
                   <span>Library</span>
@@ -156,26 +168,36 @@ function SidebarContent({
       </nav>
 
       <div className="mt-auto shrink-0 flex items-center gap-3 border-t border-border pt-4 dark:border-gray-700">
-        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-          <span className="flex h-full w-full items-center justify-center text-muted">
-            <span className="material-icons-outlined text-xl">person</span>
-          </span>
+        <div className="h-10 w-10 shrink-0 flex items-center justify-center  overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+          {user?.profilePicture ? (
+            <img
+              src={user?.profilePicture}
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span className="text-xl" aria-hidden>
+              {user?.name?.charAt(0).toUpperCase()}
+            </span>
+          )}
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-body-md font-semibold text-foreground dark:text-white">
-            Sarah Jenkins
+            {user?.name || user?.phone}
           </p>
           <p className="truncate text-caption text-muted">
-            Wellness Enthusia...
+            {user?.email || user?.phone}
           </p>
         </div>
         <button
           type="button"
-          onClick={onNavigate}
+          onClick={handleLogout}
           className="shrink-0 rounded-lg p-2 text-muted transition-colors hover:bg-gray-100 hover:text-foreground dark:hover:bg-gray-800 dark:hover:text-gray-200"
           aria-label="Log out or switch account"
+          disabled={isLoggingOut}
         >
-          <span className="material-icons-outlined text-[22px]">logout</span>
+          <span className="material-icons-outlined text-[22px]">{isLoggingOut ? "hourglass_empty" : "logout"}</span>
+          
         </button>
       </div>
     </div>
@@ -186,7 +208,7 @@ export default function DashboardSidebar() {
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [libraryExpanded, setLibraryExpanded] = useState(() =>
-    LIBRARY_HREFS.some((h) => pathname?.startsWith(h))
+    LIBRARY_HREFS.some((h) => pathname?.startsWith(h)),
   );
   const drawerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -194,7 +216,9 @@ export default function DashboardSidebar() {
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
   useEffect(() => {
-    setLibraryExpanded((prev) => prev || LIBRARY_HREFS.some((h) => pathname?.startsWith(h)));
+    setLibraryExpanded(
+      (prev) => prev || LIBRARY_HREFS.some((h) => pathname?.startsWith(h)),
+    );
   }, [pathname]);
 
   useEffect(() => {
@@ -212,10 +236,9 @@ export default function DashboardSidebar() {
 
   useEffect(() => {
     if (!drawerOpen) return;
-    const focusable =
-      drawerRef.current?.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled])'
-      );
+    const focusable = drawerRef.current?.querySelectorAll<HTMLElement>(
+      "a[href], button:not([disabled])",
+    );
     const first = focusable?.[0];
     const last = focusable?.[focusable.length - 1];
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -264,7 +287,7 @@ export default function DashboardSidebar() {
         </div>
       </div>
 
-      {/* Mobile/tablet drawer */} 
+      {/* Mobile/tablet drawer */}
       <div
         className={`fixed inset-0 z-[60] bg-black/50 transition-opacity duration-200 md:hidden ${
           drawerOpen ? "opacity-100" : "pointer-events-none opacity-0"
