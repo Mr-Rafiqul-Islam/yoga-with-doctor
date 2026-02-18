@@ -79,7 +79,6 @@ export default function RootLayout({
             <main id="main-content" className="flex-1" role="main">
               {children}
             </main>
-            <Footer />
           </QueryProvider>
         </ReduxProvider>
       </body>
