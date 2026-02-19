@@ -36,6 +36,7 @@ const config: Config = {
         soft: "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
         card: "0 2px 10px rgba(0, 0, 0, 0.03)",
         glow: "0 0 15px rgba(0, 168, 106, 0.3)",
+        "glow-error": "0 0 40px 0 rgba(239, 68, 68, 0.15)",
       },
       animation: {
         "pulse-slow": "pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
@@ -48,6 +49,7 @@ const config: Config = {
         "leaf-fall-3": "leaf-fall 7s linear infinite",
         "breathe-slow": "breathe 6s ease-in-out infinite",
         "bounce-slight": "bounce-slight 2s ease-in-out infinite",
+        "bounce-slow": "bounce-slow 3s infinite",
       },
       keyframes: {
         "pulse-slow": {
@@ -80,6 +82,16 @@ const config: Config = {
         "bounce-slight": {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-8px)" },
+        },
+        "bounce-slow": {
+          "0%, 100%": {
+            transform: "translateY(-5%)",
+            animationTimingFunction: "cubic-bezier(0.8, 0, 1, 1)",
+          },
+          "50%": {
+            transform: "translateY(0)",
+            animationTimingFunction: "cubic-bezier(0, 0, 0.2, 1)",
+          },
         },
       },
       colors: {
