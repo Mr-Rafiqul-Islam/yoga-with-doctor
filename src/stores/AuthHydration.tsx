@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { authApi } from "@/services/authApi";
 import { setLoading, rehydrate } from "./authSlice";
-import { getToken, getStoredUser } from "@/utils/tokenStore";
+import { getToken, getStoredUser, syncSessionCookie } from "@/utils/tokenStore";
 import { useAppDispatch } from "./hooks";
 
 /**
@@ -24,6 +24,7 @@ export function AuthHydration() {
       return;
     }
 
+    syncSessionCookie();
     if (storedUser) {
       dispatch(rehydrate(storedUser));
     }
