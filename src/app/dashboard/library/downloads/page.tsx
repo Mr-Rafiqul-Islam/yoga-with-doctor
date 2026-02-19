@@ -171,7 +171,7 @@ function StorageSection() {
         </div>
       </div>
       <Link
-        href="/dashboard/subscription"
+        href="/pricing"
         className="flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-body-md font-semibold text-white transition-colors hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700"
       >
         <span className="material-icons-outlined text-yellow-400 text-lg">

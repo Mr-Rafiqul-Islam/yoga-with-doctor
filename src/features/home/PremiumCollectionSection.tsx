@@ -47,13 +47,13 @@ export function PremiumCollectionSection() {
             </p>
             <div className="flex flex-col gap-4 sm:flex-row">
               <Link
-                href="/courses?premium=1"
+                href="/pricing"
                 className="inline-flex items-center justify-center rounded-full bg-accent px-8 py-3 font-bold text-gray-900 transition-colors hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 Get Premium Access
               </Link>
               <Link
-                href="/courses#plans"
+                href="/pricing"
                 className="inline-flex items-center justify-center rounded-full border border-gray-700 bg-gray-800 px-8 py-3 font-medium text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
               >
                 View Plans

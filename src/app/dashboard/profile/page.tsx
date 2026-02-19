@@ -87,7 +87,7 @@ export default function ProfilePage() {
               Unlock all masterclasses and advanced tracking features.
             </p>
             <Link
-              href="/dashboard/subscription"
+              href="/pricing"
               className="inline-block rounded-lg bg-primary px-6 py-2.5 font-semibold text-white transition-colors hover:bg-primary-dark"
             >
               Upgrade

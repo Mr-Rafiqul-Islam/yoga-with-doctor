@@ -105,7 +105,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <Link
-                href="/dashboard/subscription"
+                href="/pricing"
                 className="shrink-0 rounded-lg bg-primary px-6 py-2.5 font-semibold text-white transition-colors hover:bg-primary-dark"
               >
                 Upgrade

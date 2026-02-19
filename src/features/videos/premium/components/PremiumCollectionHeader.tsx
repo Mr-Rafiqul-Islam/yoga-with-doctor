@@ -21,7 +21,7 @@ export function PremiumCollectionHeader() {
         </div>
         <div className="hidden md:block">
           <Link
-            href="/courses?premium=1"
+            href="/pricing"
             className="rounded-full border border-accent px-6 py-2 font-semibold text-accent transition-colors hover:bg-accent hover:text-gray-900"
           >
             Unlock All

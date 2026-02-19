@@ -14,7 +14,7 @@ export const metadata = {
  */
 export default function PaymentFailedPage() {
   return (
-    <Suspense fallback={<LoadingScreen className="min-h-[60vh]" />}>
+    <Suspense fallback={<LoadingScreen className="min-h-screen" />}>
       <PaymentFailedContent />
     </Suspense>
   );

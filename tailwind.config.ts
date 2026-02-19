@@ -37,6 +37,7 @@ const config: Config = {
         card: "0 2px 10px rgba(0, 0, 0, 0.03)",
         glow: "0 0 15px rgba(0, 168, 106, 0.3)",
         "glow-error": "0 0 40px 0 rgba(239, 68, 68, 0.15)",
+        "glow-gold": "0 0 20px -5px rgba(245, 158, 11, 0.3), 0 10px 10px -5px rgba(245, 158, 11, 0.1)",
       },
       animation: {
         "pulse-slow": "pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",

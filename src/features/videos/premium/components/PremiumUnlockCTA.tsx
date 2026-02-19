@@ -23,7 +23,7 @@ export function PremiumUnlockCTA() {
             </div>
           </div>
           <Link
-            href="/courses?premium=1"
+            href="/pricing"
             className="z-10 w-full rounded-full bg-primary px-8 py-3 font-bold text-white shadow-lg transition-transform hover:scale-105 hover:bg-primary-dark sm:w-auto"
           >
             Go Pro
