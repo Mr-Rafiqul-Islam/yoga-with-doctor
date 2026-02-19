@@ -35,6 +35,7 @@ const config: Config = {
         "elevation-md": "0 8px 24px rgba(0, 0, 0, 0.12)",
         soft: "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
         card: "0 2px 10px rgba(0, 0, 0, 0.03)",
+        glow: "0 0 15px rgba(0, 168, 106, 0.3)",
       },
       animation: {
         "pulse-slow": "pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
