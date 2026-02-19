@@ -1,8 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
-import { dummyCourses } from "@/features/courses/data/dummyCourses";
 
-const IMG = "https://lh3.googleusercontent.com/aida-public";
+
 
 type DownloadItem = {
   id: string;
@@ -119,33 +117,17 @@ const filterTabs = [
   { id: "audio", label: "Audio", active: false },
 ] as const;
 
-const recentlyViewed = [
-  {
-    title: "Advanced Vinyasa",
-    subtitle: "Module 4 • 25m",
-    image: `${IMG}/AB6AXuC1niabbyl6sRL9o0E72XzGDlMT8pgUCqFgBJeIFXXeX1sS7QfHw8Gpv8kqb6elwmeumti1ZK82tCorlFpA1yPfs_Br4oUx3ZAq_FAf4rRzzeYXaMqsULnIJUm6RCO6kRa3Iz8rGlR2EtKLpe4v5Kgkh2JkA3-d53XgPLBDzxM8f5pUk5YgiuxN-hCbiHLFRxcE1iLcgxcYCuW7nahqC9Ou4uomZ9zE2nKlQdqPvnKzF_YCS-8T6qILvVwRXjN2EfnLqAHbQqu88g`,
-    href: "#",
-  },
-  {
-    title: "Dietary Guidelines",
-    subtitle: "Article • 5 min read",
-    icon: "description",
-    iconColor: "text-purple-600",
-    href: "#",
-  },
-  {
-    title: "Mindfulness 101",
-    subtitle: "Module 1 • 15m",
-    image: `${IMG}/AB6AXuDV3YuAsUHqJk1WqRUhNsK1-MI4M8HWOZw3xLjUVdaS0N5Obk-qK14hnab2fdNvujxUbdS0uiZE-KH_Gr7t3G58LVLmA_4SikfPjaSRh0W3hmfXt8-l_HZFJIkzzd29-Xuz28lhDzu1bV7Q70qbCiaYXJHWnaPhjbmw2whT0gx_jGnSQXJvtfsEZQeCYAj-6juacEHw8-LBbc15IRTly90ogeAv1j1V_zt4NA-xj9dU1nSni2ZlsVcRU0TBCxs7CBvJIFhoTjxKKw`,
-    href: "#",
-  },
-];
+
 
 function DownloadsHeader() {
   return (
     <header className="mb-6">
-      <h1 className="mb-2 font-display text-3xl font-bold text-foreground">My Downloads Library</h1>
-      <p className="mb-4 text-body-md text-muted">Manage and access your offline resources.</p>
+      <h1 className="mb-2 font-display text-3xl font-bold text-foreground">
+        My Downloads Library
+      </h1>
+      <p className="mb-4 text-body-md text-muted">
+        Manage and access your offline resources.
+      </p>
       <div className="relative">
         <span className="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted text-xl">
           search
@@ -168,9 +150,13 @@ function StorageSection() {
   return (
     <section className="mb-6 flex flex-col gap-4 rounded-xl border border-border bg-surface p-4 shadow-elevation-sm sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
-        <span className="material-icons-outlined text-primary text-2xl">cloud</span>
+        <span className="material-icons-outlined text-primary text-2xl">
+          cloud
+        </span>
         <div className="flex-1">
-          <p className="mb-1 text-body-md font-medium text-foreground">Storage Used</p>
+          <p className="mb-1 text-body-md font-medium text-foreground">
+            Storage Used
+          </p>
           <div className="flex items-center gap-3">
             <div className="h-2 flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
               <div
@@ -188,7 +174,9 @@ function StorageSection() {
         href="/dashboard/subscription"
         className="flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-body-md font-semibold text-white transition-colors hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700"
       >
-        <span className="material-icons-outlined text-yellow-400 text-lg">star</span>
+        <span className="material-icons-outlined text-yellow-400 text-lg">
+          star
+        </span>
         Go Premium
       </Link>
     </section>
@@ -231,8 +219,14 @@ function DownloadCard({ item }: { item: DownloadItem }) {
         </button>
       )}
       <div className="mb-4 flex items-start gap-4">
-        <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800`}>
-          <span className={`material-icons-outlined text-2xl ${item.iconColor}`}>{item.icon}</span>
+        <div
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800`}
+        >
+          <span
+            className={`material-icons-outlined text-2xl ${item.iconColor}`}
+          >
+            {item.icon}
+          </span>
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="mb-1 line-clamp-2 font-display text-lg font-bold text-foreground group-hover:text-primary">
@@ -266,7 +260,10 @@ function DownloadCard({ item }: { item: DownloadItem }) {
       </div>
       <div className="flex items-center justify-between">
         {item.actionLabel && (
-          <Link href={item.actionLink} className="text-body-md font-medium text-primary hover:underline">
+          <Link
+            href={item.actionLink}
+            className="text-body-md font-medium text-primary hover:underline"
+          >
             {item.actionLabel}
           </Link>
         )}
@@ -282,7 +279,9 @@ function DownloadCard({ item }: { item: DownloadItem }) {
                   : "bg-yellow-600 hover:bg-yellow-700"
           }`}
         >
-          <span className="material-icons-outlined text-lg">{item.actionButtonIcon}</span>
+          <span className="material-icons-outlined text-lg">
+            {item.actionButtonIcon}
+          </span>
           {item.actionButtonLabel}
         </button>
       </div>
@@ -293,7 +292,10 @@ function DownloadCard({ item }: { item: DownloadItem }) {
 function DownloadsGrid({ items }: { items: DownloadItem[] }) {
   return (
     <section>
-      <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3" role="list">
+      <ul
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+        role="list"
+      >
         {items.map((item) => (
           <li key={item.id}>
             <DownloadCard item={item} />
@@ -304,7 +306,13 @@ function DownloadsGrid({ items }: { items: DownloadItem[] }) {
   );
 }
 
-function PaginationSection({ current, total }: { current: number; total: number }) {
+function PaginationSection({
+  current,
+  total,
+}: {
+  current: number;
+  total: number;
+}) {
   return (
     <footer className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
       <p className="text-body-md text-muted">
@@ -320,88 +328,14 @@ function PaginationSection({ current, total }: { current: number; total: number 
   );
 }
 
-function UpgradeCard() {
-  return (
-    <article className="mb-6 rounded-xl border border-border bg-gray-50 p-6 text-center shadow-elevation-sm dark:bg-gray-800/50">
-      <div className="mb-4 flex justify-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
-          <span className="material-icons-outlined text-primary text-3xl">cloud_download</span>
-        </div>
-      </div>
-      <h3 className="mb-2 font-display text-lg font-bold text-foreground">Need more space?</h3>
-      <p className="mb-4 text-body-md text-muted">
-        Upgrade your plan to unlock unlimited downloads and offline access.
-      </p>
-      <Link
-        href="/dashboard/subscription"
-        className="inline-block rounded-lg bg-gray-900 px-6 py-2.5 text-body-md font-semibold text-white transition-colors hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700"
-      >
-        Upgrade Plan
-      </Link>
-    </article>
-  );
-}
-
-function RecentlyViewedSection({ items }: { items: typeof recentlyViewed }) {
-  return (
-    <section>
-      <h2 className="mb-4 font-display text-xl font-bold text-foreground">Recently Viewed</h2>
-      <ul className="space-y-3" role="list">
-        {items.map((item, index) => (
-          <li key={index}>
-            <Link
-              href={item.href}
-              className="group flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
-              {item.image ? (
-                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-700">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    className="object-cover"
-                    sizes="48px"
-                  />
-                </div>
-              ) : (
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
-                  <span className={`material-icons-outlined text-xl ${item.iconColor || "text-purple-600"}`}>
-                    {item.icon || "description"}
-                  </span>
-                </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <p className="mb-0.5 line-clamp-1 font-medium text-foreground group-hover:text-primary">
-                  {item.title}
-                </p>
-                <p className="text-caption text-muted">{item.subtitle}</p>
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
 export default function DownloadsPage() {
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-      {/* Main Content */}
-      <main className="lg:col-span-2">
-        <DownloadsHeader />
-        <StorageSection />
-        <FilterTabs tabs={filterTabs} />
-        <DownloadsGrid items={downloadItems} />
-        <PaginationSection current={6} total={12} />
-      </main>
-
-      {/* Sidebar */}
-      <aside className="lg:col-span-1">
-        <h2 className="mb-6 font-display text-xl font-bold text-foreground">Course Materials</h2>
-        <UpgradeCard />
-        <RecentlyViewedSection items={recentlyViewed} />
-      </aside>
-    </div>
+    <main className="">
+      <DownloadsHeader />
+      <StorageSection />
+      <FilterTabs tabs={filterTabs} />
+      <DownloadsGrid items={downloadItems} />
+      <PaginationSection current={6} total={12} />
+    </main>
   );
 }
