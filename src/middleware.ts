@@ -6,8 +6,8 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const hasSession = request.cookies.has(SESSION_COOKIE_NAME);
 
-  // Protect dashboard: no session → redirect to login
-  if (pathname.startsWith("/dashboard")) {
+  // Protect dashboard and checkout: no session → redirect to login
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/checkout")) {
     if (!hasSession) {
       const loginUrl = new URL("/auth/login", request.url);
       loginUrl.searchParams.set("returnTo", pathname);
@@ -28,5 +28,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/auth/:path*"],
+  matcher: ["/dashboard/:path*", "/checkout/:path*", "/auth/:path*"],
 };
