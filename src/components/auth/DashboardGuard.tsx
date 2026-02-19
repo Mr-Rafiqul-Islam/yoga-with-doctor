@@ -2,11 +2,12 @@
 
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { useAuthSession } from "@/hooks/useAuthSession";
 
 /**
  * Protects /dashboard/* routes: redirects to /auth/login if user is not logged in.
- * Shows nothing (or a brief loading state) while session is being restored.
+ * Shows loading screen while session is being restored.
  */
 export function DashboardGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -24,9 +25,10 @@ export function DashboardGuard({ children }: { children: React.ReactNode }) {
 
   if (isRestoringSession) {
     return (
-      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center" aria-live="polite">
-        <p className="text-muted">Loading...</p>
-      </div>
+      <LoadingScreen
+        className="min-h-[calc(100vh-80px)]"
+        message="Preparing your wellness journey"
+      />
     );
   }
 

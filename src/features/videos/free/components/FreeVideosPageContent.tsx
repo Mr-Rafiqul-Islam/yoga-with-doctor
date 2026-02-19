@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { FREE_VIDEOS } from "../data/freeVideosData";
 import { filterVideos } from "@/utils/filterVideos";
 import { FilterAndSearchSection } from "./FilterAndSearchSection";
@@ -71,6 +72,15 @@ export function FreeVideosPageContent() {
     setVisibleCount(PAGE_SIZE);
   }, []);
 
+  if (isInitialLoading) {
+    return (
+      <LoadingScreen
+        className="min-h-[60vh]"
+        message="Preparing your wellness journey"
+      />
+    );
+  }
+
   return (
     <>
       <FilterAndSearchSection
@@ -93,7 +103,6 @@ export function FreeVideosPageContent() {
       ) : (
         <VideoGridSection
           videos={displayedVideos}
-          isLoading={isInitialLoading}
           onLoadMore={handleLoadMore}
           hasMore={hasMore}
           showShowLess={showShowLess}

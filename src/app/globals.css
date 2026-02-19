@@ -98,4 +98,10 @@ html {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  .loading-screen-lotus {
+    filter: drop-shadow(0 0 15px rgba(0, 168, 106, 0.4));
+  }
+  .dark .loading-screen-lotus {
+    filter: drop-shadow(0 0 25px rgba(0, 168, 106, 0.6));
+  }
 }
