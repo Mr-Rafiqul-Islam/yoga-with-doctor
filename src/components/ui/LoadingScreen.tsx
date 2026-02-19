@@ -37,7 +37,7 @@ export function LoadingScreen({
         </div>
 
         {/* Text */}
-        <div className="relative z-10 animate-fade-in-up text-center [animation-delay:0.3s] [animation-fill-mode:both]">
+        <div className="relative z-10 animate-fade-in-up text-center [animation-delay:0.3s] [animation-fill-mode:both] xl:mb-0 mb-20">
           <h2 className="font-display text-2xl font-semibold tracking-wide text-foreground md:text-3xl dark:text-white">
             Breathe in...
           </h2>
