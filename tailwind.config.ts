@@ -42,6 +42,10 @@ const config: Config = {
         breathe: "breathe 4s ease-in-out infinite",
         "fade-in-up": "fade-in-up 1s ease-out forwards",
         "loading-progress": "loading-progress 2s ease-in-out infinite",
+        float: "float 4s ease-in-out infinite",
+        "leaf-fall-1": "leaf-fall 8s linear infinite",
+        "leaf-fall-2": "leaf-fall 10s linear infinite",
+        "leaf-fall-3": "leaf-fall 7s linear infinite",
       },
       keyframes: {
         "pulse-slow": {
@@ -60,6 +64,16 @@ const config: Config = {
           "0%": { width: "0%", transform: "translateX(-100%)" },
           "50%": { width: "70%", transform: "translateX(0)" },
           "100%": { width: "0%", transform: "translateX(200%)" },
+        },
+        float: {
+          "0%": { transform: "translateY(0) rotate(0deg)", opacity: "0.8" },
+          "50%": { transform: "translateY(15px) rotate(10deg)", opacity: "1" },
+          "100%": { transform: "translateY(0) rotate(0deg)", opacity: "0.8" },
+        },
+        "leaf-fall": {
+          "0%": { transform: "translate(0, -20px) rotate(0deg)", opacity: "0" },
+          "10%": { opacity: "1" },
+          "100%": { transform: "translate(20px, 100px) rotate(45deg)", opacity: "0" },
         },
       },
       colors: {
