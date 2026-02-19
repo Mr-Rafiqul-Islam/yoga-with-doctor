@@ -46,6 +46,7 @@ const config: Config = {
         "leaf-fall-1": "leaf-fall 8s linear infinite",
         "leaf-fall-2": "leaf-fall 10s linear infinite",
         "leaf-fall-3": "leaf-fall 7s linear infinite",
+        "breathe-slow": "breathe 6s ease-in-out infinite",
       },
       keyframes: {
         "pulse-slow": {
