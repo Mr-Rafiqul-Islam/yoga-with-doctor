@@ -108,4 +108,8 @@ html {
     mask-image: radial-gradient(circle, white 60%, transparent 100%);
     -webkit-mask-image: radial-gradient(circle, white 60%, transparent 100%);
   }
+  .bg-pattern {
+    background-image: radial-gradient(rgb(0, 168, 106) 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+  }
 }

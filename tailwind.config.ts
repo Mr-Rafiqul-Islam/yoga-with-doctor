@@ -47,6 +47,7 @@ const config: Config = {
         "leaf-fall-2": "leaf-fall 10s linear infinite",
         "leaf-fall-3": "leaf-fall 7s linear infinite",
         "breathe-slow": "breathe 6s ease-in-out infinite",
+        "bounce-slight": "bounce-slight 2s ease-in-out infinite",
       },
       keyframes: {
         "pulse-slow": {
@@ -75,6 +76,10 @@ const config: Config = {
           "0%": { transform: "translate(0, -20px) rotate(0deg)", opacity: "0" },
           "10%": { opacity: "1" },
           "100%": { transform: "translate(20px, 100px) rotate(45deg)", opacity: "0" },
+        },
+        "bounce-slight": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-8px)" },
         },
       },
       colors: {
