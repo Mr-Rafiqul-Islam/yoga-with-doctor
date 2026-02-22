@@ -19,7 +19,7 @@ const LIBRARY_SUB_ITEMS = [
 const BOTTOM_NAV_ITEMS = [
   { href: "/dashboard/certificates", label: "Certificates", icon: "verified" },
   {
-    href: "/pricing",
+    href: "/dashboard/subscription",
     label: "Subscription",
     icon: "credit_card",
   },
