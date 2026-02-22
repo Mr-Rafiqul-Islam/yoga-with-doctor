@@ -158,7 +158,7 @@ export default function SubscriptionPage() {
               icon="help_outline"
               iconBgClassName="bg-purple-50 dark:bg-purple-900/20"
               iconClassName="text-purple-600 dark:text-purple-400"
-              href="mailto:support@yogawithdoctor.com?subject=Billing%20Support"
+              href="/contact"
             />
           </section>
         </div>

@@ -110,7 +110,7 @@ export default function FaqPage() {
               Our yoga specialists are here to help you with anything you need to continue your journey.
             </p>
             <Link
-              href="mailto:support@yogawithdoctor.com?subject=FAQ%20Support"
+              href="/contact"
               className="inline-flex w-full items-center justify-center rounded-full bg-primary px-10 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:opacity-95 hover:shadow-primary/30 sm:w-auto"
             >
               Contact Support

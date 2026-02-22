@@ -81,7 +81,7 @@ export function PaymentFailedContent() {
               </span>
             </button>
             <Link
-              href="mailto:support@yogawithdoctor.com?subject=Payment%20Failed%20Support"
+              href="/contact"
               className="inline-block font-medium text-muted transition-colors duration-200 hover:text-error dark:hover:text-error"
             >
               Contact Support

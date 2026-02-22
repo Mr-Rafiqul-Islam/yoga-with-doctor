@@ -67,7 +67,7 @@ export function ErrorView({
           </button>
         )}
         <a
-          href="mailto:support@yogawithdoctor.com?subject=Error%20Report"
+          href="/contact"
           className="mt-2 inline-block text-sm font-medium text-muted transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-radius-sm"
         >
           Report Issue

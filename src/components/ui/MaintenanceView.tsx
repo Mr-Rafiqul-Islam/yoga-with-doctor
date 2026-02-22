@@ -11,7 +11,7 @@ export interface MaintenanceViewProps {
   onNotifyMe?: () => void;
   /** Show the estimated return + Notify Me card */
   showEstimatedReturn?: boolean;
-  /** Contact support link (href). Defaults to mailto. */
+  /** Contact support link (href). Defaults to /contact. */
   contactSupportHref?: string;
   /** Version or footer text, e.g. "v2.4.0 • Yoga With Doctor" */
   versionText?: string;
@@ -25,7 +25,7 @@ export function MaintenanceView({
   estimatedReturn = "Today, 4:00 PM",
   onNotifyMe,
   showEstimatedReturn = true,
-  contactSupportHref = "mailto:support@yogawithdoctor.com?subject=Maintenance%20inquiry",
+  contactSupportHref = "/contact",
   versionText = "v1.0.0 • Yoga With Doctor",
 }: MaintenanceViewProps = {}) {
   return (

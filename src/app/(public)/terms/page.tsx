@@ -199,7 +199,7 @@ export default function TermsPage() {
                 If you have any questions about our Terms and Conditions, please contact our legal team.
               </p>
               <Link
-                href="mailto:legal@yogawithdoctor.com?subject=Terms%20and%20Conditions"
+                href="/contact"
                 className="mb-8 inline-flex w-full max-w-xs items-center justify-center rounded-xl bg-primary px-8 py-4 font-semibold text-white shadow-lg shadow-primary/30 transition-colors hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
                 Contact Support

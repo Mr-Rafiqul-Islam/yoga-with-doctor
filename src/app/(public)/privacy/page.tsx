@@ -182,7 +182,7 @@ export default function PrivacyPage() {
             <div className="border-t border-border pt-10 text-center md:mt-20 md:pt-10">
               <p className="mb-6 text-muted">Have questions about our policy?</p>
               <Link
-                href="mailto:support@yogawithdoctor.com?subject=Privacy%20Policy%20Question"
+                href="/contact"
                 className="inline-flex items-center justify-center rounded-xl border-2 border-primary px-8 py-4 font-semibold text-primary transition-all duration-300 hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
                 Contact Support Team
