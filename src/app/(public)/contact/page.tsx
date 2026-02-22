@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { redirect } from "next/navigation";
 
 export const metadata = {
@@ -92,7 +93,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
 
             {/* Decorative quote block */}
             <div className="group relative mt-auto h-64 w-full overflow-hidden rounded-3xl shadow-sm lg:h-72">
-              <img
+              <Image
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBz778XUtICHjXgFMObWvblAAN6IA5D0x0bmCH58YIfSWnTVIpjlq5qZlSj4F9UEnlFPZ-V2sfvhoImOSE-eKe31Y7WHTITp7hrDUulV5OjXtfDKIiR9YcubF5T1L6aIKSxVzkM-WUR1MjQczEOL2Ia-TKbPIEsq006Gnlh_iFzDaStZ4aOqarj-UacMYSeG1CL0fyLtI5gfk7xTg_Y6vHcK0m9AHQl-YhKAnwrInCZQoY1x18ZIVmML_kQRIZf419b2tMJuP89zA"
                 alt="Serene yoga wellness abstract composition with sage green tones"
                 className="h-full w-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"

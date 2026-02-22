@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuthSession } from "@/hooks/useAuthSession";
-import { useAppSelector } from "@/stores";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -170,7 +170,7 @@ function SidebarContent({
       <div className="mt-auto shrink-0 flex items-center gap-3 border-t border-border pt-4 dark:border-gray-700">
         <div className="h-10 w-10 shrink-0 flex items-center justify-center  overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
           {user?.profilePicture ? (
-            <img
+            <Image
               src={user?.profilePicture}
               alt=""
               className="h-full w-full object-cover"

@@ -34,7 +34,7 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
 
     try {
       const deviceId = "web-browser";
-      const platform: "web" = "web";
+      const platform = "web" as const;
 
       const result = await register({
         name: fullName,
@@ -47,10 +47,11 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
       if (result.success && result.message === "OTP_SENT" && onRegisterSuccess) {
         onRegisterSuccess(email, phone);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       const message =
-        err?.data?.message ||
-        err?.error ||
+        (err as { data?: { message?: string }; error?: string })?.data
+          ?.message ||
+        (err as { error?: string })?.error ||
         "Unable to create account. Please try again.";
       setError(message);
     }

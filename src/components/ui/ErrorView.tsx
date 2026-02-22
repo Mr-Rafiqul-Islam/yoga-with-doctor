@@ -7,9 +7,11 @@ import Link from "next/link";
 export function ErrorView({
   onReset,
   showTryAgain = true,
+  error,
 }: {
   onReset?: () => void;
   showTryAgain?: boolean;
+  error?: Error & { digest?: string };
 }) {
   return (
     <main
@@ -48,6 +50,13 @@ export function ErrorView({
         <p className="mx-auto max-w-xs text-lg leading-relaxed text-muted">
           We encountered an unexpected path. Let&apos;s get you back to center.
         </p>
+        {
+          error && (
+            <div className="mt-4">
+              <p className="text-sm text-muted">{error.message}</p>
+            </div>
+          )
+        }
       </div>
       <div className="mt-10 w-full">
         <Link

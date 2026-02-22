@@ -107,7 +107,7 @@ export function ArticleDetailsView({
                 Table of Contents
               </h3>
               <ul className="ml-1 space-y-3 border-l-2 border-border text-body-md">
-                {toc.map((item, index) => {
+                {toc.map((item) => {
                   const isActive = item.id === activeId;
                   return (
                   <li key={item.id}>

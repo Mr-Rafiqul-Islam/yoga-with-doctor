@@ -44,7 +44,7 @@ export default function PrivacyPage() {
                 Table of Contents
               </h2>
               <ol className="space-y-4">
-                {tocItems.map((item, index) => (
+                {tocItems.map((item) => (
                   <li key={item.id}>
                     <Link
                       href={`#${item.id}`}

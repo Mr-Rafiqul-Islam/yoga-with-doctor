@@ -102,7 +102,7 @@ export function VerifyIdentityForm({
     setError(null);
 
     const deviceId = "web-browser";
-    const platform: "web" = "web";
+    const platform = "web" as const;
 
     if (isFromRegister && phone) {
       try {

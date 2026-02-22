@@ -16,7 +16,7 @@ export default function Error({
   return (
     <div className="relative flex min-h-[60vh] flex-col overflow-hidden bg-background">
       <div className="absolute top-0 left-0 h-1/2 w-full bg-gradient-to-b from-primary/5 to-transparent -z-10 dark:from-primary/10" />
-      <ErrorView onReset={reset} showTryAgain />
+      <ErrorView onReset={reset} showTryAgain error={error} />
     </div>
   );
 }

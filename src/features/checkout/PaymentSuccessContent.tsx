@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 /**
  * Payment success page content. Accepts transactionId and courseId from URL query params.
@@ -14,12 +14,18 @@ export function PaymentSuccessContent() {
   const courseId = searchParams.get("courseId") || "";
 
   // In a real app, fetch course details by courseId
-  const [courseData, setCourseData] = useState({
+  // const [courseData, setCourseData] = useState({
+  //   title: "Hormonal Balance & Yoga",
+  //   instructor: "Dr. Sarah Jenkins",
+  //   modules: 8,
+  //   price: 49.0,
+  // });
+  const courseData = {
     title: "Hormonal Balance & Yoga",
     instructor: "Dr. Sarah Jenkins",
     modules: 8,
     price: 49.0,
-  });
+  }
 
   useEffect(() => {
     // TODO: Fetch course details by courseId from API

@@ -8,7 +8,6 @@ const SUBTOTAL = 49.0;
 const TAX_RATE = 0.08;
 const TAX = Math.round(SUBTOTAL * TAX_RATE * 100) / 100;
 const DISCOUNT = 0;
-const TOTAL = SUBTOTAL + TAX - DISCOUNT;
 
 export function CheckoutReviewContent() {
   const router = useRouter();

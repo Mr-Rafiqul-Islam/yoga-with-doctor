@@ -9,11 +9,11 @@ import {
   toggleMobileMenu,
   closeMobileMenu,
   setTheme,
-  setLoading,
   type ThemeMode,
 } from "@/stores";
 
 import { useAuthSession } from "@/hooks/useAuthSession";
+import Image from "next/image";
 
 const mainNavItems = [
   { href: "/", label: "Home" },
@@ -193,7 +193,7 @@ export function Header() {
                     aria-label="Account menu"
                   >
                     {user.profilePicture ? (
-                      <img
+                      <Image
                         src={user.profilePicture}
                         alt=""
                         className="h-full w-full object-cover"
