@@ -221,7 +221,7 @@ export function Header() {
                         role="menuitem"
                         onClick={handleLogout}
                         disabled={isLoggingOut}
-                        className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-foreground hover:bg-secondary focus:outline-none focus:ring-inset focus:ring-2 focus:ring-primary disabled:opacity-70"
+                        className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-foreground hover:bg-secondary dark:hover:bg-gray-700 focus:outline-none focus:ring-inset focus:ring-2 focus:ring-primary disabled:opacity-70"
                       >
                         <span className="material-icons-outlined text-lg">
                           logout

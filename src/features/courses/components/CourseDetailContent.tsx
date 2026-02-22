@@ -112,7 +112,7 @@ export function CourseDetailContent({ course, isEnrolled }: CourseDetailContentP
               <button
                 key={tab}
                 type="button"
-                onClick={() => setActiveTab(tab)}
+                onClick={() => setActiveTab(tab as (typeof TABS)[0])}
                 className={`whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium transition-colors ${
                   activeTab === tab
                     ? "border-primary text-primary"
@@ -144,7 +144,7 @@ export function CourseDetailContent({ course, isEnrolled }: CourseDetailContentP
           </div>
         )}
 
-        {activeTab === "Curriculum" && (
+        {activeTab === ("Curriculum" as (typeof TABS)[0]) && (
           <div className="space-y-4">
             <h3 className="font-display text-xl font-bold text-foreground dark:text-white">
               Course Curriculum
@@ -173,7 +173,7 @@ export function CourseDetailContent({ course, isEnrolled }: CourseDetailContentP
           </div>
         )}
 
-        {activeTab === "Reviews" && (
+        {activeTab === ("Reviews" as (typeof TABS)[0]) && (
           <p className="text-muted">Reviews will be displayed here.</p>
         )}
       </div>

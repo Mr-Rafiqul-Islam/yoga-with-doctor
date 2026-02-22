@@ -135,17 +135,7 @@ export function FilterAndSearchSection({
           </span>
         </div>
 
-        {/* More Filters button (placeholder for future filters) */}
-        <button
-          type="button"
-          aria-label="Open more filters"
-          className="flex h-12 items-center gap-2 rounded-xl border border-border bg-surface px-4 text-body-md font-medium text-foreground transition-colors hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:border-gray-700 dark:bg-[#12241d]"
-        >
-          <span className="material-icons-outlined text-xl text-muted" aria-hidden>
-            filter_list
-          </span>
-          <span>More Filters</span>
-        </button>
+        
       </div>
     </section>
   );
