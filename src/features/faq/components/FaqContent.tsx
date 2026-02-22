@@ -122,40 +122,41 @@ export function FaqContent({ topics, sections }: FaqContentProps) {
                         id={`faq-answer-${item.id}`}
                         role="region"
                         aria-labelledby={`faq-question-${item.id}`}
-                        className={`overflow-hidden transition-all ${
-                          isOpen ? "visible" : "hidden"
-                        }`}
+                        className="grid transition-[grid-template-rows] duration-300 ease-out"
+                        style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
                       >
-                        {isOpen && (
-                          <>
-                            <div className="prose prose-slate dark:prose-invert mt-4 max-w-none text-muted">
-                              {(() => {
-                                const ans = item.answer;
-                                if (typeof ans === "string") return <p>{ans}</p>;
-                                if (!ans || !Array.isArray(ans.paragraphs))
-                                  return <p>{String(ans ?? "")}</p>;
-                                return (
-                                  <>
-                                    {ans.paragraphs.map((p, i) => (
-                                      <p key={i} className={i < ans.paragraphs.length - 1 ? "mb-4" : "mb-0"}>
-                                        {p}
-                                      </p>
-                                    ))}
-                                    {ans.link && (
-                                      <p className="mb-0">
-                                        For absolute beginners, the{" "}
-                                        <Link href={ans.link.href} className="font-semibold text-primary hover:underline">
-                                          {ans.link.text}
-                                        </Link>
-                                        {ans.link.suffix}
-                                      </p>
-                                    )}
-                                  </>
-                                );
-                              })()}
-                            </div>
-                          </>
-                        )}
+                        <div className="min-h-0 overflow-hidden">
+                          <div
+                            className={`prose prose-slate dark:prose-invert mt-4 max-w-none text-muted transition-opacity duration-200 ${
+                              isOpen ? "opacity-100" : "opacity-0"
+                            }`}
+                          >
+                            {(() => {
+                              const ans = item.answer;
+                              if (typeof ans === "string") return <p>{ans}</p>;
+                              if (!ans || !Array.isArray(ans.paragraphs))
+                                return <p>{String(ans ?? "")}</p>;
+                              return (
+                                <>
+                                  {ans.paragraphs.map((p, i) => (
+                                    <p key={i} className={i < ans.paragraphs.length - 1 ? "mb-4" : "mb-0"}>
+                                      {p}
+                                    </p>
+                                  ))}
+                                  {ans.link && (
+                                    <p className="mb-0">
+                                      For absolute beginners, the{" "}
+                                      <Link href={ans.link.href} className="font-semibold text-primary hover:underline">
+                                        {ans.link.text}
+                                      </Link>
+                                      {ans.link.suffix}
+                                    </p>
+                                  )}
+                                </>
+                              );
+                            })()}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </li>
