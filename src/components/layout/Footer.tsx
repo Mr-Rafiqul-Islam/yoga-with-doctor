@@ -9,8 +9,8 @@ const platformLinks = [
 ] as const;
 
 const supportLinks = [
-  { href: "#", label: "Help Center" },
-  { href: "/terms", label: "Terms of Service" },
+  { href: "/faq", label: "FAQs" },
+  { href: "/terms", label: "Terms & Conditions" },
   { href: "/privacy", label: "Privacy Policy" },
   { href: "/contact", label: "Contact Us" },
 ] as const;
