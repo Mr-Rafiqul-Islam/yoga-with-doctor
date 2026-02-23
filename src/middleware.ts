@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { SESSION_COOKIE_NAME } from "@/utils/tokenStore";
+import { REFRESH_COOKIE_NAME } from "@/utils/tokenStore";
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  const hasSession = request.cookies.has(SESSION_COOKIE_NAME);
+  const hasSession = request.cookies.has(REFRESH_COOKIE_NAME);
 
-  // Protect dashboard and checkout: no session → redirect to login
+  // Protect dashboard and checkout: no refresh cookie → redirect to login
   if (pathname.startsWith("/dashboard") || pathname.startsWith("/checkout")) {
     if (!hasSession) {
       const loginUrl = new URL("/auth/login", request.url);

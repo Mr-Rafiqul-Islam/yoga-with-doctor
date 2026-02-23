@@ -6,9 +6,8 @@ import type {
 } from "@reduxjs/toolkit/query";
 import {
   getToken,
-  getRefreshToken,
-  saveToken,
-  removeToken,
+  setAccessToken,
+  clearAccessToken,
 } from "@/utils/tokenStore";
 
 const baseUrl =
@@ -16,6 +15,7 @@ const baseUrl =
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl,
+  credentials: "include",
   prepareHeaders: (headers) => {
     const token = getToken();
     if (token) {
@@ -25,6 +25,10 @@ const rawBaseQuery = fetchBaseQuery({
   },
 });
 
+/**
+ * Refresh uses HttpOnly cookie (no body). Backend reads refresh token from cookie,
+ * returns new accessToken in body. Frontend never sees or stores refresh token.
+ */
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
@@ -38,42 +42,38 @@ const baseQueryWithReauth: BaseQueryFn<
     typeof args.url === "string" &&
     args.url.includes("/logout");
 
-  if (result.error && result.error.status === 401 && !isLogoutRequest) {
-    const refreshToken = getRefreshToken();
+  const isRefreshRequest =
+    typeof args === "object" &&
+    "url" in args &&
+    typeof args.url === "string" &&
+    args.url.includes("/refresh");
 
-    if (refreshToken) {
-      const refreshResult = await rawBaseQuery(
-        {
-          url: "/api/v1/client/refresh",
-          method: "POST",
-          body: { refreshToken },
-        },
-        api,
-        extraOptions
-      );
+  if (result.error && result.error.status === 401 && !isLogoutRequest && !isRefreshRequest) {
+    const refreshResult = await rawBaseQuery(
+      {
+        url: "/api/v1/client/refresh",
+        method: "POST",
+        body: {},
+      },
+      api,
+      extraOptions
+    );
 
-      if (refreshResult.data) {
-        const refreshData = refreshResult.data as {
-          success: boolean;
-          data?: { accessToken: string; refreshToken: string };
-        };
+    if (refreshResult.data) {
+      const refreshData = refreshResult.data as {
+        success: boolean;
+        data?: { accessToken: string };
+      };
 
-        if (refreshData.success && refreshData.data) {
-          saveToken(
-            refreshData.data.accessToken,
-            refreshData.data.refreshToken
-          );
-          result = await rawBaseQuery(args, api, extraOptions);
-        } else {
-          removeToken();
-          api.dispatch({ type: "auth/logout" });
-        }
+      if (refreshData.success && refreshData.data?.accessToken) {
+        setAccessToken(refreshData.data.accessToken);
+        result = await rawBaseQuery(args, api, extraOptions);
       } else {
-        removeToken();
+        clearAccessToken();
         api.dispatch({ type: "auth/logout" });
       }
     } else {
-      removeToken();
+      clearAccessToken();
       api.dispatch({ type: "auth/logout" });
     }
   }
@@ -214,7 +214,7 @@ export const authApi = createApi({
         try {
           const { data } = await queryFulfilled;
           if (data.success && data.data.accessToken) {
-            saveToken(data.data.accessToken, data.data.refreshToken);
+            setAccessToken(data.data.accessToken);
           }
         } catch {
           // handled in UI
@@ -237,7 +237,7 @@ export const authApi = createApi({
             "accessToken" in data.data &&
             data.data.accessToken
           ) {
-            saveToken(data.data.accessToken, data.data.refreshToken);
+            setAccessToken(data.data.accessToken);
           }
         } catch {
           // handled in UI
@@ -258,7 +258,7 @@ export const authApi = createApi({
         try {
           const { data } = await queryFulfilled;
           if (data.success && data.data.accessToken) {
-            saveToken(data.data.accessToken, data.data.refreshToken);
+            setAccessToken(data.data.accessToken);
           }
         } catch {
           // handled in UI
@@ -275,7 +275,7 @@ export const authApi = createApi({
         try {
           await queryFulfilled;
         } finally {
-          removeToken();
+          clearAccessToken();
           dispatch({ type: "auth/logout" });
         }
       },
@@ -283,6 +283,18 @@ export const authApi = createApi({
     getCurrentUser: builder.query<CurrentUserResponse, void>({
       query: () => ({ url: "/api/v1/client/me" }),
       providesTags: ["Auth"],
+    }),
+    /** Restore session on app load: no auth header, refresh token sent via HttpOnly cookie. */
+    refreshSession: builder.mutation<
+      { success: boolean; data: { accessToken: string } },
+      void
+    >({
+      query: () => ({
+        url: "/api/v1/client/refresh",
+        method: "POST",
+        body: {},
+      }),
+      invalidatesTags: ["Auth"],
     }),
   }),
 });
@@ -294,5 +306,6 @@ export const {
   useVerifyLoginOTPMutation,
   useLogoutMutation,
   useGetCurrentUserQuery,
+  useRefreshSessionMutation,
 } = authApi;
 

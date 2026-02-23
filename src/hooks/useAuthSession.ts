@@ -1,41 +1,31 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 
-import { useAppDispatch, useAppSelector } from "@/stores";
-import { setLoading } from "@/stores";
+import { useAppSelector } from "@/stores";
 import { getToken } from "@/utils/tokenStore";
 import {
   useGetCurrentUserQuery,
   useLogoutMutation,
 } from "@/services/authApi";
 
+/**
+ * Session restore: AuthHydration calls refresh (cookie sent); on success
+ * middleware sets access token and fetches getCurrentUser. So we skip
+ * getCurrentUser only when we have no token (e.g. before refresh completes).
+ */
 export function useAuthSession() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
   const { user, isAuthenticated, isLoading: authLoading } =
     useAppSelector((state) => state.auth);
 
-  const [hasToken, setHasToken] = useState(false);
-
-  // Check token once on mount
-  useEffect(() => {
-    const token = getToken();
-    setHasToken(!!token);
-
-    if (!token) {
-      dispatch(setLoading(false));
-    }
-  }, [dispatch]);
-
-  // Restore session if token exists
+  const hasToken = !!getToken();
   const { isLoading: isFetchingUser } = useGetCurrentUserQuery(undefined, {
     skip: !hasToken,
   });
 
-  // Logout
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
   const handleLogout = useCallback(async () => {
@@ -46,11 +36,7 @@ export function useAuthSession() {
     }
   }, [logout, router]);
 
-  /**
-   * Unified state for UI
-   */
-  const isRestoringSession =
-    authLoading || (hasToken && isFetchingUser);
+  const isRestoringSession = authLoading || (hasToken && isFetchingUser);
 
   return {
     user,

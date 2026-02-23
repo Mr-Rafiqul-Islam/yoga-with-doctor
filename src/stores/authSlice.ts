@@ -113,6 +113,11 @@ export const authSlice = createSlice({
         state.isAuthenticated = false;
         state.isLoading = false;
       })
+      .addMatcher(authApi.endpoints.refreshSession.matchRejected, (state) => {
+        state.user = null;
+        state.isAuthenticated = false;
+        state.isLoading = false;
+      })
       .addMatcher(
         (action) => action.type === "auth/logout",
         (state) => {

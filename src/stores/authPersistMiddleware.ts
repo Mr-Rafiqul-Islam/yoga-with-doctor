@@ -1,6 +1,6 @@
 import type { Middleware } from "@reduxjs/toolkit";
 import { authApi } from "@/services/authApi";
-import { setStoredUser, clearStoredUser } from "@/utils/tokenStore";
+import { setStoredUser, clearStoredUser, setAccessToken } from "@/utils/tokenStore";
 import type { StoredAuthUser } from "@/utils/tokenStore";
 
 function userFromPayload(payload: unknown): StoredAuthUser | null {
@@ -20,10 +20,16 @@ function userFromPayload(payload: unknown): StoredAuthUser | null {
   };
 }
 
-export const authPersistMiddleware: Middleware = () => (next) => (action) => {
+export const authPersistMiddleware: Middleware = (api) => (next) => (action) => {
   const result = next(action);
 
-  if (authApi.endpoints.login.matchFulfilled(action)) {
+  if (authApi.endpoints.refreshSession.matchFulfilled(action)) {
+    const payload = action.payload as { success?: boolean; data?: { accessToken?: string } };
+    if (payload.success && payload.data?.accessToken) {
+      setAccessToken(payload.data.accessToken);
+      (api.dispatch as (action: unknown) => void)(authApi.endpoints.getCurrentUser.initiate());
+    }
+  } else if (authApi.endpoints.login.matchFulfilled(action)) {
     const payload = action.payload as { message?: string; success?: boolean; data?: { user?: unknown } };
     if (payload.message !== "OTP_REQUIRED" && payload.success && payload.data?.user) {
       const user = userFromPayload(payload);
