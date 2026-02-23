@@ -5,7 +5,7 @@ const AUTH_USER_KEY = "ywd-auth-user";
 /** Cookie used by middleware to protect routes (no access to localStorage). */
 export const SESSION_COOKIE_NAME = "ywd-session";
 
-const SESSION_COOKIE_MAX_AGE_DAYS = 7;
+const SESSION_COOKIE_MAX_AGE_DAYS = 30;
 
 function canUseDOM() {
   return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
@@ -81,10 +81,12 @@ export function getStoredUser(): StoredAuthUser | null {
 export function setStoredUser(user: StoredAuthUser): void {
   if (!canUseDOM()) return;
   window.localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+  setSessionCookieClient();
 }
 
 export function clearStoredUser(): void {
   if (!canUseDOM()) return;
   window.localStorage.removeItem(AUTH_USER_KEY);
+  clearSessionCookieClient();
 }
 
