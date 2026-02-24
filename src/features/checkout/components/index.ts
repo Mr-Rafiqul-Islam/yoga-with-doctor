@@ -4,4 +4,12 @@ export { OrderItemCard } from "./OrderItemCard";
 export { OrderSummarySection } from "./OrderSummarySection";
 export { OrderTotalCard } from "./OrderTotalCard";
 export { PaymentMethodBadges } from "./PaymentMethodBadges";
+export { PaymentSuccessActions } from "./PaymentSuccessActions";
+export { PaymentSuccessBackground } from "./PaymentSuccessBackground";
+export { PaymentSuccessHeading } from "./PaymentSuccessHeading";
+export { PaymentSuccessIcon } from "./PaymentSuccessIcon";
+export {
+  PaymentSuccessReceiptCard,
+  type PaymentSuccessCourseData,
+} from "./PaymentSuccessReceiptCard";
 export { PromoCodeInput } from "./PromoCodeInput";
