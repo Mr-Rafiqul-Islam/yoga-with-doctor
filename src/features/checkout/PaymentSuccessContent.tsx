@@ -128,10 +128,7 @@ export function PaymentSuccessContent() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="py-6 text-center text-xs text-muted opacity-50">
-        <p>© {new Date().getFullYear()} Yoga With Doctor. All rights reserved.</p>
-      </footer>
+      
     </div>
   );
 }
