@@ -25,3 +25,19 @@ export {
   CourseDetailContent,
   type CourseDetailContentProps,
 } from "./CourseDetailContent";
+export {
+  LessonVideoPlayer,
+  LessonOverviewCard,
+  DoctorsNotesSection,
+  LessonDetailsTabs,
+  LessonTabResources,
+  LessonTabDiscussion,
+  LessonTabCertificate,
+  CourseContentSidebar,
+  type LessonVideoPlayerProps,
+  type LessonOverviewCardProps,
+  type DoctorsNotesSectionProps,
+  type LessonDetailsTabsProps,
+  type LessonTabId,
+  type CourseContentSidebarProps,
+} from "./lesson";
