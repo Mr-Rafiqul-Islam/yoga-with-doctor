@@ -187,6 +187,27 @@ export interface CurrentUserResponse {
   };
 }
 
+export interface ForgotPasswordCredentials {
+  phone: string;
+}
+
+export interface ForgotPasswordResponse {
+  success: boolean;
+  message: string;
+  data?: { phone?: string };
+}
+
+export interface ResetPasswordCredentials {
+  phone: string;
+  otp: string;
+  newPassword: string;
+}
+
+export interface ResetPasswordResponse {
+  success: boolean;
+  message: string;
+}
+
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: baseQueryWithReauth,
@@ -284,6 +305,28 @@ export const authApi = createApi({
       query: () => ({ url: "/api/v1/client/me" }),
       providesTags: ["Auth"],
     }),
+    forgotPassword: builder.mutation<
+      ForgotPasswordResponse,
+      ForgotPasswordCredentials
+    >({
+      query: (body) => ({
+        url: "/api/v1/client/forgot-password",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    resetPassword: builder.mutation<
+      ResetPasswordResponse,
+      ResetPasswordCredentials
+    >({
+      query: (body) => ({
+        url: "/api/v1/client/reset-password",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
     /** Restore session on app load: no auth header, refresh token sent via HttpOnly cookie. */
     refreshSession: builder.mutation<
       { success: boolean; data: { accessToken: string } },
@@ -304,6 +347,8 @@ export const {
   useVerifyRegisterOTPMutation,
   useLoginMutation,
   useVerifyLoginOTPMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
   useLogoutMutation,
   useGetCurrentUserQuery,
   useRefreshSessionMutation,

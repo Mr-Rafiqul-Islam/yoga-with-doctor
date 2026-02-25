@@ -3,19 +3,39 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useForgotPasswordMutation } from "@/services/authApi";
 
 /**
  * ForgotPasswordForm - Reset password request form.
- * Centered card with email/Medical ID input and Send Reset Link button.
+ * Centered card with phone input and Send Reset OTP button.
  */
 export function ForgotPasswordForm() {
   const [phone, setPhone] = useState("");
-const router = useRouter();
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const router = useRouter();
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: Implement send reset link API call
-    console.log("Send reset link to:", phone);
-    router.push("/auth/reset-password");
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    try {
+      const result = await forgotPassword({ phone }).unwrap();
+      if (result.success) {
+        setSuccessMessage(
+          result.message || "Check your phone for the OTP to reset your password."
+        );
+        setTimeout(() => {
+          router.push(`/auth/reset-password?phone=${encodeURIComponent(phone)}`);
+        }, 1500);
+      }
+    } catch (err: unknown) {
+      const msg =
+        (err as { data?: { message?: string } })?.data?.message ||
+        "Failed to send reset OTP. Please try again.";
+      setErrorMessage(msg);
+    }
   };
 
   return (
@@ -42,12 +62,28 @@ const router = useRouter();
 
         {/* Instructional Text */}
         <p className="mb-8 text-center text-sm leading-relaxed text-muted">
-          Enter your email and we will send you clinical-grade recovery
-          instructions to regain access to your wellness dashboard.
+          Enter your phone number and we will send you an OTP to reset your
+          password and regain access to your wellness dashboard.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email / Medical ID Field */}
+          {errorMessage && (
+            <div
+              role="alert"
+              className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/50 dark:text-red-200"
+            >
+              {errorMessage}
+            </div>
+          )}
+          {successMessage && (
+            <div
+              role="status"
+              className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-800 dark:bg-green-950/50 dark:text-green-200"
+            >
+              {successMessage}
+            </div>
+          )}
+          {/* Phone Field */}
           <div className="flex flex-col gap-2">
             <label
               htmlFor="phone"
@@ -67,21 +103,23 @@ const router = useRouter();
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+880 1234567890"
+                placeholder="01712345678"
                 className="h-14 w-full rounded-xl border border-border bg-surface pl-12 pr-4 text-base text-foreground outline-none transition-all placeholder:text-muted focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-[#12241d]"
                 required
                 aria-required="true"
-                aria-label="Medical ID or email address"
+                aria-label="Phone number"
+                pattern="[+]?[0-9\s\-\(\)]+"
               />
             </div>
           </div>
 
-          {/* Send Reset Link Button */}
+          {/* Send Reset OTP Button */}
           <button
             type="submit"
-            className="flex h-14 w-full items-center justify-center rounded-xl bg-primary font-bold uppercase tracking-wide text-white transition-all hover:bg-primary-dark"
+            disabled={isLoading}
+            className="flex h-14 w-full items-center justify-center rounded-xl bg-primary font-bold uppercase tracking-wide text-white transition-all hover:bg-primary-dark disabled:opacity-60 disabled:pointer-events-none"
           >
-            Send Reset OTP
+            {isLoading ? "Sending…" : "Send Reset OTP"}
           </button>
         </form>
 

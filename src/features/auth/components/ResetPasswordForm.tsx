@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { SuccessMessageCard } from "@/components/SuccessMessageCard";
+import { useResetPasswordMutation } from "@/services/authApi";
 
 // Phone number formatting helper
 const formatPhoneNumber = (value: string): string => {
@@ -19,19 +21,34 @@ const validatePassword = (pwd: string): boolean => {
  * Shows SuccessMessageCard after successful reset.
  */
 export function ResetPasswordForm() {
+  const searchParams = useSearchParams();
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
   const isPasswordValid = validatePassword(newPassword);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    const phoneFromUrl = searchParams.get("phone");
+    if (phoneFromUrl) setPhone(decodeURIComponent(phoneFromUrl));
+  }, [searchParams]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: Implement reset password API call; on success:
-    console.log("Reset password:", { phone, otp, newPassword });
-    setSuccess(true);
+    setErrorMessage(null);
+    try {
+      await resetPassword({ phone, otp, newPassword }).unwrap();
+      setSuccess(true);
+    } catch (err: unknown) {
+      const msg =
+        (err as { data?: { message?: string } })?.data?.message ||
+        "Failed to reset password. Please check the OTP and try again.";
+      setErrorMessage(msg);
+    }
   };
 
   if (success) {
@@ -73,6 +90,14 @@ export function ResetPasswordForm() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {errorMessage && (
+            <div
+              role="alert"
+              className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/50 dark:text-red-200"
+            >
+              {errorMessage}
+            </div>
+          )}
           {/* Phone Field */}
           <div className="flex flex-col gap-2">
             <label
@@ -181,10 +206,12 @@ export function ResetPasswordForm() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="flex h-14 w-full items-center justify-center rounded-xl bg-primary font-bold text-white transition-all hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={!isPasswordValid || !phone || otp.length !== 6}
+            className="flex h-14 w-full items-center justify-center rounded-xl bg-primary font-bold text-white transition-all hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50 disabled:pointer-events-none"
+            disabled={
+              !isPasswordValid || !phone || otp.length !== 6 || isLoading
+            }
           >
-            Reset Password
+            {isLoading ? "Resetting…" : "Reset Password"}
           </button>
         </form>
 
