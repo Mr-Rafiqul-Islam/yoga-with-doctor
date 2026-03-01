@@ -17,7 +17,8 @@ export function DashboardGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { isAuthenticated, isRestoringSession } = useAuthSession();
   const [mounted, setMounted] = useState(false);
-
+console.log("isAuthenticated", isAuthenticated);
+console.log("isRestoringSession", isRestoringSession);
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -42,7 +43,12 @@ export function DashboardGuard({ children }: { children: React.ReactNode }) {
   }
 
   if (!isAuthenticated) {
-    return null;
+    return (
+      <LoadingScreen
+        className="min-h-[calc(100vh-80px)]"
+        message="Preparing your wellness journey"
+      />
+    );
   }
 
   return <>{children}</>;
