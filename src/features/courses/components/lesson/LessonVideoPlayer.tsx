@@ -79,6 +79,14 @@ export function LessonVideoPlayer({
           autoPlay={false}
           muted={isMuted}
           playsInline
+          style={{
+            aspectRatio: "auto",
+            height: "100%",
+            width: "100%",
+            "--controls-backdrop-color": "transparent",
+            "--media-object-fit": "cover",
+            "--media-object-position": "center",
+          }}
         />
       ) : (
         <Image

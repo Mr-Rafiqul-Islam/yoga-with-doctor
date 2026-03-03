@@ -59,6 +59,14 @@ export function VideoCard({
             autoPlay={false}
             muted
             playsInline
+            style={{
+              aspectRatio: "auto",
+              height: "100%",
+              width: "100%",
+              "--controls-backdrop-color": "transparent",
+              "--media-object-fit": "cover",
+              "--media-object-position": "center",
+            }}
           />
         ) : thumbnailUrl ? (
           <Image

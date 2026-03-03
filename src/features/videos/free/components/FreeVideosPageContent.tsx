@@ -1,31 +1,35 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
-import { FREE_VIDEOS } from "../data/freeVideosData";
 import { filterVideos } from "@/utils/filterVideos";
 import { FilterAndSearchSection } from "./FilterAndSearchSection";
 import { VideoGridSection } from "./VideoGridSection";
+import { useGetClassesQuery } from "@/services/classApi";
+import { classItemToVideoCard } from "../utils/classToVideoCard";
 
 const PAGE_SIZE = 6;
-const INITIAL_LOAD_MS = 700;
 
-/**
- * Client wrapper for the Free Videos page: filter state + load more + initial skeleton.
- * Renders FilterAndSearchSection (controlled) and VideoGridSection with filtered list.
- */
 export function FreeVideosPageContent() {
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [durationFilter, setDurationFilter] = useState("");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  useEffect(() => {
-    const t = setTimeout(() => setIsInitialLoading(false), INITIAL_LOAD_MS);
-    return () => clearTimeout(t);
-  }, []);
+  // Fetch free/public classes from your API
+  const { data, isLoading, isFetching } = useGetClassesQuery({
+    page: 1,
+    limit: 50,
+    isPremium: false,
+  });
 
+  // Map API classes -> VideoCardProps (includes muxPlaybackId)
+  const videosFromApi = useMemo(
+    () => (data?.data?.classes ?? []).map(classItemToVideoCard),
+    [data?.data?.classes]
+  );
+
+  // Apply existing search, category, and duration filters on the client
   const filterParams = useMemo(
     () => ({
       searchQuery: searchValue,
@@ -36,8 +40,8 @@ export function FreeVideosPageContent() {
   );
 
   const filteredVideos = useMemo(
-    () => filterVideos(FREE_VIDEOS, filterParams),
-    [filterParams]
+    () => filterVideos(videosFromApi, filterParams),
+    [videosFromApi, filterParams]
   );
 
   const displayedVideos = useMemo(
@@ -47,10 +51,13 @@ export function FreeVideosPageContent() {
 
   const hasMore = visibleCount < filteredVideos.length;
   const showShowLess = visibleCount > PAGE_SIZE;
-  const hasNoResults = !isInitialLoading && filteredVideos.length === 0;
+  const hasNoResults =
+    !isLoading && !isFetching && filteredVideos.length === 0;
 
   const handleLoadMore = useCallback(() => {
-    setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, filteredVideos.length));
+    setVisibleCount((prev) =>
+      Math.min(prev + PAGE_SIZE, filteredVideos.length)
+    );
   }, [filteredVideos.length]);
 
   const handleSearchChange = useCallback((value: string) => {
@@ -72,7 +79,7 @@ export function FreeVideosPageContent() {
     setVisibleCount(PAGE_SIZE);
   }, []);
 
-  if (isInitialLoading) {
+  if (isLoading && !data) {
     return (
       <LoadingScreen
         className="min-h-[60vh]"
@@ -107,6 +114,8 @@ export function FreeVideosPageContent() {
           hasMore={hasMore}
           showShowLess={showShowLess}
           onShowLess={handleShowLess}
+          isLoading={isLoading && !data}
+          isLoadingMore={isFetching && !!data}
         />
       )}
     </>

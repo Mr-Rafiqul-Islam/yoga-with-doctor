@@ -48,6 +48,14 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
             autoPlay={false}
             muted
             playsInline
+            style={{
+              aspectRatio: "auto",
+              height: "100%",
+              width: "100%",
+              "--controls-backdrop-color": "transparent",
+              "--media-object-fit": "cover",
+              "--media-object-position": "center",
+            }}
           />
         ) : video.thumbnailUrl ? (
           <Image
