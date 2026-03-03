@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import MuxPlayer from "@mux/mux-player-react";
 import type { VideoCardProps } from "./VideoCard";
 import type { FreeVideoDetails } from "../data/freeVideoDetailsData";
 
@@ -38,7 +39,17 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
     <div className="space-y-8">
       {/* Video player */}
       <div className="relative w-full overflow-hidden rounded-2xl bg-gray-900 shadow-xl aspect-video md:aspect-[21/9] group cursor-pointer">
-        {video.thumbnailUrl ? (
+        {video.muxPlaybackId ? (
+          <MuxPlayer
+            className="h-full w-full"
+            playbackId={video.muxPlaybackId}
+            poster={video.thumbnailUrl ?? undefined}
+            streamType="on-demand"
+            autoPlay={false}
+            muted
+            playsInline
+          />
+        ) : video.thumbnailUrl ? (
           <Image
             src={video.thumbnailUrl}
             alt=""

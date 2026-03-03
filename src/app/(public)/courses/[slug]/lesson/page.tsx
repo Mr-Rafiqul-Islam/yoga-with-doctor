@@ -61,6 +61,7 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
         <div className="space-y-8 lg:col-span-2">
           <LessonVideoPlayer
             thumbnailUrl={course.thumbnailUrl}
+            muxPlaybackId={course.muxPlaybackId}
             duration={currentLesson?.duration ?? "15:00"}
             initialCurrentTime="04:20"
           />

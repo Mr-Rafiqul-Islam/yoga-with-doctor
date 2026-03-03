@@ -27,6 +27,8 @@ export interface CourseDetailData {
   category: string;
   description: string;
   thumbnailUrl: string;
+  /** Optional Mux playback ID for the primary course video (used on lesson page). */
+  muxPlaybackId?: string;
   rating: string;
   reviewCount: number;
   instructorName: string;

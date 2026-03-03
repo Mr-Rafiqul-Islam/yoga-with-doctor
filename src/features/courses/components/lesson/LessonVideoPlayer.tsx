@@ -1,10 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import MuxPlayer from "@mux/mux-player-react";
 import { useRef, useState, useCallback, useEffect } from "react";
 
 export interface LessonVideoPlayerProps {
   thumbnailUrl: string;
+  /** Optional Mux playback ID for this lesson's video. */
+  muxPlaybackId?: string;
   /** Display duration e.g. "15:00" (mm:ss) */
   duration?: string;
   /** Initial current time e.g. "04:20" (mm:ss). Default "00:00". */
@@ -24,6 +27,7 @@ function formatTime(seconds: number): string {
 
 export function LessonVideoPlayer({
   thumbnailUrl,
+  muxPlaybackId,
   duration = "15:00",
   initialCurrentTime = "04:20",
 }: LessonVideoPlayerProps) {
@@ -66,14 +70,26 @@ export function LessonVideoPlayer({
       aria-label="Lesson video"
       className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-elevation-md"
     >
-      <Image
-        src={thumbnailUrl}
-        alt=""
-        fill
-        className="object-cover opacity-80 transition-opacity group-hover:opacity-60"
-        sizes="(max-width: 1024px) 100vw, 66vw"
-        priority
-      />
+      {muxPlaybackId ? (
+        <MuxPlayer
+          className="h-full w-full"
+          playbackId={muxPlaybackId}
+          poster={thumbnailUrl}
+          streamType="on-demand"
+          autoPlay={false}
+          muted={isMuted}
+          playsInline
+        />
+      ) : (
+        <Image
+          src={thumbnailUrl}
+          alt=""
+          fill
+          className="object-cover opacity-80 transition-opacity group-hover:opacity-60"
+          sizes="(max-width: 1024px) 100vw, 66vw"
+          priority
+        />
+      )}
       {/* Play overlay */}
       <div className="absolute inset-0 flex items-center justify-center">
         <button
