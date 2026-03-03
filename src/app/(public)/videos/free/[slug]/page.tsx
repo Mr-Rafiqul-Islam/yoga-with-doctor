@@ -1,8 +1,6 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { getFreeVideoBySlug } from "@/features/videos/free/data/freeVideosData";
-import { getFreeVideoDetailsBySlug } from "@/features/videos/free/data/freeVideoDetailsData";
-import { FreeVideoDetailsContent } from "@/features/videos/free/components/FreeVideoDetailsContent";
+import { FreeVideoDetailsContainer } from "@/features/videos/free/components/FreeVideoDetailsContainer";
 import type { Metadata } from "next";
 
 interface PageProps {
@@ -21,9 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function FreeVideoDetailsPage({ params }: PageProps) {
   const { slug } = await params;
-  const video = getFreeVideoBySlug(slug);
-  if (!video) notFound();
-  const details = getFreeVideoDetailsBySlug(slug);
+  
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6">
@@ -35,7 +31,7 @@ export default async function FreeVideoDetailsPage({ params }: PageProps) {
           Back to Free Videos
         </Link>
       </div>
-      <FreeVideoDetailsContent video={video} details={details} />
+      <FreeVideoDetailsContainer slug={slug} />
     </div>
   );
 }
