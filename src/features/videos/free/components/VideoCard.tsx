@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import MuxPlayer from "@mux/mux-player-react";
 
 export interface VideoCardProps {
   /** Thumbnail image URL (optional; shows placeholder if missing) */
@@ -22,6 +25,8 @@ export interface VideoCardProps {
   href?: string;
   /** URL slug for details page (e.g. "morning-sunshine-flow"). Used to build href when href not set. */
   slug?: string;
+  /** Mux playback ID for inline preview player (optional). */
+  muxPlaybackId?: string;
 }
 
 /**
@@ -39,12 +44,23 @@ export function VideoCard({
   authorAvatarUrl,
   isFree = true,
   href,
+  muxPlaybackId,
 }: VideoCardProps) {
   const content = (
     <>
       {/* Thumbnail with play overlay and duration */}
       <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted/60">
-        {thumbnailUrl ? (
+        {muxPlaybackId ? (
+          <MuxPlayer
+            className="h-full w-full"
+            playbackId={muxPlaybackId}
+            poster={thumbnailUrl ?? undefined}
+            streamType="on-demand"
+            autoPlay={false}
+            muted
+            playsInline
+          />
+        ) : thumbnailUrl ? (
           <Image
             src={thumbnailUrl}
             alt=""
