@@ -20,12 +20,12 @@ export function FreeVideosPageContent() {
   const { data, isLoading, isFetching } = useGetClassesQuery({
     page: 1,
     limit: 10,
-    access: "PUBLIC",
+    access: "PUBLIC", // did not work now need to fix it
   });
 
   // Map API classes -> VideoCardProps (includes muxPlaybackId)
   const videosFromApi = useMemo(
-    () => (data?.data?.classes ?? []).filter((item) => item.access === "PUBLIC").map(classItemToVideoCard),
+    () => (data?.data?.classes ?? []).filter((item) => item.access === "PUBLIC").map(classItemToVideoCard), // make it filter by access in future remove this filter
     [data?.data?.classes]
   );
 

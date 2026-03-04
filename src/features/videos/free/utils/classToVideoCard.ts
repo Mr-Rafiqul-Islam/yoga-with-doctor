@@ -17,7 +17,7 @@ export function classItemToVideoCard(classItem: ClassItem): VideoCardProps {
     category: classItem.category[0] ,
     title: classItem.title,
     description: classItem.shortDescription,
-    authorName: classItem.props[0] ?? undefined,
+    authorName: undefined,
     authorAvatarUrl: null,
     isFree: classItem.access === "PUBLIC",
     muxPlaybackId: classItem.video?.muxPlaybackId,

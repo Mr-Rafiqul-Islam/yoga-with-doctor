@@ -84,7 +84,7 @@ export function VideoCard({
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 p-4">
+      <Link href={href ?? ""} className="flex flex-1 flex-col gap-2 p-4 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl">
         {/* Category + FREE tag row */}
         <div className="flex flex-wrap items-center gap-2">
           {category ? (
@@ -121,7 +121,7 @@ export function VideoCard({
         )}
 
         {/* Author */}
-        <div className="mt-auto flex items-center gap-2">
+        {authorName && <div className="mt-auto flex items-center gap-2">
           {authorAvatarUrl ? (
             <Image
               src={authorAvatarUrl}
@@ -141,8 +141,8 @@ export function VideoCard({
           ) : (
             <div className="h-4 w-24 rounded bg-muted/40" aria-hidden />
           )}
-        </div>
-      </div>
+        </div>}
+      </Link>
     </>
   );
 
@@ -156,9 +156,9 @@ export function VideoCard({
     return (
       <article className={wrapperClassName}>
         {isInternal ? (
-          <Link href={href} className={linkClass}>
+          <div className={linkClass}>
             {content}
-          </Link>
+          </div>
         ) : (
           <a href={href} className={linkClass} target="_blank" rel="noopener noreferrer">
             {content}
