@@ -9,13 +9,14 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const video = getFreeVideoBySlug(slug);
+  const video = await getFreeVideoBySlug(slug);
   if (!video?.title) return { title: "Video" };
   return {
-    title: video.title,
-    description: video.description ?? undefined,
+    title: video?.title,
+    description: video?.shortDescription ?? undefined,
   };
 }
+
 
 export default async function FreeVideoDetailsPage({ params }: PageProps) {
   const { slug } = await params;

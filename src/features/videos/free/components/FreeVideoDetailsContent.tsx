@@ -67,34 +67,10 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
             priority
           />
         ) : null}
-        <div
-          className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/20 to-transparent"
-          aria-hidden
-        />
-        <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2">
-          <div className="rounded-full bg-white/20 p-6 shadow-2xl backdrop-blur-sm ring-2 ring-white transition-all duration-300 hover:scale-110 hover:bg-white/60 hover:text-primary">
-            <span className="material-icons-outlined ml-1 text-5xl text-white">play_arrow</span>
-          </div>
-        </div>
-        <div className="absolute bottom-6 right-6 rounded-lg bg-black/60 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
-          {video.duration ?? "0:00"}
-        </div>
-        <div className="absolute top-6 right-6 flex gap-3">
-          <button
-            type="button"
-            className="rounded-full bg-black/40 p-2 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
-            aria-label="Cast"
-          >
-            <span className="material-icons-outlined text-xl">cast</span>
-          </button>
-          <button
-            type="button"
-            className="rounded-full bg-black/40 p-2 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
-            aria-label="Closed captions"
-          >
-            <span className="material-icons-outlined text-xl">closed_caption</span>
-          </button>
-        </div>
+        
+        
+        
+        
       </div>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
