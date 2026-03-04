@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { authApi } from "@/services/authApi";
-import { rehydrate } from "./authSlice";
+import { rehydrate } from "./slices/authSlice";
 import { getStoredUser } from "@/utils/tokenStore";
 import { useAppDispatch } from "./hooks";
 

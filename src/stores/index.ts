@@ -1,9 +1,9 @@
 export { ReduxProvider } from "./ReduxProvider";
 export { useAppDispatch, useAppSelector } from "./hooks";
 export type { RootState, AppDispatch } from "./store";
-export type { ThemeMode } from "./uiSlice";
-export type { AuthUser } from "./authSlice";
-export { setLoading } from "./authSlice";
+export type { ThemeMode } from "./slices/uiSlice";
+export type { AuthUser } from "./slices/authSlice";
+export { setLoading } from "./slices/authSlice";
 export {
   setMobileMenuOpen,
   toggleMobileMenu,
@@ -12,4 +12,4 @@ export {
   openModal,
   closeModal,
   setTheme,
-} from "./uiSlice";
+} from "./slices/uiSlice";
