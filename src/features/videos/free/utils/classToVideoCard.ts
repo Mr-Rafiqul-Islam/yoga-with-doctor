@@ -7,25 +7,19 @@ function formatDurationFromMinutes(minutes: number | undefined): string {
   return `${m}:00`;
 }
 
-function mapCategoryLabel(primary: string | undefined): string {
-  if (!primary) return "";
-  if (primary === "yoga-therapy") return "Yoga Therapy";
-  return primary;
-}
+
 
 export function classItemToVideoCard(classItem: ClassItem): VideoCardProps {
   return {
     slug: classItem.slug,
     thumbnailUrl: classItem.video?.thumbnail ?? null,
     duration: formatDurationFromMinutes(classItem.video?.duration),
-    category: mapCategoryLabel(classItem.category?.primary),
+    category: classItem.category[0] ,
     title: classItem.title,
-    description: classItem.focus?.audience
-      ? `Focus: ${classItem.focus.audience}`
-      : undefined,
-    authorName: classItem.props?.instructor ?? undefined,
+    description: classItem.shortDescription,
+    authorName: classItem.props[0] ?? undefined,
     authorAvatarUrl: null,
-    isFree: !classItem.isPremium,
+    isFree: classItem.access === "PUBLIC",
     muxPlaybackId: classItem.video?.muxPlaybackId,
   };
 }

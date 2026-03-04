@@ -8,7 +8,7 @@ import { VideoGridSection } from "./VideoGridSection";
 import { useGetClassesQuery } from "@/services/classApi";
 import { classItemToVideoCard } from "../utils/classToVideoCard";
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 4;
 
 export function FreeVideosPageContent() {
   const [searchValue, setSearchValue] = useState("");
@@ -19,13 +19,13 @@ export function FreeVideosPageContent() {
   // Fetch free/public classes from your API
   const { data, isLoading, isFetching } = useGetClassesQuery({
     page: 1,
-    limit: 50,
-    isPremium: false,
+    limit: 10,
+    access: "PUBLIC",
   });
 
   // Map API classes -> VideoCardProps (includes muxPlaybackId)
   const videosFromApi = useMemo(
-    () => (data?.data?.classes ?? []).map(classItemToVideoCard),
+    () => (data?.data?.classes ?? []).filter((item) => item.access === "PUBLIC").map(classItemToVideoCard),
     [data?.data?.classes]
   );
 

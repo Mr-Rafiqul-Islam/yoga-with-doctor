@@ -77,15 +77,7 @@ export function VideoCard({
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : null}
-        {/* Play button overlay */}
-        <div
-          className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-md transition-transform hover:scale-105 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
-          aria-hidden
-        >
-          <span className="material-icons-outlined text-3xl text-primary">
-            play_arrow
-          </span>
-        </div>
+        
         {/* Duration badge */}
         <span className="absolute bottom-2 right-2 rounded-md bg-black/75 px-2 py-1 text-caption font-medium text-white">
           {duration}

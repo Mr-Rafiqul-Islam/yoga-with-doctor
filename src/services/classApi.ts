@@ -15,7 +15,7 @@ export interface ClassVideo {
   muxPlaybackId: string;
   muxAssetId: string;
   muxUploadId: string;
-  isPremium: boolean;
+  access: "PREMIUM" | "PUBLIC" | "PAID";
   level: string;
   createdAt: string;
   updatedAt: string;
@@ -24,23 +24,14 @@ export interface ClassVideo {
 export interface ClassItem {
   title: string;
   slug: string;
-  category: {
-    tags: string[];
-    primary: string;
-  };
-  props: {
-    difficulty?: string;
-    language?: string;
-    [key: string]: string | undefined;
-  };
-  focus: {
-    skills: string[];
-    audience: string;
-  };
+  category: string[];
+  props: string[];
+  focus: string[];
   totalViews: number;
-  isPremium: boolean;
+  access: "PREMIUM" | "PUBLIC" | "PAID";
   mediaAssetId: string;
   video: ClassVideo;
+  shortDescription: string;
 }
 
 export interface PaginationMeta {
@@ -66,7 +57,7 @@ export interface GetClassesParams {
   limit?: number;
   category?: string;
   difficulty?: string;
-  isPremium?: boolean;
+  access?: "PREMIUM" | "PUBLIC" | "PAID";
 }
 
 // Class by slug (single class) – adjust types if your getClassBySlug response differs
@@ -106,7 +97,7 @@ export const classApi = createApi({
           limit = 10,
           category,
           difficulty,
-          isPremium,
+          access,
         } = params ?? {};
 
         const queryParams = new URLSearchParams();
@@ -114,8 +105,7 @@ export const classApi = createApi({
         queryParams.append("limit", limit.toString());
         if (category) queryParams.append("category", category);
         if (difficulty) queryParams.append("difficulty", difficulty);
-        if (isPremium !== undefined)
-          queryParams.append("isPremium", String(isPremium));
+        if (access !== undefined) queryParams.append("access", String(access));
 
         return {
           url: `/api/v1/client/classes?${queryParams.toString()}`,
