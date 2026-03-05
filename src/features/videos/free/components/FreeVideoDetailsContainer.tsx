@@ -9,10 +9,10 @@ import { FreeVideoDetailsContent } from "./FreeVideoDetailsContent";
 
 function buildDetailsFromClass(classData: ClassItem): FreeVideoDetails {
   const description =
-    (classData.description as unknown as string | undefined)?.replace(/<[^>]+>/g, "") ??
-    "This practice supports overall wellness with evidence-based movements. Always consult your healthcare provider before starting a new routine.";
+    (classData.shortDescription?.replace(/<[^>]+>/g, "") ??
+    "This practice supports overall wellness with evidence-based movements. Always consult your healthcare provider before starting a new routine.") as string;
 
-  const difficulty = classData.props?.difficulty ?? classData.video?.level ?? undefined;
+  const difficulty = classData.video?.level ?? classData.video?.level ?? "Beginner";
 
   return {
     difficulty,
@@ -53,7 +53,6 @@ export function FreeVideoDetailsContainer({ slug }: FreeVideoDetailsContainerPro
 
   // Support both shapes: data.class or data directly
   const classData = (data as any)?.data?.class ?? (data as any)?.data ?? null;
-
   if ((isLoading || isFetching) && !classData) {
     return (
       <LoadingScreen

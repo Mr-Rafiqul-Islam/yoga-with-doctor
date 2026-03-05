@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import MuxPlayer from "@mux/mux-player-react";
+import { formatLevelWithHyphenToSpace } from "../utils/formatLevel";
 
 export interface VideoCardProps {
   /** Thumbnail image URL (optional; shows placeholder if missing) */
@@ -89,7 +90,7 @@ export function VideoCard({
         <div className="flex flex-wrap items-center gap-2">
           {category ? (
             <span className="text-caption font-semibold uppercase tracking-wide text-primary">
-              {category}
+              {formatLevelWithHyphenToSpace(category)}
             </span>
           ) : (
             <span className="h-3 w-20 rounded bg-muted/50" aria-hidden />

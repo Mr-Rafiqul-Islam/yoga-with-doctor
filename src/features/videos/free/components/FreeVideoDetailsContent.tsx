@@ -24,7 +24,6 @@ function formatDurationMins(duration?: string): string {
 export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsContentProps) {
   const [activeTab, setActiveTab] = useState<(typeof TAB_IDS)[number]>("overview");
   const [followed, setFollowed] = useState(false);
-
   const {
     difficulty,
     instructorTitle,
@@ -46,7 +45,6 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
             poster={video.thumbnailUrl ?? undefined}
             streamType="on-demand"
             autoPlay={false}
-            muted
             playsInline
             style={{
               aspectRatio: "auto",
@@ -97,7 +95,7 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
                   </>
                 ) : null}
                 <span className="h-1 w-1 rounded-full bg-gray-400" aria-hidden />
-                <span className="font-semibold text-primary">Free</span>
+                <span className="font-semibold text-primary">{video.isFree? "Free" : "Premium/Paid"}</span>
               </div>
             </div>
             <div className="flex flex-col items-end gap-1">
