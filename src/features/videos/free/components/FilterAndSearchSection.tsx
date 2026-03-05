@@ -2,13 +2,6 @@
 
 import { useId, useState } from "react";
 
-export const CATEGORY_OPTIONS = [
-  { value: "", label: "Category" },
-  { value: "Yoga Therapy", label: "Yoga Therapy" },
-  { value: "Meditation", label: "Meditation" },
-  { value: "Nutrition", label: "Nutrition" },
-] as const;
-
 export const DURATION_OPTIONS = [
   { value: "", label: "Duration" },
   { value: "short", label: "5–10 mins" },
@@ -29,6 +22,7 @@ export interface FilterAndSearchSectionProps {
   durationFilter?: string;
   /** Called when duration selection changes */
   onDurationChange?: (value: string) => void;
+  categoryOptions: { value: string; label: string }[];
 }
 
 /**
@@ -42,6 +36,7 @@ export function FilterAndSearchSection({
   onCategoryChange,
   durationFilter = "",
   onDurationChange,
+  categoryOptions,
 }: FilterAndSearchSectionProps) {
   const searchId = useId();
   const categoryId = useId();
@@ -53,7 +48,8 @@ export function FilterAndSearchSection({
   const handleSearchChange = isControlled
     ? onSearchChange
     : (v: string) => setInternalSearch(v);
-
+    
+  console.log(categoryOptions);
   return (
     <section
       className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8"
@@ -95,7 +91,8 @@ export function FilterAndSearchSection({
             aria-label="Filter by category"
             className="h-12 min-w-[140px] appearance-none rounded-xl border border-border bg-surface px-4 pr-10 text-body-md font-medium text-foreground outline-none transition-colors hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-700 dark:bg-[#12241d]"
           >
-            {CATEGORY_OPTIONS.map((opt) => (
+            <option value="">Category</option>
+            {categoryOptions.map((opt) => (
               <option key={opt.value || "all"} value={opt.value}>
                 {opt.label}
               </option>

@@ -1,3 +1,4 @@
+import { formatLevelWithHyphenToSpace } from "@/features/videos/free/utils/formatLevel";
 import type { VideoCardProps } from "../features/videos/free/components/VideoCard";
 
 /** Parse duration string "MM:SS" or "M:SS" to total minutes (e.g. "15:00" -> 15, "05:30" -> 5.5). */
@@ -48,7 +49,7 @@ export function filterVideos(
         author.includes(search);
       if (!match) return false;
     }
-    if (category && (video.category ?? "") !== category) return false;
+    if (category && formatLevelWithHyphenToSpace(video.category ?? "") !== category) return false;
     const mins = durationToMinutes(video.duration);
     if (!matchesDurationRange(mins, duration)) return false;
     return true;

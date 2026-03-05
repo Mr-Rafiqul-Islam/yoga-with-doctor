@@ -7,6 +7,7 @@ import { FilterAndSearchSection } from "./FilterAndSearchSection";
 import { VideoGridSection } from "./VideoGridSection";
 import { useGetClassesQuery } from "@/services/classApi";
 import { classItemToVideoCard } from "../utils/classToVideoCard";
+import { formatLevelWithHyphenToSpace } from "../utils/formatLevel";
 
 const PAGE_SIZE = 4;
 
@@ -28,6 +29,22 @@ export function FreeVideosPageContent() {
     () => (data?.data?.classes ?? []).filter((item) => item.access === "PUBLIC").map(classItemToVideoCard), // make it filter by access in future remove this filter
     [data?.data?.classes]
   );
+  
+// categorylist from api
+const categoryOptions = useMemo(() => {
+  const unique = new Set(
+    (data?.data?.classes ?? [])
+      .map((item) => item.category?.[0])
+      .filter(Boolean)
+      .map((cat) => formatLevelWithHyphenToSpace(cat as string))
+  );
+
+  return Array.from(unique).map((value) => ({
+    value,
+    label: value.toUpperCase(),
+  }));
+}, [data?.data?.classes]);
+
 
   // Apply existing search, category, and duration filters on the client
   const filterParams = useMemo(
@@ -97,6 +114,7 @@ export function FreeVideosPageContent() {
         onCategoryChange={handleCategoryChange}
         durationFilter={durationFilter}
         onDurationChange={handleDurationChange}
+        categoryOptions={categoryOptions}
       />
       {hasNoResults ? (
         <section
