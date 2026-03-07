@@ -9,7 +9,7 @@ import { useGetClassesQuery } from "@/services/classApi";
 import { classItemToVideoCard } from "../utils/classToVideoCard";
 import { formatLevelWithHyphenToSpace } from "../utils/formatLevel";
 
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 6;
 
 export function FreeVideosPageContent() {
   const [searchValue, setSearchValue] = useState("");
@@ -26,7 +26,7 @@ export function FreeVideosPageContent() {
 
   // Map API classes -> VideoCardProps (includes muxPlaybackId)
   const videosFromApi = useMemo(
-    () => (data?.data?.classes ?? []).filter((item) => item.access === "PUBLIC").map(classItemToVideoCard), // make it filter by access in future remove this filter
+    () => (data?.data?.classes ?? []).map(classItemToVideoCard), // make it filter by access in future remove this filter
     [data?.data?.classes]
   );
   

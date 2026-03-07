@@ -21,6 +21,10 @@ export function classItemToVideoCard(classItem: ClassItem): VideoCardProps {
     authorAvatarUrl: null,
     isFree: classItem.access === "PUBLIC",
     muxPlaybackId: classItem.video?.muxPlaybackId,
+    muxAssetId: classItem.video?.muxAssetId,
+    level: classItem.video?.level,
+    id: classItem.video?.id,
+    status: classItem.video?.status,
   };
 }
 

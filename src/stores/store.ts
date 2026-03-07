@@ -4,6 +4,7 @@ import { classApi } from "@/services/classApi";
 import authReducer from "./slices/authSlice";
 import uiReducer from "./slices/uiSlice";
 import { authPersistMiddleware } from "./authPersistMiddleware";
+import { videoApi } from "@/services/videoApi";
 
 export const store = configureStore({
   reducer: {
@@ -11,11 +12,13 @@ export const store = configureStore({
     auth: authReducer,
     [authApi.reducerPath]: authApi.reducer,
     [classApi.reducerPath]: classApi.reducer,
+    [videoApi.reducerPath]: videoApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       authApi.middleware,
       classApi.middleware,
+      videoApi.middleware,
       authPersistMiddleware
     ),
 });

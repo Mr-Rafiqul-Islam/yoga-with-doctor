@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import MuxPlayer from "@mux/mux-player-react";
 import { formatLevelWithHyphenToSpace } from "../utils/formatLevel";
+import { useEffect, useState } from "react";
+import { useLazyGetVideoPlaybackTokenQuery } from "@/services/videoApi";
 
 export interface VideoCardProps {
   /** Thumbnail image URL (optional; shows placeholder if missing) */
@@ -28,6 +30,11 @@ export interface VideoCardProps {
   slug?: string;
   /** Mux playback ID for inline preview player (optional). */
   muxPlaybackId?: string;
+  /** Mux asset ID for playback token (optional). */
+  muxAssetId?: string;
+  id?: string;
+  level?: string;
+  status?: string;
 }
 
 /**
@@ -46,16 +53,61 @@ export function VideoCard({
   isFree = true,
   href,
   muxPlaybackId,
+  id,
+  status,
 }: VideoCardProps) {
+  const [playbackId, setPlaybackId] = useState<string | undefined>(undefined);
+  const [playbackToken, setPlaybackToken] = useState<string | null>(null);
+  const [playbackPolicy, setPlaybackPolicy] = useState<string | undefined>(undefined);
+  const [getPlaybackToken, { isLoading: isLoadingToken }] =
+    useLazyGetVideoPlaybackTokenQuery();
+
+    useEffect(() => {
+      // Fetch playback token if video exists and has muxPlaybackId
+      if (
+        id &&
+        muxPlaybackId &&
+        status === "READY"
+      ) {
+        getPlaybackToken(id)
+          .unwrap()
+          .then((result) => {
+            if (result.success && result.data) {
+              setPlaybackId(result.data.playbackId);
+              setPlaybackToken(result.data.playbackToken || null);
+              setPlaybackPolicy(result.data.playbackPolicy || undefined);
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching playback token:", error);
+            // Fallback to using muxPlaybackId directly
+            setPlaybackId(muxPlaybackId);
+            setPlaybackToken(null);
+          });
+      } else if (muxPlaybackId) {
+        // Fallback: use muxPlaybackId directly if video is not ready or token fetch fails
+        setPlaybackId(muxPlaybackId);
+        setPlaybackToken(null);
+      }
+    }, [
+      id,
+      muxPlaybackId,
+      status,
+      getPlaybackToken,
+    ]);
+
   const content = (
     <>
       {/* Thumbnail with play overlay and duration */}
       <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted/60">
-        {muxPlaybackId ? (
+        {playbackPolicy === "public" ? (
           <MuxPlayer
             className="h-full w-full"
-            playbackId={muxPlaybackId}
+            playbackId={playbackId}
             poster={thumbnailUrl ?? undefined}
+            {...(playbackToken
+              ? { tokens: { playback: playbackToken } }
+              : {})}
             streamType="on-demand"
             autoPlay={false}
             muted
@@ -69,15 +121,39 @@ export function VideoCard({
               "--media-object-position": "center",
             }}
           />
-        ) : thumbnailUrl ? (
-          <Image
-            src={thumbnailUrl}
-            alt=""
-            fill
-            className="object-cover"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
-        ) : null}
+        ) : (
+          <>
+            {thumbnailUrl ? (
+              <>
+                <Image
+                  src={thumbnailUrl}
+                  alt=""
+                  fill
+                  className="object-cover blur-[2px] brightness-75"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                />
+                <div
+                  className="absolute inset-0 flex items-center justify-center backdrop-blur-[2px]"
+                  aria-hidden
+                >
+                  <div className="rounded-full border border-white/20 bg-black/40 p-3 shadow-lg backdrop-blur-sm dark:bg-white/10">
+                    <span className="material-icons-outlined text-2xl text-white" aria-hidden>
+                      lock
+                    </span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-muted/80">
+                <div className="rounded-full border border-white/20 bg-black/30 p-3 shadow-lg backdrop-blur-sm dark:bg-white/10">
+                  <span className="material-icons-outlined text-2xl text-white" aria-hidden>
+                    lock
+                  </span>
+                </div>
+              </div>
+            )}
+          </>
+        )}
         
         {/* Duration badge */}
         <span className="absolute bottom-2 right-2 rounded-md bg-black/75 px-2 py-1 text-caption font-medium text-white">
