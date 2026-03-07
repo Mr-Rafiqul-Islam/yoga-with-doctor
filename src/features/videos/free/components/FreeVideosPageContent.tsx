@@ -8,6 +8,7 @@ import { VideoGridSection } from "./VideoGridSection";
 import { useGetClassesQuery } from "@/services/classApi";
 import { classItemToVideoCard } from "../utils/classToVideoCard";
 import { formatLevelWithHyphenToSpace } from "../utils/formatLevel";
+import { Pagination } from "@/features/courses/components";
 
 const PAGE_SIZE = 6;
 
@@ -15,38 +16,38 @@ export function FreeVideosPageContent() {
   const [searchValue, setSearchValue] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [durationFilter, setDurationFilter] = useState("");
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Fetch free/public classes from your API
+  // Fetch free/public classes with server-side pagination
   const { data, isLoading, isFetching } = useGetClassesQuery({
-    page: 1,
-    limit: 10,
-    access: "PUBLIC", // did not work now need to fix it
+    page: currentPage,
+    limit: PAGE_SIZE,
   });
 
   // Map API classes -> VideoCardProps (includes muxPlaybackId)
   const videosFromApi = useMemo(
-    () => (data?.data?.classes ?? []).map(classItemToVideoCard), // make it filter by access in future remove this filter
+    () => (data?.data?.classes ?? []).map(classItemToVideoCard),
     [data?.data?.classes]
   );
-  
-// categorylist from api
-const categoryOptions = useMemo(() => {
-  const unique = new Set(
-    (data?.data?.classes ?? [])
-      .map((item) => item.category?.[0])
-      .filter(Boolean)
-      .map((cat) => formatLevelWithHyphenToSpace(cat as string))
-  );
 
-  return Array.from(unique).map((value) => ({
-    value,
-    label: value.toUpperCase(),
-  }));
-}, [data?.data?.classes]);
+  const pagination = data?.data?.pagination;
+  const totalPages = pagination?.totalPages ?? 0;
+
+  const categoryOptions = useMemo(() => {
+    const unique = new Set(
+      (data?.data?.classes ?? [])
+        .map((item) => item.category?.[0])
+        .filter(Boolean)
+        .map((cat) => formatLevelWithHyphenToSpace(cat as string))
+    );
+    return Array.from(unique).map((value) => ({
+      value,
+      label: value.toUpperCase(),
+    }));
+  }, [data?.data?.classes]);
 
 
-  // Apply existing search, category, and duration filters on the client
+  // Apply search and duration filters on the current page (category is server-side)
   const filterParams = useMemo(
     () => ({
       searchQuery: searchValue,
@@ -56,44 +57,31 @@ const categoryOptions = useMemo(() => {
     [searchValue, categoryFilter, durationFilter]
   );
 
-  const filteredVideos = useMemo(
+  const displayedVideos = useMemo(
     () => filterVideos(videosFromApi, filterParams),
     [videosFromApi, filterParams]
   );
 
-  const displayedVideos = useMemo(
-    () => filteredVideos.slice(0, visibleCount),
-    [filteredVideos, visibleCount]
-  );
-
-  const hasMore = visibleCount < filteredVideos.length;
-  const showShowLess = visibleCount > PAGE_SIZE;
   const hasNoResults =
-    !isLoading && !isFetching && filteredVideos.length === 0;
-
-  const handleLoadMore = useCallback(() => {
-    setVisibleCount((prev) =>
-      Math.min(prev + PAGE_SIZE, filteredVideos.length)
-    );
-  }, [filteredVideos.length]);
+    !isLoading && !isFetching && displayedVideos.length === 0;
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchValue(value);
-    setVisibleCount(PAGE_SIZE);
+    setCurrentPage(1);
   }, []);
 
   const handleCategoryChange = useCallback((value: string) => {
     setCategoryFilter(value);
-    setVisibleCount(PAGE_SIZE);
+    setCurrentPage(1);
   }, []);
 
   const handleDurationChange = useCallback((value: string) => {
     setDurationFilter(value);
-    setVisibleCount(PAGE_SIZE);
+    setCurrentPage(1);
   }, []);
 
-  const handleShowLess = useCallback(() => {
-    setVisibleCount(PAGE_SIZE);
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
   }, []);
 
   if (isLoading && !data) {
@@ -126,15 +114,20 @@ const categoryOptions = useMemo(() => {
           </p>
         </section>
       ) : (
-        <VideoGridSection
-          videos={displayedVideos}
-          onLoadMore={handleLoadMore}
-          hasMore={hasMore}
-          showShowLess={showShowLess}
-          onShowLess={handleShowLess}
-          isLoading={isLoading && !data}
-          isLoadingMore={isFetching && !!data}
-        />
+        <>
+          <VideoGridSection
+            videos={displayedVideos}
+            isLoading={isLoading && !data}
+          />
+          {totalPages > 1 && (
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              className="mt-10"
+            />
+          )}
+        </>
       )}
     </>
   );

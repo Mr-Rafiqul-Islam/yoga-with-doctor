@@ -58,43 +58,36 @@ export function VideoCard({
 }: VideoCardProps) {
   const [playbackId, setPlaybackId] = useState<string | undefined>(undefined);
   const [playbackToken, setPlaybackToken] = useState<string | null>(null);
-  const [playbackPolicy, setPlaybackPolicy] = useState<string | undefined>(undefined);
+  const [playbackPolicy, setPlaybackPolicy] = useState<string | undefined>(
+    undefined,
+  );
   const [getPlaybackToken, { isLoading: isLoadingToken }] =
     useLazyGetVideoPlaybackTokenQuery();
 
-    useEffect(() => {
-      // Fetch playback token if video exists and has muxPlaybackId
-      if (
-        id &&
-        muxPlaybackId &&
-        status === "READY"
-      ) {
-        getPlaybackToken(id)
-          .unwrap()
-          .then((result) => {
-            if (result.success && result.data) {
-              setPlaybackId(result.data.playbackId);
-              setPlaybackToken(result.data.playbackToken || null);
-              setPlaybackPolicy(result.data.playbackPolicy || undefined);
-            }
-          })
-          .catch((error) => {
-            console.error("Error fetching playback token:", error);
-            // Fallback to using muxPlaybackId directly
-            setPlaybackId(muxPlaybackId);
-            setPlaybackToken(null);
-          });
-      } else if (muxPlaybackId) {
-        // Fallback: use muxPlaybackId directly if video is not ready or token fetch fails
-        setPlaybackId(muxPlaybackId);
-        setPlaybackToken(null);
-      }
-    }, [
-      id,
-      muxPlaybackId,
-      status,
-      getPlaybackToken,
-    ]);
+  useEffect(() => {
+    // Fetch playback token if video exists and has muxPlaybackId
+    if (id && muxPlaybackId && status === "READY") {
+      getPlaybackToken(id)
+        .unwrap()
+        .then((result) => {
+          if (result.success && result.data) {
+            setPlaybackId(result.data.playbackId);
+            setPlaybackToken(result.data.playbackToken || null);
+            setPlaybackPolicy(result.data.playbackPolicy || undefined);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching playback token:", error);
+          // Fallback to using muxPlaybackId directly
+          setPlaybackId(muxPlaybackId);
+          setPlaybackToken(null);
+        });
+    } else if (muxPlaybackId) {
+      // Fallback: use muxPlaybackId directly if video is not ready or token fetch fails
+      setPlaybackId(muxPlaybackId);
+      setPlaybackToken(null);
+    }
+  }, [id, muxPlaybackId, status, getPlaybackToken]);
 
   const content = (
     <>
@@ -105,9 +98,7 @@ export function VideoCard({
             className="h-full w-full"
             playbackId={playbackId}
             poster={thumbnailUrl ?? undefined}
-            {...(playbackToken
-              ? { tokens: { playback: playbackToken } }
-              : {})}
+            {...(playbackToken ? { tokens: { playback: playbackToken } } : {})}
             streamType="on-demand"
             autoPlay={false}
             muted
@@ -137,7 +128,10 @@ export function VideoCard({
                   aria-hidden
                 >
                   <div className="rounded-full border border-white/20 bg-black/40 p-3 shadow-lg backdrop-blur-sm dark:bg-white/10">
-                    <span className="material-icons-outlined text-2xl text-white" aria-hidden>
+                    <span
+                      className="material-icons-outlined text-2xl text-white"
+                      aria-hidden
+                    >
                       lock
                     </span>
                   </div>
@@ -146,7 +140,10 @@ export function VideoCard({
             ) : (
               <div className="absolute inset-0 flex items-center justify-center bg-muted/80">
                 <div className="rounded-full border border-white/20 bg-black/30 p-3 shadow-lg backdrop-blur-sm dark:bg-white/10">
-                  <span className="material-icons-outlined text-2xl text-white" aria-hidden>
+                  <span
+                    className="material-icons-outlined text-2xl text-white"
+                    aria-hidden
+                  >
                     lock
                   </span>
                 </div>
@@ -154,14 +151,17 @@ export function VideoCard({
             )}
           </>
         )}
-        
+
         {/* Duration badge */}
         <span className="absolute bottom-2 right-2 rounded-md bg-black/75 px-2 py-1 text-caption font-medium text-white">
           {duration}
         </span>
       </div>
 
-      <Link href={href ?? ""} className="flex flex-1 flex-col gap-2 p-4 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl">
+      <Link
+        href={href ?? ""}
+        className="flex flex-1 flex-col gap-2 p-4 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl"
+      >
         {/* Category + FREE tag row */}
         <div className="flex flex-wrap items-center gap-2">
           {category ? (
@@ -175,7 +175,11 @@ export function VideoCard({
             <span className="rounded bg-neutral-800/40 px-2 py-0.5 text-caption font-medium text-white dark:bg-gray-700">
               FREE
             </span>
-          ) : null}
+          ) : (
+            <span className="rounded bg-accent px-2 py-0.5 text-caption font-medium text-white">
+              PREMIUM
+            </span>
+          )}
         </div>
 
         {/* Title */}
@@ -184,7 +188,10 @@ export function VideoCard({
             {title}
           </h3>
         ) : (
-          <div className="h-5 w-full max-w-[85%] rounded bg-muted/50" aria-hidden />
+          <div
+            className="h-5 w-full max-w-[85%] rounded bg-muted/50"
+            aria-hidden
+          />
         )}
 
         {/* Description */}
@@ -198,27 +205,31 @@ export function VideoCard({
         )}
 
         {/* Author */}
-        {authorName && <div className="mt-auto flex items-center gap-2">
-          {authorAvatarUrl ? (
-            <Image
-              src={authorAvatarUrl}
-              alt=""
-              width={32}
-              height={32}
-              className="h-8 w-8 shrink-0 rounded-full object-cover"
-            />
-          ) : (
-            <div
-              className="h-8 w-8 shrink-0 rounded-full bg-muted/50"
-              aria-hidden
-            />
-          )}
-          {authorName ? (
-            <span className="text-body-md text-muted truncate">{authorName}</span>
-          ) : (
-            <div className="h-4 w-24 rounded bg-muted/40" aria-hidden />
-          )}
-        </div>}
+        {authorName && (
+          <div className="mt-auto flex items-center gap-2">
+            {authorAvatarUrl ? (
+              <Image
+                src={authorAvatarUrl}
+                alt=""
+                width={32}
+                height={32}
+                className="h-8 w-8 shrink-0 rounded-full object-cover"
+              />
+            ) : (
+              <div
+                className="h-8 w-8 shrink-0 rounded-full bg-muted/50"
+                aria-hidden
+              />
+            )}
+            {authorName ? (
+              <span className="text-body-md text-muted truncate">
+                {authorName}
+              </span>
+            ) : (
+              <div className="h-4 w-24 rounded bg-muted/40" aria-hidden />
+            )}
+          </div>
+        )}
       </Link>
     </>
   );
@@ -233,11 +244,14 @@ export function VideoCard({
     return (
       <article className={wrapperClassName}>
         {isInternal ? (
-          <div className={linkClass}>
-            {content}
-          </div>
+          <div className={linkClass}>{content}</div>
         ) : (
-          <a href={href} className={linkClass} target="_blank" rel="noopener noreferrer">
+          <a
+            href={href}
+            className={linkClass}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {content}
           </a>
         )}
