@@ -4,8 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import MuxPlayer from "@mux/mux-player-react";
 import { formatLevelWithHyphenToSpace } from "../utils/formatLevel";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLazyGetVideoPlaybackTokenQuery } from "@/services/videoApi";
+import { formatDuration } from "@/features/home/VideoCard";
 
 export interface VideoCardProps {
   /** Thumbnail image URL (optional; shows placeholder if missing) */
@@ -88,6 +89,14 @@ export function VideoCard({
       setPlaybackToken(null);
     }
   }, [id, muxPlaybackId, status, getPlaybackToken]);
+  const playerRef = useRef<any>(null);
+  const [videoDuration, setVideoDuration] = useState<string | number | null>(
+    null,
+  );
+  const handleLoadedMetadata = () => {
+    const d = playerRef.current?.duration;
+    if (d) setVideoDuration(formatDuration(d));
+  };
 
   const content = (
     <>
@@ -95,11 +104,13 @@ export function VideoCard({
       <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted/60">
         {playbackPolicy === "public" ? (
           <MuxPlayer
+            ref={playerRef}
             className="h-full w-full"
             playbackId={playbackId}
             poster={thumbnailUrl ?? undefined}
             {...(playbackToken ? { tokens: { playback: playbackToken } } : {})}
             streamType="on-demand"
+            onLoadedMetadata={handleLoadedMetadata}
             autoPlay={false}
             muted
             playsInline
@@ -153,9 +164,11 @@ export function VideoCard({
         )}
 
         {/* Duration badge */}
-        <span className="absolute bottom-2 right-2 rounded-md bg-black/75 px-2 py-1 text-caption font-medium text-white">
-          {duration}
-        </span>
+        {videoDuration && (
+          <span className="absolute bottom-2 right-2 rounded-md bg-black/75 px-2 py-1 text-caption font-medium text-white">
+            {videoDuration}
+          </span>
+        )}
       </div>
 
       <Link
@@ -272,20 +285,20 @@ export function VideoCardSkeleton() {
       className="flex flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-soft dark:border-gray-700"
       aria-hidden
     >
-      <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted/60 animate-pulse" />
+      <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted animate-pulse" />
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex justify-between gap-2">
-          <div className="h-3 w-24 rounded bg-muted/60 animate-pulse" />
-          <div className="h-5 w-12 rounded bg-muted/50 animate-pulse" />
+          <div className="h-2 w-24 rounded bg-muted animate-pulse" />
+          <div className="h-4 w-12 rounded bg-muted animate-pulse" />
         </div>
-        <div className="h-5 w-full max-w-[90%] rounded bg-muted/50 animate-pulse" />
+        <div className="h-5 w-full max-w-[90%] rounded bg-muted animate-pulse" />
         <div className="space-y-2">
-          <div className="h-3 w-full rounded bg-muted/40 animate-pulse" />
-          <div className="h-3 w-[80%] rounded bg-muted/40 animate-pulse" />
+          <div className="h-3 w-full rounded bg-muted animate-pulse" />
+          <div className="h-3 w-[80%] rounded bg-muted animate-pulse" />
         </div>
         <div className="mt-auto flex items-center gap-2">
-          <div className="h-8 w-8 shrink-0 rounded-full bg-muted/50 animate-pulse" />
-          <div className="h-4 w-28 rounded bg-muted/40 animate-pulse" />
+          <div className="h-7 w-7 shrink-0 rounded-full bg-muted animate-pulse" />
+          <div className="h-3 w-24 rounded bg-muted animate-pulse" />
         </div>
       </div>
     </article>

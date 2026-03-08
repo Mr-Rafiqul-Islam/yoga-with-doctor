@@ -16,7 +16,7 @@ function buildDetailsFromClass(classData: ClassItem): FreeVideoDetails {
 
   return {
     difficulty,
-    instructorTitle: "Clinically guided practice",
+    instructorTitle: "Orthopedics Specialist, Spine Surgeion, Yoga Instructor",
     medicalBenefitsIntro: description,
     benefits: [
       {

@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import MuxPlayer from "@mux/mux-player-react";
 import type { VideoCardProps } from "./VideoCard";
 import type { FreeVideoDetails } from "../data/freeVideoDetailsData";
+import { useLazyGetVideoPlaybackTokenQuery } from "@/services/videoApi";
+import { formatDuration } from "@/features/home/VideoCard";
 
 const TAB_IDS = ["overview", "equipment", "reviews"] as const;
 
@@ -14,16 +16,52 @@ export interface FreeVideoDetailsContentProps {
   details: FreeVideoDetails;
 }
 
-/** Format duration "15:00" -> "15 mins" for display. */
-function formatDurationMins(duration?: string): string {
-  if (!duration) return "0 mins";
-  const [m] = duration.split(":").map(Number);
-  return m ? `${m} mins` : "0 mins";
-}
-
-export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsContentProps) {
-  const [activeTab, setActiveTab] = useState<(typeof TAB_IDS)[number]>("overview");
+export function FreeVideoDetailsContent({
+  video,
+  details,
+}: FreeVideoDetailsContentProps) {
+  const [activeTab, setActiveTab] =
+    useState<(typeof TAB_IDS)[number]>("overview");
   const [followed, setFollowed] = useState(false);
+  const [playbackId, setPlaybackId] = useState<string | undefined>(undefined);
+  const [playbackToken, setPlaybackToken] = useState<string | null>(null);
+  const [playbackPolicy, setPlaybackPolicy] = useState<string | undefined>(
+    undefined,
+  );
+  const [getPlaybackToken] = useLazyGetVideoPlaybackTokenQuery();
+
+  useEffect(() => {
+    // Fetch playback token if video exists and has muxPlaybackId
+    if (video.id && video.muxPlaybackId && video.status === "READY") {
+      getPlaybackToken(video.id)
+        .unwrap()
+        .then((result) => {
+          if (result.success && result.data) {
+            setPlaybackId(result.data.playbackId);
+            setPlaybackToken(result.data.playbackToken || null);
+            setPlaybackPolicy(result.data.playbackPolicy || undefined);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching playback token:", error);
+          // Fallback to using muxPlaybackId directly
+          setPlaybackId(video.muxPlaybackId);
+          setPlaybackToken(null);
+        });
+    } else if (video.muxPlaybackId) {
+      // Fallback: use muxPlaybackId directly if video is not ready or token fetch fails
+      setPlaybackId(video.muxPlaybackId);
+      setPlaybackToken(null);
+    }
+  }, [video.id, video.muxPlaybackId, video.status, getPlaybackToken]);
+  const playerRef = useRef<any>(null);
+  const [videoDuration, setVideoDuration] = useState<string | number | null>(
+    null,
+  );
+  const handleLoadedMetadata = () => {
+    const d = playerRef.current?.duration;
+    if (d) setVideoDuration(formatDuration(d));
+  };
   const {
     difficulty,
     instructorTitle,
@@ -38,12 +76,15 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
     <div className="space-y-8">
       {/* Video player */}
       <div className="relative w-full overflow-hidden rounded-2xl bg-gray-900 shadow-xl aspect-video md:aspect-[21/9] group cursor-pointer">
-        {video.muxPlaybackId ? (
+        {playbackId ? (
           <MuxPlayer
+            ref={playerRef}
             className="h-full w-full"
-            playbackId={video.muxPlaybackId}
+            playbackId={playbackId}
             poster={video.thumbnailUrl ?? undefined}
             streamType="on-demand"
+            {...(playbackToken ? { tokens: { playback: playbackToken } } : {})}
+            onLoadedMetadata={handleLoadedMetadata}
             autoPlay={false}
             playsInline
             style={{
@@ -65,10 +106,6 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
             priority
           />
         ) : null}
-        
-        
-        
-        
       </div>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
@@ -82,25 +119,40 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
               </h1>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted">
                 <span className="flex items-center gap-1">
-                  <span className="material-icons-outlined text-base">schedule</span>
-                  {formatDurationMins(video.duration)}
+                  <span className="material-icons-outlined text-base">
+                    schedule
+                  </span>
+                  {videoDuration}
                 </span>
                 {difficulty ? (
                   <>
-                    <span className="h-1 w-1 rounded-full bg-gray-400" aria-hidden />
+                    <span
+                      className="h-1 w-1 rounded-full bg-gray-400"
+                      aria-hidden
+                    />
                     <span className="flex items-center gap-1">
-                      <span className="material-icons-outlined text-base">signal_cellular_alt</span>
+                      <span className="material-icons-outlined text-base">
+                        signal_cellular_alt
+                      </span>
                       {difficulty}
                     </span>
                   </>
                 ) : null}
-                <span className="h-1 w-1 rounded-full bg-gray-400" aria-hidden />
-                <span className="font-semibold text-primary">{video.isFree? "Free" : "Premium/Paid"}</span>
+                <span
+                  className="h-1 w-1 rounded-full bg-gray-400"
+                  aria-hidden
+                />
+                <span className="font-semibold text-primary">
+                  {video.isFree ? "Free" : "Premium/Paid"}
+                </span>
               </div>
             </div>
             <div className="flex flex-col items-end gap-1">
               <div className="flex items-center gap-1 rounded-lg bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
-                <span className="material-icons-outlined text-amber-500 text-sm">star</span> 4.9
+                <span className="material-icons-outlined text-amber-500 text-sm">
+                  star
+                </span>{" "}
+                4.9
               </div>
               <span className="text-xs text-muted">1.2k Ratings</span>
             </div>
@@ -121,8 +173,12 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
                 <div className="h-14 w-14 shrink-0 rounded-full bg-muted/50" />
               )}
               <div>
-                <h3 className="font-bold text-foreground">{video.authorName ?? "Instructor"}</h3>
-                <p className="text-sm text-muted">{instructorTitle ?? "Wellness Instructor"}</p>
+                <h3 className="font-bold text-foreground">
+                  {video.authorName ?? "Instructor"}
+                </h3>
+                <p className="text-sm text-muted">
+                  {instructorTitle ?? "Wellness Instructor"}
+                </p>
               </div>
             </div>
             <button
@@ -135,7 +191,10 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
           </div>
 
           {/* Tabs */}
-          <nav aria-label="Tabs" className="-mb-px border-b border-border dark:border-gray-700">
+          <nav
+            aria-label="Tabs"
+            className="-mb-px border-b border-border dark:border-gray-700"
+          >
             <div className="flex space-x-8">
               {TAB_IDS.map((id) => (
                 <button
@@ -160,7 +219,9 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
               <h2 className="font-display text-2xl font-bold text-foreground">
                 Medical Benefits
               </h2>
-              <p className="leading-relaxed text-muted">{medicalBenefitsIntro}</p>
+              <p className="leading-relaxed text-muted">
+                {medicalBenefitsIntro}
+              </p>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {benefits.map((b) => (
                   <div
@@ -179,7 +240,9 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
                       }`}
                     >
                       <span className="material-icons-outlined">
-                        {b.icon === "mood" ? "sentiment_satisfied_alt" : "favorite"}
+                        {b.icon === "mood"
+                          ? "sentiment_satisfied_alt"
+                          : "favorite"}
                       </span>
                     </div>
                     <div>
@@ -208,7 +271,10 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
             </div>
           )}
           {activeTab === "equipment" && (
-            <p className="text-muted">No special equipment required. A mat and comfortable clothing are recommended.</p>
+            <p className="text-muted">
+              No special equipment required. A mat and comfortable clothing are
+              recommended.
+            </p>
           )}
           {activeTab === "reviews" && (
             <p className="text-muted">Reviews will be displayed here.</p>
@@ -286,13 +352,17 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
                 className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-white dark:ring-gray-800"
               />
               <div>
-                <h3 className="font-bold text-foreground">Doctor&apos;s Note</h3>
+                <h3 className="font-bold text-foreground">
+                  Doctor&apos;s Note
+                </h3>
                 <p className="text-xs font-medium uppercase tracking-wide text-blue-600 dark:text-blue-400">
                   {doctorNote.name}, {doctorNote.title}
                 </p>
               </div>
             </div>
-            <p className="mb-4 text-sm italic text-foreground/90">{doctorNote.quote}</p>
+            <p className="mb-4 text-sm italic text-foreground/90">
+              {doctorNote.quote}
+            </p>
             <div className="flex flex-wrap gap-2">
               {doctorNote.tags.map((tag) => (
                 <span
@@ -325,7 +395,9 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
                       sizes="96px"
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                      <span className="material-icons-outlined text-xl text-white">lock</span>
+                      <span className="material-icons-outlined text-xl text-white">
+                        lock
+                      </span>
                     </div>
                     <div className="absolute left-1 top-1 rounded bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold text-black">
                       PREMIUM
@@ -338,7 +410,9 @@ export function FreeVideoDetailsContent({ video, details }: FreeVideoDetailsCont
                     <p className="mt-1 text-xs text-muted">{item.author}</p>
                     <div className="mt-2 flex items-center gap-2 text-xs text-muted">
                       <span className="flex items-center gap-0.5">
-                        <span className="material-icons-outlined text-[10px]">schedule</span>
+                        <span className="material-icons-outlined text-[10px]">
+                          schedule
+                        </span>
                         {item.duration}
                       </span>
                     </div>
