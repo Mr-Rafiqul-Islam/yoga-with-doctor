@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getToken } from "@/utils/tokenStore";
+import { ArticleAuthor } from "@/features/articles/data/dummyArticles";
+import { FreeVideoDetails } from "@/features/videos/free/data/freeVideoDetailsData";
 
 const baseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "";
@@ -32,6 +34,8 @@ export interface ClassItem {
   mediaAssetId: string;
   video: ClassVideo;
   shortDescription: string;
+  description: string;
+  author:ArticleAuthor;
 }
 
 export interface PaginationMeta {
@@ -64,7 +68,7 @@ export interface GetClassesParams {
 export interface ClassResponse {
   success: boolean;
   message: string;
-  data: ClassItem;
+  data: FreeVideoDetails;
 }
 
 export interface ActionResponse {

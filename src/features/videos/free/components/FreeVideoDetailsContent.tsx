@@ -62,15 +62,16 @@ export function FreeVideoDetailsContent({
     const d = playerRef.current?.duration;
     if (d) setVideoDuration(formatDuration(d));
   };
-  const {
-    difficulty,
-    instructorTitle,
-    medicalBenefitsIntro,
-    benefits,
-    doctorNote,
-    nextInSeries,
-    relatedPremium,
-  } = details;
+  
+
+  const doctorsNote= {
+    name: details.author.name,
+    title: details.author.title,
+    avatarUrl:
+      details.author.avatarSrc,
+    quote: details.author.quotes ?? "Gentle movement and mindful breathing can support recovery and daily function. Listen to your body and modify as needed.",
+    tags: details.author.tags ?? ["#Wellness", "#MindBody"],
+  };
 
   return (
     <div className="space-y-8">
@@ -124,7 +125,7 @@ export function FreeVideoDetailsContent({
                   </span>
                   {videoDuration}
                 </span>
-                {difficulty ? (
+                {video.level ? (
                   <>
                     <span
                       className="h-1 w-1 rounded-full bg-gray-400"
@@ -134,7 +135,7 @@ export function FreeVideoDetailsContent({
                       <span className="material-icons-outlined text-base">
                         signal_cellular_alt
                       </span>
-                      {difficulty}
+                      {video.level}
                     </span>
                   </>
                 ) : null}
@@ -177,7 +178,7 @@ export function FreeVideoDetailsContent({
                   {video.authorName ?? "Instructor"}
                 </h3>
                 <p className="text-sm text-muted">
-                  {instructorTitle ?? "Wellness Instructor"}
+                  {details.author.title ?? "Wellness Instructor"}
                 </p>
               </div>
             </div>
@@ -220,54 +221,11 @@ export function FreeVideoDetailsContent({
                 Medical Benefits
               </h2>
               <p className="leading-relaxed text-muted">
-                {medicalBenefitsIntro}
+                {details.shortDescription}
               </p>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {benefits.map((b) => (
-                  <div
-                    key={b.title}
-                    className={`flex items-center gap-4 rounded-xl border p-4 ${
-                      b.icon === "mood"
-                        ? "border-emerald-100 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-900/20"
-                        : "border-blue-100 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20"
-                    }`}
-                  >
-                    <div
-                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full shadow-sm ${
-                        b.icon === "mood"
-                          ? "bg-white text-emerald-600 dark:bg-emerald-800 dark:text-emerald-300"
-                          : "bg-white text-blue-600 dark:bg-blue-800 dark:text-blue-300"
-                      }`}
-                    >
-                      <span className="material-icons-outlined">
-                        {b.icon === "mood"
-                          ? "sentiment_satisfied_alt"
-                          : "favorite"}
-                      </span>
-                    </div>
-                    <div>
-                      <h4
-                        className={`text-sm font-semibold ${
-                          b.icon === "mood"
-                            ? "text-emerald-900 dark:text-emerald-100"
-                            : "text-blue-900 dark:text-blue-100"
-                        }`}
-                      >
-                        {b.title}
-                      </h4>
-                      <p
-                        className={`mt-0.5 text-xs ${
-                          b.icon === "mood"
-                            ? "text-emerald-700 dark:text-emerald-300"
-                            : "text-blue-700 dark:text-blue-300"
-                        }`}
-                      >
-                        {b.description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <article className="prose prose-sm prose-invert max-w-none">
+                {details.description}
+              </article>
             </div>
           )}
           {activeTab === "equipment" && (
@@ -289,8 +247,8 @@ export function FreeVideoDetailsContent({
             Start Practice Now
           </Link>
 
-          {/* Next in Series */}
-          {nextInSeries.length > 0 && (
+          {/* Next in Series
+          {details.nextInSeries.length > 0 && (
             <div className="space-y-4 pt-6">
               <div className="flex items-center justify-between">
                 <h2 className="font-display text-2xl font-bold text-foreground">
@@ -336,7 +294,7 @@ export function FreeVideoDetailsContent({
                 ))}
               </div>
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Sidebar */}
@@ -345,8 +303,8 @@ export function FreeVideoDetailsContent({
           <div className="rounded-2xl border border-blue-100 bg-blue-50 p-6 dark:border-blue-800 dark:bg-blue-900/10">
             <div className="mb-4 flex items-start gap-4">
               <Image
-                src={doctorNote.avatarUrl}
-                alt=""
+                src={doctorsNote.avatarUrl}
+                alt={doctorsNote.name}
                 width={48}
                 height={48}
                 className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-white dark:ring-gray-800"
@@ -356,15 +314,15 @@ export function FreeVideoDetailsContent({
                   Doctor&apos;s Note
                 </h3>
                 <p className="text-xs font-medium uppercase tracking-wide text-blue-600 dark:text-blue-400">
-                  {doctorNote.name}, {doctorNote.title}
+                  {doctorsNote.name}, {doctorsNote.title}
                 </p>
               </div>
             </div>
             <p className="mb-4 text-sm italic text-foreground/90">
-              {doctorNote.quote}
+                {doctorsNote.quote}
             </p>
             <div className="flex flex-wrap gap-2">
-              {doctorNote.tags.map((tag) => (
+              {doctorsNote.tags.map((tag) => (
                 <span
                   key={tag}
                   className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-800 dark:text-blue-100"
@@ -381,7 +339,7 @@ export function FreeVideoDetailsContent({
               Related Premium Flows
             </h3>
             <div className="space-y-6">
-              {relatedPremium.map((item) => (
+              {details.relatedPremium && details.relatedPremium.length > 0 && details.relatedPremium.map((item) => (
                 <div
                   key={item.title}
                   className="flex gap-4 group cursor-pointer"

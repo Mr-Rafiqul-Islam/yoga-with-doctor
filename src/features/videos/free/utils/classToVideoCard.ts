@@ -17,8 +17,9 @@ export function classItemToVideoCard(classItem: ClassItem): VideoCardProps {
     category: classItem.category[0] ,
     title: classItem.title,
     description: classItem.shortDescription,
-    authorName: "Dr. Md Shah Alam" as string | undefined ,
-    authorAvatarUrl: "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-Hero.jpeg" as string | null,
+    authorName: classItem.author.name as string | undefined ,
+    authorAvatarUrl: classItem.author.avatarSrc as string | null,
+    
     isFree: classItem.access === "PUBLIC",
     muxPlaybackId: classItem.video?.muxPlaybackId,
     muxAssetId: classItem.video?.muxAssetId,

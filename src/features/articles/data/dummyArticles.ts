@@ -44,6 +44,8 @@ export type ArticleAuthor = {
   bioSnippet: string;
   fullBio: string;
   profileLink: string;
+  quotes?:string;
+  tags?:string[];
 };
 
 
