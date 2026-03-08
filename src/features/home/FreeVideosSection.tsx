@@ -1,5 +1,10 @@
+'use client';
 import Link from "next/link";
 import { VideoCard } from "./VideoCard";
+import { VideoCardSkeleton } from "../videos/free/components/VideoCard";
+import { useGetClassesQuery } from "@/services/classApi";
+import { classItemToVideoCard } from "../videos/free/utils/classToVideoCard";
+import { useMemo } from "react";
 
 const FREE_VIDEOS = [
   {
@@ -39,8 +44,20 @@ const FREE_VIDEOS = [
     imageAlt: "Bedtime Flow for Sleep",
   },
 ];
+const PAGE_SIZE = 20;
 
 export function FreeVideosSection() {
+  const { data, isLoading, isFetching } = useGetClassesQuery({
+    page: 1,
+    limit: PAGE_SIZE,
+  });
+  const videosFromApi = useMemo(
+    () => (data?.data?.classes ?? []).filter((item) => item.access === "PUBLIC").slice(0, 4).map(classItemToVideoCard),
+    [data?.data?.classes]
+  );
+
+  const showSkeleton = isLoading || isFetching;
+
   return (
     <section
       className="mx-auto mb-20 max-w-7xl px-4 sm:px-6 lg:px-8"
@@ -60,15 +77,19 @@ export function FreeVideosSection() {
         </div>
         <Link
           href="/videos/free"
-          className="text-body-md font-medium text-primary transition-colors hover:text-primary-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-radius-sm shrink-0"
+          className="text-body-md font-medium text-primary transition-colors hover:text-primary-variant focus:outline-none  rounded-radius-sm shrink-0"
         >
           See all
         </Link>
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {FREE_VIDEOS.map((video) => (
-          <VideoCard key={video.title} {...video} />
-        ))}
+        {showSkeleton
+          ? Array.from({ length: 4 }).map((_, i) => (
+              <VideoCardSkeleton key={i} />
+            ))
+          : videosFromApi.map((video) => (
+              <VideoCard key={video.title} {...video} />
+            ))}
       </div>
     </section>
   );

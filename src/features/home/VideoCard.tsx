@@ -1,54 +1,83 @@
-import Image from "next/image";
+"use client";
+import MuxPlayer from "@mux/mux-player-react";
 import Link from "next/link";
+import { useRef, useState } from "react";
 
 export type VideoCardProps = {
-  title: string;
-  duration: string;
-  level: string;
-  instructor: string;
-  thumbnail: string;
-  imageAlt: string;
+  thumbnailUrl?: string | null;
+  duration?: string;
+  category?: string;
+  title?: string;
+  description?: string;
+  authorName?: string;
+  authorAvatarUrl?: string | null;
+  isFree?: boolean;
   href?: string;
+  slug?: string;
+  muxPlaybackId?: string;
+  muxAssetId?: string;
+  id?: string;
+  level?: string;
+  status?: string;
 };
+export function formatDuration(seconds: number) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+}
 
 export function VideoCard({
-  title,
+  thumbnailUrl,
   duration,
   level,
-  instructor,
-  thumbnail,
-  imageAlt,
-  href = "#",
+  title,
+  authorName = "Dr. Md Shah Alam",
+  slug,
+  muxPlaybackId,
 }: VideoCardProps) {
+  const playerRef = useRef<any>(null);
+  const [videoDuration, setVideoDuration] = useState<string | number | null>(null);
+  const handleLoadedMetadata = () => {
+    const d = playerRef.current?.duration;
+    if (d) setVideoDuration(formatDuration(d));
+  };
   const content = (
     <>
       <div className="relative h-48">
-        <Image
-          src={thumbnail}
-          alt={imageAlt}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        <MuxPlayer
+          ref={playerRef}
+          className="h-full w-full"
+          playbackId={muxPlaybackId}
+          poster={thumbnailUrl ?? undefined}
+          streamType="on-demand"
+          onLoadedMetadata={handleLoadedMetadata}
+          autoPlay={false}
+          playsInline
+          style={{
+            aspectRatio: "auto",
+            height: "100%",
+            width: "100%",
+            "--controls-backdrop-color": "transparent",
+            "--media-object-fit": "cover",
+            "--media-object-position": "center",
+          }}
         />
-        <div
-          className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover:bg-black/40"
-          aria-hidden
-        >
-          <div className="flex h-12 w-12 items-center justify-center rounded-radius-full bg-white/90 pl-1 text-primary transition-transform group-hover:scale-110">
-            <span className="text-2xl" aria-hidden>▶</span>
-          </div>
-        </div>
-        <span className="absolute bottom-2 right-2 rounded bg-black/70 px-2 py-1 text-caption text-white">
-          {duration}
-        </span>
+        { videoDuration && <span className="absolute bottom-2 right-2 rounded bg-black/70 px-2 py-1 text-caption text-white">
+          {videoDuration}
+        </span>}
       </div>
       <div className="p-4">
-        <h3 className="mb-1 line-clamp-1 font-sans text-h2 font-semibold text-foreground">
-          {title}
-        </h3>
+        <Link
+          href={slug ? `/videos/free/${slug}` : "#"}
+          className="flex flex-col focus:outline-none rounded-radius-md"
+        >
+          <h3 className="mb-1 line-clamp-1 font-sans text-h2 font-semibold text-foreground">
+            {title}
+          </h3>
+        </Link>
         <div className="flex items-center justify-between text-body-md text-muted">
-          <span>{level}</span>
-          <span>{instructor}</span>
+          <span className="capitalize">{level}</span>
+          <span>{authorName}</span>
         </div>
       </div>
     </>
@@ -56,16 +85,7 @@ export function VideoCard({
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-radius-md bg-surface shadow-elevation-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation-md">
-      {href ? (
-        <Link
-          href={href}
-          className="flex flex-col focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-radius-md"
-        >
-          {content}
-        </Link>
-      ) : (
-        content
-      )}
+      {content}
     </article>
   );
 }
