@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { VideoCard } from "./VideoCard";
 import { VideoCardSkeleton } from "../videos/free/components/VideoCard";
-import { useGetClassesQuery } from "@/services/classApi";
+import { useGetClassesQuery } from "@/slices/classes";
 import { classItemToVideoCard } from "../videos/free/utils/classToVideoCard";
 import { useMemo } from "react";
 

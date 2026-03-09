@@ -5,7 +5,7 @@ import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { filterVideos } from "@/utils/filterVideos";
 import { FilterAndSearchSection } from "./FilterAndSearchSection";
 import { VideoGridSection } from "./VideoGridSection";
-import { useGetClassesQuery } from "@/services/classApi";
+import { useGetClassesQuery } from "@/slices/classes";
 import { classItemToVideoCard } from "../utils/classToVideoCard";
 import { formatLevelWithHyphenToSpace } from "../utils/formatLevel";
 import { Pagination } from "@/features/courses/components";

@@ -5,7 +5,7 @@ import Link from "next/link";
 import MuxPlayer from "@mux/mux-player-react";
 import { formatLevelWithHyphenToSpace } from "../utils/formatLevel";
 import { useEffect, useRef, useState } from "react";
-import { useLazyGetVideoPlaybackTokenQuery } from "@/services/videoApi";
+import { useLazyGetVideoPlaybackTokenQuery } from "@/slices/videos";
 import { formatDuration } from "@/features/home/VideoCard";
 
 export interface VideoCardProps {

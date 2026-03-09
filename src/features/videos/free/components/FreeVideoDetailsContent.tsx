@@ -6,7 +6,7 @@ import Link from "next/link";
 import MuxPlayer from "@mux/mux-player-react";
 import type { VideoCardProps } from "./VideoCard";
 import type { FreeVideoDetails } from "../data/freeVideoDetailsData";
-import { useLazyGetVideoPlaybackTokenQuery } from "@/services/videoApi";
+import { useLazyGetVideoPlaybackTokenQuery } from "@/slices/videos";
 import { formatDuration } from "@/features/home/VideoCard";
 
 const TAB_IDS = ["overview", "equipment", "reviews"] as const;

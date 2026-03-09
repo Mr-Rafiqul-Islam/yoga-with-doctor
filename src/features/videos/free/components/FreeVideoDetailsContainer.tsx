@@ -1,8 +1,8 @@
 "use client";
 
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
-import { useGetClassBySlugQuery } from "@/services/classApi";
-import type { ClassItem } from "@/services/classApi";
+import { useGetClassBySlugQuery } from "@/slices/classes";
+import type { ClassItem } from "@/slices/classes";
 import type { FreeVideoDetails } from "../data/freeVideoDetailsData";
 import { classItemToVideoCard } from "../utils/classToVideoCard";
 import { FreeVideoDetailsContent } from "./FreeVideoDetailsContent";
