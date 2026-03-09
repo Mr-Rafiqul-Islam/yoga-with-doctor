@@ -2,11 +2,11 @@
 import Link from "next/link";
 
 const platformLinks = [
-  { href: "/courses", label: "Browse Courses" },
-  { href: "/videos/free", label: "Our Videos" },
-  { href: "/articles", label: "Medical Articles" },
-  { href: "#", label: "Our Instructors" },
-] as const;
+  { href: "/courses", label: "Browse Courses", target:"_self"},
+  { href: "/videos", label: "Our Videos", target:"_self"},
+  { href: "/articles", label: "Medical Articles", target:"_self"},
+  { href: "https://drshahalam.com/", label: "Our Instructor" , target:"_blank"},
+] as const 
 
 const supportLinks = [
   { href: "/faq", label: "FAQs" },
@@ -72,10 +72,11 @@ export function Footer() {
           <div>
             <h3 className="mb-4 font-semibold text-white">Platform</h3>
             <ul className="space-y-2 text-sm">
-              {platformLinks.map(({ href, label }) => (
+              {platformLinks.map(({ href, label, target }) => (
                 <li key={label}>
                   <Link
                     href={href}
+                    target={target}
                     className="text-gray-400 transition-colors hover:text-primary focus:outline-none focus:ring-offset-gray-900 rounded-radius-sm"
                   >
                     {label}

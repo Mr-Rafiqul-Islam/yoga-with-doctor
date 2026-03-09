@@ -18,7 +18,7 @@ const mainNavItems = [
   { href: "/", label: "Home" },
   { href: "/courses", label: "Courses" },
   { href: "https://biohealingbd.com/", label: "Shop", external: true },
-  { href: "/videos/free", label: "Videos" },
+  { href: "/videos", label: "Videos" },
   { href: "/articles", label: "Articles" },
 ] as const;
 
