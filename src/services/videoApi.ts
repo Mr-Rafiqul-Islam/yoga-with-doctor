@@ -1,4 +1,4 @@
-import { getToken } from "@/utils/tokenStore";
+import { getToken } from "@/slices/auth";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const baseUrl =
@@ -13,7 +13,7 @@ export const videoApi = createApi({
     prepareHeaders: (headers) => {
       const token = getToken();
       if (token) {
-        headers.set("authorization", `Bearer ${token}`);
+        headers.set("Authorization", `Bearer ${token}`);
       }
       return headers;
     },

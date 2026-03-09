@@ -1,5 +1,5 @@
-import { DashboardGuard } from "@/components/auth";
 import DashboardSidebar from "@/components/layout/DashboardSidebar";
+import { RequireAuth } from "@/components/auth";
 
 export default function DashboardLayout({
   children,
@@ -7,7 +7,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <DashboardGuard>
+    <RequireAuth>
       <section className="relative min-h-[calc(100vh-80px)]">
         <aside className="fixed left-0 top-[80px] z-30 flex h-[calc(100vh-80px)] w-14 shrink-0 flex-col border-l border-sky-200 dark:border-gray-700 bg-surface p-2 md:w-64 md:p-5">
           <DashboardSidebar />
@@ -16,6 +16,6 @@ export default function DashboardLayout({
           {children}
         </div>
       </section>
-    </DashboardGuard>
+    </RequireAuth>
   );
 }

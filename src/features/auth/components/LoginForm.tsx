@@ -3,25 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useLoginMutation } from "@/services/authApi";
+import { useLoginMutation } from "@/slices/auth";
+import { getDeviceId } from "@/utils/deviceId";
 
-// Phone number formatting helper - allows common phone formats
-const formatPhoneNumber = (value: string): string => {
-  // Allow digits, spaces, hyphens, parentheses, and + for international format
-  const cleaned = value.replace(/[^\d+\s\-\(\)]/g, "");
-  return cleaned;
-};
 
-type LoginFormProps = {
-  onLoginSuccess?: (phone: string) => void;
-};
-
-/**
- * LoginForm - Right panel component for login page.
- * Contains phone number and password inputs, login button, social auth, and signup link.
- * Uses RTK Query login mutation; on OTP_REQUIRED moves to verify step, on direct success redirects.
- */
-export function LoginForm({ onLoginSuccess }: LoginFormProps = {}) {
+export function LoginForm({ onLoginSuccess }: { onLoginSuccess?: (phone: string) => void } = {}) {
   const router = useRouter();
   const [phone, setPhone] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -36,30 +22,24 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps = {}) {
       const result = await login({
         phone,
         password,
-        deviceId: "web-browser",
+        deviceId: await getDeviceId(),
         platform: "web",
       }).unwrap();
 
       if (result.message === "OTP_REQUIRED") {
-        if (onLoginSuccess) {
-          const phoneToVerify =
-            "data" in result && result.data && "phone" in result.data
-              ? (result.data as { phone: string }).phone
-              : phone;
-          onLoginSuccess(phoneToVerify);
-        }
+        // Backend may return a masked phone (e.g. 018***93061). We want to show the real input phone.
+        onLoginSuccess?.(phone);
         return;
       }
 
       const data = "data" in result ? result.data : null;
       if (data && "accessToken" in data && data.accessToken) {
-        router.push("/");
+        router.push("/dashboard");
         return;
       }
     } catch (err: unknown) {
       const message =
-        (err as { data?: { message?: string }; error?: string })?.data
-          ?.message ||
+        (err as { data?: { message?: string }; error?: string })?.data?.message ||
         (err as { error?: string })?.error ||
         "Login failed. Please check your credentials.";
       setError(message);
@@ -87,7 +67,6 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps = {}) {
       )}
 
       <form className="space-y-5" onSubmit={handleSubmit}>
-        {/* Phone Number Field */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="phone"
@@ -99,11 +78,8 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps = {}) {
             id="phone"
             type="tel"
             value={phone}
-            onChange={(e) => {
-              const formatted = formatPhoneNumber(e.target.value);
-              setPhone(formatted);
-            }}
-            placeholder="+880 1234567890"
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="01234567890"
             className="h-14 w-full rounded-xl border border-border bg-surface px-4 text-base text-foreground outline-none transition-all placeholder:text-muted focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-[#12241d]"
             required
             aria-required="true"
@@ -112,7 +88,6 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps = {}) {
           />
         </div>
 
-        {/* Password Field */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <label
@@ -153,7 +128,6 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps = {}) {
           </div>
         </div>
 
-        {/* Login Button */}
         <button
           type="submit"
           disabled={isLoading}
@@ -170,46 +144,6 @@ export function LoginForm({ onLoginSuccess }: LoginFormProps = {}) {
         </button>
       </form>
 
-      {/* Social Auth for future implementation*/}
-      {/* <div className="mt-8">
-        <div className="relative flex items-center py-4">
-          <div className="flex-grow border-t border-gray-100 dark:border-gray-800" />
-          <span className="mx-4 flex-shrink text-xs font-medium uppercase tracking-widest text-muted">
-            Or continue with
-          </span>
-          <div className="flex-grow border-t border-gray-100 dark:border-gray-800" />
-        </div>
-        <div className="mt-4 grid grid-cols-2 gap-4">
-          <button
-            type="button"
-            className="flex h-12 items-center justify-center gap-2 rounded-xl border border-border transition-all hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/5"
-            aria-label="Sign in with Google"
-          >
-            <img
-              alt="Google Logo"
-              className="size-5"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDx-GJv_JowgjD1qcERl7mnDR_4cEsg6rSNmJUoE1W2NN1tBdsQqVYnoczrHNvbjdFXC8RpTmiixxmS0AufO-CbvqR-MMMiK0Ivy6DOAKXbzOXqkI2m-Zy-xjIXnvaisHVJVUQNnDWczpCddM4pHTysPDrm2A9Lr5yPIrV9qm-WuacEAVktNUochRmIY9KGS78kyGYB9jj2hbOC2E3HlJMN1aQRk99QyoownEoIu_5NmtAuapAmZuRNWXpQAbAhmY7cOP_Xad2lsQ"
-            />
-            <span className="text-sm font-medium text-foreground dark:text-gray-300">
-              Google
-            </span>
-          </button>
-          <button
-            type="button"
-            className="flex h-12 items-center justify-center gap-2 rounded-xl border border-border transition-all hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/5"
-            aria-label="Sign in with Apple"
-          >
-            <span className="material-icons-outlined text-xl text-foreground dark:text-gray-200">
-              ios
-            </span>
-            <span className="text-sm font-medium text-foreground dark:text-gray-300">
-              Apple
-            </span>
-          </button>
-        </div>
-      </div> */}
-
-      {/* Footer Link */}
       <p className="mt-10 text-center text-sm text-muted dark:text-gray-400">
         New here?{" "}
         <Link href="/auth/signup" className="ml-1 font-bold text-primary hover:underline">

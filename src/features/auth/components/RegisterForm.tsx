@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRegisterMutation } from "@/services/authApi";
+import { useRegisterMutation } from "@/slices/auth";
+import { getDeviceId } from "@/utils/deviceId";
 
-// Phone number formatting helper - allows common phone formats
 const formatPhoneNumber = (value: string): string => {
-  // Allow digits, spaces, hyphens, parentheses, and + for international format
   const cleaned = value.replace(/[^\d+\s\-\(\)]/g, "");
   return cleaned;
 };
@@ -15,10 +14,6 @@ type RegisterFormProps = {
   onRegisterSuccess?: (email: string, phone: string) => void;
 };
 
-/**
- * RegisterForm - Right panel component for registration page.
- * Contains full name, email, phone number, password inputs, and create account button.
- */
 export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -28,20 +23,21 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
   const [error, setError] = useState<string | null>(null);
   const [register, { isLoading }] = useRegisterMutation();
 
+  const validatePassword = (pwd: string): boolean => {
+    return pwd.length >= 8 && /\d/.test(pwd);
+  };
+  const isPasswordValid = validatePassword(password);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
-
     try {
-      const deviceId = "web-browser";
-      const platform = "web" as const;
-
       const result = await register({
         name: fullName,
         phone,
         password,
-        deviceId,
-        platform,
+        deviceId: await getDeviceId(),
+        platform: "web",
       }).unwrap();
 
       if (result.success && result.message === "OTP_SENT" && onRegisterSuccess) {
@@ -49,19 +45,12 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
       }
     } catch (err: unknown) {
       const message =
-        (err as { data?: { message?: string }; error?: string })?.data
-          ?.message ||
+        (err as { data?: { message?: string }; error?: string })?.data?.message ||
         (err as { error?: string })?.error ||
         "Unable to create account. Please try again.";
       setError(message);
     }
   };
-
-  const validatePassword = (pwd: string): boolean => {
-    return pwd.length >= 8 && /\d/.test(pwd);
-  };
-
-  const isPasswordValid = validatePassword(password);
 
   return (
     <div className="flex w-full flex-col justify-center p-8 lg:w-1/2 lg:p-16">
@@ -75,7 +64,6 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
       </div>
 
       <form className="space-y-5" onSubmit={handleSubmit}>
-        {/* Full Name Field */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="fullName"
@@ -96,7 +84,6 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
           />
         </div>
 
-        {/* Email Field */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="email"
@@ -117,7 +104,6 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
           />
         </div>
 
-        {/* Phone Number Field */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="phone"
@@ -129,10 +115,7 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
             id="phone"
             type="tel"
             value={phone}
-            onChange={(e) => {
-              const formatted = formatPhoneNumber(e.target.value);
-              setPhone(formatted);
-            }}
+            onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
             placeholder="01712345678"
             className="h-14 w-full rounded-xl border border-border bg-surface px-4 text-base text-foreground outline-none transition-all placeholder:text-muted focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-[#12241d]"
             required
@@ -142,7 +125,6 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
           />
         </div>
 
-        {/* Password Field */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="password"
@@ -183,7 +165,6 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
           </p>
         </div>
 
-        {/* Create Account Button */}
         <button
           type="submit"
           className="mt-4 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-primary font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
@@ -199,7 +180,6 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
         )}
       </form>
 
-      {/* Security Indicators */}
       <div className="mt-6 flex items-center justify-center gap-6 text-xs">
         <div className="flex items-center gap-2 text-muted">
           <span className="material-icons-outlined text-base">lock</span>
@@ -211,7 +191,6 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
         </div>
       </div>
 
-      {/* Footer Link */}
       <p className="mt-10 text-center text-sm text-muted dark:text-gray-400">
         Already have an account?{" "}
         <Link href="/auth/login" className="ml-1 font-bold text-primary hover:underline">

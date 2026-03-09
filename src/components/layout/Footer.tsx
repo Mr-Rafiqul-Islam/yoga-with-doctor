@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const platformLinks = [
   { href: "/courses", label: "Browse Courses" },
-  { href: "#", label: "Live Sessions" },
+  { href: "/videos/free", label: "Our Videos" },
   { href: "/articles", label: "Medical Articles" },
   { href: "#", label: "Our Instructors" },
 ] as const;

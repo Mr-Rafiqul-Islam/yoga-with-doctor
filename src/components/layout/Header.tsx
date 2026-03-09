@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname} from "next/navigation";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useId, useEffect, useState } from "react";
 import {
   useAppSelector,
@@ -11,15 +12,13 @@ import {
   setTheme,
   type ThemeMode,
 } from "@/stores";
-
-import { useAuthSession } from "@/hooks/useAuthSession";
-import Image from "next/image";
+import { getToken, useGetCurrentUserQuery, useLogoutMutation } from "@/slices/auth";
 
 const mainNavItems = [
   { href: "/", label: "Home" },
   { href: "/courses", label: "Courses" },
   { href: "https://biohealingbd.com/", label: "Shop", external: true },
-  { href: "/community", label: "Community" },
+  { href: "/videos/free", label: "Videos" },
   { href: "/articles", label: "Articles" },
 ] as const;
 
@@ -28,19 +27,19 @@ export function Header() {
   const dispatch = useAppDispatch();
   const mobileMenuOpen = useAppSelector((state) => state.ui.mobileMenuOpen);
   const theme = useAppSelector((state) => state.ui.theme);
-
-  const {
-    user,
-    isAuthenticated,
-    isRestoringSession,
-    isLoggingOut,
-    handleLogout,
-  } = useAuthSession();
+  const { user, isAuthenticated, isLoading: authLoading } = useAppSelector((state) => state.auth);
+  const hasToken = !!getToken();
+  const { data: currentUserData, isLoading: isFetchingUser } = useGetCurrentUserQuery(undefined, {
+    skip: !hasToken,
+  });
+  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
+  const [profileOpen, setProfileOpen] = useState(false);
+  const displayUser = currentUserData?.data ?? user;
+  const isRestoringSession = authLoading || (hasToken && isFetchingUser);
 
   const menuId = useId();
   const buttonId = useId();
   const profileMenuId = useId();
-  const [profileOpen, setProfileOpen] = useState(false);
 
   const STORAGE_KEY = "ywd-theme";
 
@@ -168,7 +167,7 @@ export function Header() {
             <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-error" aria-hidden />
           </button>
 
-          {/* Profile / Login: hide until we know auth state; while restoring session (hasToken + fetching) show placeholder */}
+          {/* Profile / Login */}
           {isRestoringSession ? (
             <div
               className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-radius-full border-2 border-border bg-muted/50 dark:bg-gray-700"
@@ -176,73 +175,76 @@ export function Header() {
             >
               <span className="material-icons-outlined text-xl text-muted">person</span>
             </div>
-          ) : (
-            <>
-              {isAuthenticated && user ? (
-                <div className="relative flex flex-shrink-0">
+          ) : isAuthenticated && displayUser ? (
+            <div className="relative flex flex-shrink-0">
+              <button
+                type="button"
+                id={profileMenuId}
+                aria-expanded={profileOpen}
+                aria-haspopup="true"
+                onClick={() => setProfileOpen((o) => !o)}
+                onBlur={() => setTimeout(() => setProfileOpen(false), 150)}
+                className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none dark:bg-gray-700 dark:border-gray-600"
+                aria-label="Account menu"
+              >
+                {displayUser.profilePicture ? (
+                  <Image
+                    src={displayUser.profilePicture}
+                    alt=""
+                    width={40}
+                    height={40}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <span className="text-xl font-semibold text-foreground" aria-hidden>
+                    {displayUser.name?.charAt(0).toUpperCase() ?? "?"}
+                  </span>
+                )}
+              </button>
+              {profileOpen && (
+                <div
+                  role="menu"
+                  aria-labelledby={profileMenuId}
+                  className="absolute right-0 top-full z-50 mt-2 min-w-[160px] rounded-radius-md border border-border bg-surface py-1 shadow-elevation-md dark:bg-[#1a2e26]"
+                >
+                  <p className="border-b border-border px-4 py-2 text-sm text-muted dark:border-gray-700">
+                    {displayUser.name || displayUser.phone}
+                  </p>
+                  <Link
+                    href="/dashboard"
+                    className="block rounded-radius-sm px-4 py-2 text-body-md font-medium text-foreground transition-colors hover:bg-secondary hover:text-primary"
+                    onClick={() => setProfileOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
                   <button
                     type="button"
-                    id={profileMenuId}
-                    aria-expanded={profileOpen}
-                    aria-haspopup="true"
-                    onClick={() => setProfileOpen((o) => !o)}
-                    onBlur={() =>
-                      setTimeout(() => setProfileOpen(false), 150)
-                    }
-                    className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none  dark:bg-gray-700 dark:border-gray-600"
-                    aria-label="Account menu"
+                    role="menuitem"
+                    onClick={() => {
+                      setProfileOpen(false);
+                      logout()
+                        .unwrap()
+                        .then(() => window.location.assign("/auth/login"));
+                    }}
+                    disabled={isLoggingOut}
+                    className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-foreground hover:bg-secondary focus:outline-none focus:ring-inset focus:ring-2 focus:ring-primary disabled:opacity-70 dark:hover:bg-gray-700"
                   >
-                    {user.profilePicture ? (
-                      <Image
-                        src={user.profilePicture}
-                        alt=""
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-xl" aria-hidden>
-                       {user.name.charAt(0).toUpperCase()}
-                      </span>
-                    )}
+                    <span className="material-icons-outlined text-lg">logout</span>
+                    {isLoggingOut ? "Signing out…" : "Logout"}
                   </button>
-                  {profileOpen && (
-                    <div
-                      role="menu"
-                      aria-labelledby={profileMenuId}
-                      className="absolute right-0 top-full z-50 mt-2 min-w-[160px] rounded-radius-md border border-border bg-surface py-1 shadow-elevation-md dark:bg-[#1a2e26]"
-                    >
-                      <p className="border-b border-border px-4 py-2 text-sm text-muted dark:border-gray-700">
-                        {user.name || user.phone}
-                      </p>
-                      <Link href="/dashboard" className="block rounded-radius-sm px-4 py-2 text-body-md font-medium transition-colors  text-foreground hover:text-primary">
-                        Dashboard
-                      </Link>
-                      <button
-                        type="button"
-                        role="menuitem"
-                        onClick={handleLogout}
-                        disabled={isLoggingOut}
-                        className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-foreground hover:bg-secondary dark:hover:bg-gray-700 focus:outline-none focus:ring-inset focus:ring-2 focus:ring-primary disabled:opacity-70"
-                      >
-                        <span className="material-icons-outlined text-lg">
-                          logout
-                        </span>
-                        {isLoggingOut ? "Signing out…" : "Logout"}
-                      </button>
-                    </div>
-                  )}
                 </div>
-              ) : (
-                <Link
-                  href="/auth/login"
-                  className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none  dark:bg-gray-700 dark:border-gray-600"
-                  aria-label="Go to login page"
-                >
-                  <span className="material-icons-outlined text-xl" aria-hidden>
-                    person
-                  </span>
-                </Link>
               )}
-            </>
+            </div>
+          ) : (
+            <Link
+              href="/auth/login"
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none dark:bg-gray-700 dark:border-gray-600"
+              aria-label="Go to login page"
+            >
+              <span className="material-icons-outlined text-xl" aria-hidden>
+                person
+              </span>
+            </Link>
           )}
 
           {/* Theme toggle */}

@@ -1,46 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
-import { useAuthSession } from "@/hooks/useAuthSession";
+import { useAppSelector } from "@/stores";
 
 /**
- * Protects /auth/* routes: redirects to /dashboard if user is already logged in.
- * Shows loading screen while session is being restored.
- *
- * Uses a "mounted" guard so the first render is always LoadingScreen on both server
- * and client, avoiding hydration mismatch (server has no auth state like client).
+ * Guard for auth routes (/auth/**).
+ * If user is already logged in, redirect to /dashboard.
  */
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { isAuthenticated, isRestoringSession } = useAuthSession();
-  const [mounted, setMounted] = useState(false);
+  const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted || isRestoringSession) return;
-    if (isAuthenticated) {
+    if (!isLoading && isAuthenticated) {
       router.replace("/dashboard");
     }
-  }, [mounted, isAuthenticated, isRestoringSession, router]);
+  }, [isLoading, isAuthenticated, router]);
 
-  // Always show loading until mounted so server and client first paint match (avoids hydration error).
-  if (!mounted || isRestoringSession) {
+  if (isLoading) {
     return (
       <LoadingScreen
         className="min-h-[650px]"
-        message="Preparing your wellness journey"
+        message="Checking your session"
       />
     );
   }
 
-  if (isAuthenticated) {
-    return null;
-  }
+  
 
   return <>{children}</>;
 }
+

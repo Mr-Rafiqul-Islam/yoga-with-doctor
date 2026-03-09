@@ -28,7 +28,6 @@ export function formatDuration(seconds: number) {
 
 export function VideoCard({
   thumbnailUrl,
-  duration,
   level,
   title,
   authorName = "Dr. Md Shah Alam",

@@ -5,50 +5,38 @@ import { useRouter } from "next/navigation";
 import {
   useVerifyRegisterOTPMutation,
   useVerifyLoginOTPMutation,
-} from "@/services/authApi";
+} from "@/slices/auth";
+import { getDeviceId } from "@/utils/deviceId";
 
 type VerifyIdentityFormProps = {
   phone?: string;
-  email?: string; // Keep for future use
+  email?: string;
   onBack?: () => void;
   isFromRegister?: boolean;
   onComplete?: () => void;
 };
 
-/**
- * VerifyIdentityForm - Component for phone/email verification.
- * Displays 6-digit code input fields, timer, resend link, and verify button.
- */
 export function VerifyIdentityForm({
   phone,
-  email,
   onBack,
   isFromRegister = false,
   onComplete,
 }: VerifyIdentityFormProps = {}) {
   const router = useRouter();
   const [code, setCode] = useState<string[]>(["", "", "", "", "", ""]);
-  const [timeLeft, setTimeLeft] = useState(119); // 1:59 in seconds
+  const [timeLeft, setTimeLeft] = useState(119);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [verifyRegisterOTP, { isLoading: isVerifyingRegister }] =
     useVerifyRegisterOTPMutation();
   const [verifyLoginOTP, { isLoading: isVerifyingLogin }] =
     useVerifyLoginOTPMutation();
-
   const isVerifying = isVerifyingRegister || isVerifyingLogin;
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft((prev: number) => {
-        if (prev <= 0) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
+      setTimeLeft((prev) => (prev <= 0 ? 0 : prev - 1));
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
@@ -59,23 +47,14 @@ export function VerifyIdentityForm({
   };
 
   const handleChange = (index: number, value: string) => {
-    if (value.length > 1) return;
-    if (!/^\d*$/.test(value)) return;
-
+    if (value.length > 1 || !/^\d*$/.test(value)) return;
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
-
-    // Auto-focus next input
-    if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
+    if (value && index < 5) inputRefs.current[index + 1]?.focus();
   };
 
-  const handleKeyDown = (
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Backspace" && !code[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
@@ -85,11 +64,8 @@ export function VerifyIdentityForm({
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").slice(0, 6);
     if (!/^\d+$/.test(pastedData)) return;
-
     const newCode = [...code];
-    for (let i = 0; i < 6; i++) {
-      newCode[i] = pastedData[i] || "";
-    }
+    for (let i = 0; i < 6; i++) newCode[i] = pastedData[i] || "";
     setCode(newCode);
     inputRefs.current[Math.min(pastedData.length, 5)]?.focus();
   };
@@ -97,76 +73,44 @@ export function VerifyIdentityForm({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fullCode = code.join("");
-    if (fullCode.length !== 6) return;
-
+    if (fullCode.length !== 6 || !phone) return;
     setError(null);
-
-    const deviceId = "web-browser";
+    const deviceId = await getDeviceId();
     const platform = "web" as const;
 
-    if (isFromRegister && phone) {
-      try {
-        const result = await verifyRegisterOTP({
+    try {
+      if (isFromRegister) {
+        await verifyRegisterOTP({
           phone,
           otp: fullCode,
           deviceId,
           platform,
         }).unwrap();
-
-        if (result.success) {
-          if (onComplete) {
-            onComplete();
-          } else {
-            router.push("/auth/login");
-          }
-        }
-      } catch (err: unknown) {
-        const message =
-          (err as { data?: { message?: string }; error?: string })?.data
-            ?.message ||
-          (err as { error?: string })?.error ||
-          "Unable to verify code. Please try again.";
-        setError(message);
-      }
-      return;
-    }
-
-    if (!isFromRegister && phone) {
-      try {
-        const result = await verifyLoginOTP({
+      } else {
+        await verifyLoginOTP({
           phone,
           otp: fullCode,
           deviceId,
           platform,
         }).unwrap();
-
-        if (result.success) {
-          if (onComplete) {
-            onComplete();
-          } else {
-            router.push("/");
-          }
-        }
-      } catch (err: unknown) {
-        const message =
-          (err as { data?: { message?: string }; error?: string })?.data
-            ?.message ||
-          (err as { error?: string })?.error ||
-          "Unable to verify code. Please try again.";
-        setError(message);
       }
-      return;
-    }
-
-    if (onComplete) {
-      onComplete();
-    } else {
-      router.push("/auth/login");
+      if (onComplete) {
+        onComplete();
+      } else if (isFromRegister) {
+        router.push("/auth/login");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (err: unknown) {
+      const message =
+        (err as { data?: { message?: string }; error?: string })?.data?.message ||
+        (err as { error?: string })?.error ||
+        "Unable to verify code. Please try again.";
+      setError(message);
     }
   };
 
   const handleResend = () => {
-    // TODO: Implement resend logic
     setTimeLeft(119);
     setCode(["", "", "", "", "", ""]);
     inputRefs.current[0]?.focus();
@@ -175,7 +119,6 @@ export function VerifyIdentityForm({
   return (
     <div className="mx-auto w-full max-w-md">
       <div className="rounded-xl bg-surface p-8 shadow-2xl dark:bg-[#1a2e26]">
-        {/* Header Icon */}
         <div className="mb-6 flex justify-center">
           <div className="flex size-16 items-center justify-center rounded-full bg-primary/20">
             <span className="material-icons-outlined text-3xl text-primary">
@@ -184,24 +127,23 @@ export function VerifyIdentityForm({
           </div>
         </div>
 
-        {/* Title */}
         <h1 className="mb-3 text-center text-2xl font-bold text-foreground">
           Verify Your Identity
         </h1>
 
-        {/* Description */}
         <p className="mb-8 text-center text-sm leading-relaxed text-muted">
           We&apos;ve sent a 6-digit code to{" "}
-          {phone && <span className="font-medium text-foreground">{phone}</span>}
-          {/* {email && <span className="font-medium text-foreground">{email}</span>} */}
-          {!phone && !email && "your registered phone number"} to ensure your health data remains
-          secure.
+          {phone ? (
+            <span className="font-medium text-foreground">{phone}</span>
+          ) : (
+            "your registered phone number"
+          )}{" "}
+          to ensure your health data remains secure.
         </p>
 
-        {/* 6-Digit Code Input */}
         <form onSubmit={handleSubmit} className="mb-6">
           <div className="mb-6 flex justify-center gap-1 sm:gap-2">
-            {code.map((digit: string, index: number) => (
+            {code.map((digit, index) => (
               <input
                 key={index}
                 ref={(el) => {
@@ -214,10 +156,9 @@ export function VerifyIdentityForm({
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={handlePaste}
-                className={`h-10 w-9 sm:h-12 sm:w-10 xl:h-14 xl:w-14 rounded-lg border-2 text-center text-base sm:text-xl font-semibold text-foreground transition-all focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 ${
+                className={`h-10 w-9 sm:h-12 sm:w-10 xl:h-14 xl:w-14 rounded-lg border-2 text-center text-base sm:text-xl font-semibold text-foreground bg-surface dark:bg-[#12241d] transition-all focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 ${
                   index === 0 ||
-                  (digit &&
-                    index === code.findIndex((c: string) => c === ""))
+                  (digit && index === code.findIndex((c) => c === ""))
                     ? "border-primary ring-2 ring-primary/20"
                     : "border-border dark:border-gray-700"
                 }`}
@@ -226,7 +167,6 @@ export function VerifyIdentityForm({
             ))}
           </div>
 
-          {/* Timer and Resend */}
           <div className="mb-6 text-center text-sm text-muted">
             <span>Code expires in </span>
             <span className="font-bold">{formatTime(timeLeft)}</span>
@@ -241,10 +181,9 @@ export function VerifyIdentityForm({
             </button>
           </div>
 
-          {/* Verify Button */}
           <button
             type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-bold text-white transition-all hover:bg-primary-dark"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-bold text-white transition-all hover:bg-primary-dark disabled:opacity-70 disabled:pointer-events-none"
             disabled={isVerifying || code.join("").length !== 6}
           >
             <span className="material-icons-outlined text-lg">check</span>
@@ -258,14 +197,12 @@ export function VerifyIdentityForm({
           </button>
         </form>
 
-        {/* Error */}
         {error && (
           <p className="mt-3 text-center text-sm text-error" role="alert">
             {error}
           </p>
         )}
 
-        {/* Back Link */}
         {onBack && (
           <button
             type="button"

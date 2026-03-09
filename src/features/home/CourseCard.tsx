@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { useAppSelector } from "@/stores/hooks";
 import { Modal } from "@/components/Modal";
 
 export type CourseCardProps = {
@@ -59,7 +58,7 @@ export function CourseCard({
   isEnrolled = false,
 }: CourseCardProps) {
   const linkHref = slug ? `/courses/${slug}` : href;
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const isAuthenticated = false; // Auth to be reimplemented
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleEnrollClick = (e: React.MouseEvent) => {

@@ -1,9 +1,13 @@
-import { DashboardGuard } from "@/components/auth";
+import { RequireAuth } from "@/components/auth";
 
-export default function LessonLayout({ children }: { children: React.ReactNode }) {
+export default function LessonLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <DashboardGuard>
+    <RequireAuth>
       {children}
-    </DashboardGuard>
+    </RequireAuth>
   );
 }

@@ -1,10 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { authApi } from "@/services/authApi";
 import { classApi } from "@/services/classApi";
-import authReducer from "./slices/authSlice";
-import uiReducer from "./slices/uiSlice";
-import { authPersistMiddleware } from "./authPersistMiddleware";
+import uiReducer from "../slices/uiSlice";
 import { videoApi } from "@/services/videoApi";
+import { authApi, authReducer } from "../slices/auth";
 
 export const store = configureStore({
   reducer: {
@@ -18,8 +16,7 @@ export const store = configureStore({
     getDefaultMiddleware().concat(
       authApi.middleware,
       classApi.middleware,
-      videoApi.middleware,
-      authPersistMiddleware
+      videoApi.middleware
     ),
 });
 

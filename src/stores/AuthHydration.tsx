@@ -1,29 +1,37 @@
 "use client";
 
 import { useEffect } from "react";
-import { authApi } from "@/services/authApi";
-import { rehydrate } from "./slices/authSlice";
-import { getStoredUser } from "@/utils/tokenStore";
 import { useAppDispatch } from "./hooks";
+import {
+  getRefreshToken,
+  useRefreshTokenMutation,
+  authApi,
+  setLoading,
+} from "@/slices/auth";
 
 /**
- * Restores auth state on app load (e.g. after reload).
- * Access token is in memory only; refresh token is in HttpOnly cookie.
- * 1. Optionally rehydrate from stored user so UI shows name/avatar immediately.
- * 2. Call refresh endpoint (cookie sent automatically). Backend returns new access token.
- * 3. On success, persist middleware sets token and fetches getCurrentUser.
- * 4. On failure (no/invalid cookie), authSlice sets loading false and user null.
+ * On app load: if we have a refresh token, refresh session and fetch current user.
  */
 export function AuthHydration() {
   const dispatch = useAppDispatch();
+  const [refreshTokenMutation] = useRefreshTokenMutation();
 
   useEffect(() => {
-    const storedUser = getStoredUser();
-    if (storedUser) {
-      dispatch(rehydrate(storedUser));
+    const refreshToken = getRefreshToken();
+    if (!refreshToken) {
+      dispatch(setLoading(false));
+      return;
     }
-    dispatch(authApi.endpoints.refreshSession.initiate());
-  }, [dispatch]);
+    refreshTokenMutation({ refreshToken })
+      .unwrap()
+      .then(() => {
+        dispatch(authApi.endpoints.getCurrentUser.initiate());
+      })
+      .catch(() => {
+        // Invalid/expired token – state is cleared by logout in slice
+        dispatch(setLoading(false));
+      });
+  }, [dispatch, refreshTokenMutation]);
 
   return null;
 }

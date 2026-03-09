@@ -1,44 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
-import { useAuthSession } from "@/hooks/useAuthSession";
+import { useAppSelector } from "@/stores";
 
 /**
- * Protects routes that require login: redirects to /auth/login if user is not authenticated.
- * Use in layout or page for any protected route (e.g. checkout). Middleware should also
- * protect the same path for fast redirect; this guard handles client-side consistency.
+ * Client-side guard for private routes like /dashboard and /checkout.
+ * If user is not authenticated, redirects to /auth/login with returnTo param.
  */
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isAuthenticated, isRestoringSession } = useAuthSession();
-  const [mounted, setMounted] = useState(false);
+  const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted || isRestoringSession) return;
-    if (!isAuthenticated) {
-      const loginUrl = "/auth/login";
-      const returnTo = pathname ? `${loginUrl}?returnTo=${encodeURIComponent(pathname)}` : loginUrl;
-      router.replace(returnTo);
+    if (!isLoading && !isAuthenticated) {
+      const returnTo = pathname || "/dashboard";
+      router.replace(`/auth/login?returnTo=${encodeURIComponent(returnTo)}`);
     }
-  }, [mounted, isAuthenticated, isRestoringSession, router, pathname]);
+  }, [isLoading, isAuthenticated, pathname, router]);
 
-  if (!mounted || isRestoringSession) {
+  if (isLoading || !isAuthenticated) {
     return (
-      <LoadingScreen
-        className="min-h-[60vh]"
-        message="Preparing your wellness journey"
-      />
+      <LoadingScreen className="min-h-[calc(100vh-80px)]" message="Preparing your wellness journey" />
     );
   }
 
-  if (!isAuthenticated) return null;
-
   return <>{children}</>;
 }
+

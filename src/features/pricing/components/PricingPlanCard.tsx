@@ -1,4 +1,3 @@
-import type { PlanType } from "@/features/pricing/data/pricingPlans";
 import { getFeatureDisplay, type Plan } from "@/features/pricing/data/pricingPlans";
 
 type PricingPlanCardProps = {

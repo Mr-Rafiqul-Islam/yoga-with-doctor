@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { SuccessMessageCard } from "@/components/SuccessMessageCard";
-import { useResetPasswordMutation } from "@/services/authApi";
+import { useResetPasswordMutation } from "@/slices/auth";
 
 // Phone number formatting helper
 const formatPhoneNumber = (value: string): string => {
@@ -41,11 +41,16 @@ export function ResetPasswordForm() {
     e.preventDefault();
     setErrorMessage(null);
     try {
-      await resetPassword({ phone, otp, newPassword }).unwrap();
-      setSuccess(true);
+      const result = await resetPassword({ phone, otp, newPassword }).unwrap();
+      if (result.success) {
+        setSuccess(true);
+      } else {
+        setErrorMessage(result.message || "Failed to reset password.");
+      }
     } catch (err: unknown) {
       const msg =
-        (err as { data?: { message?: string } })?.data?.message ||
+        (err as { data?: { message?: string }; error?: string })?.data?.message ||
+        (err as { error?: string })?.error ||
         "Failed to reset password. Please check the OTP and try again.";
       setErrorMessage(msg);
     }

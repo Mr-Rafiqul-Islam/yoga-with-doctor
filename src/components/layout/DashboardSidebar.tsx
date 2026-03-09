@@ -1,10 +1,11 @@
 "use client";
 
-import { useAuthSession } from "@/hooks/useAuthSession";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useAppSelector } from "@/stores";
+import { useLogoutMutation } from "@/slices/auth";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: "dashboard" },
@@ -67,11 +68,9 @@ function SidebarContent({
 }) {
   const pathname = usePathname();
   const isLibraryActive = pathname?.startsWith("/dashboard/library") ?? false;
-  const {
-    user,
-    handleLogout,
-    isLoggingOut,
-  } = useAuthSession();
+
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -168,37 +167,72 @@ function SidebarContent({
       </nav>
 
       <div className="mt-auto shrink-0 flex items-center gap-3 border-t border-border pt-4 dark:border-gray-700">
-        <div className="h-10 w-10 shrink-0 flex items-center justify-center  overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-          {user?.profilePicture ? (
-            <Image
-              src={user?.profilePicture}
-              alt=""
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <span className="text-xl" aria-hidden>
-              {user?.name?.charAt(0).toUpperCase()}
-            </span>
-          )}
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-body-md font-semibold text-foreground dark:text-white">
-            {user?.name || user?.phone}
-          </p>
-          <p className="truncate text-caption text-muted">
-            {user?.email || user?.phone}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="shrink-0 rounded-lg p-2 text-muted transition-colors hover:bg-gray-100 hover:text-foreground dark:hover:bg-gray-800 dark:hover:text-gray-200"
-          aria-label="Log out or switch account"
-          disabled={isLoggingOut}
-        >
-          <span className="material-icons-outlined text-[22px]">{isLoggingOut ? "hourglass_empty" : "logout"}</span>
-          
-        </button>
+        {isAuthenticated && user ? (
+          <>
+            <div className="h-10 w-10 shrink-0 flex items-center justify-center overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+              {user.profilePicture ? (
+                <Image
+                  src={user.profilePicture}
+                  alt="Profile picture"
+                  width={40}
+                  height={40}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span
+                  className="text-xl font-semibold text-foreground"
+                  aria-hidden
+                >
+                  {user.name?.charAt(0).toUpperCase() ?? "U"}
+                </span>
+              )}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-body-md font-semibold text-foreground dark:text-white">
+                {user.name || user.phone}
+              </p>
+              <p className="truncate text-caption text-muted">
+                {user.email || user.phone}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                logout()
+                  .unwrap()
+                  .then(() => window.location.assign("/auth/login"));
+              }}
+              className="shrink-0 rounded-lg p-2 text-muted transition-colors hover:bg-gray-100 hover:text-foreground dark:hover:bg-gray-800 dark:hover:text-gray-200 disabled:opacity-70"
+              aria-label="Log out"
+              disabled={isLoggingOut}
+            >
+              <span className="material-icons-outlined text-[22px]">
+                {isLoggingOut ? "hourglass_empty" : "logout"}
+              </span>
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="h-10 w-10 shrink-0 flex items-center justify-center overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+              <span className="material-icons-outlined text-xl text-muted">
+                person
+              </span>
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-body-md font-semibold text-foreground dark:text-white">
+                Guest
+              </p>
+              <p className="truncate text-caption text-muted">
+                <Link
+                  href="/auth/login"
+                  className="text-primary hover:underline"
+                >
+                  Login to see your profile
+                </Link>
+              </p>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

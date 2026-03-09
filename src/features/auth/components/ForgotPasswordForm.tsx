@@ -3,11 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useForgotPasswordMutation } from "@/services/authApi";
-
+import { useForgotPasswordMutation } from "@/slices/auth";
 /**
  * ForgotPasswordForm - Reset password request form.
- * Centered card with phone input and Send Reset OTP button.
+ * Sends OTP via API then redirects to reset-password screen.
  */
 export function ForgotPasswordForm() {
   const [phone, setPhone] = useState("");
@@ -20,19 +19,24 @@ export function ForgotPasswordForm() {
     e.preventDefault();
     setErrorMessage(null);
     setSuccessMessage(null);
+
     try {
       const result = await forgotPassword({ phone }).unwrap();
       if (result.success) {
         setSuccessMessage(
-          result.message || "Check your phone for the OTP to reset your password."
+          result.message ||
+            "Check your phone for the OTP to reset your password."
         );
         setTimeout(() => {
           router.push(`/auth/reset-password?phone=${encodeURIComponent(phone)}`);
-        }, 1500);
+        }, 1200);
+      } else {
+        setErrorMessage(result.message || "Failed to send reset OTP.");
       }
     } catch (err: unknown) {
       const msg =
-        (err as { data?: { message?: string } })?.data?.message ||
+        (err as { data?: { message?: string }; error?: string })?.data?.message ||
+        (err as { error?: string })?.error ||
         "Failed to send reset OTP. Please try again.";
       setErrorMessage(msg);
     }
