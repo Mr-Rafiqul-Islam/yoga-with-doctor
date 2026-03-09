@@ -94,13 +94,23 @@ export interface Course {
   slug: string;
   title: string;
   description: string | null;
-  bannerImage: string | null;
+
+  // List API fields
+  bannerImageId?: string | null;
+  bannerUrl?: string | null;
+
+  // Legacy / alternative image field used by some endpoints
+  bannerImage?: string | null;
+
   level: string | null;
-  access: "FREE" | "PAID";
-  isPremium: boolean;
+  access: "FREE" | "PAID" | "PUBLIC" | "PREMIUM";
+
+  // Optional flags/metadata that may or may not be present in all responses
+  isPremium?: boolean;
   instructorName: string | null;
   locked?: boolean;
   hasAccess?: boolean;
+
   sections?: CourseSection[];
   resources?: CourseResource[];
   quizzes?: CourseQuiz[];
@@ -187,7 +197,7 @@ export interface GetCoursesParams {
   page?: number;
   limit?: number;
   q?: string;
-  access?: "FREE" | "PAID" | "PREMIUM";
+  access?: "FREE" | "PAID" | "PUBLIC" | "PREMIUM";
   sortBy?: string;
   sortOrder?: "asc" | "desc";
 }
@@ -249,10 +259,12 @@ export interface CourseContentResponse {
       title: string;
       slug: string;
       description: string | null;
-      bannerImage: string | null;
+      bannerImageId?: string | null;
+      bannerUrl?: string | null;
+      bannerImage?: string | null;
       level: string | null;
-      access: "FREE" | "PAID";
-      isPremium: boolean;
+      access: "FREE" | "PAID" | "PUBLIC" | "PREMIUM";
+      isPremium?: boolean;
       instructorName: string | null;
       sections: CourseSection[];
       resources: CourseResource[];
