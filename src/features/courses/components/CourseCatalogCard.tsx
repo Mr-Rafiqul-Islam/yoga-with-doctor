@@ -2,11 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Modal } from "@/components/Modal";
-import { useAppSelector } from "@/stores";
-import { useCheckCourseAccessQuery } from "@/slices/courses";
+import { CourseCatalogCardCta } from "./CourseCatalogCardCta";
 
 export type CourseCatalogCardProps = {
   title: string;
@@ -56,25 +54,7 @@ export function CourseCatalogCard({
   rating,
 }: CourseCatalogCardProps) {
   const linkHref = href ?? (slug ? `/courses/${slug}` : "#");
-  const router = useRouter();
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [showLoginModal, setShowLoginModal] = useState(false);
-
-  const { data: accessData } = useCheckCourseAccessQuery(courseId ?? "", {
-    skip: !courseId || !isAuthenticated,
-  });
-  const hasAccess = accessData?.data?.hasAccess ?? false;
-  const effectiveEnrolled = isAuthenticated && hasAccess;
-
-  const requireLoginOr = (e: React.MouseEvent, onAuthed: () => void) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!isAuthenticated) {
-      setShowLoginModal(true);
-      return;
-    }
-    onAuthed();
-  };
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-elevation-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation-md dark:border-gray-800 dark:bg-surface">
@@ -167,57 +147,12 @@ export function CourseCatalogCard({
                 {price}
               </span>
             </div>
-          {effectiveEnrolled && slug ? (
-            <button
-              type="button"
-              onClick={(e) =>
-                requireLoginOr(e, () => router.push(`/courses/${slug}/lesson`))
-              }
-              className="rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-            >
-              Course Access
-            </button>
-          ) : access === "PAID" ? (
-            <button
-              type="button"
-              onClick={(e) =>
-                requireLoginOr(e, () => {
-                  if (courseId) {
-                    router.push(`/checkout/review?courseId=${courseId}`);
-                  } else {
-                    router.push("/checkout/review");
-                  }
-                })
-              }
-              className="rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-            >
-              Buy Now
-            </button>
-          ) : access === "PREMIUM" ? (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                router.push("/pricing");
-              }}
-              className="rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-            >
-              Get Premium
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={(e) =>
-                requireLoginOr(e, () => {
-                  // Future: open enroll / checkout flow
-                })
-              }
-              className="rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-            >
-              Enroll Now
-            </button>
-          )}
+            <CourseCatalogCardCta
+              courseId={courseId}
+              slug={slug}
+              access={access}
+              onRequireLogin={() => setShowLoginModal(true)}
+            />
           </div>
         </div>
       </Link>
