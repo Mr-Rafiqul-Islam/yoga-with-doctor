@@ -28,10 +28,8 @@ export type CourseCatalogCardProps = {
   slug?: string;
   /** Badge on image: BESTSELLER (green) or NEW (light) */
   imageBadge?: "BESTSELLER" | "NEW";
-  /** Show bookmark icon top-right */
-  showBookmark?: boolean;
-  /** e.g. "45 min" */
-  duration?: string;
+  /** Show premium badge icon top-right */
+  premiumBadge?: boolean;
   rating?: string;
 };
 
@@ -49,13 +47,13 @@ export function CourseCatalogCard({
   href,
   slug,
   imageBadge,
-  showBookmark = true,
-  duration,
+  premiumBadge = false,
   rating,
 }: CourseCatalogCardProps) {
   const linkHref = href ?? (slug ? `/courses/${slug}` : "#");
   const [showLoginModal, setShowLoginModal] = useState(false);
-
+  const isPremium = premiumBadge || access === "PREMIUM";
+  
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-elevation-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation-md dark:border-gray-800 dark:bg-surface">
       <Link
@@ -68,7 +66,7 @@ export function CourseCatalogCard({
             src={bannerImage}
             alt={imageAlt}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className={`object-cover transition-transform duration-500 group-hover:scale-105 ${isPremium ? "blur-[1px]" : ""}`}
             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
           />
           {imageBadge === "BESTSELLER" && (
@@ -81,19 +79,32 @@ export function CourseCatalogCard({
               NEW
             </span>
           )}
-          {showBookmark && (
+          {isPremium && (
+            <>
+            <span className="absolute left-0 top-4 z-10 rounded-r-full bg-orange-400 px-3 py-1 text-xs font-bold text-black shadow-elevation-sm">
+              PREMIUM
+            </span>
             <span
-              className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-elevation-sm backdrop-blur-sm dark:bg-black/50"
+              className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-orange-400 shadow-elevation-sm backdrop-blur-sm "
               aria-hidden
             >
-              <span className="material-icons-outlined text-sm text-accent">
+              
+              <span className="material-icons-outlined text-xl text-black">
                 workspace_premium
               </span>
             </span>
+            </>
           )}
-          {duration && (
-            <span className="absolute bottom-3 right-3 rounded-md bg-black/60 px-2 py-1 text-[10px] font-medium text-white backdrop-blur-md">
-              {duration}
+          {isPremium && (
+            <span
+              className="absolute inset-0 z-10 flex items-center justify-center"
+              aria-hidden
+            >
+              <span className="flex h-16 w-16 items-center justify-center rounded-full border border-white/35 bg-transparent shadow-xl backdrop-blur-md">
+                <span className="material-icons-outlined text-3xl text-white">
+                  lock
+                </span>
+              </span>
             </span>
           )}
         </div>

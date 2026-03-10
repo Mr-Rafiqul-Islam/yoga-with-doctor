@@ -77,8 +77,7 @@ function mapAllTypeCourseToCourseWithMeta(
     slug: course.slug,
     href: `/courses/${course.slug}`,
     imageBadge: course.access === "PAID" ? "BESTSELLER" : undefined,
-    showBookmark: true,
-    duration: FALLBACK_DURATION,
+    premiumBadge: course.access === "PREMIUM",
     rating: FALLBACK_RATING,
 
     // Filter/sort metadata
