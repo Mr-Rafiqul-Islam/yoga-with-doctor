@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Modal } from "@/components/Modal";
 import { useAppSelector } from "@/stores";
@@ -21,6 +22,8 @@ export type CourseCatalogCardProps = {
   isEnrolled?: boolean;
   /** Course ID (UUID) for access check when user is logged in. If provided and authenticated, hasAccess from API is used for button. */
   courseId?: string;
+  /** Access type coming from API. Used to pick CTA when user does not yet have access. */
+  access?: "FREE" | "PAID" | "PUBLIC" | "PREMIUM";
   /** URL for the card link. If omitted, built from slug as /courses/[slug]. */
   href?: string;
   /** Course slug for detail page; used to build href when href is not set */
@@ -44,6 +47,7 @@ export function CourseCatalogCard({
   price,
   originalPrice,
   courseId,
+  access,
   href,
   slug,
   imageBadge,
@@ -52,6 +56,7 @@ export function CourseCatalogCard({
   rating,
 }: CourseCatalogCardProps) {
   const linkHref = href ?? (slug ? `/courses/${slug}` : "#");
+  const router = useRouter();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -61,118 +66,160 @@ export function CourseCatalogCard({
   const hasAccess = accessData?.data?.hasAccess ?? false;
   const effectiveEnrolled = isAuthenticated && hasAccess;
 
-  const handleEnrollClick = (e: React.MouseEvent) => {
+  const requireLoginOr = (e: React.MouseEvent, onAuthed: () => void) => {
     e.preventDefault();
     e.stopPropagation();
     if (!isAuthenticated) {
       setShowLoginModal(true);
-    } else {
-      // Future: open enroll / checkout flow
+      return;
     }
+    onAuthed();
   };
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-elevation-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation-md dark:border-gray-800 dark:bg-surface">
-      <Link href={linkHref} className="flex flex-1 flex-col outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-2xl">
-      {/* Image */}
-      <div className="relative h-48 shrink-0 overflow-hidden">
-        <Image
-          src={bannerImage}
-          alt={imageAlt}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-        />
-        {imageBadge === "BESTSELLER" && (
-          <span className="absolute left-0 top-4 z-10 rounded-r-full bg-primary px-3 py-1 text-xs font-bold text-white shadow-elevation-sm">
-            BESTSELLER
-          </span>
-        )}
-        {imageBadge === "NEW" && (
-          <span className="absolute left-4 top-4 z-10 rounded-md border border-border bg-white/90 px-2 py-1 text-xs font-bold text-primary shadow-elevation-sm backdrop-blur-md dark:border-gray-700 dark:bg-black/60">
-            NEW
-          </span>
-        )}
-        {showBookmark && (
-          <span
-            className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-elevation-sm backdrop-blur-sm dark:bg-black/50"
-            aria-hidden
-          >
-            <span className="material-icons-outlined text-sm text-accent">
-              workspace_premium
+      <Link
+        href={linkHref}
+        className="flex flex-1 flex-col outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-2xl"
+      >
+        {/* Image */}
+        <div className="relative h-48 shrink-0 overflow-hidden">
+          <Image
+            src={bannerImage}
+            alt={imageAlt}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+          />
+          {imageBadge === "BESTSELLER" && (
+            <span className="absolute left-0 top-4 z-10 rounded-r-full bg-primary px-3 py-1 text-xs font-bold text-white shadow-elevation-sm">
+              BESTSELLER
             </span>
-          </span>
-        )}
-        {duration && (
-          <span className="absolute bottom-3 right-3 rounded-md bg-black/60 px-2 py-1 text-[10px] font-medium text-white backdrop-blur-md">
-            {duration}
-          </span>
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="flex flex-1 flex-col p-5">
-        <div className="mb-2 flex items-start justify-between gap-2">
-          <span className="rounded bg-sage-light px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-primary dark:bg-sage-dark dark:text-primary-on-dark">
-            {category}
-          </span>
-          {rating != null && (
-            <span className="flex items-center text-accent" aria-label={`Rating ${rating}`}>
-              <span className="material-icons-outlined text-sm" aria-hidden>
-                star
+          )}
+          {imageBadge === "NEW" && (
+            <span className="absolute left-4 top-4 z-10 rounded-md border border-border bg-white/90 px-2 py-1 text-xs font-bold text-primary shadow-elevation-sm backdrop-blur-md dark:border-gray-700 dark:bg-black/60">
+              NEW
+            </span>
+          )}
+          {showBookmark && (
+            <span
+              className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-elevation-sm backdrop-blur-sm dark:bg-black/50"
+              aria-hidden
+            >
+              <span className="material-icons-outlined text-sm text-accent">
+                workspace_premium
               </span>
-              <span className="ml-1 text-xs font-bold text-foreground dark:text-gray-300">
-                {rating}
-              </span>
+            </span>
+          )}
+          {duration && (
+            <span className="absolute bottom-3 right-3 rounded-md bg-black/60 px-2 py-1 text-[10px] font-medium text-white backdrop-blur-md">
+              {duration}
             </span>
           )}
         </div>
 
-        <h3 className="mb-4 font-display text-xl font-bold leading-tight text-foreground transition-colors group-hover:text-primary dark:text-white">
-          {title}
-        </h3>
-
-        <div className="mb-4 flex items-center gap-2">
-          <Image
-            src={instructorAvatarSrc}
-            alt=""
-            width={24}
-            height={24}
-            className="rounded-full border border-border object-cover dark:border-gray-600"
-          />
-          <p className="text-xs text-muted dark:text-gray-400">{instructorName}</p>
-        </div>
-
-        <div className="mt-auto flex items-center justify-between border-t border-border pt-4 dark:border-gray-800">
-          <div>
-            {originalPrice != null && (
-              <span className="block text-xs text-muted line-through">
-                {originalPrice}
+        {/* Content */}
+        <div className="flex flex-1 flex-col p-5">
+          <div className="mb-2 flex items-start justify-between gap-2">
+            <span className="rounded bg-sage-light px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-primary dark:bg-sage-dark dark:text-primary-on-dark">
+              {category}
+            </span>
+            {rating != null && (
+              <span
+                className="flex items-center text-accent"
+                aria-label={`Rating ${rating}`}
+              >
+                <span className="material-icons-outlined text-sm" aria-hidden>
+                  star
+                </span>
+                <span className="ml-1 text-xs font-bold text-foreground dark:text-gray-300">
+                  {rating}
+                </span>
               </span>
             )}
-            <span className="text-lg font-bold text-foreground dark:text-white">
-              {price}
-            </span>
           </div>
+
+          <h3 className="mb-4 font-display text-xl font-bold leading-tight text-foreground transition-colors group-hover:text-primary dark:text-white">
+            {title}
+          </h3>
+
+          <div className="mb-4 flex items-center gap-2">
+            <Image
+              src={instructorAvatarSrc}
+              alt=""
+              width={24}
+              height={24}
+              className="rounded-full border border-border object-cover dark:border-gray-600"
+            />
+            <p className="text-xs text-muted dark:text-gray-400">
+              {instructorName}
+            </p>
+          </div>
+
+          <div className="mt-auto flex items-center justify-between border-t border-border pt-4 dark:border-gray-800">
+            <div>
+              {originalPrice != null && (
+                <span className="block text-xs text-muted line-through">
+                  {originalPrice}
+                </span>
+              )}
+              <span className="text-lg font-bold text-foreground dark:text-white">
+                {price}
+              </span>
+            </div>
           {effectiveEnrolled && slug ? (
-            <Link
-              href={`/courses/${slug}/lesson`}
-              onClick={(e) => e.stopPropagation()}
-              className="inline-flex rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+            <button
+              type="button"
+              onClick={(e) =>
+                requireLoginOr(e, () => router.push(`/courses/${slug}/lesson`))
+              }
+              className="rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
             >
               Course Access
-            </Link>
+            </button>
+          ) : access === "PAID" ? (
+            <button
+              type="button"
+              onClick={(e) =>
+                requireLoginOr(e, () => {
+                  if (courseId) {
+                    router.push(`/checkout/review?courseId=${courseId}`);
+                  } else {
+                    router.push("/checkout/review");
+                  }
+                })
+              }
+              className="rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+            >
+              Buy Now
+            </button>
+          ) : access === "PREMIUM" ? (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push("/pricing");
+              }}
+              className="rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+            >
+              Get Premium
+            </button>
           ) : (
             <button
               type="button"
-              onClick={handleEnrollClick}
+              onClick={(e) =>
+                requireLoginOr(e, () => {
+                  // Future: open enroll / checkout flow
+                })
+              }
               className="rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
             >
               Enroll Now
             </button>
           )}
+          </div>
         </div>
-      </div>
       </Link>
 
       <Modal

@@ -73,6 +73,7 @@ function mapAllTypeCourseToCourseWithMeta(
     originalPrice:
       course.access === "PAID" ? dummyCourses[0]?.originalPrice : undefined,
     courseId: course.id,
+    access: course.access,
     slug: course.slug,
     href: `/courses/${course.slug}`,
     imageBadge: course.access === "PAID" ? "BESTSELLER" : undefined,
