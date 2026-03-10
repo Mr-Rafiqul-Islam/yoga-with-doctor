@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Modal } from "@/components/Modal";
+import { useAppSelector } from "@/stores";
+import { useCheckCourseAccessQuery } from "@/slices/courses";
 
 export type CourseCatalogCardProps = {
   title: string;
@@ -15,8 +17,10 @@ export type CourseCatalogCardProps = {
   price: string;
   /** Strikethrough price when discounted */
   originalPrice?: string;
-  /** When true, show "Details" and card links to detail page. When false (default), show "Enroll Now" (for future enroll flow); card still links to detail page. */
+  /** When true, show "Course Access" button to lesson page; when false, show "Enroll Now". When logged in, this can be overridden by useCheckCourseAccessQuery (hasAccess). */
   isEnrolled?: boolean;
+  /** Course ID (UUID) for access check when user is logged in. If provided and authenticated, hasAccess from API is used for button. */
+  courseId?: string;
   /** URL for the card link. If omitted, built from slug as /courses/[slug]. */
   href?: string;
   /** Course slug for detail page; used to build href when href is not set */
@@ -39,7 +43,7 @@ export function CourseCatalogCard({
   instructorAvatarSrc,
   price,
   originalPrice,
-  isEnrolled = false,
+  courseId,
   href,
   slug,
   imageBadge,
@@ -48,8 +52,14 @@ export function CourseCatalogCard({
   rating,
 }: CourseCatalogCardProps) {
   const linkHref = href ?? (slug ? `/courses/${slug}` : "#");
-  const isAuthenticated = false; // Auth to be reimplemented
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const { data: accessData } = useCheckCourseAccessQuery(courseId ?? "", {
+    skip: !courseId || !isAuthenticated,
+  });
+  const hasAccess = accessData?.data?.hasAccess ?? false;
+  const effectiveEnrolled = isAuthenticated && hasAccess;
 
   const handleEnrollClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -144,10 +154,14 @@ export function CourseCatalogCard({
               {price}
             </span>
           </div>
-          {isEnrolled ? (
-            <span className="rounded-lg border border-border bg-gray-100 px-4 py-2 text-body-md font-medium text-foreground dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-              Details
-            </span>
+          {effectiveEnrolled && slug ? (
+            <Link
+              href={`/courses/${slug}/lesson`}
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+            >
+              Course Access
+            </Link>
           ) : (
             <button
               type="button"

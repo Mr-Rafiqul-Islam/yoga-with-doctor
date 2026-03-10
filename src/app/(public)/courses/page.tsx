@@ -7,12 +7,15 @@ import {
 import { dummyCourses } from "@/features/courses/data/dummyCourses";
 import type { CourseWithMeta } from "@/types/course";
 import type { LevelOption } from "@/features/courses/components";
-import { useGetCoursesQuery, type Course } from "@/slices/courses";
+import {
+  useGetAllTypeCoursesQuery,
+  type AllTypeCourseItem,
+} from "@/slices/courses";
 import { useMemo } from "react";
+import { LoadingScreen } from "@/components/ui/LoadingScreen";
 
 const FALLBACK_INSTRUCTOR_AVATAR =
-  dummyCourses[0]?.instructorAvatarSrc ??
-  "https://via.placeholder.com/64x64.png?text=Instructor";
+  "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-Hero.jpeg";
 
 const FALLBACK_PRICE = "$29.00";
 const FALLBACK_DURATION = "30 min";
@@ -33,12 +36,13 @@ function mapLevel(level: string | null): LevelOption {
   return "beginner";
 }
 
-function mapCourseToCourseWithMeta(
-  course: Course,
+function mapAllTypeCourseToCourseWithMeta(
+  course: AllTypeCourseItem,
   index: number
 ): CourseWithMeta {
-  const productPrice = course.productData?.price ?? null;
-  const productCurrency = course.productData?.currency ?? null;
+  const firstProduct = course.products?.[0];
+  const productPrice = firstProduct?.price ?? null;
+  const productCurrency = firstProduct?.currency ?? null;
 
   const isFreeAccess =
     course.access === "FREE" || course.access === "PUBLIC";
@@ -59,20 +63,19 @@ function mapCourseToCourseWithMeta(
     title: course.title,
     bannerImage:
       course.bannerUrl ??
-      course.bannerImage ??
       dummyCourses[index % dummyCourses.length]?.bannerImage ??
       "https://via.placeholder.com/640x360.png?text=Course",
     imageAlt: course.title,
-    category: (course.level ?? "Wellness").toUpperCase(),
+    category: (goal ?? "Wellness").toUpperCase(),
     instructorName: course.instructorName ?? "Yoga with Doctor",
     instructorAvatarSrc: FALLBACK_INSTRUCTOR_AVATAR,
     price,
     originalPrice:
       course.access === "PAID" ? dummyCourses[0]?.originalPrice : undefined,
-    isEnrolled: !!course.hasAccess,
+    courseId: course.id,
     slug: course.slug,
     href: `/courses/${course.slug}`,
-    imageBadge: course.isPremium ? "BESTSELLER" : undefined,
+    imageBadge: course.access === "PAID" ? "BESTSELLER" : undefined,
     showBookmark: true,
     duration: FALLBACK_DURATION,
     rating: FALLBACK_RATING,
@@ -84,20 +87,24 @@ function mapCourseToCourseWithMeta(
 }
 
 export default function CoursesPage() {
-  const { data, isLoading, isError } = useGetCoursesQuery({
-    page: 1,
-    limit: 50,
-  });
+  const { data, isError,isLoading } = useGetAllTypeCoursesQuery();
 
   const courses: CourseWithMeta[] = useMemo(() => {
     if (!data?.data?.courses || data.data.courses.length === 0) {
       return dummyCourses;
     }
 
-    return data.data.courses.map(mapCourseToCourseWithMeta);
+    return data.data.courses.map(mapAllTypeCourseToCourseWithMeta);
   }, [data]);
 
   const searchQuery = "Yoga";
+  if(isLoading) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <LoadingScreen message="Loading courses" />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

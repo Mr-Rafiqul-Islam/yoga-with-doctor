@@ -233,11 +233,44 @@ export interface GetCoursesResponse {
   };
 }
 
+/** Product item in all-types course response */
+export interface AllTypeCourseProduct {
+  id: string;
+  type: string;
+  title: string;
+  description: string | null;
+  price: number;
+  currency: string;
+}
+
+/** Course item from GET /api/v1/client/courses/all-types */
+export interface AllTypeCourseItem {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  bannerImageId: string | null;
+  bannerUrl: string | null;
+  level: string;
+  access: "FREE" | "PAID" | "PUBLIC" | "PREMIUM";
+  isActive: boolean;
+  instructorName: string;
+  createdAt: string;
+  updatedAt: string;
+  products: AllTypeCourseProduct[];
+  bundleCourses: unknown[];
+  _count: {
+    sections: number;
+    resources: number;
+    quizzes: number;
+  };
+}
+
 export interface GetAllTypeCoursesResponse {
   success: boolean;
   message: string;
   data: {
-    courses: Course[];
+    courses: AllTypeCourseItem[];
     total: number;
   };
 }
