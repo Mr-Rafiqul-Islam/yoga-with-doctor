@@ -15,8 +15,14 @@ export interface Video {
   duration: number | null;
   status: "PROCESSING" | "READY" | "FAILED";
   muxPlaybackId: string | null;
-  isPremium: boolean;
+  muxAssetId?: string | null;
+  muxUploadId?: string | null;
+  access?: "PUBLIC" | "PAID" | "PREMIUM";
   level: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  /** Optional; not present in course-detail lesson video response */
+  isPremium?: boolean;
 }
 
 export interface VideoPlaybackResponse {
@@ -80,13 +86,14 @@ export interface CourseQuiz {
   };
 }
 
+/** Product data; may be empty {} in response when course has no product */
 export interface ProductData {
-  id: string | null;
-  type: string | null;
-  title: string | null;
-  description: string | null;
-  price: number | null;
-  currency: string | null;
+  id?: string | null;
+  type?: string | null;
+  title?: string | null;
+  description?: string | null;
+  price?: number | null;
+  currency?: string | null;
 }
 
 export interface Course {

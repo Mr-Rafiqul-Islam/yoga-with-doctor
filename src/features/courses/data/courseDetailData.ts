@@ -108,7 +108,8 @@ const MORNING_SUNSHINE: CourseDetailData = {
   ],
 };
 
-const DEFAULT_INCLUDES: CourseDetailData["includes"] = [
+/** Static "This course includes" list when API does not provide it */
+export const DEFAULT_INCLUDES: CourseDetailData["includes"] = [
   { icon: "play_circle", text: "12 On-demand video lessons" },
   { icon: "description", text: "3 Downloadable resources" },
   { icon: "all_inclusive", text: "Full lifetime access" },

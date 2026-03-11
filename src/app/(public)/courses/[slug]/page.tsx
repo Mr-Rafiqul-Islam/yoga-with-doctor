@@ -1,42 +1,54 @@
 import { notFound } from "next/navigation";
-import { Breadcrumbs } from "@/features/courses/components";
-import { CourseDetailContent } from "@/features/courses/components/CourseDetailContent";
-import { getCourseDetailBySlug } from "@/features/courses/data/courseDetailData";
+import { CourseDetailPageClient } from "@/features/courses/components/CourseDetailPageClient";
 import type { Metadata } from "next";
+
+const baseUrl =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ enrolled?: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const course = getCourseDetailBySlug(slug);
-  if (!course) return { title: "Course" };
-  return {
-    title: course.title,
-    description: course.description,
-  };
+  if (!slug) return { title: "Course" };
+  try {
+    const res = await fetch(`${baseUrl}/api/v1/client/courses/${slug}`, {
+      cache: "no-store",
+    });
+    const json = await res.json();
+    const course = json?.data?.course;
+    if (course?.title) {
+      const description = course.description
+        ? String(course.description).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 160)
+        : undefined;
+      return {
+        title: course.title,
+        ...(description && { description }),
+      };
+    }
+  } catch {
+    // ignore
+  }
+  return { title: "Course" };
 }
 
-export default async function CourseDetailPage({ params, searchParams }: PageProps) {
+export async function generateStaticParams() {
+  try {
+    const res = await fetch(`${baseUrl}/api/v1/client/courses/all-types`);
+    const json = await res.json();
+    const courses = json?.data?.courses;
+    return courses.map((course: any) => ({ slug: course.slug }));
+  } catch {
+    return [];
+  }
+}
+
+export default async function CourseDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const { enrolled } = await searchParams;
-  const course = getCourseDetailBySlug(slug);
-  if (!course) notFound();
+  if (!slug) notFound();
 
-  const isEnrolled = enrolled === "1";
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <Breadcrumbs
-        items={[
-          { label: "Home", href: "/", icon: "home" },
-          { label: "Courses", href: "/courses" },
-          { label: course.title, href: null },
-        ]}
-      />
-      <CourseDetailContent course={course} isEnrolled={isEnrolled} />
-    </div>
-  );
+  return <CourseDetailPageClient slug={slug} />;
 }
