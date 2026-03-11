@@ -59,6 +59,11 @@ export function mapCourseToCourseDetailData(course: Course): CourseDetailData {
   const originalPrice = hasPrice ? STATIC_ORIGINAL_PRICE : "";
   const discountPercent = hasPrice ? STATIC_DISCOUNT_PERCENT : 0;
 
+  const firstLessonId =
+    sections[0]?.lessons?.[0]?.id ??
+    sections.flatMap((s) => s.lessons ?? [])[0]?.id ??
+    null;
+
   const curriculum: DetailModule[] = sections.map((section) => {
     const lessons = section.lessons ?? [];
     const totalMin = lessons.reduce(
@@ -73,10 +78,16 @@ export function mapCourseToCourseDetailData(course: Course): CourseDetailData {
     const detailLessons: DetailLesson[] = lessons.map((lesson) => ({
       id: lesson.id,
       title: lesson.title.trim(),
-      duration: lesson.durationMin
-        ? `${lesson.durationMin} min`
-        : "—",
-      isPreview: !lesson.locked,
+      duration: lesson.durationMin ? `${lesson.durationMin} min` : "—",
+      description: lesson.description ?? null,
+      order: lesson.order,
+      durationMin: lesson.durationMin ?? null,
+      videoId: lesson.videoId ?? null,
+      video: lesson.video ?? null,
+      locked: lesson.locked,
+      // For now: only the first lesson is preview across all courses.
+      // Later: replace with an API flag if/when available.
+      isPreview: firstLessonId != null && lesson.id === firstLessonId,
       isLocked: lesson.locked ?? false,
     }));
 
@@ -89,8 +100,39 @@ export function mapCourseToCourseDetailData(course: Course): CourseDetailData {
     };
   });
 
+  const totalLessons = sections.reduce(
+    (sum, section) => sum + (section.lessons?.length ?? 0),
+    0
+  );
+
+  const totalLessonResources = sections.reduce((sum, section) => {
+    const lessons = section.lessons ?? [];
+    return (
+      sum +
+      lessons.reduce((innerSum, lesson) => innerSum + (lesson.resources?.length ?? 0), 0)
+    );
+  }, 0);
+
+  const courseResources =
+    course.resources?.length ?? course._count?.resources ?? 0;
+  const totalResources = courseResources + totalLessonResources;
+
+  const includes: CourseDetailData["includes"] = [
+    {
+      icon: DEFAULT_INCLUDES[0]?.icon ?? "play_circle",
+      text: `${totalLessons} On-demand video lessons`,
+    },
+    {
+      icon: DEFAULT_INCLUDES[1]?.icon ?? "description",
+      text: `${totalResources} Downloadable resources`,
+    },
+    ...DEFAULT_INCLUDES.slice(2),
+  ];
+
   return {
+    courseId: course.id,
     slug: course.slug,
+    access: course.access,
     title: course.title,
     category: formatLevel(course.level),
     description: stripHtml(course.description ?? ""),
@@ -106,6 +148,6 @@ export function mapCourseToCourseDetailData(course: Course): CourseDetailData {
     price,
     originalPrice,
     discountPercent,
-    includes: DEFAULT_INCLUDES,
+    includes,
   };
 }

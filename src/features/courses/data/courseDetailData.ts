@@ -7,6 +7,14 @@ export interface CourseLesson {
   id: string;
   title: string;
   duration: string;
+  description?: string | null;
+  order?: number;
+  durationMin?: number | null;
+  videoId?: string | null;
+  /** Full video object from API (for future Mux player) */
+  video?: unknown | null;
+  /** Backend lock flag (if provided) */
+  locked?: boolean;
   /** Free to watch without enrolling (preview) */
   isPreview: boolean;
   /** When locked variant: not accessible until enrolled */
@@ -22,7 +30,9 @@ export interface CourseModule {
 }
 
 export interface CourseDetailData {
+  courseId?: string;
   slug: string;
+  access?: "FREE" | "PAID" | "PUBLIC" | "PREMIUM";
   title: string;
   category: string;
   description: string;

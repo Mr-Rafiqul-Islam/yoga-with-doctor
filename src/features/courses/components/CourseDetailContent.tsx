@@ -1,65 +1,87 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import MuxPlayer from "@mux/mux-player-react";
+import { Modal } from "@/components/Modal";
+import { CourseCatalogCardCta } from "./CourseCatalogCardCta";
 import type { CourseDetailData, CourseLesson } from "../data/courseDetailData";
 
 const TABS = ["About Course", "Curriculum", "Reviews"] as const;
 
 export interface CourseDetailContentProps {
   course: CourseDetailData;
-  /** When false: locked variant (lock overlay, Enroll to Unlock). When true: unlocked (play, access lessons). */
+  /** Kept for backward compatibility but UI is now driven purely by course data. */
   isEnrolled: boolean;
 }
 
-export function CourseDetailContent({ course, isEnrolled }: CourseDetailContentProps) {
+export function CourseDetailContent({ course }: CourseDetailContentProps) {
   const [activeTab, setActiveTab] = useState<(typeof TABS)[0]>("About Course");
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const previewLesson = useMemo(() => {
+    const allLessons = course.curriculum.flatMap((m) => m.lessons);
+    return allLessons.find(
+      (lesson) =>
+        lesson.isPreview &&
+        lesson.video &&
+        (lesson.video as any)?.muxPlaybackId
+    );
+  }, [course.curriculum]);
+
+  const muxPlaybackId =
+    (previewLesson?.video as any)?.muxPlaybackId as string | undefined;
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
       {/* Main column */}
       <div className="space-y-8 lg:col-span-2">
-        {/* Video section: locked vs unlocked */}
-        <div className="relative overflow-hidden rounded-2xl bg-black shadow-lg aspect-video">
-          <Image
-            src={course.thumbnailUrl}
-            alt=""
-            fill
-            className="object-cover opacity-60"
-            sizes="(max-width: 1024px) 100vw, 66vw"
-            priority
-          />
-          {!isEnrolled ? (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 ring-1 ring-white/30 backdrop-blur-md">
-                <span className="material-icons-outlined text-3xl text-white">lock</span>
-              </div>
-              <h3 className="mb-2 font-display text-xl font-semibold text-white">
-                This course is locked
-              </h3>
-              <a
-                href="#sidebar-enroll"
-                className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark"
-              >
-                Enroll to Unlock
-              </a>
-            </div>
-          ) : (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-gradient-to-t from-black/50 to-transparent">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/20 ring-2 ring-white/40 backdrop-blur-md transition-transform hover:scale-105">
-                <span className="material-icons-outlined text-5xl text-white">play_arrow</span>
-              </div>
-              <p className="mt-3 text-sm font-medium text-white">Start Course</p>
-            </div>
-          )}
-          <div className="absolute bottom-0 left-0 h-1 w-full bg-gray-700">
-            <div
-              className="h-full bg-primary"
-              style={{ width: isEnrolled ? "0%" : "0%" }}
-              aria-hidden
+        {/* Video section: autoplay preview if available, otherwise locked thumbnail */}
+        <div className="relative aspect-video overflow-hidden rounded-2xl bg-black shadow-lg">
+          {muxPlaybackId ? (
+            <MuxPlayer
+              playbackId={muxPlaybackId}
+              poster={course.thumbnailUrl}
+              autoPlay
+              playsInline
+              streamType="on-demand"
+              className="h-full w-full"
+              style={{
+                aspectRatio: "auto",
+                height: "100%",
+                width: "100%",
+                "--controls-backdrop-color": "transparent",
+                "--media-object-fit": "cover",
+                "--media-object-position": "center",
+              }}
             />
-          </div>
+          ) : (
+            <>
+              <Image
+                src={course.thumbnailUrl}
+                alt=""
+                fill
+                className="object-cover opacity-60"
+                sizes="(max-width: 1024px) 100vw, 66vw"
+                priority
+              />
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 ring-1 ring-white/30 backdrop-blur-md">
+                  <span className="material-icons-outlined text-3xl text-white">lock</span>
+                </div>
+                <h3 className="mb-2 font-display text-xl font-semibold text-white">
+                  This course is locked
+                </h3>
+                <a
+                  href="#sidebar-enroll"
+                  className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark"
+                >
+                  Enroll to Unlock
+                </a>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Meta + title + description + instructor */}
@@ -97,7 +119,8 @@ export function CourseDetailContent({ course, isEnrolled }: CourseDetailContentP
               <p className="text-xs text-muted dark:text-gray-400">{course.instructorTitle}</p>
             </div>
             <Link
-              href="#"
+              href="https://drshahalam.com"
+              target="_blank"
               className="ml-auto text-sm font-medium text-primary hover:underline"
             >
               View Profile
@@ -133,7 +156,7 @@ export function CourseDetailContent({ course, isEnrolled }: CourseDetailContentP
             </h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {course.learningOutcomes.map((outcome) => (
-                <div key={outcome} className="flex items-start gap-3">
+                <div key={outcome} className="flex items-center gap-3">
                   <span className="material-icons-outlined mt-0.5 text-xl text-primary">
                     check_circle
                   </span>
@@ -164,7 +187,6 @@ export function CourseDetailContent({ course, isEnrolled }: CourseDetailContentP
                     <LessonRow
                       key={lesson.id}
                       lesson={lesson}
-                      isEnrolled={isEnrolled}
                     />
                   ))}
                 </div>
@@ -194,20 +216,14 @@ export function CourseDetailContent({ course, isEnrolled }: CourseDetailContentP
                 -{course.discountPercent}%
               </span>
             </div>
-            {!isEnrolled ? (
-              <Link
-                href={`/courses/${course.slug}?enrolled=1`}
-                className="mb-6 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 px-4 font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary-dark"
-              >
-                Enroll Now
-                <span className="material-icons-outlined text-sm">arrow_forward</span>
-              </Link>
-            ) : (
-              <div className="mb-6 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 px-4 font-semibold text-white shadow-lg shadow-primary/30">
-                <span className="material-icons-outlined text-sm">check_circle</span>
-                Enrolled
-              </div>
-            )}
+            <div className="mb-6 [&>button]:w-full [&>button]:py-3.5">
+              <CourseCatalogCardCta
+                courseId={course.courseId}
+                slug={course.slug}
+                access={course.access}
+                onRequireLogin={() => setShowLoginModal(true)}
+              />
+            </div>
             <div className="space-y-4 border-t border-border pt-6 dark:border-gray-700">
               <h4 className="text-sm font-semibold text-foreground dark:text-white">
                 This course includes:
@@ -236,6 +252,30 @@ export function CourseDetailContent({ course, isEnrolled }: CourseDetailContentP
               Not satisfied? Get a full refund within 30 days.
             </p>
           </div>
+
+          <Modal
+            isOpen={showLoginModal}
+            onClose={() => setShowLoginModal(false)}
+            title="Login required"
+          >
+            <p className="mb-6 text-muted">Please log in to enroll in this course.</p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setShowLoginModal(false)}
+                className="order-2 rounded-lg border border-border px-4 py-2 text-body-md font-medium text-foreground transition-colors hover:bg-gray-100 sm:order-1 dark:hover:bg-gray-800"
+              >
+                Cancel
+              </button>
+              <Link
+                href="/auth/login"
+                onClick={() => setShowLoginModal(false)}
+                className="order-1 inline-flex justify-center rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:order-2"
+              >
+                Go to Login
+              </Link>
+            </div>
+          </Modal>
         </div>
       </aside>
     </div>
@@ -244,13 +284,11 @@ export function CourseDetailContent({ course, isEnrolled }: CourseDetailContentP
 
 function LessonRow({
   lesson,
-  isEnrolled,
 }: {
   lesson: CourseLesson;
-  isEnrolled: boolean;
 }) {
-  const locked = !isEnrolled && lesson.isLocked;
-  const canPlay = isEnrolled || lesson.isPreview;
+  const locked = lesson.isLocked ?? !lesson.isPreview;
+  const canPlay = lesson.isPreview;
 
   return (
     <div
@@ -264,7 +302,7 @@ function LessonRow({
         <div
           className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
             locked
-              ? "bg-muted text-muted dark:bg-gray-700 dark:text-gray-400"
+              ? "bg-gray-300 text-muted dark:bg-gray-700 dark:text-gray-400"
               : "bg-primary/10 text-primary"
           }`}
         >

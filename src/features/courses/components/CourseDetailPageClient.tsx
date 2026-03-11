@@ -3,7 +3,7 @@
 import { notFound } from "next/navigation";
 import { Breadcrumbs, CourseDetailContent } from "@/features/courses/components";
 import { useGetCourseBySlugQuery } from "@/slices/courses";
-import { mapCourseToCourseDetailData } from "@/features/courses/lib/mapCourseToDetail";
+import { mapCourseToCourseDetailData } from "@/lib/mapCourseToDetail";
 
 export interface CourseDetailPageClientProps {
   slug: string;
