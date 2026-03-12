@@ -1,0 +1,218 @@
+"use client";
+
+import { useMemo } from "react";
+import { notFound, useRouter } from "next/navigation";
+import { Breadcrumbs } from "@/features/courses/components";
+import {
+  CourseContentSidebar,
+  DoctorsNotesSection,
+  LessonDetailsTabs,
+  LessonOverviewCard,
+  LessonTabCertificate,
+  LessonTabDiscussion,
+  LessonTabResources,
+  LessonVideoPlayer,
+} from "@/features/courses/components/lesson";
+import { useGetCourseContentQuery, type Course } from "@/slices/courses";
+import { mapCourseToCourseDetailData } from "@/lib/mapCourseToDetail";
+
+function mmssFromDurationMin(durationMin: number | null | undefined): string {
+  const mins = typeof durationMin === "number" && durationMin > 0 ? durationMin : 0;
+  return `${String(mins).padStart(2, "0")}:00`;
+}
+
+function totalDurationLabelFromMinutes(totalMin: number): string {
+  if (totalMin <= 0) return "—";
+  return totalMin >= 60
+    ? `${Math.floor(totalMin / 60)}h ${totalMin % 60}m`
+    : `${totalMin}m`;
+}
+
+export interface LessonPageClientProps {
+  slug: string;
+  lessonId?: string;
+}
+
+export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
+  const router = useRouter();
+  const { data, isLoading, isFetching, isError } = useGetCourseContentQuery(slug, {
+    skip: !slug,
+  });
+
+  const resolved = useMemo(() => {
+    const apiCourse = data?.data?.course;
+    if (!apiCourse) return null;
+
+    const courseForDetail: Course = {
+      id: apiCourse.id,
+      slug: apiCourse.slug,
+      title: apiCourse.title,
+      description: apiCourse.description ?? null,
+      bannerImageId: apiCourse.bannerImageId ?? null,
+      bannerUrl: apiCourse.bannerUrl ?? null,
+      bannerImage: apiCourse.bannerImage ?? null,
+      level: apiCourse.level ?? null,
+      access: apiCourse.access,
+      isPremium: apiCourse.isPremium,
+      instructorName: apiCourse.instructorName ?? null,
+      sections: apiCourse.sections,
+      resources: apiCourse.resources,
+      createdAt: "",
+      updatedAt: "",
+    };
+
+    const detailData = mapCourseToCourseDetailData(courseForDetail);
+
+    const sections = apiCourse.sections ?? [];
+    const flat = sections.flatMap((section) =>
+      (section.lessons ?? []).map((lesson) => ({
+        lesson,
+        moduleTitle: section.title,
+        moduleId: section.id,
+      }))
+    );
+
+    const lessonExists = lessonId ? flat.some((x) => x.lesson.id === lessonId) : false;
+    const firstUnlockedId =
+      flat.find((x) => !(x.lesson.locked ?? false))?.lesson.id ?? flat[0]?.lesson.id ?? null;
+
+    const currentId = (lessonExists ? lessonId : firstUnlockedId) ?? null;
+    const currentIdx = currentId ? flat.findIndex((x) => x.lesson.id === currentId) : -1;
+    const current = currentIdx >= 0 ? flat[currentIdx] : null;
+
+    const totalLessons = flat.length;
+    const totalMinutes = flat.reduce((sum, x) => sum + (x.lesson.durationMin ?? 0), 0);
+    const progressPercent =
+      totalLessons > 0 && currentIdx >= 0 ? Math.round((currentIdx / totalLessons) * 100) : 0;
+
+    const curriculum = flat.map((x, index) => ({
+      id: x.lesson.id,
+      title: x.lesson.title,
+      duration: x.lesson.durationMin ? `${x.lesson.durationMin} min` : "—",
+      moduleTitle: x.moduleTitle,
+      isCompleted: currentIdx >= 0 && index < currentIdx,
+      isCurrent: currentId != null && x.lesson.id === currentId,
+      isLocked: x.lesson.locked ?? false,
+    }));
+
+    let moduleIndex = 0;
+    let lessonIndex = 0;
+    if (currentId) {
+      for (let i = 0; i < sections.length; i++) {
+        const idx = (sections[i].lessons ?? []).findIndex((l) => l.id === currentId);
+        if (idx >= 0) {
+          moduleIndex = i + 1;
+          lessonIndex = idx + 1;
+          break;
+        }
+      }
+    }
+
+    const currentLesson = current
+      ? {
+          id: current.lesson.id,
+          title: current.lesson.title,
+          duration: mmssFromDurationMin(current.lesson.durationMin),
+          moduleLabel: current.moduleTitle,
+          moduleIndex,
+          lessonIndex,
+        }
+      : null;
+
+    const currentMuxPlaybackId =
+      current?.lesson?.video?.muxPlaybackId ?? undefined;
+
+    return {
+      detailData,
+      curriculum,
+      currentLesson,
+      currentMuxPlaybackId,
+      progressPercent,
+      totalLessons,
+      totalDuration: totalDurationLabelFromMinutes(totalMinutes),
+    };
+  }, [data, lessonId]);
+
+  const lessonUrl = (id: string) => `/courses/${slug}/lesson?lesson=${id}`;
+
+  if (!slug) notFound();
+
+  if (isLoading || isFetching) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-6 h-5 w-48 animate-pulse rounded bg-muted" />
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="space-y-8 lg:col-span-2">
+            <div className="aspect-video animate-pulse rounded-2xl bg-muted" />
+            <div className="h-40 animate-pulse rounded-2xl bg-muted" />
+            <div className="h-64 animate-pulse rounded-2xl bg-muted" />
+          </div>
+          <div className="h-[520px] animate-pulse rounded-2xl bg-muted" />
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !resolved) {
+    // If the content endpoint is guarded, a 401/403 should redirect user to course page.
+    router.replace(`/courses/${slug}`);
+    return null;
+  }
+
+  const {
+    detailData,
+    curriculum,
+    currentLesson,
+    currentMuxPlaybackId,
+    progressPercent,
+    totalLessons,
+    totalDuration,
+  } = resolved;
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/", icon: "home" },
+          { label: "Courses", href: "/courses" },
+          { label: detailData.title, href: `/courses/${slug}` },
+          ...(currentLesson ? [{ label: currentLesson.title, href: null }] : []),
+        ]}
+      />
+
+      <main className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="space-y-8 lg:col-span-2">
+          <LessonVideoPlayer
+            thumbnailUrl={detailData.thumbnailUrl}
+            muxPlaybackId={currentMuxPlaybackId}
+            duration={currentLesson?.duration ?? "00:00"}
+            initialCurrentTime="00:00"
+          />
+
+          <LessonOverviewCard
+            course={detailData}
+            currentLesson={currentLesson}
+            progressPercent={progressPercent}
+            curriculum={curriculum}
+            lessonUrl={lessonUrl}
+          />
+
+          <LessonDetailsTabs
+            overviewContent={<DoctorsNotesSection doctorNotes={null} />}
+            resourcesContent={<LessonTabResources />}
+            discussionContent={<LessonTabDiscussion />}
+            certificateContent={<LessonTabCertificate />}
+          />
+        </div>
+
+        <CourseContentSidebar
+          curriculum={curriculum}
+          totalLessons={totalLessons}
+          totalDuration={totalDuration}
+          lessonUrl={lessonUrl}
+        />
+      </main>
+    </div>
+  );
+}
+
