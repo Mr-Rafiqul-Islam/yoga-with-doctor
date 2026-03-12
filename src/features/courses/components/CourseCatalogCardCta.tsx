@@ -57,8 +57,8 @@ export function CourseCatalogCardCta({
         type="button"
         onClick={(e) =>
           handleClick(e, () => {
-            if (courseId) {
-              router.push(`/checkout/review?courseId=${courseId}`);
+            if (slug) {
+              router.push(`/checkout/review?courseSlug=${slug}`);
             } else {
               router.push("/checkout/review");
             }

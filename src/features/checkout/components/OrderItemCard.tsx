@@ -1,4 +1,11 @@
-import type { OrderItem } from "@/features/checkout/data/checkoutReviewData";
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import {
+  type OrderItem,
+  formatCheckoutPrice,
+} from "@/features/checkout/data/checkoutReviewData";
 
 type OrderItemCardProps = {
   item: OrderItem;
@@ -6,6 +13,9 @@ type OrderItemCardProps = {
 };
 
 export function OrderItemCard({ item, onRemove }: OrderItemCardProps) {
+  const [imageError, setImageError] = useState(false);
+  const showBanner = item.bannerUrl && !imageError;
+
   return (
     <div className="flex flex-col gap-6 rounded-lg bg-surface p-6 shadow-soft transition-colors dark:bg-surface-dark sm:flex-row">
       <div className="relative h-32 w-full flex-shrink-0 overflow-hidden rounded-2xl bg-[#8AB5A8] sm:w-32">
@@ -13,12 +23,23 @@ export function OrderItemCard({ item, onRemove }: OrderItemCardProps) {
           className="absolute inset-0 pointer-events-none bg-gradient-to-br from-white/20 to-transparent"
           aria-hidden
         />
-        <span
-          className="material-icons-outlined absolute inset-0 flex items-center justify-center text-5xl text-white opacity-90 drop-shadow-sm"
-          aria-hidden
-        >
-          spa
-        </span>
+        {showBanner ? (
+          <Image
+            src={item.bannerUrl!}
+            alt=""
+            fill
+            className="object-cover"
+            sizes="128px"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <span
+            className="material-icons-outlined absolute inset-0 flex items-center justify-center text-5xl text-white opacity-90 drop-shadow-sm"
+            aria-hidden
+          >
+            spa
+          </span>
+        )}
       </div>
       <div className="flex flex-1 flex-col justify-between">
         <div>
@@ -32,7 +53,7 @@ export function OrderItemCard({ item, onRemove }: OrderItemCardProps) {
         </div>
         <div className="mt-2 flex items-center justify-between">
           <span className="text-xl font-bold text-primary">
-            ${item.price.toFixed(2)}
+            {formatCheckoutPrice(item.price, item.currency)}
           </span>
           {onRemove && (
             <button
