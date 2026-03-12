@@ -27,6 +27,7 @@ export function CheckoutReviewContent() {
   const [discountApplied, setDiscountApplied] = useState(
     CHECKOUT_REVIEW.defaultDiscount
   );
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   const { data: courseResponse } = useGetCourseBySlugQuery(courseSlug, {
     skip: !courseSlug,
@@ -79,17 +80,30 @@ export function CheckoutReviewContent() {
 
   const handleProceedToPayment = async () => {
     if (!productId) return;
+    setPaymentError(null);
     try {
+      // Step 1: Create checkout (same as mobile app)
       const checkoutResult = await createCheckout({ productId }).unwrap();
-      const purchaseId = checkoutResult?.data?.purchaseId;
-      if (!purchaseId) return;
-      const paymentResult = await initSslPayment({ purchaseId }).unwrap();
-      const gatewayUrl = paymentResult?.data?.gatewayUrl;
-      if (gatewayUrl) {
-        window.location.href = gatewayUrl;
+      const purchaseIdFromCheckout = checkoutResult?.data?.purchaseId;
+      if (!purchaseIdFromCheckout) {
+        setPaymentError("Invalid response from checkout. Please try again.");
+        return;
       }
-    } catch {
-      // Error handled by RTK Query / could show toast
+      // Step 2: Init SSL payment and redirect to gateway (same as mobile app)
+      const paymentResult = await initSslPayment({
+        purchaseId: purchaseIdFromCheckout,
+      }).unwrap();
+      const gatewayUrlFromResponse = paymentResult?.data?.gatewayUrl;
+      if (gatewayUrlFromResponse) {
+        window.location.href = gatewayUrlFromResponse;
+        return;
+      }
+      setPaymentError("Payment gateway URL not received. Please try again.");
+    } catch (error: unknown) {
+      const message =
+        (error as { data?: { message?: string } })?.data?.message ||
+        "Failed to initialize payment. Please try again.";
+      setPaymentError(message);
     }
   };
 
@@ -111,6 +125,18 @@ export function CheckoutReviewContent() {
           </div>
 
           <div className="space-y-6 lg:col-span-5 lg:sticky lg:top-8">
+            {paymentError && (
+              <div
+                className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/30 dark:text-red-200"
+                role="alert"
+              >
+                <p className="font-medium">Payment error</p>
+                <p className="mt-1">{paymentError}</p>
+                <p className="mt-2 text-xs opacity-90">
+                  Ensure .env has NEXT_PUBLIC_API_BASE_URL pointing to your backend, not the Next.js app.
+                </p>
+              </div>
+            )}
             <OrderTotalCard
               subtotal={subtotal}
               tax={tax}
