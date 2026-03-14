@@ -15,10 +15,9 @@ import { useMemo } from "react";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 
 const FALLBACK_INSTRUCTOR_AVATAR =
-  "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-Hero.jpeg";
+  "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-About.jpeg";
 
 const FALLBACK_PRICE = "$29.00";
-const FALLBACK_DURATION = "30 min";
 const FALLBACK_RATING = "4.9";
 const FALLBACK_GOALS = [
   "Back Pain",
@@ -55,7 +54,7 @@ function mapAllTypeCourseToCourseWithMeta(
         : FALLBACK_PRICE;
 
   const level = mapLevel(course.level);
-  const goal =
+  const goal = course.category ??
     FALLBACK_GOALS[index % FALLBACK_GOALS.length] ?? FALLBACK_GOALS[0];
 
   return {
@@ -97,7 +96,7 @@ export default function CoursesPage() {
     return data.data.courses.map(mapAllTypeCourseToCourseWithMeta);
   }, [data]);
 
-  const searchQuery = "Yoga";
+  const searchQuery = "";
   if(isLoading) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

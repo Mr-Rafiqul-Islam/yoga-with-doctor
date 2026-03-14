@@ -86,8 +86,7 @@ export function CoursesPageContent({
               All Courses
             </h1>
             <p className="mt-1 text-body-md text-muted" aria-live="polite">
-              Showing {totalCount} result{totalCount !== 1 ? "s" : ""} for
-              &quot;{searchQuery}&quot;
+              Showing {totalCount} result{totalCount !== 1 ? "s" : ""} {searchQuery ? `for "${searchQuery}"` : ""} 
             </p>
           </header>
 

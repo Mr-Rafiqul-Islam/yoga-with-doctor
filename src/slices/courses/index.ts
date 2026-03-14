@@ -262,6 +262,7 @@ export interface AllTypeCourseItem {
   access: "FREE" | "PAID" | "PUBLIC" | "PREMIUM";
   isActive: boolean;
   instructorName: string;
+  category: string | null;
   createdAt: string;
   updatedAt: string;
   products: AllTypeCourseProduct[];

@@ -1,6 +1,7 @@
 "use client";
 
-import { useId, useState, useCallback } from "react";
+import { useId, useState, useCallback, useMemo } from "react";
+import { useGetAllTypeCoursesQuery } from "@/slices/courses";
 
 export type LevelOption = "beginner" | "intermediate" | "advanced";
 
@@ -13,14 +14,6 @@ const LEVEL_OPTIONS: { value: LevelOption; label: string }[] = [
   { value: "beginner", label: "Beginner" },
   { value: "intermediate", label: "Intermediate" },
   { value: "advanced", label: "Advanced" },
-];
-
-const DEFAULT_GOALS = [
-  "Back Pain",
-  "Stress Relief",
-  "Flexibility",
-  "Weight Loss",
-  "Sleep",
 ];
 
 export type FilterSidebarProps = {
@@ -41,12 +34,21 @@ const ALL_LEVELS: LevelOption[] = ["beginner", "intermediate", "advanced"];
 export function FilterSidebar({
   searchPlaceholder="Search courses...",
   defaultLevels = ALL_LEVELS,
-  defaultGoals = ["Back Pain"],
+  defaultGoals = [],
   onFiltersChange,
   className = "",
 }: FilterSidebarProps) {
   const [levels, setLevels] = useState<LevelOption[]>(defaultLevels);
   const [goals, setGoals] = useState<string[]>(defaultGoals);
+
+  const { data: allTypesData } = useGetAllTypeCoursesQuery();
+  const goalOptions = useMemo(() => {
+    const courses = allTypesData?.data?.courses ?? [];
+    const categories = courses
+      .map((c) => c.category)
+      .filter((c): c is string => typeof c === "string" && c.trim() !== "");
+    return Array.from(new Set(categories)).sort((a, b) => a.localeCompare(b));
+  }, [allTypesData]);
 
   const levelId = useId();
   const goalsId = useId();
@@ -170,7 +172,7 @@ export function FilterSidebar({
               role="group"
               aria-labelledby={goalsId}
             >
-              {DEFAULT_GOALS.map((goal) => {
+              {goalOptions.map((goal) => {
                 const selected = goals.includes(goal);
                 return (
                   <button
