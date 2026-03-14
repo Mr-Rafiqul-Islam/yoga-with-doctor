@@ -6,11 +6,12 @@ type DashboardProfileCardProps = {
 };
 
 export function DashboardProfileCard({ user }: DashboardProfileCardProps) {
+  console.log(user);
   return (
     <article className="rounded-2xl border border-border bg-surface p-6 shadow-elevation-sm">
       <div className="flex flex-col items-center text-center">
         <div className="relative mb-4">
-          <div className="relative h-24 w-24 overflow-hidden rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 p-0.5">
+          <div className="relative h-24 w-24 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 p-0.5">
             <div className="h-full w-full overflow-hidden rounded-full bg-surface">
               <Image
                 src={user.avatarSrc}
@@ -20,6 +21,15 @@ export function DashboardProfileCard({ user }: DashboardProfileCardProps) {
                 className="h-full w-full object-cover"
               />
             </div>
+            {user.isPremium && (
+              <span
+                className="absolute -top-0.5 z-10 left-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-amber-500 text-white shadow-md ring-2 ring-surface"
+                title="Premium member"
+                aria-hidden
+              >
+                <span className="material-icons-outlined text-base">workspace_premium</span>
+              </span>
+            )}
           </div>
           <button
             type="button"

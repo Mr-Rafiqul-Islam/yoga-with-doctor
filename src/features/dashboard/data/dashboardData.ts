@@ -4,6 +4,8 @@ export type DashboardUser = {
   name: string;
   role: string;
   avatarSrc: string;
+  /** When true, a premium badge is shown on the profile card. */
+  isPremium?: boolean;
 };
 
 export type DashboardStats = {
