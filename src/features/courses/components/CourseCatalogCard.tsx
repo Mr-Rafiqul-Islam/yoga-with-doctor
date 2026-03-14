@@ -53,7 +53,7 @@ export function CourseCatalogCard({
   const linkHref = href ?? (slug ? `/courses/${slug}` : "#");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const isPremium = premiumBadge || access === "PREMIUM";
-  
+
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-elevation-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation-md dark:border-gray-800 dark:bg-surface">
       <Link
@@ -81,18 +81,17 @@ export function CourseCatalogCard({
           )}
           {isPremium && (
             <>
-            <span className="absolute left-0 top-4 z-10 rounded-r-full bg-orange-400 px-3 py-1 text-xs font-bold text-black shadow-elevation-sm">
-              PREMIUM
-            </span>
-            <span
-              className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-orange-400 shadow-elevation-sm backdrop-blur-sm "
-              aria-hidden
-            >
-              
-              <span className="material-icons-outlined text-xl text-black">
-                workspace_premium
+              <span className="absolute left-0 top-4 z-10 rounded-r-full bg-orange-400 px-3 py-1 text-xs font-bold text-black shadow-elevation-sm">
+                PREMIUM
               </span>
-            </span>
+              <span
+                className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-orange-400 shadow-elevation-sm backdrop-blur-sm "
+                aria-hidden
+              >
+                <span className="material-icons-outlined text-xl text-black">
+                  workspace_premium
+                </span>
+              </span>
             </>
           )}
           {isPremium && (
@@ -148,16 +147,22 @@ export function CourseCatalogCard({
           </div>
 
           <div className="mt-auto flex items-center justify-between border-t border-border pt-4 dark:border-gray-800">
-            <div>
-              {originalPrice != null && (
-                <span className="block text-xs text-muted line-through">
-                  {originalPrice}
+            {access === "PREMIUM" ? (
+              <div className="text-xs font-bold text-foreground dark:text-white">
+                Started from BDT 99<sub>/ month</sub>
+              </div>
+            ) : (
+              <div>
+                {originalPrice != null && (
+                  <span className="block text-xs text-muted line-through">
+                    {originalPrice}
+                  </span>
+                )}
+                <span className="text-lg font-bold text-foreground dark:text-white">
+                  {price}
                 </span>
-              )}
-              <span className="text-lg font-bold text-foreground dark:text-white">
-                {price}
-              </span>
-            </div>
+              </div>
+            )}
             <CourseCatalogCardCta
               courseId={courseId}
               slug={slug}
