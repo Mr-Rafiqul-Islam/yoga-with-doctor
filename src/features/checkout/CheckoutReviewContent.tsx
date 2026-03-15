@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useDispatch } from "react-redux";
 
 import {
   CheckoutReviewNav,
@@ -14,11 +15,13 @@ import {
   CHECKOUT_REVIEW,
   DEFAULT_ORDER_ITEM,
 } from "@/features/checkout/data/checkoutReviewData";
+import { useGetCourseBySlugQuery } from "@/slices/courses";
 import {
-  useGetCourseBySlugQuery,
-  useCreateCheckoutMutation,
-  useInitSslPaymentMutation,
-} from "@/slices/courses";
+  useStartCheckoutMutation,
+  useInitializePaymentMutation,
+  useStartPaymentAttemptMutation,
+  setPaymentContext,
+} from "@/slices/payment";
 
 export function CheckoutReviewContent() {
   const searchParams = useSearchParams();
@@ -29,16 +32,19 @@ export function CheckoutReviewContent() {
   );
   const [paymentError, setPaymentError] = useState<string | null>(null);
 
+  const dispatch = useDispatch();
   const { data: courseResponse } = useGetCourseBySlugQuery(courseSlug, {
     skip: !courseSlug,
   });
-  const [createCheckout, { isLoading: isCreatingCheckout }] =
-    useCreateCheckoutMutation();
-  const [initSslPayment, { isLoading: isInitializingPayment }] =
-    useInitSslPaymentMutation();
+  const [startCheckout, { isLoading: isStartingCheckout }] =
+    useStartCheckoutMutation();
+  const [initializePayment, { isLoading: isInitializingPayment }] =
+    useInitializePaymentMutation();
+  const [startPaymentAttempt, { isLoading: isStartingAttempt }] =
+    useStartPaymentAttemptMutation();
 
   const isProceeding =
-    isCreatingCheckout || isInitializingPayment;
+    isStartingCheckout || isInitializingPayment || isStartingAttempt;
 
   const orderItem = useMemo(() => {
     const course = courseResponse?.data?.course;
@@ -78,31 +84,82 @@ export function CheckoutReviewContent() {
     setDiscountApplied(0);
   };
 
+  const course = courseResponse?.data?.course;
+
   const handleProceedToPayment = async () => {
     if (!productId) return;
     setPaymentError(null);
     try {
-      // Step 1: Create checkout (same as mobile app)
-      const checkoutResult = await createCheckout({ productId }).unwrap();
-      const purchaseIdFromCheckout = checkoutResult?.data?.purchaseId;
-      if (!purchaseIdFromCheckout) {
+      const globalCheckout = await startCheckout({
+        productId,
+        provider: "SSL",
+        siteRef: "YWD",
+      }).unwrap();
+
+      const newPurchaseId = globalCheckout.data.purchaseId;
+      if (!newPurchaseId) {
         setPaymentError("Invalid response from checkout. Please try again.");
         return;
       }
-      // Step 2: Init SSL payment and redirect to gateway (same as mobile app)
-      const paymentResult = await initSslPayment({
-        purchaseId: purchaseIdFromCheckout,
+
+      const amountForInit =
+        typeof course?.productData?.price === "number"
+          ? course.productData.price
+          : 0;
+      const initPayment = await initializePayment({
+        amount: amountForInit,
+        currency: course?.productData?.currency || "BDT",
+        metaData: { purchaseId: newPurchaseId },
+        provider: "SSL",
+        projectKey: "YWD",
+        siteRef: "YWD",
       }).unwrap();
-      const gatewayUrlFromResponse = paymentResult?.data?.gatewayUrl;
-      if (gatewayUrlFromResponse) {
-        window.location.href = gatewayUrlFromResponse;
+
+      const initData = initPayment?.data as
+        | { transactionId?: string; id?: string; redirectUrl?: string; paymentUrl?: string }
+        | undefined;
+      const transactionId =
+        initData?.transactionId ?? initData?.id ?? null;
+      const redirectUrl =
+        initData?.redirectUrl ?? initData?.paymentUrl ?? null;
+
+      if (newPurchaseId || transactionId) {
+        dispatch(
+          setPaymentContext({
+            purchaseId: newPurchaseId,
+            transactionId: transactionId ?? undefined,
+          })
+        );
+      }
+
+      if (transactionId) {
+        const amountForAttempt =
+          typeof course?.productData?.price === "number"
+            ? course.productData.price
+            : 0;
+        try {
+          await startPaymentAttempt({
+            transactionId,
+            amount: amountForAttempt,
+            currency: course?.productData?.currency || "BDT",
+            metaData: { purchaseId: newPurchaseId },
+            provider: "SSL",
+            siteRef: "YWD",
+          }).unwrap();
+        } catch {
+          // Non-blocking; backend may still have attempt record
+        }
+      }
+
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
         return;
       }
       setPaymentError("Payment gateway URL not received. Please try again.");
     } catch (error: unknown) {
       const message =
         (error as { data?: { message?: string } })?.data?.message ||
-        "Failed to initialize payment. Please try again.";
+        "Failed to initialize payment. Please try again.!";
       setPaymentError(message);
     }
   };
@@ -132,9 +189,7 @@ export function CheckoutReviewContent() {
               >
                 <p className="font-medium">Payment error</p>
                 <p className="mt-1">{paymentError}</p>
-                <p className="mt-2 text-xs opacity-90">
-                  Ensure .env has NEXT_PUBLIC_API_BASE_URL pointing to your backend, not the Next.js app.
-                </p>
+                
               </div>
             )}
             <OrderTotalCard
