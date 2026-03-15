@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import { OfflineDetector } from "@/components/OfflineDetector";
 import { Header } from "@/components/layout";
+import { NotificationSocket } from "@/components/NotificationSocket";
 import { QueryProvider } from "@/lib/query";
 import { ReduxProvider } from "@/stores";
 import "./globals.css";
@@ -77,6 +78,7 @@ export default function RootLayout({
               Skip to main content
             </a>
             <Header />
+            <NotificationSocket />
             <main id="main-content" className="flex-1" role="main">
               {children}
             </main>
