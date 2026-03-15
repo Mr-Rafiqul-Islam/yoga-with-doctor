@@ -92,7 +92,7 @@ export function FilterPopup({
             Type
           </h3>
           <div className="flex gap-2">
-            {(["all", "FREE", "PREMIUM"] as const).map((option) => (
+            {(["all", "FREE"] as const).map((option) => (
               <label
                 key={option}
                 className="flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2 transition-colors has-[:checked]:border-primary has-[:checked]:bg-sage-light dark:has-[:checked]:bg-sage-dark dark:border-gray-700"

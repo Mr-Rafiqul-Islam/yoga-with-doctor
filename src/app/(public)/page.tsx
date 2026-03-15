@@ -1,9 +1,9 @@
 import {
   HeroSection,
   MedicalInsightSection,
-  TrendingTagsSection,
+  // TrendingTagsSection,
   FreeVideosSection,
-  PremiumCollectionSection,
+  // PremiumCollectionSection,
   TrendingCoursesSection,
 } from "@/features/home";
 
@@ -12,9 +12,9 @@ export default function Home() {
     <>
       <HeroSection />
       <MedicalInsightSection />
-      <TrendingTagsSection />
+      {/* <TrendingTagsSection /> */}
       <FreeVideosSection />
-      <PremiumCollectionSection />
+      {/* <PremiumCollectionSection /> */}
       <TrendingCoursesSection />
     </>
   );

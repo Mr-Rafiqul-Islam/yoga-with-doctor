@@ -3,7 +3,7 @@ import {
   DownloadsGrid,
   DownloadsHeader,
   DownloadsPaginationSection,
-  StorageSection,
+  // StorageSection,
 } from "@/features/dashboard/components/downloads";
 import { DOWNLOAD_ITEMS } from "@/features/dashboard/data/downloadsData";
 
@@ -11,7 +11,7 @@ export default function DownloadsPage() {
   return (
     <main>
       <DownloadsHeader />
-      <StorageSection />
+      {/* <StorageSection /> */}
       <DownloadsFilterTabs />
       <DownloadsGrid items={DOWNLOAD_ITEMS} />
       <DownloadsPaginationSection current={6} total={12} />

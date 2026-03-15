@@ -1,5 +1,4 @@
-
-import { ClassItem } from "@/services/classApi";
+import { ClassItem } from "@/slices/classes";
 import type { VideoCardProps } from "../components/VideoCard";
 
 /** Default free wellness videos from Figma/HTML design. Image URLs hotlinked from design source. */

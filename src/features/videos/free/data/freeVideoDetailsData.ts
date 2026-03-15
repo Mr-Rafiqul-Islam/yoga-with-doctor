@@ -4,7 +4,7 @@
  */
 
 import { ArticleAuthor } from "@/features/articles/data/dummyArticles";
-import { ClassVideo } from "@/services/classApi";
+import { ClassVideo } from "@/slices/classes";
 
 export interface MedicalBenefit {
   title: string;

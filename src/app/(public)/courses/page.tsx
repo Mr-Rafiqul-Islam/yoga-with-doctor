@@ -90,10 +90,10 @@ export default function CoursesPage() {
 
   const courses: CourseWithMeta[] = useMemo(() => {
     if (!data?.data?.courses || data.data.courses.length === 0) {
-      return dummyCourses;
+      return dummyCourses.filter((item) => item.access !== "PREMIUM");
     }
 
-    return data.data.courses.map(mapAllTypeCourseToCourseWithMeta);
+    return data.data.courses.filter((item) => item.access !== "PREMIUM").map(mapAllTypeCourseToCourseWithMeta);
   }, [data]);
 
   const searchQuery = "";

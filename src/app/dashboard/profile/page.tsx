@@ -1,7 +1,7 @@
 import {
   ProfilePersonalInfoSection,
   ProfilePreferencesSection,
-  ProfilePremiumCard,
+  // ProfilePremiumCard,
   ProfileQuickNavCard,
   ProfileSecuritySection,
   ProfileSummaryCard,
@@ -25,7 +25,7 @@ export default function ProfilePage() {
       {/* Left Column: Profile Summary and Quick Actions */}
       <aside className="flex flex-col gap-6 lg:col-span-1">
         <ProfileSummaryCard user={user} stats={stats} />
-        <ProfilePremiumCard />
+        {/* <ProfilePremiumCard /> */}
         <ProfileQuickNavCard />
       </aside>
 

@@ -22,7 +22,7 @@ export function FreeVideoDetailsContent({
 }: FreeVideoDetailsContentProps) {
   const [activeTab, setActiveTab] =
     useState<(typeof TAB_IDS)[number]>("overview");
-  const [followed, setFollowed] = useState(false);
+  // const [followed, setFollowed] = useState(false);
   const [playbackId, setPlaybackId] = useState<string | undefined>(undefined);
   const [playbackToken, setPlaybackToken] = useState<string | null>(null);
   const [playbackPolicy, setPlaybackPolicy] = useState<string | undefined>(
@@ -182,13 +182,16 @@ export function FreeVideoDetailsContent({
                 </p>
               </div>
             </div>
-            <button
+            <Link
+            href='https://drshahalam.com/'
+            target="_blank"
               type="button"
-              onClick={() => setFollowed((v) => !v)}
+              // onClick={() => setFollowed((v) => !v)}
               className="rounded-full bg-primary/10 px-5 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
             >
-              {followed ? "Following" : "Follow"}
-            </button>
+              {/* {followed ? "Following" : "Follow"} */}
+              View Profile
+            </Link>
           </div>
 
           {/* Tabs */}
@@ -334,7 +337,7 @@ export function FreeVideoDetailsContent({
           </div>
 
           {/* Related Premium */}
-          <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm dark:border-gray-700">
+          {/* <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm dark:border-gray-700">
             <h3 className="font-display text-xl font-bold text-foreground mb-6">
               Related Premium Flows
             </h3>
@@ -384,7 +387,7 @@ export function FreeVideoDetailsContent({
             >
               Unlock Premium Access
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -19,11 +19,11 @@ const LIBRARY_SUB_ITEMS = [
 
 const BOTTOM_NAV_ITEMS = [
   { href: "/dashboard/certificates", label: "Certificates", icon: "verified" },
-  {
-    href: "/dashboard/subscription",
-    label: "Subscription",
-    icon: "credit_card",
-  },
+  // {
+  //   href: "/dashboard/subscription",
+  //   label: "Subscription",
+  //   icon: "credit_card",
+  // },
 ] as const;
 
 const LIBRARY_HREFS = LIBRARY_SUB_ITEMS.map((i) => i.href);

@@ -189,8 +189,8 @@ export function VideoCard({
               FREE
             </span>
           ) : (
-            <span className="rounded bg-accent px-2 py-0.5 text-caption font-medium text-white">
-              PREMIUM
+            <span className="rounded bg-primary px-2 py-0.5 text-caption font-medium text-white">
+              PAID
             </span>
           )}
         </div>

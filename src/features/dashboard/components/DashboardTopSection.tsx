@@ -1,5 +1,5 @@
 import type { DashboardStats, DashboardUser } from "@/features/dashboard/data/dashboardData";
-import { DashboardPremiumCard } from "./DashboardPremiumCard";
+// import { DashboardPremiumCard } from "./DashboardPremiumCard";
 import { DashboardProfileCard } from "./DashboardProfileCard";
 import { DashboardStatCard } from "./DashboardStatCard";
 
@@ -18,7 +18,7 @@ export function DashboardTopSection({ user, stats }: DashboardTopSectionProps) {
         <DashboardStatCard value={stats.certificates} label="Certificates" />
         <DashboardStatCard value={stats.points} label="Points" highlight />
 
-        <DashboardPremiumCard />
+        {/* <DashboardPremiumCard /> */}
       </div>
     </section>
   );

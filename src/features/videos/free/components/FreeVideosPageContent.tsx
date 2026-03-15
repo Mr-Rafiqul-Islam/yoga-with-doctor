@@ -26,16 +26,16 @@ export function FreeVideosPageContent() {
 
   // Map API classes -> VideoCardProps (includes muxPlaybackId)
   const videosFromApi = useMemo(
-    () => (data?.data?.classes ?? []).map(classItemToVideoCard),
+    () => (data?.data?.classes ?? []).filter((item) => item.access !== "PREMIUM").map(classItemToVideoCard),
     [data?.data?.classes]
   );
 
-  const pagination = data?.data?.pagination;
+  const pagination = data?.data?.pagination; // if premium classes are included, the total pages will be incorrect so we need to filter them out in future
   const totalPages = pagination?.totalPages ?? 0;
 
   const categoryOptions = useMemo(() => {
     const unique = new Set(
-      (data?.data?.classes ?? [])
+      (data?.data?.classes ?? []).filter((item) => item.access !== "PREMIUM")
         .map((item) => item.category?.[0])
         .filter(Boolean)
         .map((cat) => formatLevelWithHyphenToSpace(cat as string))

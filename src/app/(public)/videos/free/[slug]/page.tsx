@@ -25,7 +25,7 @@ export default async function FreeVideoDetailsPage({ params }: PageProps) {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6">
         <Link
-          href="/videos/free"
+          href="/videos"
           className="inline-flex items-center gap-1 text-sm font-medium text-muted transition-colors hover:text-foreground"
         >
           <span className="material-icons-outlined text-lg">arrow_back</span>
