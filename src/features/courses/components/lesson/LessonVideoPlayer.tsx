@@ -13,6 +13,11 @@ export interface LessonVideoPlayerProps {
   videoId?: string;
   /** Optional video processing status (e.g. "READY"). */
   videoStatus?: string;
+  /**
+   * Called the first time the user starts playback for this lesson.
+   * Useful for triggering side effects like auto-enrollment.
+   */
+  onFirstPlay?: () => void;
 }
 
 export function LessonVideoPlayer({
@@ -20,10 +25,12 @@ export function LessonVideoPlayer({
   muxPlaybackId,
   videoId,
   videoStatus,
+  onFirstPlay,
 }: LessonVideoPlayerProps) {
   const [playbackId, setPlaybackId] = useState<string | undefined>(undefined);
   const [playbackToken, setPlaybackToken] = useState<string | null>(null);
   const [getPlaybackToken] = useLazyGetVideoPlaybackTokenQuery();
+  const [hasStarted, setHasStarted] = useState(false);
 
   useEffect(() => {
     // Fetch playback token for this lesson's video when it's ready
@@ -66,6 +73,14 @@ export function LessonVideoPlayer({
           streamType="on-demand"
           autoPlay={false}
           playsInline
+          onPlay={() => {
+            if (!hasStarted) {
+              setHasStarted(true);
+              if (onFirstPlay) {
+                onFirstPlay();
+              }
+            }
+          }}
           style={{
             aspectRatio: "auto",
             height: "100%",
@@ -85,8 +100,6 @@ export function LessonVideoPlayer({
           priority
         />
       )}
-
-      
     </section>
   );
 }

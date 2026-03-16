@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { notFound, useRouter } from "next/navigation";
 import { Breadcrumbs } from "@/features/courses/components";
 import {
@@ -15,6 +15,7 @@ import {
 } from "@/features/courses/components/lesson";
 import { useGetCourseContentQuery, type Course } from "@/slices/courses";
 import { mapCourseToCourseDetailData } from "@/lib/mapCourseToDetail";
+import { useAddEnrollmentByItemIdMutation } from "@/slices/enrollment";
 
 function mmssFromDurationMin(durationMin: number | null | undefined): string {
   const mins = typeof durationMin === "number" && durationMin > 0 ? durationMin : 0;
@@ -35,6 +36,8 @@ export interface LessonPageClientProps {
 
 export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
   const router = useRouter();
+  const [hasAutoEnrolled, setHasAutoEnrolled] = useState(false);
+  const [addEnrollmentByItemId] = useAddEnrollmentByItemIdMutation();
   const { data, isLoading, isFetching, isError } = useGetCourseContentQuery(slug, {
     skip: !slug,
   });
@@ -140,6 +143,21 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
 
   const lessonUrl = (id: string) => `/courses/${slug}/lesson?lesson=${id}`;
 
+  const handleFirstPlay = useCallback(() => {
+    if (!resolved || hasAutoEnrolled) return;
+
+    const { detailData } = resolved;
+    
+    
+
+    if (detailData.courseId) {
+      setHasAutoEnrolled(true);
+      addEnrollmentByItemId({ itemId: detailData.courseId }).catch(() => {
+        // Best-effort: ignore errors here, the user can still manually enroll.
+      });
+    }
+  }, [resolved, hasAutoEnrolled, addEnrollmentByItemId]);
+
   if (!slug) notFound();
 
   if (isLoading || isFetching) {
@@ -195,6 +213,7 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
             duration={currentLesson?.duration ?? "00:00"}
             videoId={currentVideoId}
             videoStatus={currentVideoStatus}
+            onFirstPlay={handleFirstPlay}
           />
 
           <LessonOverviewCard

@@ -147,6 +147,7 @@ export const enrollmentApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ["Enrollments"],
   endpoints: (builder) => ({
     /**
      * GET /api/v1/client/enrollments
@@ -169,11 +170,22 @@ export const enrollmentApi = createApi({
             method: "GET",
           };
         },
+        providesTags: (result) =>
+          result
+            ? [
+                ...result.data.map(({ id }) => ({
+                  type: "Enrollments" as const,
+                  id,
+                })),
+                { type: "Enrollments", id: "LIST" },
+              ]
+            : [{ type: "Enrollments", id: "LIST" }],
+        
       }
     ),
 
     /**
-     * POST /api/v1/client/enrollments
+     * POST /api/v1/client/enrollments/post
      * Enroll current user into a course/class/challenge/video by itemId.
      */
     addEnrollmentByItemId: builder.mutation<
@@ -181,7 +193,7 @@ export const enrollmentApi = createApi({
       AddEnrollmentRequest
     >({
       query: (body) => ({
-        url: "/api/v1/client/enrollments",
+        url: "/api/v1/client/enrollments/post",
         method: "POST",
         body,
       }),
