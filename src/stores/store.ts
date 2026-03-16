@@ -7,6 +7,7 @@ import { classApi } from "@/slices/classes";
 import { coursesApi } from "@/slices/courses";
 import { paymentApi, paymentReducer } from "@/slices/payment";
 import { pendingCheckoutReducer } from "@/slices/pendingCheckout";
+import { entitlementsReducer } from "@/slices/entitlements";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     auth: authReducer,
     payment: paymentReducer,
     pendingCheckout: pendingCheckoutReducer,
+    entitlements: entitlementsReducer,
     [authApi.reducerPath]: authApi.reducer,
     [classApi.reducerPath]: classApi.reducer,
     [coursesApi.reducerPath]: coursesApi.reducer,
