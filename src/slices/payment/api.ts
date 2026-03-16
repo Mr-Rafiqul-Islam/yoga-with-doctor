@@ -52,7 +52,14 @@ export interface StartPaymentAttemptRequest {
 export interface StartPaymentAttemptResponse {
   success: boolean;
   message: string;
-  data: unknown;
+  data: {
+    success: boolean;
+    data: {
+      checkoutUrl: string;
+      gatewayUrl: string;
+      sessionKey: string;
+    };
+  };
 }
 
 // =============================================================================

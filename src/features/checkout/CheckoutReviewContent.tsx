@@ -21,6 +21,7 @@ import {
   useInitializePaymentMutation,
   useStartPaymentAttemptMutation,
   setPaymentContext,
+  StartPaymentAttemptResponse,
 } from "@/slices/payment";
 
 export function CheckoutReviewContent() {
@@ -116,12 +117,14 @@ export function CheckoutReviewContent() {
       }).unwrap();
 
       const initData = initPayment?.data as
-        | { transactionId?: string; id?: string; redirectUrl?: string; paymentUrl?: string }
+        | {
+            transactionId?: string;
+            id?: string;
+            redirectUrl?: string;
+            paymentUrl?: string;
+          }
         | undefined;
-      const transactionId =
-        initData?.transactionId ?? initData?.id ?? null;
-      const redirectUrl =
-        initData?.redirectUrl ?? initData?.paymentUrl ?? null;
+      const transactionId = initData?.transactionId ?? initData?.id ?? null;
 
       if (newPurchaseId || transactionId) {
         dispatch(
@@ -131,14 +134,14 @@ export function CheckoutReviewContent() {
           })
         );
       }
-
+      let startAttemptData: StartPaymentAttemptResponse | undefined;
       if (transactionId) {
         const amountForAttempt =
           typeof course?.productData?.price === "number"
             ? course.productData.price
             : 0;
         try {
-          await startPaymentAttempt({
+          startAttemptData = await startPaymentAttempt({
             transactionId,
             amount: amountForAttempt,
             currency: course?.productData?.currency || "BDT",
@@ -150,6 +153,10 @@ export function CheckoutReviewContent() {
           // Non-blocking; backend may still have attempt record
         }
       }
+      const redirectUrl =
+        startAttemptData?.data?.data?.checkoutUrl ??
+        startAttemptData?.data?.data?.gatewayUrl ??
+        null;
 
       if (redirectUrl) {
         window.location.href = redirectUrl;

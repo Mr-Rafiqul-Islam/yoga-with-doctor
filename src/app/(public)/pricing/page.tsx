@@ -1,4 +1,5 @@
-import { PricingPageContent } from "@/features/pricing";
+import { MaintenanceView } from "@/components/ui/MaintenanceView";
+// import { PricingPageContent } from "@/features/pricing";
 
 export const metadata = {
   title: "Premium Pricing Plans",
@@ -10,5 +11,8 @@ export const metadata = {
  * Premium pricing page. Public route (no auth required to view, but checkout requires login).
  */
 export default function PricingPage() {
-  return <PricingPageContent />;
+  return (
+  // <PricingPageContent />
+  <MaintenanceView />
+);
 }
