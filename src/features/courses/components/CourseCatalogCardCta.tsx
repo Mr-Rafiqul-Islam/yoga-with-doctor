@@ -46,21 +46,21 @@ export function CourseCatalogCardCta({
     "rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900";
 
   // If content is public (FREE/PUBLIC) and we have a slug, let the user go straight in
-  if (isPublic && slug) {
-    return (
-      <button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          router.push(`/courses/${slug}/lesson`);
-        }}
-        className={className}
-      >
-        Get Start
-      </button>
-    );
-  }
+  // if (isPublic && slug) {
+  //   return (
+  //     <button
+  //       type="button"
+  //       onClick={(e) => {
+  //         e.preventDefault();
+  //         e.stopPropagation();
+  //         router.push(`/courses/${slug}/lesson`);
+  //       }}
+  //       className={className}
+  //     >
+  //       Get Start
+  //     </button>
+  //   );
+  // }
 
   if (effectiveEnrolled && slug) {
     return (
@@ -69,7 +69,7 @@ export function CourseCatalogCardCta({
         onClick={(e) => handleClick(e, () => router.push(`/courses/${slug}/lesson`))}
         className={className}
       >
-        Get Start
+        Get started
       </button>
     );
   }
