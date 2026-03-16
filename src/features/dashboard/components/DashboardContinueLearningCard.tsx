@@ -12,7 +12,7 @@ export function DashboardContinueLearningCard({
 }: DashboardContinueLearningCardProps) {
   return (
     <article className="group min-w-[320px] shrink-0 rounded-2xl border border-border bg-surface shadow-elevation-sm transition-shadow hover:shadow-elevation-md">
-      <Link href={`/courses/${course.slug}`} className="block">
+      <Link href={`/courses/${course.slug}/lesson`} className="block">
         <div className="relative aspect-video overflow-hidden rounded-t-2xl">
           <Image
             src={course.bannerImage}
@@ -42,19 +42,7 @@ export function DashboardContinueLearningCard({
               {course.badge}
             </span>
           )}
-          {course.timeLeft ? (
-            <div className="absolute bottom-3 right-3 rounded-lg bg-black/70 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm">
-              {course.timeLeft}
-            </div>
-          ) : (
-            <Link
-              href={`/courses/${course.slug}`}
-              className="absolute bottom-3 right-3 rounded-lg bg-primary px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-primary-dark"
-              onClick={(e) => e.stopPropagation()}
-            >
-              Start
-            </Link>
-          )}
+          
         </div>
         <div className="p-5">
           <h3 className="mb-2 line-clamp-2 font-display text-lg font-bold text-foreground group-hover:text-primary">

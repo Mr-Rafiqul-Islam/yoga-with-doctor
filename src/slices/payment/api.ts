@@ -10,8 +10,17 @@ const baseUrl =
 
 export interface StartCheckoutRequest {
   productId: string;
-  provider?: string;
-  siteRef?: string;
+  siteRef: string;
+  meta: {
+    platform: "WEB";
+    clientType: "BROWSER";
+    appId: "ywd-web";
+    returnMode: "REDIRECT";
+    deepLink: string | null;
+    successUrl: string;
+    failUrl: string;
+    cancelUrl: string;
+  };
 }
 
 export interface StartCheckoutResponse {

@@ -91,10 +91,24 @@ export function CheckoutReviewContent() {
     if (!productId) return;
     setPaymentError(null);
     try {
+      const origin =
+        typeof window !== "undefined" && window.location.origin
+          ? window.location.origin
+          : "";
+
       const globalCheckout = await startCheckout({
         productId,
-        provider: "SSL",
         siteRef: "YWD",
+        meta: {
+          platform: "WEB",
+          clientType: "BROWSER",
+          appId: "ywd-web",
+          returnMode: "REDIRECT",
+          deepLink: null,
+          successUrl: `${origin}/checkout/success`,
+          failUrl: `${origin}/checkout/failed`,
+          cancelUrl: `${origin}/checkout/review`,
+        },
       }).unwrap();
 
       const newPurchaseId = globalCheckout.data.purchaseId;
