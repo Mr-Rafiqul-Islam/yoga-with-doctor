@@ -8,6 +8,8 @@ import { coursesApi } from "@/slices/courses";
 import { paymentApi, paymentReducer } from "@/slices/payment";
 import { pendingCheckoutReducer } from "@/slices/pendingCheckout";
 import { entitlementsReducer } from "@/slices/entitlements";
+import { enrollmentReducer, enrollmentApi } from "@/slices/enrollment";
+
 
 export const store = configureStore({
   reducer: {
@@ -16,11 +18,13 @@ export const store = configureStore({
     payment: paymentReducer,
     pendingCheckout: pendingCheckoutReducer,
     entitlements: entitlementsReducer,
+    enrollment: enrollmentReducer,
     [authApi.reducerPath]: authApi.reducer,
     [classApi.reducerPath]: classApi.reducer,
     [coursesApi.reducerPath]: coursesApi.reducer,
     [videoApi.reducerPath]: videoApi.reducer,
     [paymentApi.reducerPath]: paymentApi.reducer,
+    [enrollmentApi.reducerPath]: enrollmentApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -28,7 +32,8 @@ export const store = configureStore({
       classApi.middleware,
       coursesApi.middleware,
       videoApi.middleware,
-      paymentApi.middleware
+      paymentApi.middleware,
+      enrollmentApi.middleware
     ),
 });
 
