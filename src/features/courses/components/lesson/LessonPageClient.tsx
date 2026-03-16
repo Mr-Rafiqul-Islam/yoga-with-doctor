@@ -41,6 +41,7 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
 
   const resolved = useMemo(() => {
     const apiCourse = data?.data?.course;
+    console.log(apiCourse);
     if (!apiCourse) return null;
 
     const courseForDetail: Course = {
@@ -119,14 +120,18 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
         }
       : null;
 
-    const currentMuxPlaybackId =
-      current?.lesson?.video?.muxPlaybackId ?? undefined;
+    const currentVideo = current?.lesson?.video ?? null;
+    const currentMuxPlaybackId = currentVideo?.muxPlaybackId ?? undefined;
+    const currentVideoId = currentVideo?.id ?? undefined;
+    const currentVideoStatus = currentVideo?.status ?? undefined;
 
     return {
       detailData,
       curriculum,
       currentLesson,
       currentMuxPlaybackId,
+      currentVideoId,
+      currentVideoStatus,
       progressPercent,
       totalLessons,
       totalDuration: totalDurationLabelFromMinutes(totalMinutes),
@@ -164,6 +169,8 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
     curriculum,
     currentLesson,
     currentMuxPlaybackId,
+    currentVideoId,
+    currentVideoStatus,
     progressPercent,
     totalLessons,
     totalDuration,
@@ -186,7 +193,8 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
             thumbnailUrl={detailData.thumbnailUrl}
             muxPlaybackId={currentMuxPlaybackId}
             duration={currentLesson?.duration ?? "00:00"}
-            initialCurrentTime="00:00"
+            videoId={currentVideoId}
+            videoStatus={currentVideoStatus}
           />
 
           <LessonOverviewCard

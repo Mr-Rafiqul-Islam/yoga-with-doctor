@@ -57,7 +57,7 @@ export function CourseCatalogCardCta({
         }}
         className={className}
       >
-        Course Access
+        Get Start
       </button>
     );
   }
@@ -69,7 +69,7 @@ export function CourseCatalogCardCta({
         onClick={(e) => handleClick(e, () => router.push(`/courses/${slug}/lesson`))}
         className={className}
       >
-        Course Access
+        Get Start
       </button>
     );
   }

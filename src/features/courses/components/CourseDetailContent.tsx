@@ -288,7 +288,6 @@ function LessonRow({
   lesson: CourseLesson;
 }) {
   const locked = lesson.isLocked ?? !lesson.isPreview;
-  const canPlay = lesson.isPreview;
 
   return (
     <div
@@ -321,11 +320,7 @@ function LessonRow({
           <p className={`text-xs ${locked ? "text-muted" : "text-muted"}`}>{lesson.duration}</p>
         </div>
       </div>
-      {canPlay && (
-        <span className="rounded-lg border border-primary px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-white">
-          {lesson.isPreview ? "Preview" : "Play"}
-        </span>
-      )}
+      
       {locked && (
         <span className="material-icons-outlined text-gray-300 dark:text-gray-500">lock</span>
       )}
