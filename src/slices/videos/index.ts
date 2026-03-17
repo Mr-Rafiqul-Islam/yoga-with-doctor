@@ -21,10 +21,10 @@ export const videoApi = createApi({
   tagTypes: ["Video"],
   endpoints: (builder) => ({
     getVideoPlaybackToken: builder.query({
-      query: (id) =>
-        `/api/v1/client/classes/videos/${id}/playback`,
-      providesTags: (_result, _error, id) => [
-        { type: "Video", id },
+      query: (videoId: string) =>
+        `/api/v1/client/videos/${videoId}/playback`,
+      providesTags: (_result, _error, videoId) => [
+        { type: "Video", id: videoId },
       ],
     }),
   }),
