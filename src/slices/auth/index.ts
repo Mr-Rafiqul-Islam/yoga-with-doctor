@@ -110,12 +110,26 @@ export interface User {
   id: string;
   name: string;
   phone: string;
-  email: string | null;
+  email?: string | null;
   isPremium: boolean;
   isActive: boolean;
-  profilePicture: string | null;
+  profilePicture?: string | null;
   createdAt: string;
   updatedAt: string;
+  role: "USER" | "ADMIN";
+  PoliceStation?: string | null;
+  address?: string | null;
+  age?: number | null;
+  bio?: string | null;
+  city?: string | null;
+  coverImage?: string | null;
+  coverImagePublicId?: string | null;
+  gender?: string | null;
+  goals?: string[] | string | null; 
+  intensity?: string | null;
+  interests?: string[] | string | null;
+  username?: string | null;
+  website?: string | null;
 }
 
 export interface LoginCredentials {

@@ -1,12 +1,6 @@
 import type { CourseWithMeta } from "@/types/course";
 
-export type DashboardUser = {
-  name: string;
-  role: string;
-  avatarSrc: string;
-  /** When true, a premium badge is shown on the profile card. */
-  isPremium?: boolean;
-};
+
 
 export type DashboardStats = {
   courses: number;
@@ -29,12 +23,7 @@ export type ContinueLearningCourse = CourseWithMeta & {
   badge?: "Popular" | "New";
 };
 
-export const DEFAULT_USER: DashboardUser = {
-  name: "Sarah Jenkins",
-  role: "Wellness Enthusiast",
-  avatarSrc:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuDmyxoefgit0eX7UXZsRMIrbSGPe8QDVaK0Vm8vc6ZlmhNJ52EEXDKavc0GpULLt6SK9SjkEctxDQTeK_Rz3fCH_nd5bxoxEvQDDFN115EaayUVx6nBQSGh_DofxV9RMsOzYGE---aedkqRq9vdejM7rydgWtPND7YMBCJUZ3229gvcrlIA9Jdi4IiJ8-qyi5brPrzSIy-nHltSnVv-vPuu-CmUoDKI3ZWROcJ4_kCazFSjjr8XMgyxTTaoVxXI5CozAcwJwMV9MA",
-};
+
 
 export const DEFAULT_STATS: DashboardStats = {
   courses: 15,

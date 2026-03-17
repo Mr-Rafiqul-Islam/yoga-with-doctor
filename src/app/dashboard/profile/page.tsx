@@ -24,7 +24,7 @@ export default function ProfilePage() {
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
       {/* Left Column: Profile Summary and Quick Actions */}
       <aside className="flex flex-col gap-6 lg:col-span-1">
-        <ProfileSummaryCard user={user} stats={stats} />
+        <ProfileSummaryCard stats={stats} />
         {/* <ProfilePremiumCard /> */}
         <ProfileQuickNavCard />
       </aside>

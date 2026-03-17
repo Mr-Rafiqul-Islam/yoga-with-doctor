@@ -1,33 +1,46 @@
+"use client";
 import Image from "next/image";
-import type { DashboardUser } from "@/features/dashboard/data/dashboardData";
+import { useGetCurrentUserQuery } from "@/slices/auth";
+import type { User } from "@/slices/auth";
 
-type DashboardProfileCardProps = {
-  user: DashboardUser;
-};
-
-export function DashboardProfileCard({ user }: DashboardProfileCardProps) {
+export function DashboardProfileCard() {
+  const { data } = useGetCurrentUserQuery();
+  const user: User | undefined = data?.data ?? undefined;
   console.log(user);
   return (
     <article className="rounded-2xl border border-border bg-surface p-6 shadow-elevation-sm">
       <div className="flex flex-col items-center text-center">
         <div className="relative mb-4">
           <div className="relative h-24 w-24 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 p-0.5">
-            <div className="h-full w-full overflow-hidden rounded-full bg-surface">
-              <Image
-                src={user.avatarSrc}
-                alt={user.name}
-                width={96}
-                height={96}
-                className="h-full w-full object-cover"
-              />
-            </div>
-            {user.isPremium && (
+            {user?.profilePicture ? (
+              <div className="h-full w-full overflow-hidden rounded-full bg-surface">
+                <Image
+                  src={user?.profilePicture ?? ""}
+                  alt={user?.name ?? ""}
+                  width={96}
+                  height={96}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            ) : (
+              <div className="h-full w-full overflow-hidden rounded-full grid place-items-center bg-surface dark:bg-muted">
+                <span
+                  className="text-5xl font-semibold text-foreground"
+                  aria-hidden
+                >
+                  {user?.name?.charAt(0).toUpperCase() ?? "U"}
+                </span>
+              </div>
+            )}
+            {user?.isPremium && (
               <span
                 className="absolute -top-0.5 z-10 left-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-amber-500 text-white shadow-md ring-2 ring-surface"
                 title="Premium member"
                 aria-hidden
               >
-                <span className="material-icons-outlined text-base">workspace_premium</span>
+                <span className="material-icons-outlined text-base">
+                  workspace_premium
+                </span>
               </span>
             )}
           </div>
@@ -42,9 +55,9 @@ export function DashboardProfileCard({ user }: DashboardProfileCardProps) {
           </button>
         </div>
         <h2 className="mb-1 font-display text-xl font-bold text-foreground">
-          {user.name}
+          {user?.name}
         </h2>
-        <p className="text-body-md text-muted">{user.role}</p>
+        <p className="text-body-md text-muted">{user?.role}</p>
       </div>
     </article>
   );
