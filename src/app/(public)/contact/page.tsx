@@ -6,7 +6,7 @@ import {
   ContactPageHeader,
   ContactQuoteBlock,
   ContactSuccessBanner,
-} from "@/features/contact/components";
+} from "@/app/(public)/contact/_components";
 
 export const metadata = {
   title: "Contact Us - Yoga With Doctor",
