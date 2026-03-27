@@ -5,6 +5,7 @@ import { videoApi } from "@/slices/videos";
 import { authApi, authReducer } from "../slices/auth";
 import { classApi } from "@/slices/classes";
 import { coursesApi } from "@/slices/courses";
+import { articlesApi } from "@/slices/articles";
 import { paymentApi, paymentReducer } from "@/slices/payment";
 import { pendingCheckoutReducer } from "@/slices/pendingCheckout";
 import { entitlementsReducer } from "@/slices/entitlements";
@@ -22,6 +23,7 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [classApi.reducerPath]: classApi.reducer,
     [coursesApi.reducerPath]: coursesApi.reducer,
+    [articlesApi.reducerPath]: articlesApi.reducer,
     [videoApi.reducerPath]: videoApi.reducer,
     [paymentApi.reducerPath]: paymentApi.reducer,
     [enrollmentApi.reducerPath]: enrollmentApi.reducer,
@@ -31,6 +33,7 @@ export const store = configureStore({
       authApi.middleware,
       classApi.middleware,
       coursesApi.middleware,
+      articlesApi.middleware,
       videoApi.middleware,
       paymentApi.middleware,
       enrollmentApi.middleware
