@@ -2,9 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import type {
-  ArticleDetails,
-} from "@/features/articles/data/dummyArticles";
+import type { ArticleDetails } from "@/features/articles/data/dummyArticles";
 import { generateToc } from "@/lib/generateToc";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { useEffect, useState } from "react";
@@ -26,7 +24,7 @@ export function ArticleDetailsView({
     author,
     tags,
     detailsContent,
-    description
+    description,
   } = article;
   const [toc, setToc] = useState<{ id: string; text: string }[]>([]);
   const [content, setContent] = useState(detailsContent);
@@ -102,29 +100,32 @@ export function ArticleDetailsView({
       <div className="relative mt-12 grid grid-cols-1 gap-12 lg:grid-cols-12">
         <aside className="hidden lg:block lg:col-span-3">
           <div className="sticky top-28 space-y-8">
-            <div>
-              <h3 className="font-display text-h2 font-bold text-foreground dark:text-white mb-4">
-                Table of Contents
-              </h3>
-              <ul className="ml-1 space-y-3 border-l-2 border-border text-body-md">
-                {toc.map((item) => {
-                  const isActive = item.id === activeId;
-                  return (
-                  <li key={item.id}>
-                    <Link
-                      href={`#${item.id}`}
-                      className={`block border-l-2 pl-4 -ml-0.5 transition-colors ${
-                        isActive
-                          ? "border-primary font-medium text-primary"
-                          : "border-transparent text-muted hover:border-gray-300 hover:text-foreground dark:hover:text-gray-200"
-                      }`}
-                    >
-                      {item.text}
-                    </Link>
-                  </li>
-                )})}
-              </ul>
-            </div>
+            {toc.length > 0 && (
+              <div>
+                <h3 className="font-display text-h2 font-bold text-foreground dark:text-white mb-4">
+                  Table of Contents
+                </h3>
+                <ul className="ml-1 space-y-3 border-l-2 border-border text-body-md">
+                  {toc.map((item) => {
+                    const isActive = item.id === activeId;
+                    return (
+                      <li key={item.id}>
+                        <Link
+                          href={`#${item.id}`}
+                          className={`block border-l-2 pl-4 -ml-0.5 transition-colors ${
+                            isActive
+                              ? "border-primary font-medium text-primary"
+                              : "border-transparent text-muted hover:border-gray-300 hover:text-foreground dark:hover:text-gray-200"
+                          }`}
+                        >
+                          {item.text}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
             <div>
               <h3 className="font-display text-h2 font-bold text-foreground dark:text-white mb-4">
                 Share
@@ -222,7 +223,9 @@ export function ArticleDetailsView({
               className="hidden items-center font-medium text-muted transition-colors hover:text-primary sm:inline-flex"
             >
               View all
-              <span className="material-icons-outlined ml-1">arrow_forward</span>
+              <span className="material-icons-outlined ml-1">
+                arrow_forward
+              </span>
             </Link>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">

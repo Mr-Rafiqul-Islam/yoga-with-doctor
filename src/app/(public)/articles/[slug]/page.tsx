@@ -1,23 +1,9 @@
-import { notFound } from "next/navigation";
-import {
-  getArticleDetailsBySlug,
-  getRelatedArticles,
-} from "@/features/articles/data/dummyArticles";
-import { ArticleDetailsView } from "@/features/articles/components/ArticleDetailsView";
+import { ArticleDetailsPageClient } from "@/features/articles/components";
 
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 };
 
-export default async function ArticleDetailsPage({ params }: Props) {
-  const { slug } = await params;
-  const article = getArticleDetailsBySlug(slug);
-
-  if (!article) {
-    notFound();
-  }
-
-  const relatedArticles = getRelatedArticles(slug);
-
-  return <ArticleDetailsView article={article} relatedArticles={relatedArticles} />;
+export default function ArticleDetailsPage({ params }: Props) {
+  return <ArticleDetailsPageClient slug={params.slug} />;
 }

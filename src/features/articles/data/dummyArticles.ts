@@ -61,14 +61,12 @@ export const featuredArticle: FeaturedArticle = {
   description:
     "Discover how starting your day with just 10 minutes of mindfulness can structurally change your brain, reduce cortisol levels, and enhance your focus for the entire day.",
   author: {
-    name: "Dr. Sarah West",
-    title: "MD, Yoga Therapist",
-    avatarSrc: `${IMG}/AB6AXuD8-FnpMuQWsRv9j9QqxraIc7Cua-g0V-BL240ajowmJ1qajM5LEQHOp4Je_FjfXr-C1lURzsKewiA--UOvcq_eOJfG4CxRtABpobKUtTysoqY4QqpAwp5jry8EMkJvGAbRamzEmyz-1avzPGpV1mjd-k7YXFg-XG5XGQY_o4r4DU5dRflAibVlakeI6P9YkD8XisP6iodFTngVgAWC2sywne5YUWB75i4LrLBs5bnb4q8M3XqEBJXcSjmtUDCBGlnyvehQjo3lhg`,
-    bioSnippet:
-      "Specializing in the intersection of neuroscience and traditional yogic practices.",
-    fullBio:
-      "Dr. Sarah West combines her background in internal medicine with 15 years of yoga practice. She believes in an integrative approach to health where Western diagnostics meet Eastern preventative wisdom.",
-    profileLink: "#",
+    name: "Dr Md Shah Alam",
+    title: "Orthopedics Specialist, Spine Surgeion, Yoga Instructor",
+    avatarSrc: "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-Hero.jpeg",
+    bioSnippet: "Specializing in the intersection of neuroscience and traditional yogic practices.",
+    fullBio: "Specializing in the intersection of neuroscience and traditional yogic practices.",
+    profileLink: "https://drshahalam.com/",
   },
   tags: ["#Mindfulness", "#Neuroscience", "#MorningRoutine"],
   href: "/articles/the-science-of-morning-meditation",

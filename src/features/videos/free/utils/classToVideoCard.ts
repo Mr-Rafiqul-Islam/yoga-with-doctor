@@ -1,4 +1,4 @@
-import type { ClassItem } from "@/services/classApi";
+import type { ClassItem } from "@/slices/classes";
 import type { VideoCardProps } from "../components/VideoCard";
 
 function formatDurationFromMinutes(minutes: number | undefined): string {
