@@ -49,6 +49,15 @@ export function ArticlesPageContent({
     () => sortArticles(filtered, sortValue),
     [filtered, sortValue]
   );
+  const categoryOptions = useMemo(() => {
+    const categories = new Set<string>();
+    for (const article of articles) {
+      if (article.category?.trim()) {
+        categories.add(article.category.trim());
+      }
+    }
+    return Array.from(categories);
+  }, [articles]);
 
   return (
     <>
@@ -75,6 +84,7 @@ export function ArticlesPageContent({
         onClose={() => setFilterPopupOpen(false)}
         initialFilters={filters}
         onApply={(next) => setFilters(next)}
+        categoryOptions={categoryOptions}
       />
 
       <SortPopup

@@ -9,27 +9,28 @@ import { Modal } from "../../../components/Modal";
 
 export type { ArticleFiltersState, ArticleBadgeFilter } from "@/lib/filterSortArticles";
 
-const ARTICLE_CATEGORIES = [
-  "FLEXIBILITY",
-  "NUTRITION",
-  "LIFESTYLE",
-  "SLEEP",
-  "STRENGTH",
-  "BREATHWORK",
-] as const;
-
 type FilterPopupProps = {
   isOpen: boolean;
   onClose: () => void;
   initialFilters: ArticleFiltersState;
   onApply: (filters: ArticleFiltersState) => void;
+  categoryOptions?: string[];
 };
+
+function formatCategoryLabel(value: string): string {
+  return value
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
 
 export function FilterPopup({
   isOpen,
   onClose,
   initialFilters,
   onApply,
+  categoryOptions = [],
 }: FilterPopupProps) {
   const [categories, setCategories] = useState<string[]>(initialFilters.categories);
   const [badge, setBadge] = useState<ArticleBadgeFilter>(initialFilters.badge);
@@ -67,7 +68,7 @@ export function FilterPopup({
             Category
           </h3>
           <div className="flex flex-wrap gap-2">
-            {ARTICLE_CATEGORIES.map((cat) => (
+            {categoryOptions.map((cat) => (
               <label
                 key={cat}
                 className="flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 transition-colors has-[:checked]:border-primary has-[:checked]:bg-sage-light dark:has-[:checked]:bg-sage-dark dark:border-gray-700"
@@ -78,7 +79,9 @@ export function FilterPopup({
                   onChange={() => handleCategoryToggle(cat)}
                   className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                 />
-                <span className="text-body-md text-foreground">{cat}</span>
+                <span className="text-body-md text-foreground">
+                  {formatCategoryLabel(cat)}
+                </span>
               </label>
             ))}
           </div>
@@ -92,7 +95,7 @@ export function FilterPopup({
             Type
           </h3>
           <div className="flex gap-2">
-            {(["all", "FREE"] as const).map((option) => (
+            {(["all", "FREE", "PREMIUM"] as const).map((option) => (
               <label
                 key={option}
                 className="flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2 transition-colors has-[:checked]:border-primary has-[:checked]:bg-sage-light dark:has-[:checked]:bg-sage-dark dark:border-gray-700"

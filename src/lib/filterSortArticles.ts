@@ -13,6 +13,10 @@ export type ArticleSortValue =
   | "category-asc"
   | "category-desc";
 
+function normalizeCategory(value: string): string {
+  return value.trim().toLowerCase().replace(/[_\s-]+/g, "-");
+}
+
 /**
  * Filter articles by categories and badge.
  * Empty categories = show all categories. badge "all" = show both FREE and PREMIUM.
@@ -22,9 +26,12 @@ export function filterArticles(
   filters: ArticleFiltersState
 ): ArticleDetails[] {
   const { categories, badge } = filters;
+  const normalizedSelectedCategories = categories.map(normalizeCategory);
+
   return articles.filter((article) => {
     const categoryMatch =
-      categories.length === 0 || categories.includes(article.category);
+      normalizedSelectedCategories.length === 0 ||
+      normalizedSelectedCategories.includes(normalizeCategory(article.category));
     const badgeMatch =
       badge === "all" || article.badge === badge;
     return categoryMatch && badgeMatch;
