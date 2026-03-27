@@ -14,3 +14,4 @@ export {
   type ArticleSortValue,
 } from "./SortPopup";
 export { ArticlesPageContent } from "./ArticlesPageContent";
+export { ArticlesPageClient } from "./ArticlesPageClient";

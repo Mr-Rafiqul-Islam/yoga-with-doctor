@@ -21,11 +21,17 @@ import type { ArticleDetails } from "@/features/articles/data/dummyArticles";
 type ArticlesPageContentProps = {
   featuredArticle: FeaturedArticle;
   articles: ArticleDetails[];
+  pagination?: {
+    totalPages: number;
+    currentPage?: number;
+    onPageChange?: (page: number) => void;
+  };
 };
 
 export function ArticlesPageContent({
   featuredArticle,
   articles,
+  pagination,
 }: ArticlesPageContentProps) {
   const [filterPopupOpen, setFilterPopupOpen] = useState(false);
   const [sortPopupOpen, setSortPopupOpen] = useState(false);
@@ -55,7 +61,14 @@ export function ArticlesPageContent({
 
       <ArticleGridSection articles={filteredAndSorted} />
 
-      <Pagination totalPages={3} className="mt-16" />
+      {pagination?.totalPages ? (
+        <Pagination
+          totalPages={pagination.totalPages}
+          currentPage={pagination.currentPage}
+          onPageChange={pagination.onPageChange}
+          className="mt-16"
+        />
+      ) : null}
 
       <FilterPopup
         isOpen={filterPopupOpen}
