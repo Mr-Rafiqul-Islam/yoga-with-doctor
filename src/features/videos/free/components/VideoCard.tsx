@@ -172,7 +172,7 @@ export function VideoCard({
       </div>
 
       <Link
-        href={href ?? ""}
+        href={playbackPolicy === "public" ? href ?? "" : ""}
         className="flex flex-1 flex-col gap-2 p-4 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl"
       >
         {/* Category + FREE tag row */}
