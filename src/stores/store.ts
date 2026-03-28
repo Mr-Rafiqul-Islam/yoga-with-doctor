@@ -10,6 +10,7 @@ import { paymentApi, paymentReducer } from "@/slices/payment";
 import { pendingCheckoutReducer } from "@/slices/pendingCheckout";
 import { entitlementsReducer } from "@/slices/entitlements";
 import { enrollmentReducer, enrollmentApi } from "@/slices/enrollment";
+import { profileApi } from "@/slices/profile";
 
 
 export const store = configureStore({
@@ -27,6 +28,7 @@ export const store = configureStore({
     [videoApi.reducerPath]: videoApi.reducer,
     [paymentApi.reducerPath]: paymentApi.reducer,
     [enrollmentApi.reducerPath]: enrollmentApi.reducer,
+    [profileApi.reducerPath]: profileApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -36,7 +38,8 @@ export const store = configureStore({
       articlesApi.middleware,
       videoApi.middleware,
       paymentApi.middleware,
-      enrollmentApi.middleware
+      enrollmentApi.middleware,
+      profileApi.middleware
     ),
 });
 
