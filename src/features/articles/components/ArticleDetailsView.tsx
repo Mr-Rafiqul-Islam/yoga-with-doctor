@@ -5,16 +5,27 @@ import Link from "next/link";
 import type { ArticleDetails } from "@/features/articles/data/dummyArticles";
 import { generateToc } from "@/lib/generateToc";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { Modal } from "@/components/Modal";
+import { useAppSelector } from "@/stores/hooks";
+import {
+  SAVED_ARTICLES_CHANGED_EVENT,
+  articleDetailsToStoredRow,
+  isArticleSaved,
+  toggleSavedArticle,
+} from "@/lib/savedArticlesStorage";
 
 type ArticleDetailsViewProps = {
   article: ArticleDetails;
   relatedArticles: ArticleDetails[];
+  /** API article id — used as stable key in per-user saved library (localStorage). */
+  articleApiId: string;
 };
 
 export function ArticleDetailsView({
   article,
   relatedArticles,
+  articleApiId,
 }: ArticleDetailsViewProps) {
   const {
     image,
@@ -22,19 +33,57 @@ export function ArticleDetailsView({
     category,
     title,
     author,
-    tags,
+    tags = [],
     detailsContent,
     description,
   } = article;
+  const user = useAppSelector((s) => s.auth.user);
+  const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
+  const userId = user?.id ?? null;
+
   const [toc, setToc] = useState<{ id: string; text: string }[]>([]);
   const [content, setContent] = useState(detailsContent);
+  const [saved, setSaved] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const activeId = useScrollSpy(toc.map((item) => item.id));
+
+  const syncSavedFromStorage = useCallback(() => {
+    if (!userId || !articleApiId) {
+      setSaved(false);
+      return;
+    }
+    setSaved(isArticleSaved(userId, articleApiId));
+  }, [articleApiId, userId]);
 
   useEffect(() => {
     const { toc, contentWithIds } = generateToc(detailsContent);
     setToc(toc);
     setContent(contentWithIds);
   }, [detailsContent]);
+
+  useEffect(() => {
+    syncSavedFromStorage();
+  }, [syncSavedFromStorage]);
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<{ userId?: string }>).detail;
+      if (detail?.userId && userId && detail.userId !== userId) return;
+      syncSavedFromStorage();
+    };
+    window.addEventListener(SAVED_ARTICLES_CHANGED_EVENT, handler);
+    return () => window.removeEventListener(SAVED_ARTICLES_CHANGED_EVENT, handler);
+  }, [syncSavedFromStorage, userId]);
+
+  const handleBookmarkClick = () => {
+    if (!isAuthenticated || !userId) {
+      setShowLoginModal(true);
+      return;
+    }
+    const row = articleDetailsToStoredRow(article, articleApiId);
+    const nextSaved = toggleSavedArticle(userId, row);
+    setSaved(nextSaved);
+  };
   return (
     <main className="relative z-20 mx-auto mb-20 w-full max-w-7xl flex-grow px-4 sm:px-6 lg:px-8">
       {/* Hero */}
@@ -52,7 +101,22 @@ export function ArticleDetailsView({
 
       {/* Overlay card: category, read time, title, author */}
       <div className="-mt-24 max-w-4xl mx-auto relative z-10">
-        <div className="rounded-3xl border border-border bg-surface p-8 shadow-elevation-md md:p-12 text-center">
+        <div className="relative rounded-3xl border border-border bg-surface p-8 shadow-elevation-md md:p-12 text-center">
+          <button
+            type="button"
+            onClick={handleBookmarkClick}
+            aria-label={saved ? "Remove from saved articles" : "Save article"}
+            aria-pressed={saved}
+            className={`absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface transition-colors lg:hidden ${
+              saved
+                ? "border-primary/40 bg-primary/5 text-primary hover:border-primary hover:bg-primary/15 hover:text-primary-dark dark:hover:bg-primary/20"
+                : "text-muted hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
+            }`}
+          >
+            <span className="material-icons-outlined text-sm">
+              {saved ? "bookmark" : "bookmark_border"}
+            </span>
+          </button>
           <div className="mb-6 flex flex-wrap items-center justify-center gap-2">
             <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
               {category}
@@ -140,17 +204,24 @@ export function ArticleDetailsView({
                 </button>
                 <button
                   type="button"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-muted transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-blue-200"
-                  aria-label="Bookmark"
+                  onClick={handleBookmarkClick}
+                  aria-label={saved ? "Remove from saved articles" : "Save article"}
+                  aria-pressed={saved}
+                  className={`flex h-10 w-10 items-center justify-center rounded-full border bg-surface transition-colors dark:bg-gray-800 ${
+                    saved
+                      ? "border-blue-200 bg-blue-50 text-blue-600 hover:border-blue-400 hover:bg-blue-100 hover:text-blue-800 dark:border-blue-700/60 dark:bg-blue-950/40 dark:text-blue-400 dark:hover:border-blue-500 dark:hover:bg-blue-900/55 dark:hover:text-blue-200"
+                      : "border-border text-muted hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 dark:border-gray-700 dark:hover:border-blue-200"
+                  }`}
                 >
                   <span className="material-icons-outlined text-sm">
-                    bookmark
+                    {saved ? "bookmark" : "bookmark_border"}
                   </span>
                 </button>
               </div>
             </div>
           </div>
         </aside>
+
         <div className="lg:col-span-8 lg:col-start-4">
           <p className="lead mb-8 text-body-lg leading-relaxed text-muted">
             {description}
@@ -269,6 +340,32 @@ export function ArticleDetailsView({
           </div>
         </section>
       )}
+
+      <Modal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        title="Login required"
+      >
+        <p className="mb-6 text-muted">
+          Please log in to save articles to your library.
+        </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            onClick={() => setShowLoginModal(false)}
+            className="order-2 rounded-lg border border-border px-4 py-2 text-body-md font-medium text-foreground transition-colors hover:bg-gray-100 sm:order-1 dark:hover:bg-gray-800"
+          >
+            Cancel
+          </button>
+          <Link
+            href="/auth/login"
+            onClick={() => setShowLoginModal(false)}
+            className="order-1 inline-flex justify-center rounded-lg bg-primary px-4 py-2 text-body-md font-medium text-white transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:order-2"
+          >
+            Go to Login
+          </Link>
+        </div>
+      </Modal>
     </main>
   );
 }

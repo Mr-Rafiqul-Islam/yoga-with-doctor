@@ -24,6 +24,7 @@ const fallbackAuthor: ArticleAuthor = {
 };
 
 function mapToArticleDetails(article: {
+  id: string;
   title: string;
   slug: string;
   description: string | null;
@@ -72,5 +73,11 @@ export function ArticleDetailsPageClient({ slug }: ArticleDetailsPageClientProps
   const article = mapToArticleDetails(apiArticle);
   const relatedArticles = getRelatedArticles(slug);
 
-  return <ArticleDetailsView article={article} relatedArticles={relatedArticles} />;
+  return (
+    <ArticleDetailsView
+      article={article}
+      relatedArticles={relatedArticles}
+      articleApiId={apiArticle.id}
+    />
+  );
 }
