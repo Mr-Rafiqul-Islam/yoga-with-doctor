@@ -5,7 +5,7 @@ export function ProfileQuickNavCard() {
     <article className="rounded-2xl border border-border bg-surface p-4 shadow-elevation-sm">
       <nav aria-label="Quick navigation">
         <ul className="flex flex-col gap-2">
-          <li>
+          {/* <li>
             <Link
               href="/dashboard/wishlist"
               className="flex items-center justify-between rounded-lg px-4 py-3 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -28,7 +28,7 @@ export function ProfileQuickNavCard() {
                 chevron_right
               </span>
             </Link>
-          </li>
+          </li> */}
           <li>
             <Link
               href="/dashboard/library/saved-articles"

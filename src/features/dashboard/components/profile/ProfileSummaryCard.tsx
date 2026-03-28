@@ -1,22 +1,34 @@
+"use client";
 
+import { useEffect } from "react";
 
-import type {
-  ProfileStats,
-} from "@/features/dashboard/data/profileData";
+import { useLazyGetMyEnrollmentsQuery } from "@/slices/enrollment";
+
 import { DashboardProfileCard } from "../DashboardProfileCard";
 
-type ProfileSummaryCardProps = {
-  stats: ProfileStats;
-};
+export function ProfileSummaryCard() {
+  const [fetchEnrollments, { data, isFetching, isError }] =
+    useLazyGetMyEnrollmentsQuery();
 
-export function ProfileSummaryCard({ stats }: ProfileSummaryCardProps) {
+  useEffect(() => {
+    void fetchEnrollments({ type: "course", page: 1, limit: 1 });
+  }, [fetchEnrollments]);
+
+  const courseCount =
+    !isError && data?.success && data.pagination
+      ? data.pagination.total
+      : null;
+
+  const coursesDisplay =
+    isFetching && courseCount === null ? "…" : String(courseCount ?? 0);
+
   return (
     <div>
       <DashboardProfileCard />
-      <div className="rounded-2xl flex w-full items-center justify-between border-t border-border pt-4 dark:border-gray-700 bg-surface p-6 mt-5 shadow-elevation-sm">
+      <div className="mt-5 flex w-full items-center justify-between rounded-2xl border-t border-border bg-surface p-6 pt-4 shadow-elevation-sm dark:border-gray-700">
         <div className="text-center">
           <p className="mb-1 font-display text-2xl font-bold text-foreground">
-            {stats.courses}
+            {coursesDisplay}
           </p>
           <p className="text-caption uppercase tracking-wide text-muted">
             Courses
@@ -24,7 +36,7 @@ export function ProfileSummaryCard({ stats }: ProfileSummaryCardProps) {
         </div>
         <div className="text-center">
           <p className="mb-1 font-display text-2xl font-bold text-foreground">
-            {stats.certificates}
+            N/A
           </p>
           <p className="text-caption uppercase tracking-wide text-muted">
             Certs
@@ -32,7 +44,7 @@ export function ProfileSummaryCard({ stats }: ProfileSummaryCardProps) {
         </div>
         <div className="text-center">
           <p className="mb-1 font-display text-2xl font-bold text-primary">
-            {stats.points}
+            N/A
           </p>
           <p className="text-caption uppercase tracking-wide text-muted">
             Points

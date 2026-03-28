@@ -16,7 +16,7 @@ export function ProfilePreferencesSection({
       </h2>
       <div className="space-y-6">
         <Link
-          href="/dashboard/profile/preferences/language"
+          href="#"
           className="flex items-center justify-between rounded-lg px-2 py-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
         >
           <div className="flex items-center gap-3">
@@ -44,7 +44,7 @@ export function ProfilePreferencesSection({
         </Link>
 
         <Link
-          href="/dashboard/profile/preferences/notifications"
+          href="#"
           className="flex items-center justify-between rounded-lg px-2 py-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
         >
           <div className="flex items-center gap-3">

@@ -1,13 +1,6 @@
 import type { CourseWithMeta } from "@/types/course";
 
 
-
-export type DashboardStats = {
-  courses: number;
-  certificates: number;
-  points: string;
-};
-
 export type QuickAccessItem = {
   icon: string;
   label: string;
@@ -25,20 +18,16 @@ export type ContinueLearningCourse = CourseWithMeta & {
 
 
 
-export const DEFAULT_STATS: DashboardStats = {
-  courses: 15,
-  certificates: 12,
-  points: "2.5k",
-};
+
 
 export const QUICK_ACCESS_ITEMS: QuickAccessItem[] = [
-  {
-    icon: "favorite",
-    label: "Wishlist",
-    count: "3 Items",
-    href: "/dashboard/wishlist",
-    color: "text-red-500",
-  },
+  // {
+  //   icon: "favorite",
+  //   label: "Wishlist",
+  //   count: "3 Items",
+  //   href: "/dashboard/wishlist",
+  //   color: "text-red-500",
+  // },
   {
     icon: "bookmark",
     label: "Articles",
@@ -53,11 +42,11 @@ export const QUICK_ACCESS_ITEMS: QuickAccessItem[] = [
     href: "/dashboard/library/downloads",
     color: "text-purple-500",
   },
-  {
-    icon: "credit_card",
-    label: "Billing",
-    action: "Manage",
-    href: "/dashboard/billing",
-    color: "text-primary",
-  },
+  // {
+  //   icon: "credit_card",
+  //   label: "Billing",
+  //   action: "Manage",
+  //   href: "/dashboard/billing",
+  //   color: "text-primary",
+  // },
 ];
