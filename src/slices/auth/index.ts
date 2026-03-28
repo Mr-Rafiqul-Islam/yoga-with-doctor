@@ -30,7 +30,7 @@ function saveToken(accessToken: string, refreshToken: string): void {
   window.localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
 }
 
-function removeToken(): void {
+export function removeToken(): void {
   if (!canUseDOM()) return;
   window.localStorage.removeItem(ACCESS_TOKEN_KEY);
   window.localStorage.removeItem(REFRESH_TOKEN_KEY);

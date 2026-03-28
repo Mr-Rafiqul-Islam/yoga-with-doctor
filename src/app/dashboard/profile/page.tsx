@@ -8,13 +8,11 @@ import {
 } from "@/features/dashboard/components/profile";
 import {
   DEFAULT_PROFILE_PREFERENCES,
-  DEFAULT_PROFILE_SECURITY,
   DEFAULT_PROFILE_STATS,
 } from "@/features/dashboard/data/profileData";
 
 export default function ProfilePage() {
   const stats = DEFAULT_PROFILE_STATS;
-  const security = DEFAULT_PROFILE_SECURITY;
   const preferences = DEFAULT_PROFILE_PREFERENCES;
 
   return (
@@ -31,7 +29,7 @@ export default function ProfilePage() {
         <ProfilePersonalInfoSection  />
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <ProfileSecuritySection security={security} />
+          <ProfileSecuritySection />
           <ProfilePreferencesSection preferences={preferences} />
         </div>
       </main>

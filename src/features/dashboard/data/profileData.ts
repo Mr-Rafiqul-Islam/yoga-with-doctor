@@ -32,11 +32,6 @@ export const DEFAULT_PROFILE_STATS: ProfileStats = {
   points: "2.5k",
 };
 
-export const DEFAULT_PROFILE_SECURITY: ProfileSecurity = {
-  passwordLastChanged: "3 months ago",
-  twoFactorEnabled: false,
-};
-
 export const DEFAULT_PROFILE_PREFERENCES: ProfilePreferences = {
   language: "English (US)",
   notifications: "Email, Push",
