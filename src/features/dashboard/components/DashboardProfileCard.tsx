@@ -1,12 +1,78 @@
 "use client";
+
 import Image from "next/image";
-import { useGetCurrentUserQuery } from "@/slices/auth";
-import type { User } from "@/slices/auth";
+import { useCallback, useRef, useState } from "react";
+
+import { authApi, getToken, useGetCurrentUserQuery, type User } from "@/slices/auth";
+import { useUpdateProfileMutation } from "@/slices/profile";
+import { useAppDispatch } from "@/stores/hooks";
 
 export function DashboardProfileCard() {
+  const dispatch = useAppDispatch();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [status, setStatus] = useState<"idle" | "uploading" | "saving">("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const { data } = useGetCurrentUserQuery();
   const user: User | undefined = data?.data ?? undefined;
-  console.log(user);
+
+  const [updateProfile] = useUpdateProfileMutation();
+
+  const openFilePicker = useCallback(() => {
+    setErrorMessage(null);
+    fileInputRef.current?.click();
+  }, []);
+
+  const onFileSelected = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      e.target.value = "";
+      if (!file) return;
+
+      setErrorMessage(null);
+      const token = getToken();
+      if (!token) {
+        setErrorMessage("You need to be signed in to update your photo.");
+        return;
+      }
+
+      try {
+        setStatus("uploading");
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const uploadRes = await fetch("/api/cloudinary/upload", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
+
+        const uploadJson = (await uploadRes.json()) as {
+          success?: boolean;
+          url?: string;
+          error?: string;
+        };
+
+        if (!uploadRes.ok || !uploadJson.url) {
+          setErrorMessage(uploadJson.error ?? "Could not upload image.");
+          setStatus("idle");
+          return;
+        }
+
+        setStatus("saving");
+        await updateProfile({ profilePicture: uploadJson.url }).unwrap();
+        dispatch(authApi.util.invalidateTags(["Auth"]));
+        setStatus("idle");
+      } catch {
+        setErrorMessage("Something went wrong. Please try again.");
+        setStatus("idle");
+      }
+    },
+    [dispatch, updateProfile]
+  );
+
+  const busy = status !== "idle";
+
   return (
     <article className="rounded-2xl border border-border bg-surface p-6 shadow-elevation-sm">
       <div className="flex flex-col items-center text-center">
@@ -15,7 +81,7 @@ export function DashboardProfileCard() {
             {user?.profilePicture ? (
               <div className="h-full w-full overflow-hidden rounded-full bg-surface">
                 <Image
-                  src={user?.profilePicture ?? ""}
+                  src={user.profilePicture}
                   alt={user?.name ?? ""}
                   width={96}
                   height={96}
@@ -23,7 +89,7 @@ export function DashboardProfileCard() {
                 />
               </div>
             ) : (
-              <div className="h-full w-full overflow-hidden rounded-full grid place-items-center bg-surface dark:bg-muted">
+              <div className="grid h-full w-full place-items-center overflow-hidden rounded-full bg-surface dark:bg-muted">
                 <span
                   className="text-5xl font-semibold text-foreground"
                   aria-hidden
@@ -34,7 +100,7 @@ export function DashboardProfileCard() {
             )}
             {user?.isPremium && (
               <span
-                className="absolute -top-0.5 z-10 left-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-amber-500 text-white shadow-md ring-2 ring-surface"
+                className="absolute -top-0.5 left-0.5 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-amber-500 text-white shadow-md ring-2 ring-surface"
                 title="Premium member"
                 aria-hidden
               >
@@ -44,16 +110,44 @@ export function DashboardProfileCard() {
               </span>
             )}
           </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            tabIndex={-1}
+            aria-hidden
+            onChange={onFileSelected}
+          />
           <button
             type="button"
-            className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white shadow-sm transition-colors hover:bg-primary-dark"
-            aria-label="Edit profile picture"
+            onClick={openFilePicker}
+            disabled={busy}
+            className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white shadow-sm transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-80"
+            aria-label={
+              busy ? "Updating profile picture" : "Edit profile picture"
+            }
+            aria-busy={busy}
           >
-            <span className="material-icons-outlined text-sm" aria-hidden>
-              edit
-            </span>
+            {busy ? (
+              <span
+                className="material-icons-outlined animate-spin text-sm"
+                aria-hidden
+              >
+                update
+              </span>
+            ) : (
+              <span className="material-icons-outlined text-sm" aria-hidden>
+                edit
+              </span>
+            )}
           </button>
         </div>
+        {errorMessage ? (
+          <p className="mb-2 max-w-xs text-body-sm text-destructive" role="alert">
+            {errorMessage}
+          </p>
+        ) : null}
         <h2 className="mb-1 font-display text-xl font-bold text-foreground">
           {user?.name}
         </h2>
