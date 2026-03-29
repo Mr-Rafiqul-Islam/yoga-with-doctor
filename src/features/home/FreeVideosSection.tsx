@@ -40,7 +40,7 @@ export function FreeVideosSection() {
           </p>
         </div>
         <Link
-          href="/videos/free"
+          href="/videos"
           className="text-body-md font-medium text-primary transition-colors hover:text-primary-variant focus:outline-none  rounded-radius-sm shrink-0"
         >
           See all

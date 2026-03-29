@@ -26,7 +26,7 @@ export function FreeVideosPageContent() {
 
   // Map API classes -> VideoCardProps (includes muxPlaybackId)
   const videosFromApi = useMemo(
-    () => (data?.data?.classes ?? []).filter((item) => item.access !== "PREMIUM").map(classItemToVideoCard),
+    () => (data?.data?.classes ?? []).filter((item) => item.access === "PUBLIC").map(classItemToVideoCard),
     [data?.data?.classes]
   );
 
@@ -35,7 +35,7 @@ export function FreeVideosPageContent() {
 
   const categoryOptions = useMemo(() => {
     const unique = new Set(
-      (data?.data?.classes ?? []).filter((item) => item.access !== "PREMIUM")
+      (data?.data?.classes ?? []).filter((item) => item.access === "PUBLIC")
         .map((item) => item.category?.[0])
         .filter(Boolean)
         .map((cat) => formatLevelWithHyphenToSpace(cat as string))
