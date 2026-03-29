@@ -10,6 +10,7 @@ import {
   type FeaturedArticle,
 } from "@/features/articles/data/dummyArticles";
 import { ArticlesPageContent } from "./ArticlesPageContent";
+import { mapApiArticleToCard } from "@/features/home/ArticlesSection";
 
 const PAGE_SIZE = 10;
 
@@ -22,33 +23,7 @@ const fallbackAuthor: ArticleAuthor = {
   profileLink: "#",
 };
 
-function mapToArticleDetails(article: {
-  title: string;
-  slug: string;
-  description: string | null;
-  category: string | null;
-  image: string | null;
-  authorName: string | null;
-  access: string;
-}): ArticleDetails {
-  return {
-    slug: article.slug,
-    image: article.image || fallbackFeaturedArticle.image,
-    imageAlt: article.title || "Article cover image",
-    badge: article.access === "PREMIUM" ? "PREMIUM" : "FREE",
-    category: article.category || "General",
-    title: article.title,
-    description: article.description || "",
-    author: {
-      ...fallbackAuthor,
-      name: article.authorName || fallbackAuthor.name,
-    },
-    actionLabel: "Read More",
-    href: `/articles/${article.slug}`,
-    tags: [],
-    detailsContent: "",
-  };
-}
+
 
 function mapToFeaturedArticle(article: {
   title: string;
@@ -98,7 +73,7 @@ export function ArticlesPageClient() {
       : fallbackFeaturedArticle;
   const articles =
     apiArticles.length > 1
-      ? apiArticles.slice(1).map(mapToArticleDetails)
+      ? apiArticles.slice(1).map(mapApiArticleToCard)
       : [];
 
   if (isLoading && !data) {

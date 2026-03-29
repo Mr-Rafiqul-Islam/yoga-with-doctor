@@ -6,5 +6,6 @@ export { VideoCard } from "./VideoCard";
 export type { VideoCardProps } from "./VideoCard";
 export { PremiumCollectionSection } from "./PremiumCollectionSection";
 export { TrendingCoursesSection } from "./TrendingCoursesSection";
+export { ArticlesSection } from "./ArticlesSection";
 export { CourseCard } from "./CourseCard";
 export type { CourseCardProps } from "./CourseCard";

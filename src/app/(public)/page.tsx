@@ -3,6 +3,7 @@ import {
   MedicalInsightSection,
   // TrendingTagsSection,
   FreeVideosSection,
+  ArticlesSection,
   // PremiumCollectionSection,
   TrendingCoursesSection,
 } from "@/features/home";
@@ -16,6 +17,7 @@ export default function Home() {
       <FreeVideosSection />
       {/* <PremiumCollectionSection /> */}
       <TrendingCoursesSection />
+      <ArticlesSection />
     </>
   );
 }
