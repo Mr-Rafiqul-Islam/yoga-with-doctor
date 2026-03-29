@@ -9,6 +9,7 @@ import { useLogoutMutation } from "@/slices/auth";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: "dashboard" },
+ 
   { href: "/dashboard/profile", label: "Profile", icon: "person" },
 ] as const;
 
@@ -17,14 +18,15 @@ const LIBRARY_SUB_ITEMS = [
   { href: "/dashboard/library/downloads", label: "Downloads" },
 ] as const;
 
-// const BOTTOM_NAV_ITEMS = [
-//   // { href: "/dashboard/certificates", label: "Certificates", icon: "verified" },
-//   // {
-//   //   href: "/dashboard/subscription",
-//   //   label: "Subscription",
-//   //   icon: "credit_card",
-//   // },
-// ] as const;
+const BOTTOM_NAV_ITEMS = [
+  { href: "/dashboard/my-courses", label: "My Courses", icon: "school" },
+  // { href: "/dashboard/certificates", label: "Certificates", icon: "verified" },
+  // {
+  //   href: "/dashboard/subscription",
+  //   label: "Subscription",
+  //   icon: "credit_card",
+  // },
+] as const;
 
 const LIBRARY_HREFS = LIBRARY_SUB_ITEMS.map((i) => i.href);
 
@@ -153,7 +155,7 @@ function SidebarContent({
             </div>
           </li>
 
-          {/* {BOTTOM_NAV_ITEMS.map((item) => (
+          {BOTTOM_NAV_ITEMS.map((item) => (
             <li key={item.href}>
               <NavLink
                 href={item.href}
@@ -162,7 +164,7 @@ function SidebarContent({
                 isActive={pathname === item.href}
               />
             </li>
-          ))} */}
+          ))}
         </ul>
       </nav>
 

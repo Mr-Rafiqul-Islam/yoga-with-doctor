@@ -70,7 +70,7 @@ export function DashboardContinueLearningSection() {
           Continue Learning
         </h2>
         <Link
-          href="/dashboard/courses"
+          href="/dashboard/my-courses"
           className="text-body-md font-semibold text-primary hover:underline"
         >
           View All
