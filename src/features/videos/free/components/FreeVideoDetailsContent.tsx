@@ -226,9 +226,7 @@ export function FreeVideoDetailsContent({
               <p className="leading-relaxed text-muted">
                 {details.shortDescription}
               </p>
-              <article className="prose prose-sm prose-invert max-w-none">
-                {details.description}
-              </article>
+              <article className="prose prose-sm prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: details.description }} />
             </div>
           )}
           {activeTab === "equipment" && (
