@@ -97,12 +97,11 @@ export function VideoCard({
     const d = playerRef.current?.duration;
     if (d) setVideoDuration(formatDuration(d));
   };
-
   const content = (
     <>
       {/* Thumbnail with play overlay and duration */}
       <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted/60">
-        {playbackPolicy === "public" ? (
+        {isFree || playbackPolicy === "public" ? (
           <MuxPlayer
             ref={playerRef}
             className="h-full w-full"
@@ -172,7 +171,7 @@ export function VideoCard({
       </div>
 
       <Link
-        href={playbackPolicy === "public" ? href ?? "" : ""}
+        href={playbackPolicy === "public" ? (href ?? "") : ""}
         className="flex flex-1 flex-col gap-2 p-4 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl"
       >
         {/* Category + FREE tag row */}
@@ -190,7 +189,7 @@ export function VideoCard({
             </span>
           ) : (
             <span className="rounded bg-primary px-2 py-0.5 text-caption font-medium text-white">
-              PAID
+              Premium
             </span>
           )}
         </div>
