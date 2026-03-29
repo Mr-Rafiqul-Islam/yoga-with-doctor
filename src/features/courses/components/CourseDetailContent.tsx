@@ -101,9 +101,7 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
           <h1 className="font-display text-3xl font-bold text-foreground dark:text-white md:text-4xl mb-4">
             {course.title}
           </h1>
-          <p className="mb-6 leading-relaxed text-muted dark:text-gray-300">
-            {course.description}
-          </p>
+          
           <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-surface p-4 shadow-sm dark:border-gray-800 dark:bg-surface">
             <Image
               src={course.instructorAvatarUrl}
@@ -150,6 +148,8 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
 
         {/* Tab content: About (What you will learn) */}
         {activeTab === "About Course" && (
+          <div className="space-y-4">
+          <article className="prose prose-sm prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: course.description }} />
           <div className="rounded-2xl border border-border bg-surface p-6 shadow-soft dark:border-gray-800 dark:bg-surface">
             <h3 className="font-display text-xl font-bold text-foreground dark:text-white mb-6">
               What you will learn
@@ -164,7 +164,7 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
                 </div>
               ))}
             </div>
-          </div>
+          </div></div>
         )}
 
         {activeTab === ("Curriculum" as (typeof TABS)[0]) && (
