@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Modal } from "@/components/Modal";
 import { CourseCatalogCardCta } from "./CourseCatalogCardCta";
+import { useCheckCourseAccessQuery } from "@/slices/courses";
 
 export type CourseCatalogCardProps = {
   title: string;
@@ -54,6 +55,12 @@ export function CourseCatalogCard({
   const [showLoginModal, setShowLoginModal] = useState(false);
   const isPremium = premiumBadge || access === "PREMIUM";
 
+  const { data } = useCheckCourseAccessQuery(courseId ?? "", {
+    skip: !courseId,
+  });
+  const hasAccess = access === "PAID" && data?.data?.hasAccess;
+
+
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-elevation-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation-md dark:border-gray-800 dark:bg-surface">
       <Link
@@ -79,6 +86,13 @@ export function CourseCatalogCard({
               NEW
             </span>
           )}
+          {
+            hasAccess && (
+              <span className={`absolute right-0 ${isPremium? "top-12" : "top-4"} z-10 rounded-l-full backdrop-blur-sm px-3 py-1 text-xs font-bold bg-blue-50 text-black shadow-elevation-sm flex items-center gap-1`}>
+                Owned <span className="material-icons-outlined text-sm" aria-hidden>check_circle</span>
+              </span>
+            )
+          }
           {isPremium && (
             <>
               <span className="absolute left-0 top-4 z-10 rounded-r-full bg-orange-400 px-3 py-1 text-xs font-bold text-black shadow-elevation-sm">
