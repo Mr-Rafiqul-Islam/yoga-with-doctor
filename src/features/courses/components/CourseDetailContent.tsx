@@ -32,6 +32,7 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
 
   const muxPlaybackId =
     (previewLesson?.video as any)?.muxPlaybackId as string | undefined;
+    
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">

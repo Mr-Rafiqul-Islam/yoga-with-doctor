@@ -22,10 +22,7 @@ const STATIC_LEARNING_OUTCOMES = [
 const STATIC_ORIGINAL_PRICE = "৳ 1,499";
 const STATIC_DISCOUNT_PERCENT = 20;
 
-function stripHtml(html: string): string {
-  if (!html) return "";
-  return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-}
+
 
 function formatLevel(level: string | null): string {
   if (!level) return "Wellness";
@@ -135,7 +132,7 @@ export function mapCourseToCourseDetailData(course: Course): CourseDetailData {
     access: course.access,
     title: course.title,
     category: formatLevel(course.level),
-    description: stripHtml(course.description ?? ""),
+    description: course.description ?? "",
     thumbnailUrl:
       course.bannerUrl ?? course.bannerImage ?? FALLBACK_THUMBNAIL,
     rating: STATIC_RATING,
