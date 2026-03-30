@@ -3,6 +3,7 @@ import { Playfair_Display, Inter } from "next/font/google";
 import { OfflineDetector } from "@/components/OfflineDetector";
 import { Header } from "@/components/layout";
 import { NotificationSocket } from "@/components/NotificationSocket";
+import { ToastToaster } from "@/components/ToastToaster";
 import { QueryProvider } from "@/lib/query";
 import { ReduxProvider } from "@/stores";
 import "./globals.css";
@@ -79,6 +80,7 @@ export default function RootLayout({
             </a>
             <Header />
             <NotificationSocket />
+            <ToastToaster />
             <main id="main-content" className="flex-1" role="main">
               {children}
             </main>

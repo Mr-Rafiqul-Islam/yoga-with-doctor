@@ -4,6 +4,8 @@ export { ArticleCard } from "./ArticleCard";
 export { ArticleDetailsView } from "./ArticleDetailsView";
 export { ArticleDetailsPageClient } from "./ArticleDetailsPageClient";
 export { ArticleGridSection } from "./ArticleGridSection";
+export { ArticleBookmarkButton } from "./ArticleBookmarkButton";
+export { ArticleShareButton } from "./ArticleShareButton";
 export { Modal } from "../../../components/Modal";
 export {
   FilterPopup,
