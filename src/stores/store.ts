@@ -11,6 +11,7 @@ import { pendingCheckoutReducer } from "@/slices/pendingCheckout";
 import { entitlementsReducer } from "@/slices/entitlements";
 import { enrollmentReducer, enrollmentApi } from "@/slices/enrollment";
 import { profileApi } from "@/slices/profile";
+import { purchaseApi } from "@/slices/purchase";
 
 export const authLogoutListener = createListenerMiddleware();
 authLogoutListener.startListening({
@@ -24,6 +25,7 @@ authLogoutListener.startListening({
     listenerApi.dispatch(paymentApi.util.resetApiState());
     listenerApi.dispatch(enrollmentApi.util.resetApiState());
     listenerApi.dispatch(profileApi.util.resetApiState());
+    listenerApi.dispatch(purchaseApi.util.resetApiState());
   },
 });
 
@@ -43,6 +45,7 @@ export const store = configureStore({
     [paymentApi.reducerPath]: paymentApi.reducer,
     [enrollmentApi.reducerPath]: enrollmentApi.reducer,
     [profileApi.reducerPath]: profileApi.reducer,
+    [purchaseApi.reducerPath]: purchaseApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().prepend(authLogoutListener.middleware).concat(
@@ -53,7 +56,8 @@ export const store = configureStore({
       videoApi.middleware,
       paymentApi.middleware,
       enrollmentApi.middleware,
-      profileApi.middleware
+      profileApi.middleware,
+      purchaseApi.middleware
     ),
 });
 

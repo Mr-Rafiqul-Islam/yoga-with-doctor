@@ -9,4 +9,4 @@ export type { PaymentMethodCardProps } from "./PaymentMethodCard";
 export { TransactionItem } from "./TransactionItem";
 export type { TransactionItemProps } from "./TransactionItem";
 export { TransactionList } from "./TransactionList";
-export type { TransactionListProps } from "./TransactionList";
+export type { TransactionListProps, TransactionListItem } from "./TransactionList";
