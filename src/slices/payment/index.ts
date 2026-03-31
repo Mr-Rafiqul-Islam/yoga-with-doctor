@@ -52,6 +52,7 @@ export const paymentReducer = paymentSlice.reducer;
 // Re-export API and hooks
 export { paymentApi } from "./api";
 export type {
+  PaymentProvider,
   StartCheckoutRequest,
   StartCheckoutResponse,
   InitializePaymentRequest,

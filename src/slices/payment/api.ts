@@ -5,6 +5,9 @@ import { createReauthBaseQuery } from "@/slices/auth";
 // TYPES - Payment API (client-facing, matches PAYMENT_API.md)
 // =============================================================================
 
+/** Matches `PAYMENT_PROVIDERS` in ywd-core-api */
+export type PaymentProvider = "SSL" | "BKASH";
+
 export interface StartCheckoutRequest {
   productId: string;
   siteRef: string;
@@ -33,7 +36,7 @@ export interface InitializePaymentRequest {
   amount: number;
   currency: string;
   metaData: Record<string, unknown>;
-  provider?: string;
+  provider?: PaymentProvider;
   projectKey?: string;
   siteRef?: string;
 }
@@ -49,7 +52,7 @@ export interface StartPaymentAttemptRequest {
   amount: number;
   currency: string;
   metaData: Record<string, unknown>;
-  provider?: string;
+  provider?: PaymentProvider;
   merchantInvoiceNumber?: string;
   siteRef?: string;
   product?: Record<string, unknown>;

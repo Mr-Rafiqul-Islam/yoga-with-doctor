@@ -9,6 +9,7 @@ import {
   OrderSummarySection,
   OrderTotalCard,
   PaymentMethodBadges,
+  PaymentProviderSelect,
   PromoCodeInput,
 } from "@/features/checkout/components";
 import {
@@ -22,6 +23,7 @@ import {
   useStartPaymentAttemptMutation,
   setPaymentContext,
   StartPaymentAttemptResponse,
+  type PaymentProvider,
 } from "@/slices/payment";
 
 export function CheckoutReviewContent() {
@@ -32,6 +34,7 @@ export function CheckoutReviewContent() {
     CHECKOUT_REVIEW.defaultDiscount
   );
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>("SSL");
 
   const dispatch = useDispatch();
   const { data: courseResponse } = useGetCourseBySlugQuery(courseSlug, {
@@ -125,7 +128,7 @@ export function CheckoutReviewContent() {
         amount: amountForInit,
         currency: course?.productData?.currency || "BDT",
         metaData: { purchaseId: newPurchaseId },
-        provider: "SSL",
+        provider: paymentProvider,
         projectKey: "YWD",
         siteRef: "YWD",
       }).unwrap();
@@ -160,7 +163,7 @@ export function CheckoutReviewContent() {
             amount: amountForAttempt,
             currency: course?.productData?.currency || "BDT",
             metaData: { purchaseId: newPurchaseId },
-            provider: "SSL",
+            provider: paymentProvider,
             siteRef: "YWD",
           }).unwrap();
         } catch {
@@ -210,9 +213,13 @@ export function CheckoutReviewContent() {
               >
                 <p className="font-medium">Payment error</p>
                 <p className="mt-1">{paymentError}</p>
-                
               </div>
             )}
+            <PaymentProviderSelect
+              value={paymentProvider}
+              onChange={setPaymentProvider}
+              disabled={isProceeding}
+            />
             <OrderTotalCard
               subtotal={subtotal}
               tax={tax}
