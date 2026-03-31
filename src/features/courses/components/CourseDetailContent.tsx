@@ -7,6 +7,7 @@ import MuxPlayer from "@mux/mux-player-react";
 import { Modal } from "@/components/Modal";
 import { CourseCatalogCardCta } from "./CourseCatalogCardCta";
 import type { CourseDetailData, CourseLesson } from "../data/courseDetailData";
+import { CourseReviewSection } from "@/features/reviews/components/CourseReviewSection";
 
 const TABS = ["About Course", "Curriculum", "Reviews"] as const;
 
@@ -16,7 +17,7 @@ export interface CourseDetailContentProps {
   isEnrolled: boolean;
 }
 
-export function CourseDetailContent({ course }: CourseDetailContentProps) {
+export function CourseDetailContent({ course, isEnrolled }: CourseDetailContentProps) {
   const [activeTab, setActiveTab] = useState<(typeof TABS)[0]>("About Course");
   const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -197,7 +198,7 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
         )}
 
         {activeTab === ("Reviews" as (typeof TABS)[0]) && (
-          <p className="text-muted">Reviews will be displayed here.</p>
+          <CourseReviewSection slug={course.slug} isEnrolled={isEnrolled} />
         )}
       </div>
 

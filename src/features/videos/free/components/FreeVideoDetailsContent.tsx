@@ -8,6 +8,7 @@ import type { VideoCardProps } from "./VideoCard";
 import type { FreeVideoDetails } from "../data/freeVideoDetailsData";
 import { useLazyGetVideoPlaybackTokenQuery } from "@/slices/videos";
 import { formatDuration } from "@/features/home/VideoCard";
+import { ClassReviewSection } from "@/features/reviews/components/ClassReviewSection";
 
 const TAB_IDS = ["overview", "equipment", "reviews"] as const;
 
@@ -153,9 +154,9 @@ export function FreeVideoDetailsContent({
                 <span className="material-icons-outlined text-amber-500 text-sm">
                   star
                 </span>{" "}
-                4.9
+                {details.avgRating != null ? details.avgRating.toFixed(1) : "0.0"}
               </div>
-              <span className="text-xs text-muted">1.2k Ratings</span>
+              <span className="text-xs text-muted">{details.ratingCount ?? 0} Ratings</span>
             </div>
           </div>
 
@@ -236,7 +237,7 @@ export function FreeVideoDetailsContent({
             </p>
           )}
           {activeTab === "reviews" && (
-            <p className="text-muted">Reviews will be displayed here.</p>
+            <ClassReviewSection slug={details.slug} isEnrolled={details.isEnrolled} />
           )}
 
           {/* CTA */}

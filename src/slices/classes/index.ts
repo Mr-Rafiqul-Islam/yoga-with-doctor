@@ -2,6 +2,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { ArticleAuthor } from "@/features/articles/data/dummyArticles";
 import { FreeVideoDetails } from "@/features/videos/free/data/freeVideoDetailsData";
 import { getToken } from "@/slices/auth";
+import type {
+  GetReviewsResponse,
+  GetReviewsParams,
+  GetMyReviewResponse,
+  UpsertReviewRequest,
+  UpsertReviewResponse,
+} from "@/types/review";
 
 const baseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "";
@@ -36,6 +43,8 @@ export interface ClassItem {
   shortDescription: string;
   description: string;
   author:ArticleAuthor;
+  avgRating?: number | null;
+  ratingCount?: number;
 }
 
 export interface PaginationMeta {
@@ -92,7 +101,7 @@ export const classApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Classes", "Class"],
+  tagTypes: ["Classes", "Class", "ClassReviews", "MyClassReview"],
   endpoints: (builder) => ({
     getClasses: builder.query<GetClassesResponse, GetClassesParams | void>({
       query: (params) => {
@@ -146,6 +155,41 @@ export const classApi = createApi({
         { type: "Classes", id: "LIST" },
       ],
     }),
+
+    // ====== REVIEW ENDPOINTS ======
+
+    getClassReviews: builder.query<GetReviewsResponse, GetReviewsParams>({
+      query: ({ slug, page = 1, limit = 20 }) => ({
+        url: `/api/v1/client/classes/${slug}/reviews`,
+        params: { page, limit },
+      }),
+      providesTags: (_result, _error, { slug }) => [
+        { type: "ClassReviews", id: slug },
+      ],
+    }),
+
+    getMyClassReview: builder.query<GetMyReviewResponse, string>({
+      query: (slug) => `/api/v1/client/classes/${slug}/reviews/me`,
+      providesTags: (_result, _error, slug) => [
+        { type: "MyClassReview", id: slug },
+      ],
+    }),
+
+    upsertClassReview: builder.mutation<
+      UpsertReviewResponse,
+      UpsertReviewRequest
+    >({
+      query: ({ slug, ...body }) => ({
+        url: `/api/v1/client/classes/${slug}/reviews`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (_result, _error, { slug }) => [
+        { type: "ClassReviews", id: slug },
+        { type: "MyClassReview", id: slug },
+        { type: "Class", id: slug },
+      ],
+    }),
   }),
 });
 
@@ -153,4 +197,7 @@ export const {
   useGetClassesQuery,
   useGetClassBySlugQuery,
   useEnrollInClassMutation,
+  useGetClassReviewsQuery,
+  useGetMyClassReviewQuery,
+  useUpsertClassReviewMutation,
 } = classApi;

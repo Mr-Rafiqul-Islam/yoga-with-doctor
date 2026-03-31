@@ -53,6 +53,8 @@ export interface FreeVideoDetails {
   adminId: string;
   enrollmentCount: number;
   isEnrolled: boolean;
+  avgRating?: number | null;
+  ratingCount?: number;
   author: ArticleAuthor;
   video: ClassVideo;
   nextInSeries?: NextInSeriesItem[];
