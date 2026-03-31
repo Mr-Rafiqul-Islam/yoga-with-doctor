@@ -38,7 +38,6 @@ export function CourseDetailPageClient({ slug }: CourseDetailPageClientProps) {
 
   const course = data.data.course;
   const detailData = mapCourseToCourseDetailData(course);
-  const isEnrolled = course.hasAccess === true;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -49,7 +48,7 @@ export function CourseDetailPageClient({ slug }: CourseDetailPageClientProps) {
           { label: detailData.title, href: null },
         ]}
       />
-      <CourseDetailContent course={detailData} isEnrolled={isEnrolled} />
+      <CourseDetailContent course={detailData} />
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import Link from "next/link";
 import {
-  ActiveSubscriptionCard,
-  AddPaymentMethodCard,
+  // ActiveSubscriptionCard,
+  // AddPaymentMethodCard,
   InfoCard,
-  PaymentMethodCard,
+  // PaymentMethodCard,
   TransactionList,
 } from "@/features/subscription/components";
 
@@ -13,20 +13,20 @@ export const metadata = {
 };
 
 // Sample data - in a real app, fetch from API or auth
-const subscription = {
-  planName: "Premium Annual",
-  description:
-    "Full access to all advanced medical yoga modules, priority support, and certification tracks.",
-  nextBillingDate: "Oct 24, 2024",
-  amount: "$129.99",
-  period: "/year",
-  progressPercent: 75,
-  manageHref: "/pricing",
-};
+// const subscription = {
+//   planName: "Premium Annual",
+//   description:
+//     "Full access to all advanced medical yoga modules, priority support, and certification tracks.",
+//   nextBillingDate: "Oct 24, 2024",
+//   amount: "$129.99",
+//   period: "/year",
+//   progressPercent: 75,
+//   manageHref: "/pricing",
+// };
 
-const paymentMethods = [
-  { brand: "VISA", last4: "4288", expiry: "12/25", isDefault: true },
-];
+// const paymentMethods = [
+//   { brand: "VISA", last4: "4288", expiry: "12/25", isDefault: true },
+// ];
 
 const transactions = [
   {
@@ -90,8 +90,9 @@ const transactions = [
 export default function SubscriptionPage() {
   return (
     <div className="mx-auto max-w-7xl space-y-10">
-      {/* Section 1: Current Subscription */}
-      <header className="mb-4 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+      {/* Section 1: Current Subscription commented out for v2.0*/}
+      
+      {/* <header className="mb-4 flex flex-col justify-between gap-6 md:flex-row md:items-end">
         <h2 className="text-lg font-semibold text-foreground md:block">Current Subscription</h2>
         <Link
           href={subscription.manageHref}
@@ -109,13 +110,14 @@ export default function SubscriptionPage() {
         period={subscription.period}
         progressPercent={subscription.progressPercent}
         manageHref={subscription.manageHref}
-      />
+      /> */}
 
       {/* Section 2 & 3: Payment Methods + Invoices/Support + Transactions */}
       <div className="grid grid-cols-1 gap-8 xl:grid-cols-3">
         <div className="space-y-8 lg:col-span-2">
-          {/* Payment Methods */}
-          <section aria-labelledby="payment-methods-heading">
+          {/* Payment Methods commented out for v2.0*/}
+          
+          {/* <section aria-labelledby="payment-methods-heading">
             <div className="mb-6 flex items-center justify-between">
               <h3 id="payment-methods-heading" className="text-xl font-bold text-foreground">
                 Payment Methods
@@ -140,7 +142,7 @@ export default function SubscriptionPage() {
               ))}
               <AddPaymentMethodCard href="/pricing" />
             </div>
-          </section>
+          </section> */}
 
           {/* Invoices & Billing Support */}
           <section className="grid grid-cols-1 gap-4 md:grid-cols-2" aria-label="Support and history">
