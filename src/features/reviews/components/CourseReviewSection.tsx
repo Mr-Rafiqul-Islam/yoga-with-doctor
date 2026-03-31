@@ -11,10 +11,10 @@ import { ReviewList } from "./ReviewList";
 
 interface CourseReviewSectionProps {
   slug: string;
-  isEnrolled: boolean;
+  courseId: string;
 }
 
-export function CourseReviewSection({ slug, isEnrolled }: CourseReviewSectionProps) {
+export function CourseReviewSection({ slug, courseId }: CourseReviewSectionProps) {
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const [page, setPage] = useState(1);
 
@@ -61,7 +61,7 @@ export function CourseReviewSection({ slug, isEnrolled }: CourseReviewSectionPro
       stats={stats}
       myReview={myReviewData?.data?.review ?? null}
       isAuthenticated={isAuthenticated}
-      isEnrolled={isEnrolled}
+      courseId={courseId}
       isSubmitting={isSubmitting}
       onSubmit={handleSubmit}
       pagination={pagination}

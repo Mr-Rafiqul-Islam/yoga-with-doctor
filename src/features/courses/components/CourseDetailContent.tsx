@@ -13,14 +13,11 @@ const TABS = ["About Course", "Curriculum", "Reviews"] as const;
 
 export interface CourseDetailContentProps {
   course: CourseDetailData;
-  /** Kept for backward compatibility but UI is now driven purely by course data. */
-  isEnrolled: boolean;
 }
 
-export function CourseDetailContent({ course, isEnrolled }: CourseDetailContentProps) {
+export function CourseDetailContent({ course }: CourseDetailContentProps) {
   const [activeTab, setActiveTab] = useState<(typeof TABS)[0]>("About Course");
   const [showLoginModal, setShowLoginModal] = useState(false);
-
   const previewLesson = useMemo(() => {
     const allLessons = course.curriculum.flatMap((m) => m.lessons);
     return allLessons.find(
@@ -198,7 +195,7 @@ export function CourseDetailContent({ course, isEnrolled }: CourseDetailContentP
         )}
 
         {activeTab === ("Reviews" as (typeof TABS)[0]) && (
-          <CourseReviewSection slug={course.slug} isEnrolled={isEnrolled} />
+          <CourseReviewSection slug={course.slug} courseId={course.courseId ?? ""} />
         )}
       </div>
 
