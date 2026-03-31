@@ -1,5 +1,12 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { createReauthBaseQuery } from "@/slices/auth";
+import type {
+  GetReviewsResponse,
+  GetReviewsParams,
+  GetMyReviewResponse,
+  UpsertReviewRequest,
+  UpsertReviewResponse,
+} from "@/types/review";
 
 // ============================================================================
 // TYPES - Course System
@@ -114,6 +121,8 @@ export interface Course {
   instructorName: string | null;
   locked?: boolean;
   hasAccess?: boolean;
+  avgRating?: number | null;
+  ratingCount?: number;
 
   sections?: CourseSection[];
   resources?: CourseResource[];
@@ -395,6 +404,8 @@ export const coursesApi = createApi({
     "CourseQuizzes",
     "Entitlements",
     "Purchase",
+    "CourseReviews",
+    "MyCourseReview",
   ],
   endpoints: (builder) => ({
     // ========================================================================
@@ -635,6 +646,43 @@ export const coursesApi = createApi({
         method: "GET",
       }),
     }),
+
+    // ========================================================================
+    // REVIEW ENDPOINTS
+    // ========================================================================
+
+    getCourseReviews: builder.query<GetReviewsResponse, GetReviewsParams>({
+      query: ({ slug, page = 1, limit = 20 }) => ({
+        url: `/api/v1/client/courses/${slug}/reviews`,
+        params: { page, limit },
+      }),
+      providesTags: (_result, _error, { slug }) => [
+        { type: "CourseReviews", id: slug },
+      ],
+    }),
+
+    getMyCourseReview: builder.query<GetMyReviewResponse, string>({
+      query: (slug) => `/api/v1/client/courses/${slug}/reviews/me`,
+      providesTags: (_result, _error, slug) => [
+        { type: "MyCourseReview", id: slug },
+      ],
+    }),
+
+    upsertCourseReview: builder.mutation<
+      UpsertReviewResponse,
+      UpsertReviewRequest
+    >({
+      query: ({ slug, ...body }) => ({
+        url: `/api/v1/client/courses/${slug}/reviews`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (_result, _error, { slug }) => [
+        { type: "CourseReviews", id: slug },
+        { type: "MyCourseReview", id: slug },
+        { type: "Course", id: slug },
+      ],
+    }),
   }),
 });
 
@@ -671,5 +719,10 @@ export const {
   // Video playback queries
   useGetVideoPlaybackQuery,
   useLazyGetVideoPlaybackQuery,
+
+  // Review queries & mutations
+  useGetCourseReviewsQuery,
+  useGetMyCourseReviewQuery,
+  useUpsertCourseReviewMutation,
 } = coursesApi;
 

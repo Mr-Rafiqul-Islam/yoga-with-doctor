@@ -10,8 +10,6 @@ const FALLBACK_THUMBNAIL =
   "https://via.placeholder.com/640x360.png?text=Course";
 const FALLBACK_INSTRUCTOR_AVATAR =
   "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-Hero.jpeg";
-const STATIC_RATING = "4.9";
-const STATIC_REVIEW_COUNT = 245;
 const STATIC_INSTRUCTOR_TITLE = "Orthopedics Specialist, Spine Surgeion, Yoga Instructor";
 const STATIC_LEARNING_OUTCOMES = [
   "Evidence-based techniques for wellness",
@@ -135,8 +133,8 @@ export function mapCourseToCourseDetailData(course: Course): CourseDetailData {
     description: course.description ?? "",
     thumbnailUrl:
       course.bannerUrl ?? course.bannerImage ?? FALLBACK_THUMBNAIL,
-    rating: STATIC_RATING,
-    reviewCount: STATIC_REVIEW_COUNT,
+    rating: course.avgRating != null ? course.avgRating.toFixed(1) : "0.0",
+    reviewCount: course.ratingCount ?? 0,
     instructorName: course.instructorName ?? "Yoga with Doctor",
     instructorTitle: STATIC_INSTRUCTOR_TITLE,
     instructorAvatarUrl: FALLBACK_INSTRUCTOR_AVATAR,
