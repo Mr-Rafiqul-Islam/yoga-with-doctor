@@ -30,6 +30,14 @@ function saveToken(accessToken: string, refreshToken: string): void {
   window.localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
 }
 
+/** Align RTK client requests with OAuth session tokens (see SessionTokenSync). */
+export function persistClientAuthTokens(
+  accessToken: string,
+  refreshToken: string
+): void {
+  saveToken(accessToken, refreshToken);
+}
+
 export function removeToken(): void {
   if (!canUseDOM()) return;
   window.localStorage.removeItem(ACCESS_TOKEN_KEY);
@@ -40,70 +48,102 @@ export function removeToken(): void {
 const baseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "";
 
-// Custom base query with token in header
-const baseQuery = fetchBaseQuery({
-  baseUrl,
-  credentials: "include",
-  prepareHeaders: (headers) => {
+const LOGOUT_ACTION_TYPE = "auth/logout" as const;
+
+function buildPrepareHeaders(
+  extra?: (headers: Headers) => void
+): (headers: Headers) => Headers {
+  return (headers) => {
     const token = getToken();
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
+    extra?.(headers);
     return headers;
-  },
-});
+  };
+}
 
-export const baseQueryWithReauth: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-  let result = await baseQuery(args, api, extraOptions);
+/**
+ * RTK base query with Bearer token + refresh on 401. Use for all client API slices
+ * so expired sessions clear auth state consistently.
+ */
+export function createReauthBaseQuery(
+  extraPrepareHeaders?: (headers: Headers) => void
+): BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> {
+  const innerBaseQuery = fetchBaseQuery({
+    baseUrl,
+    credentials: "include",
+    prepareHeaders: buildPrepareHeaders(extraPrepareHeaders),
+  });
 
-  const isLogoutRequest =
-    typeof args === "object" &&
-    "url" in args &&
-    typeof args.url === "string" &&
-    args.url.includes("/logout");
+  return async (args, api, extraOptions) => {
+    let result = await innerBaseQuery(args, api, extraOptions);
 
-  if (result.error && result.error.status === 401 && !isLogoutRequest) {
-    const refreshToken = getRefreshToken();
+    const isLogoutRequest =
+      typeof args === "object" &&
+      "url" in args &&
+      typeof args.url === "string" &&
+      args.url.includes("/logout");
 
-    if (refreshToken) {
-      const refreshResult = await baseQuery(
-        {
-          url: "/api/v1/client/refresh",
-          method: "POST",
-          body: { refreshToken },
-        },
-        api,
-        extraOptions
-      );
+    const isRefreshRequest =
+      typeof args === "object" &&
+      "url" in args &&
+      typeof args.url === "string" &&
+      args.url.includes("/client/refresh");
 
-      if (refreshResult.data) {
-        const refreshData = refreshResult.data as {
-          success: boolean;
-          data: { accessToken: string; refreshToken: string };
-        };
-        if (refreshData.success && refreshData.data) {
-          saveToken(refreshData.data.accessToken, refreshData.data.refreshToken);
-          result = await baseQuery(args, api, extraOptions);
+    if (
+      result.error &&
+      result.error.status === 401 &&
+      !isLogoutRequest &&
+      !isRefreshRequest
+    ) {
+      const refreshToken = getRefreshToken();
+
+      if (refreshToken) {
+        const refreshResult = await innerBaseQuery(
+          {
+            url: "/api/v1/client/refresh",
+            method: "POST",
+            body: { refreshToken },
+          },
+          api,
+          extraOptions
+        );
+
+        if (refreshResult.data) {
+          const refreshData = refreshResult.data as {
+            success: boolean;
+            data: { accessToken: string; refreshToken: string };
+          };
+          if (refreshData.success && refreshData.data) {
+            saveToken(
+              refreshData.data.accessToken,
+              refreshData.data.refreshToken
+            );
+            result = await innerBaseQuery(args, api, extraOptions);
+          } else {
+            removeToken();
+            api.dispatch({ type: LOGOUT_ACTION_TYPE });
+          }
         } else {
           removeToken();
-          api.dispatch({ type: "auth/logout" });
+          api.dispatch({ type: LOGOUT_ACTION_TYPE });
         }
       } else {
+        const hadAccessToken = !!getToken();
         removeToken();
-        api.dispatch({ type: "auth/logout" });
+        if (hadAccessToken) {
+          api.dispatch({ type: LOGOUT_ACTION_TYPE });
+        }
       }
-    } else {
-      removeToken();
-      api.dispatch({ type: "auth/logout" });
     }
-  }
 
-  return result;
-};
+    return result;
+  };
+}
+
+/** Default reauth base query (auth + profile slices). */
+export const baseQueryWithReauth = createReauthBaseQuery();
 
 // --- Types ---
 export interface User {
@@ -456,12 +496,9 @@ const authSlice = createSlice({
     );
     builder.addMatcher(
       authApi.endpoints.getCurrentUser.matchRejected,
-      (state, action) => {
-        const error = action.payload as FetchBaseQueryError | undefined;
-        if (error?.status === 401 || error?.status === 403) {
-          state.user = null;
-          state.isAuthenticated = false;
-        }
+      (state) => {
+        state.user = null;
+        state.isAuthenticated = false;
         state.isLoading = false;
       }
     );

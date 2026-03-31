@@ -1,8 +1,8 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, createListenerMiddleware, isAnyOf } from "@reduxjs/toolkit";
 
 import uiReducer from "../slices/uiSlice";
 import { videoApi } from "@/slices/videos";
-import { authApi, authReducer } from "../slices/auth";
+import { authApi, authReducer, logoutAction } from "../slices/auth";
 import { classApi } from "@/slices/classes";
 import { coursesApi } from "@/slices/courses";
 import { articlesApi } from "@/slices/articles";
@@ -12,6 +12,20 @@ import { entitlementsReducer } from "@/slices/entitlements";
 import { enrollmentReducer, enrollmentApi } from "@/slices/enrollment";
 import { profileApi } from "@/slices/profile";
 
+export const authLogoutListener = createListenerMiddleware();
+authLogoutListener.startListening({
+  matcher: isAnyOf(logoutAction),
+  effect: (_action, listenerApi) => {
+    listenerApi.dispatch(authApi.util.resetApiState());
+    listenerApi.dispatch(articlesApi.util.resetApiState());
+    listenerApi.dispatch(coursesApi.util.resetApiState());
+    listenerApi.dispatch(videoApi.util.resetApiState());
+    listenerApi.dispatch(classApi.util.resetApiState());
+    listenerApi.dispatch(paymentApi.util.resetApiState());
+    listenerApi.dispatch(enrollmentApi.util.resetApiState());
+    listenerApi.dispatch(profileApi.util.resetApiState());
+  },
+});
 
 export const store = configureStore({
   reducer: {
@@ -31,7 +45,7 @@ export const store = configureStore({
     [profileApi.reducerPath]: profileApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
+    getDefaultMiddleware().prepend(authLogoutListener.middleware).concat(
       authApi.middleware,
       classApi.middleware,
       coursesApi.middleware,

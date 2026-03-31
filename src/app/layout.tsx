@@ -4,8 +4,8 @@ import { OfflineDetector } from "@/components/OfflineDetector";
 import { Header } from "@/components/layout";
 import { NotificationSocket } from "@/components/NotificationSocket";
 import { ToastToaster } from "@/components/ToastToaster";
+import { AppProviders } from "@/components/providers/AppProviders";
 import { QueryProvider } from "@/lib/query";
-import { ReduxProvider } from "@/stores";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -70,7 +70,7 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-screen flex-col font-sans">
-        <ReduxProvider>
+        <AppProviders>
           <QueryProvider>
             <a
               href="#main-content"
@@ -86,7 +86,7 @@ export default function RootLayout({
             </main>
             <OfflineDetector />
           </QueryProvider>
-        </ReduxProvider>
+        </AppProviders>
       </body>
     </html>
   );

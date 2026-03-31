@@ -2,13 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { establishNextAuthSessionFromStoredTokens } from "@/lib/auth/client";
 import { useLoginMutation } from "@/slices/auth";
 import { getDeviceId } from "@/utils/deviceId";
 
-
-export function LoginForm({ onLoginSuccess }: { onLoginSuccess?: (phone: string) => void } = {}) {
-  const router = useRouter();
+export function LoginForm({
+  onLoginSuccess,
+  postLoginPath = "/dashboard",
+}: {
+  onLoginSuccess?: (phone: string) => void;
+  /** Sanitized pathname after login (e.g. from `returnTo` query). */
+  postLoginPath?: string;
+} = {}) {
   const [phone, setPhone] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
@@ -34,7 +39,16 @@ export function LoginForm({ onLoginSuccess }: { onLoginSuccess?: (phone: string)
 
       const data = "data" in result ? result.data : null;
       if (data && "accessToken" in data && data.accessToken) {
-        router.push("/dashboard");
+        const sessionRes = await establishNextAuthSessionFromStoredTokens(
+          postLoginPath
+        );
+        if (!sessionRes.ok) {
+          setError(sessionRes.error ?? "Could not start session. Try again.");
+          return;
+        }
+        window.location.assign(
+          `${window.location.origin}${postLoginPath.startsWith("/") ? postLoginPath : `/${postLoginPath}`}`
+        );
         return;
       }
     } catch (err: unknown) {

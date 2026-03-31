@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { useAppSelector } from "@/stores";
@@ -12,16 +13,23 @@ import { useAppSelector } from "@/stores";
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
+  const { status } = useSession();
+  const { isLoading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (status === "unauthenticated") {
       const returnTo = pathname || "/dashboard";
       router.replace(`/auth/login?returnTo=${encodeURIComponent(returnTo)}`);
     }
-  }, [isLoading, isAuthenticated, pathname, router]);
+  }, [status, pathname, router]);
 
-  if (isLoading || !isAuthenticated) {
+  if (status === "loading" || isLoading) {
+    return (
+      <LoadingScreen className="min-h-[calc(100vh-80px)]" message="Preparing your wellness journey" />
+    );
+  }
+
+  if (status === "unauthenticated") {
     return (
       <LoadingScreen className="min-h-[calc(100vh-80px)]" message="Preparing your wellness journey" />
     );

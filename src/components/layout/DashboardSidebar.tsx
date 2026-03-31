@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 import { useAppSelector } from "@/stores";
 import { useLogoutMutation } from "@/slices/auth";
 
@@ -71,8 +72,22 @@ function SidebarContent({
   const pathname = usePathname();
   const isLibraryActive = pathname?.startsWith("/dashboard/library") ?? false;
 
+  const { data: session, status: sessionStatus } = useSession();
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
+
+  const sessionUser =
+    session?.user?.id != null
+      ? {
+          name: session.user.name ?? "",
+          phone: (session.user as { phone?: string }).phone ?? "",
+          email: session.user.email ?? null,
+          profilePicture: session.user.image ?? null,
+        }
+      : null;
+  const bottomUser = user ?? sessionUser;
+  const showProfile =
+    (isAuthenticated || sessionStatus === "authenticated") && bottomUser;
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -169,12 +184,12 @@ function SidebarContent({
       </nav>
 
       <div className="mt-auto shrink-0 flex items-center gap-3 border-t border-border pt-4 dark:border-gray-700">
-        {isAuthenticated && user ? (
+        {showProfile ? (
           <>
             <div className="h-10 w-10 shrink-0 flex items-center justify-center overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-              {user.profilePicture ? (
+              {bottomUser.profilePicture ? (
                 <Image
-                  src={user.profilePicture}
+                  src={bottomUser.profilePicture}
                   alt="Profile picture"
                   width={40}
                   height={40}
@@ -185,24 +200,29 @@ function SidebarContent({
                   className="text-xl font-semibold text-foreground"
                   aria-hidden
                 >
-                  {user.name?.charAt(0).toUpperCase() ?? "U"}
+                  {bottomUser.name?.charAt(0).toUpperCase() ?? "U"}
                 </span>
               )}
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate text-body-md font-semibold text-foreground dark:text-white">
-                {user.name || user.phone}
+                {bottomUser.name || bottomUser.phone}
               </p>
               <p className="truncate text-caption text-muted">
-                {user.email || user.phone}
+                {bottomUser.email || bottomUser.phone}
               </p>
             </div>
             <button
               type="button"
               onClick={() => {
-                logout()
-                  .unwrap()
-                  .then(() => window.location.assign("/auth/login"));
+                void (async () => {
+                  try {
+                    await logout().unwrap();
+                  } catch {
+                    /* ignore */
+                  }
+                  await signOut({ callbackUrl: "/auth/login" });
+                })();
               }}
               className="shrink-0 rounded-lg p-2 text-muted transition-colors hover:bg-gray-100 hover:text-foreground dark:hover:bg-gray-800 dark:hover:text-gray-200 disabled:opacity-70"
               aria-label="Log out"

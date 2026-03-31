@@ -1,8 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { getToken } from "@/slices/auth";
-
-const baseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { createReauthBaseQuery } from "@/slices/auth";
 
 // =============================================================================
 // TYPES - Payment API (client-facing, matches PAYMENT_API.md)
@@ -77,17 +74,8 @@ export interface StartPaymentAttemptResponse {
 
 export const paymentApi = createApi({
   reducerPath: "paymentApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl,
-    credentials: "include",
-    prepareHeaders: (headers) => {
-      const token = getToken();
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      headers.set("Content-Type", "application/json");
-      return headers;
-    },
+  baseQuery: createReauthBaseQuery((headers) => {
+    headers.set("Content-Type", "application/json");
   }),
   endpoints: (builder) => ({
     /**

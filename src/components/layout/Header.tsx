@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useId, useEffect, useState } from "react";
+import { signOut, useSession } from "next-auth/react";
+
 import {
   useAppSelector,
   useAppDispatch,
@@ -25,17 +27,34 @@ const mainNavItems = [
 export function Header() {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
+  const { status: nextAuthStatus, data: session } = useSession();
   const mobileMenuOpen = useAppSelector((state) => state.ui.mobileMenuOpen);
   const theme = useAppSelector((state) => state.ui.theme);
   const { user, isAuthenticated, isLoading: authLoading } = useAppSelector((state) => state.auth);
   const hasToken = !!getToken();
+  const nominalNextAuth =
+    nextAuthStatus === "authenticated" && !!session?.user?.id;
+  const sessionOk = nominalNextAuth || (hasToken && isAuthenticated);
   const { data: currentUserData, isLoading: isFetchingUser } = useGetCurrentUserQuery(undefined, {
     skip: !hasToken,
   });
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
   const [profileOpen, setProfileOpen] = useState(false);
-  const displayUser = currentUserData?.data ?? user;
-  const isRestoringSession = authLoading || (hasToken && isFetchingUser);
+  const fromSession =
+    session?.user?.id != null
+      ? {
+          name: session.user.name ?? "",
+          phone: (session.user as { phone?: string }).phone ?? "",
+          profilePicture: session.user.image ?? null,
+        }
+      : null;
+  const displayUser = sessionOk
+    ? (currentUserData?.data ?? user ?? fromSession)
+    : null;
+  const isRestoringSession =
+    authLoading ||
+    nextAuthStatus === "loading" ||
+    (hasToken && isFetchingUser);
 
   const menuId = useId();
   const buttonId = useId();
@@ -175,7 +194,7 @@ export function Header() {
             >
               <span className="material-icons-outlined text-xl text-muted">person</span>
             </div>
-          ) : isAuthenticated && displayUser ? (
+          ) : sessionOk && displayUser ? (
             <div className="relative flex flex-shrink-0">
               <button
                 type="button"
@@ -222,9 +241,14 @@ export function Header() {
                     role="menuitem"
                     onClick={() => {
                       setProfileOpen(false);
-                      logout()
-                        .unwrap()
-                        .then(() => window.location.assign("/auth/login"));
+                      void (async () => {
+                        try {
+                          await logout().unwrap();
+                        } catch {
+                          /* still sign out locally */
+                        }
+                        await signOut({ callbackUrl: "/auth/login" });
+                      })();
                     }}
                     disabled={isLoggingOut}
                     className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-foreground hover:bg-secondary focus:outline-none focus:ring-inset focus:ring-2 focus:ring-primary disabled:opacity-70 dark:hover:bg-gray-700"

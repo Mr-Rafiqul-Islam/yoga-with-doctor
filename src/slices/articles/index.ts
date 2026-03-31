@@ -1,8 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { getToken } from "@/slices/auth";
-
-const baseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { createReauthBaseQuery } from "@/slices/auth";
 
 // ============================================================================
 // TYPES - Articles (based on website API response)
@@ -81,17 +78,7 @@ export interface ActionResponse {
 
 export const articlesApi = createApi({
   reducerPath: "articlesApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl,
-    credentials: "include",
-    prepareHeaders: (headers) => {
-      const token = getToken();
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: createReauthBaseQuery(),
   tagTypes: ["Articles", "Article"],
   endpoints: (builder) => ({
     /**

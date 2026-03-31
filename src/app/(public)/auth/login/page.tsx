@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { LoginPageContent } from "@/features/auth/components";
 
 export const metadata = {
@@ -8,7 +9,15 @@ export const metadata = {
 export default function LoginPage() {
   return (
     <main className="flex min-h-[650px] flex-1 items-center justify-center p-6 lg:p-12">
-      <LoginPageContent />
+      <Suspense
+        fallback={
+          <div className="text-center text-muted" aria-busy>
+            Loading…
+          </div>
+        }
+      >
+        <LoginPageContent />
+      </Suspense>
     </main>
   );
 }

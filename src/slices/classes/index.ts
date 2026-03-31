@@ -1,10 +1,7 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import { ArticleAuthor } from "@/features/articles/data/dummyArticles";
 import { FreeVideoDetails } from "@/features/videos/free/data/freeVideoDetailsData";
-import { getToken } from "@/slices/auth";
-
-const baseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "";
+import { createReauthBaseQuery } from "@/slices/auth";
 
 // --- API response types (from getClasses) ---
 
@@ -81,17 +78,7 @@ export interface ActionResponse {
 
 export const classApi = createApi({
   reducerPath: "classApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl,
-    credentials: "include",
-    prepareHeaders: (headers) => {
-      const token = getToken();
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: createReauthBaseQuery(),
   tagTypes: ["Classes", "Class"],
   endpoints: (builder) => ({
     getClasses: builder.query<GetClassesResponse, GetClassesParams | void>({

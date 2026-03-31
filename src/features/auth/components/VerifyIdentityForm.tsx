@@ -2,10 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  useVerifyRegisterOTPMutation,
-  useVerifyLoginOTPMutation,
-} from "@/slices/auth";
+import { signInWithLoginOtp } from "@/lib/auth/client";
+import { useVerifyRegisterOTPMutation } from "@/slices/auth";
 import { getDeviceId } from "@/utils/deviceId";
 
 type VerifyIdentityFormProps = {
@@ -14,6 +12,8 @@ type VerifyIdentityFormProps = {
   onBack?: () => void;
   isFromRegister?: boolean;
   onComplete?: () => void;
+  /** Sanitized pathname after login OTP (e.g. from `returnTo` query). */
+  postLoginPath?: string;
 };
 
 export function VerifyIdentityForm({
@@ -21,6 +21,7 @@ export function VerifyIdentityForm({
   onBack,
   isFromRegister = false,
   onComplete,
+  postLoginPath = "/dashboard",
 }: VerifyIdentityFormProps = {}) {
   const router = useRouter();
   const [code, setCode] = useState<string[]>(["", "", "", "", "", ""]);
@@ -29,8 +30,7 @@ export function VerifyIdentityForm({
   const [error, setError] = useState<string | null>(null);
   const [verifyRegisterOTP, { isLoading: isVerifyingRegister }] =
     useVerifyRegisterOTPMutation();
-  const [verifyLoginOTP, { isLoading: isVerifyingLogin }] =
-    useVerifyLoginOTPMutation();
+  const [isVerifyingLogin, setIsVerifyingLogin] = useState(false);
   const isVerifying = isVerifyingRegister || isVerifyingLogin;
 
   useEffect(() => {
@@ -87,19 +87,38 @@ export function VerifyIdentityForm({
           platform,
         }).unwrap();
       } else {
-        await verifyLoginOTP({
-          phone,
-          otp: fullCode,
-          deviceId,
-          platform,
-        }).unwrap();
+        setIsVerifyingLogin(true);
+        try {
+          const res = await signInWithLoginOtp({
+            phone,
+            otp: fullCode,
+            deviceId,
+            platform,
+            postLoginPath,
+          });
+          if (res?.error) {
+            setError(
+              res.error === "CredentialsSignin"
+                ? "Invalid or expired code. Please try again."
+                : res.error
+            );
+            return;
+          }
+        } catch {
+          setError("Unable to verify code. Please try again.");
+          return;
+        } finally {
+          setIsVerifyingLogin(false);
+        }
       }
       if (onComplete) {
         onComplete();
       } else if (isFromRegister) {
         router.push("/auth/login");
       } else {
-        router.push("/dashboard");
+        window.location.assign(
+          `${window.location.origin}${postLoginPath.startsWith("/") ? postLoginPath : `/${postLoginPath}`}`
+        );
       }
     } catch (err: unknown) {
       const message =

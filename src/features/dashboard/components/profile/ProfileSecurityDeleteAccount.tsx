@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { useCallback, useState } from "react";
 
 import { logoutAction, removeToken } from "@/slices/auth";
@@ -11,7 +11,6 @@ import { messageFromQueryError } from "../../../../lib/queryErrorMessage";
 
 export function ProfileSecurityDeleteAccount() {
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const [deleteAccount, { isLoading: isDeleting }] = useDeleteAccountMutation();
 
   const [sectionOpen, setSectionOpen] = useState(false);
@@ -48,11 +47,11 @@ export function ProfileSecurityDeleteAccount() {
 
       removeToken();
       dispatch(logoutAction());
-      router.replace("/auth/login");
+      await signOut({ callbackUrl: "/auth/login", redirect: true });
     } catch (e) {
       setErrorMessage(messageFromQueryError(e));
     }
-  }, [confirmChecked, deleteAccount, dispatch, password, router]);
+  }, [confirmChecked, deleteAccount, dispatch, password]);
 
   return (
     <div className="rounded-xl border border-error/30 bg-error/5 p-4 dark:bg-error/10">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { useAppSelector } from "@/stores";
@@ -11,15 +12,18 @@ import { useAppSelector } from "@/stores";
  */
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const { status } = useSession();
   const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
 
+  const loggedIn = status === "authenticated" || isAuthenticated;
+
   useEffect(() => {
-    if (!isLoading && isAuthenticated) {
+    if (status !== "loading" && !isLoading && loggedIn) {
       router.replace("/dashboard");
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [status, isLoading, loggedIn, router]);
 
-  if (isLoading) {
+  if (status === "loading" || isLoading) {
     return (
       <LoadingScreen
         className="min-h-[650px]"
@@ -27,8 +31,6 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       />
     );
   }
-
-  
 
   return <>{children}</>;
 }
