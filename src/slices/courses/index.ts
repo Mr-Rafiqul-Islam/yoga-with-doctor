@@ -319,6 +319,99 @@ export interface CourseContentResponse {
   };
 }
 
+/** Per-lesson progress row from GET /courses/:slug/progress */
+export interface CourseProgressLessonRow {
+  id: string;
+  title: string;
+  order: number;
+  durationMin: number | null;
+  durationSec: number;
+  watchedSec: number;
+  progressPercent: number;
+  status: string;
+  isLocked: boolean;
+  completedAt: string | null;
+}
+
+export interface CourseProgressSectionRow {
+  id: string;
+  title: string;
+  order: number;
+  progressPercent: number;
+  completedLessons: number;
+  totalLessons: number;
+  lessons: CourseProgressLessonRow[];
+}
+
+export interface CourseProgressSummary {
+  id: string;
+  status: string;
+  totalLessons: number;
+  completedLessons: number;
+  progressPercent: number;
+  lastLessonId: string | null;
+  lastLessonAt: string | null;
+  totalWatchSec?: number;
+  nextLessonId: string | null;
+}
+
+export interface GetCourseProgressResponse {
+  success: boolean;
+  message: string;
+  data: {
+    course: { id: string; title: string; slug: string };
+    progress: CourseProgressSummary;
+    sections: CourseProgressSectionRow[];
+  };
+}
+
+export interface UpdateLessonProgressBody {
+  lessonId: string;
+  event: "START" | "WATCH";
+  watchedSecDelta?: number;
+}
+
+export interface LessonProgressUpdatePayload {
+  id: string;
+  lessonId: string;
+  status: string;
+  watchedSec: number;
+  durationSec: number;
+  progressPercent: number;
+  completedAt: string | null;
+}
+
+export interface UpdateLessonProgressResponse {
+  success: boolean;
+  message: string;
+  data: {
+    lessonProgress: LessonProgressUpdatePayload;
+    courseProgress: CourseProgressSummary;
+  };
+}
+
+function patchCourseProgressCache(
+  draft: GetCourseProgressResponse,
+  lessonProgress: LessonProgressUpdatePayload,
+  courseProgress: CourseProgressSummary
+) {
+  if (!draft.data) return;
+  const core = draft.data;
+  const targetId = lessonProgress.lessonId;
+  for (const section of core.sections) {
+    const row = section.lessons.find((l) => l.id === targetId);
+    if (row) {
+      row.status = lessonProgress.status;
+      row.watchedSec = lessonProgress.watchedSec;
+      row.durationSec = lessonProgress.durationSec;
+      row.progressPercent = lessonProgress.progressPercent;
+      row.completedAt = lessonProgress.completedAt;
+      break;
+    }
+  }
+  core.progress = { ...core.progress, ...courseProgress };
+}
+
 export interface CourseAccessResponse {
   success: boolean;
   message: string;
@@ -400,6 +493,7 @@ export const coursesApi = createApi({
     "Courses",
     "Course",
     "CourseContent",
+    "CourseProgress",
     "CourseResources",
     "CourseQuizzes",
     "Entitlements",
@@ -498,6 +592,72 @@ export const coursesApi = createApi({
         { type: "CourseContent", id: slug },
         { type: "Course", id: slug },
       ],
+    }),
+
+    /**
+     * GET /api/v1/client/courses/:slug/progress
+     * Course + per-lesson watch progress (auth)
+     */
+    getCourseProgress: builder.query<GetCourseProgressResponse, string>({
+      query: (slug) => ({
+        url: `/api/v1/client/courses/${slug}/progress`,
+        method: "GET",
+      }),
+      providesTags: (_result, _error, slug) => [
+        { type: "CourseProgress", id: slug },
+      ],
+    }),
+
+    /**
+     * POST /api/v1/client/courses/:slug/progress/lesson
+     * Report START / WATCH (no COMPLETE); updates watch time (auth)
+     */
+    updateLessonProgress: builder.mutation<
+      UpdateLessonProgressResponse,
+      { slug: string; body: UpdateLessonProgressBody }
+    >({
+      query: ({ slug, body }) => ({
+        url: `/api/v1/client/courses/${slug}/progress/lesson`,
+        method: "POST",
+        body,
+      }),
+      async onQueryStarted({ slug }, { dispatch, queryFulfilled, getState }) {
+        try {
+          const res = await queryFulfilled;
+          const payload = res.data;
+          if (!payload.success || !payload.data) return;
+          const { lessonProgress, courseProgress } = payload.data;
+          const progressEntry = coursesApi.endpoints.getCourseProgress.select(slug)(
+            getState()
+          );
+          if (progressEntry?.data) {
+            dispatch(
+              coursesApi.util.updateQueryData(
+                "getCourseProgress",
+                slug,
+                (draft) => {
+                  patchCourseProgressCache(draft, lessonProgress, courseProgress);
+                }
+              )
+            );
+          } else {
+            dispatch(
+              coursesApi.endpoints.getCourseProgress.initiate(slug, {
+                forceRefetch: true,
+              })
+            );
+          }
+          if (lessonProgress.status === "COMPLETED") {
+            dispatch(
+              coursesApi.util.invalidateTags([
+                { type: "CourseContent", id: slug },
+              ])
+            );
+          }
+        } catch {
+          /* ignore failed mutation */
+        }
+      },
     }),
 
     /**
@@ -696,12 +856,14 @@ export const {
   useGetAllTypeCoursesQuery,
   useGetCourseBySlugQuery,
   useGetCourseContentQuery,
+  useGetCourseProgressQuery,
   useCheckCourseAccessQuery,
   useGetCourseResourcesQuery,
   useGetCourseQuizzesQuery,
 
   // Course mutations
   useViewCourseMutation,
+  useUpdateLessonProgressMutation,
 
   // Entitlement queries
   useGetEntitlementsQuery,

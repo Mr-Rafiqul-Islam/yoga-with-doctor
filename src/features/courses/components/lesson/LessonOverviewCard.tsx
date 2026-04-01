@@ -17,6 +17,8 @@ export interface LessonOverviewCardProps {
   curriculum: LessonWithStatus[];
   /** Builds lesson URL for a given lesson id */
   lessonUrl: (lessonId: string) => string;
+  /** Prefer API next-lesson id when present and unlocked */
+  preferredNextLessonId?: string;
 }
 
 export function LessonOverviewCard({
@@ -25,10 +27,16 @@ export function LessonOverviewCard({
   progressPercent,
   curriculum,
   lessonUrl,
+  preferredNextLessonId,
 }: LessonOverviewCardProps) {
-  const nextLessonId = currentLesson
-    ? curriculum.find((l) => !l.isLocked && !l.isCurrent)?.id ?? currentLesson.id
-    : undefined;
+  const nextLessonId = (() => {
+    if (preferredNextLessonId) {
+      const row = curriculum.find((l) => l.id === preferredNextLessonId);
+      if (row && !row.isLocked) return preferredNextLessonId;
+    }
+    if (!currentLesson) return undefined;
+    return curriculum.find((l) => !l.isLocked && !l.isCurrent)?.id ?? currentLesson.id;
+  })();
   const continueHref = nextLessonId ? lessonUrl(nextLessonId) : "#";
 
   return (

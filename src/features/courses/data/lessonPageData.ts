@@ -6,6 +6,8 @@
 import type { CourseDetailData } from "./courseDetailData";
 import { getCourseDetailBySlug } from "./courseDetailData";
 
+export type LessonProgressUiStatus = "completed" | "in_progress" | "not_started";
+
 export interface LessonWithStatus {
   id: string;
   title: string;
@@ -14,6 +16,10 @@ export interface LessonWithStatus {
   isCompleted: boolean;
   isCurrent: boolean;
   isLocked: boolean;
+  /** Server-backed lesson watch ratio 0–100 when progress API is loaded */
+  lessonProgressPercent?: number;
+  /** Derived from watch state for sidebar / overview */
+  progressStatus: LessonProgressUiStatus;
 }
 
 export interface DoctorNotes {
@@ -136,6 +142,7 @@ function buildCurriculumFromCourse(course: CourseDetailData): LessonWithStatus[]
         isCompleted: false,
         isCurrent: false,
         isLocked: les.isLocked ?? false,
+        progressStatus: "not_started",
       });
       currentIndex++;
     }
@@ -175,6 +182,7 @@ export function getLessonPageData(courseSlug: string, lessonId?: string): Lesson
         isCompleted,
         isCurrent,
         isLocked: les.isLocked,
+        progressStatus: isCompleted ? "completed" : "not_started",
       };
     });
     totalDuration = TOTAL_DURATION_MORNING;
@@ -182,11 +190,15 @@ export function getLessonPageData(courseSlug: string, lessonId?: string): Lesson
     curriculum = buildCurriculumFromCourse(course);
     const currentId = lessonId ?? curriculum[0]?.id;
     const currentIdx = curriculum.findIndex((l) => l.id === currentId);
-    curriculum = curriculum.map((les, index) => ({
-      ...les,
-      isCurrent: les.id === currentId,
-      isCompleted: currentIdx >= 0 && index < currentIdx,
-    }));
+    curriculum = curriculum.map((les, index) => {
+      const done = currentIdx >= 0 && index < currentIdx;
+      return {
+        ...les,
+        isCurrent: les.id === currentId,
+        isCompleted: done,
+        progressStatus: done ? "completed" : "not_started",
+      };
+    });
     const totalMins = course.curriculum.reduce(
       (acc, m) => acc + m.lessons.length * 10,
       0

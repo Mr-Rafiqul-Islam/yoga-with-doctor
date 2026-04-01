@@ -13,7 +13,14 @@ import {
   LessonTabResources,
   LessonVideoPlayer,
 } from "@/features/courses/components/lesson";
-import { useGetCourseContentQuery, type Course } from "@/slices/courses";
+import type { LessonProgressUiStatus } from "@/features/courses/data/lessonPageData";
+import {
+  useGetCourseContentQuery,
+  useGetCourseProgressQuery,
+  useUpdateLessonProgressMutation,
+  type Course,
+  type CourseProgressLessonRow,
+} from "@/slices/courses";
 import { mapCourseToCourseDetailData } from "@/lib/mapCourseToDetail";
 import { useAddEnrollmentByItemIdMutation } from "@/slices/enrollment";
 
@@ -29,6 +36,32 @@ function totalDurationLabelFromMinutes(totalMin: number): string {
     : `${totalMin}m`;
 }
 
+function buildLessonProgressMap(
+  sections: { lessons: CourseProgressLessonRow[] }[] | undefined
+): Map<string, CourseProgressLessonRow> {
+  const m = new Map<string, CourseProgressLessonRow>();
+  if (!sections) return m;
+  for (const sec of sections) {
+    for (const les of sec.lessons) {
+      m.set(les.id, les);
+    }
+  }
+  return m;
+}
+
+function deriveProgressStatus(row: CourseProgressLessonRow | undefined): LessonProgressUiStatus {
+  if (!row) return "not_started";
+  if (row.status === "COMPLETED") return "completed";
+  if (
+    row.watchedSec > 0 ||
+    row.status === "IN_PROGRESS" ||
+    (row.progressPercent ?? 0) > 0
+  ) {
+    return "in_progress";
+  }
+  return "not_started";
+}
+
 export interface LessonPageClientProps {
   slug: string;
   lessonId?: string;
@@ -38,13 +71,26 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
   const router = useRouter();
   const [hasAutoEnrolled, setHasAutoEnrolled] = useState(false);
   const [addEnrollmentByItemId] = useAddEnrollmentByItemIdMutation();
+  const [updateLessonProgress] = useUpdateLessonProgressMutation();
+
   const { data, isLoading, isFetching, isError } = useGetCourseContentQuery(slug, {
     skip: !slug,
   });
 
+  const { data: progressRes, isError: progressQueryError } = useGetCourseProgressQuery(slug, {
+    skip: !slug,
+  });
+
+  const progressPayload = progressRes?.data;
+  const lessonProgressById = useMemo(
+    () => buildLessonProgressMap(progressPayload?.sections),
+    [progressPayload?.sections]
+  );
+
+  const hasProgress = Boolean(progressPayload) && !progressQueryError;
+
   const resolved = useMemo(() => {
     const apiCourse = data?.data?.course;
-    console.log(apiCourse);
     if (!apiCourse) return null;
 
     const courseForDetail: Course = {
@@ -86,18 +132,33 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
 
     const totalLessons = flat.length;
     const totalMinutes = flat.reduce((sum, x) => sum + (x.lesson.durationMin ?? 0), 0);
-    const progressPercent =
-      totalLessons > 0 && currentIdx >= 0 ? Math.round((currentIdx / totalLessons) * 100) : 0;
 
-    const curriculum = flat.map((x, index) => ({
-      id: x.lesson.id,
-      title: x.lesson.title,
-      duration: x.lesson.durationMin ? `${x.lesson.durationMin} min` : "—",
-      moduleTitle: x.moduleTitle,
-      isCompleted: currentIdx >= 0 && index < currentIdx,
-      isCurrent: currentId != null && x.lesson.id === currentId,
-      isLocked: x.lesson.locked ?? false,
-    }));
+    const progressPercent =
+      hasProgress && progressPayload?.progress
+        ? Math.round(progressPayload.progress.progressPercent)
+        : totalLessons > 0 && currentIdx >= 0
+          ? Math.round((currentIdx / totalLessons) * 100)
+          : 0;
+
+    const curriculum = flat.map((x) => {
+      const row = lessonProgressById.get(x.lesson.id);
+      const isLocked = row?.isLocked ?? x.lesson.locked ?? false;
+      const isCompleted = hasProgress ? row?.status === "COMPLETED" : false;
+      const progressStatus: LessonProgressUiStatus = hasProgress
+        ? deriveProgressStatus(row)
+        : "not_started";
+      return {
+        id: x.lesson.id,
+        title: x.lesson.title,
+        duration: x.lesson.durationMin ? `${x.lesson.durationMin} min` : "—",
+        moduleTitle: x.moduleTitle,
+        isCompleted,
+        isCurrent: currentId != null && x.lesson.id === currentId,
+        isLocked,
+        lessonProgressPercent: row?.progressPercent,
+        progressStatus,
+      };
+    });
 
     let moduleIndex = 0;
     let lessonIndex = 0;
@@ -123,10 +184,21 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
         }
       : null;
 
+    const currentRow = current ? lessonProgressById.get(current.lesson.id) : undefined;
+    const currentLessonLocked = currentRow?.isLocked ?? current?.lesson.locked ?? false;
+
     const currentVideo = current?.lesson?.video ?? null;
     const currentMuxPlaybackId = currentVideo?.muxPlaybackId ?? undefined;
     const currentVideoId = currentVideo?.id ?? undefined;
     const currentVideoStatus = currentVideo?.status ?? undefined;
+
+    const apiNext = hasProgress ? progressPayload?.progress?.nextLessonId : undefined;
+    const continueLessonId =
+      apiNext && flat.some((x) => x.lesson.id === apiNext)
+        ? apiNext
+        : currentLesson
+          ? curriculum.find((l) => !l.isLocked && !l.isCurrent)?.id ?? currentLesson.id
+          : undefined;
 
     return {
       detailData,
@@ -138,8 +210,16 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
       progressPercent,
       totalLessons,
       totalDuration: totalDurationLabelFromMinutes(totalMinutes),
+      currentLessonLocked,
+      continueLessonId,
     };
-  }, [data, lessonId]);
+  }, [
+    data,
+    lessonId,
+    hasProgress,
+    progressPayload,
+    lessonProgressById,
+  ]);
 
   const lessonUrl = (id: string) => `/courses/${slug}/lesson?lesson=${id}`;
 
@@ -147,8 +227,6 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
     if (!resolved || hasAutoEnrolled) return;
 
     const { detailData } = resolved;
-    
-    
 
     if (detailData.courseId) {
       setHasAutoEnrolled(true);
@@ -157,6 +235,31 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
       });
     }
   }, [resolved, hasAutoEnrolled, addEnrollmentByItemId]);
+
+  const onLessonProgressStart = useCallback(
+    (lessonIdForProgress: string) => {
+      updateLessonProgress({
+        slug,
+        body: { lessonId: lessonIdForProgress, event: "START" },
+      }).catch(() => {});
+    },
+    [slug, updateLessonProgress]
+  );
+
+  const onLessonWatchDelta = useCallback(
+    (lessonIdForProgress: string, watchedSecDelta: number) => {
+      if (watchedSecDelta <= 0) return;
+      updateLessonProgress({
+        slug,
+        body: {
+          lessonId: lessonIdForProgress,
+          event: "WATCH",
+          watchedSecDelta: Math.round(watchedSecDelta * 1000) / 1000,
+        },
+      }).catch(() => {});
+    },
+    [slug, updateLessonProgress]
+  );
 
   if (!slug) notFound();
 
@@ -177,7 +280,6 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
   }
 
   if (isError || !resolved) {
-    // If the content endpoint is guarded, a 401/403 should redirect user to course page.
     router.replace(`/courses/${slug}`);
     return null;
   }
@@ -192,7 +294,13 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
     progressPercent,
     totalLessons,
     totalDuration,
+    currentLessonLocked,
+    continueLessonId,
   } = resolved;
+
+  const progressReportingEnabled = Boolean(
+    currentLesson && !currentLessonLocked && slug
+  );
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -214,6 +322,10 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
             videoId={currentVideoId}
             videoStatus={currentVideoStatus}
             onFirstPlay={handleFirstPlay}
+            lessonId={currentLesson?.id}
+            progressEnabled={progressReportingEnabled}
+            onLessonProgressStart={onLessonProgressStart}
+            onLessonWatchDelta={onLessonWatchDelta}
           />
 
           <LessonOverviewCard
@@ -222,6 +334,7 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
             progressPercent={progressPercent}
             curriculum={curriculum}
             lessonUrl={lessonUrl}
+            preferredNextLessonId={continueLessonId}
           />
 
           <LessonDetailsTabs
@@ -242,4 +355,3 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
     </div>
   );
 }
-

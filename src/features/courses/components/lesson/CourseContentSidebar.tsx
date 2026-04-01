@@ -34,14 +34,17 @@ export function CourseContentSidebar({
             const isLocked = item.isLocked;
             const isCurrent = item.isCurrent;
             const isCompleted = item.isCompleted;
+            const inProgress = item.progressStatus === "in_progress" && !isCurrent;
             const href = isLocked ? undefined : lessonUrl(item.id);
             const iconWrapClass = isCompleted
               ? "bg-primary/10 text-primary"
               : isCurrent
                 ? "bg-primary text-white"
-                : isLocked
-                  ? "border border-gray-300 text-muted dark:border-gray-600"
-                  : "border border-gray-300 text-muted group-hover:text-primary dark:border-gray-600";
+                : inProgress
+                  ? "border border-primary/40 bg-primary/5 text-primary dark:border-primary/50"
+                  : isLocked
+                    ? "border border-gray-300 text-muted dark:border-gray-600"
+                    : "border border-gray-300 text-muted group-hover:text-primary dark:border-gray-600";
             const content = (
               <>
                 <div
@@ -60,7 +63,12 @@ export function CourseContentSidebar({
                       play_arrow
                     </span>
                   )}
-                  {!isCompleted && !isCurrent && !isLocked && (
+                  {inProgress && (
+                    <span className="material-icons-outlined text-sm" aria-hidden>
+                      schedule
+                    </span>
+                  )}
+                  {!isCompleted && !isCurrent && !inProgress && !isLocked && (
                     <span className="material-icons-outlined text-sm" aria-hidden>
                       play_arrow
                     </span>
@@ -85,7 +93,8 @@ export function CourseContentSidebar({
                     className={`text-caption ${isCurrent ? "font-medium text-primary/70" : "text-muted"}`}
                   >
                     {item.duration}
-                    {isCurrent && " • Now Playing"}
+                    {isCurrent && " • Now playing"}
+                    {inProgress && !isCurrent && " • In progress"}
                   </span>
                 </div>
               </>
