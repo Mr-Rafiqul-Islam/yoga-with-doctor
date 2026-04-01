@@ -36,7 +36,7 @@ export interface RelatedPremiumItem {
 }
 
 export interface FreeVideoDetails {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   description: string;

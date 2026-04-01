@@ -9,6 +9,9 @@ import type { FreeVideoDetails } from "../data/freeVideoDetailsData";
 import { useLazyGetVideoPlaybackTokenQuery } from "@/slices/videos";
 import { formatDuration } from "@/features/home/VideoCard";
 import { ClassReviewSection } from "@/features/reviews/components/ClassReviewSection";
+import { useAppDispatch, useAppSelector } from "@/stores";
+import { useAddEnrollmentByItemIdMutation } from "@/slices/enrollment";
+import { classApi } from "@/slices/classes";
 
 const TAB_IDS = ["overview", "equipment", "reviews"] as const;
 
@@ -21,15 +24,21 @@ export function FreeVideoDetailsContent({
   video,
   details,
 }: FreeVideoDetailsContentProps) {
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
+  const [addEnrollmentByItemId] = useAddEnrollmentByItemIdMutation();
+  const enrollRequestRef = useRef(false);
+
   const [activeTab, setActiveTab] =
     useState<(typeof TAB_IDS)[number]>("overview");
   // const [followed, setFollowed] = useState(false);
   const [playbackId, setPlaybackId] = useState<string | undefined>(undefined);
   const [playbackToken, setPlaybackToken] = useState<string | null>(null);
-  const [playbackPolicy, setPlaybackPolicy] = useState<string | undefined>(
+  const [_playbackPolicy, setPlaybackPolicy] = useState<string | undefined>(
     undefined,
   );
   const [getPlaybackToken] = useLazyGetVideoPlaybackTokenQuery();
+  console.log('details', details.id);
 
   useEffect(() => {
     // Fetch playback token if video exists and has muxPlaybackId
@@ -55,6 +64,11 @@ export function FreeVideoDetailsContent({
       setPlaybackToken(null);
     }
   }, [video.id, video.muxPlaybackId, video.status, getPlaybackToken]);
+
+  useEffect(() => {
+    enrollRequestRef.current = false;
+  }, [details.slug]);
+
   const playerRef = useRef<any>(null);
   const [videoDuration, setVideoDuration] = useState<string | number | null>(
     null,
@@ -63,21 +77,41 @@ export function FreeVideoDetailsContent({
     const d = playerRef.current?.duration;
     if (d) setVideoDuration(formatDuration(d));
   };
-  
 
-  const doctorsNote= {
+  const handlePlay = () => {
+    if (!isAuthenticated || details.isEnrolled || enrollRequestRef.current) {
+      return;
+    }
+    enrollRequestRef.current = true;
+    addEnrollmentByItemId({ itemId: String(details.id) })
+      .unwrap()
+      .then(() => {
+        dispatch(
+          classApi.util.invalidateTags([{ type: "Class", id: details.slug }]),
+        );
+      })
+      .catch(() => {
+        enrollRequestRef.current = false;
+      });
+  };
+
+  const doctorsNote = {
     name: details.author.name,
     title: details.author.title,
-    avatarUrl:
-      details.author.avatarSrc,
-    quote: details.author.quotes ?? "Gentle movement and mindful breathing can support recovery and daily function. Listen to your body and modify as needed.",
+    avatarUrl: details.author.avatarSrc,
+    quote:
+      details.author.quotes ??
+      "Gentle movement and mindful breathing can support recovery and daily function. Listen to your body and modify as needed.",
     tags: details.author.tags ?? ["#Wellness", "#MindBody"],
   };
 
   return (
     <div className="space-y-8">
       {/* Video player */}
-      <div className="relative w-full overflow-hidden rounded-2xl bg-gray-900 shadow-xl aspect-video md:aspect-[21/9] group cursor-pointer">
+      <div
+        id="play"
+        className="relative w-full overflow-hidden rounded-2xl bg-gray-900 shadow-xl aspect-video md:aspect-[21/9] group cursor-pointer"
+      >
         {playbackId ? (
           <MuxPlayer
             ref={playerRef}
@@ -87,6 +121,7 @@ export function FreeVideoDetailsContent({
             streamType="on-demand"
             {...(playbackToken ? { tokens: { playback: playbackToken } } : {})}
             onLoadedMetadata={handleLoadedMetadata}
+            onPlay={handlePlay}
             autoPlay={false}
             playsInline
             style={{
@@ -145,7 +180,7 @@ export function FreeVideoDetailsContent({
                   aria-hidden
                 />
                 <span className="font-semibold text-primary">
-                  {video.isFree ? "Free" : "Premium/Paid"}
+                  {video.isFree ? "Free" : "Premium"}
                 </span>
               </div>
             </div>
@@ -154,9 +189,13 @@ export function FreeVideoDetailsContent({
                 <span className="material-icons-outlined text-amber-500 text-sm">
                   star
                 </span>{" "}
-                {details.avgRating != null ? details.avgRating.toFixed(1) : "0.0"}
+                {details.avgRating != null
+                  ? details.avgRating.toFixed(1)
+                  : "0.0"}
               </div>
-              <span className="text-xs text-muted">{details.ratingCount ?? 0} Ratings</span>
+              <span className="text-xs text-muted">
+                {details.ratingCount ?? 0} Ratings
+              </span>
             </div>
           </div>
 
@@ -184,8 +223,8 @@ export function FreeVideoDetailsContent({
               </div>
             </div>
             <Link
-            href='https://drshahalam.com/'
-            target="_blank"
+              href="https://drshahalam.com/"
+              target="_blank"
               type="button"
               // onClick={() => setFollowed((v) => !v)}
               className="rounded-full bg-primary/10 px-5 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
@@ -227,7 +266,10 @@ export function FreeVideoDetailsContent({
               <p className="leading-relaxed text-muted">
                 {details.shortDescription}
               </p>
-              <article className="prose prose-sm prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: details.description }} />
+              <article
+                className="prose prose-sm prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: details.description }}
+              />
             </div>
           )}
           {activeTab === "equipment" && (
@@ -237,7 +279,10 @@ export function FreeVideoDetailsContent({
             </p>
           )}
           {activeTab === "reviews" && (
-            <ClassReviewSection slug={details.slug} isEnrolled={details.isEnrolled} />
+            <ClassReviewSection
+              slug={details.slug}
+              isEnrolled={details.isEnrolled}
+            />
           )}
 
           {/* CTA */}
@@ -248,6 +293,7 @@ export function FreeVideoDetailsContent({
             <span className="material-icons-outlined">play_arrow</span>
             Start Practice Now
           </Link>
+          {/* commenting for future implementation */}
 
           {/* Next in Series
           {details.nextInSeries.length > 0 && (
@@ -321,7 +367,7 @@ export function FreeVideoDetailsContent({
               </div>
             </div>
             <p className="mb-4 text-sm italic text-foreground/90">
-                {doctorsNote.quote}
+              {doctorsNote.quote}
             </p>
             <div className="flex flex-wrap gap-2">
               {doctorsNote.tags.map((tag) => (
@@ -335,7 +381,7 @@ export function FreeVideoDetailsContent({
             </div>
           </div>
 
-          {/* Related Premium */}
+          {/* Related Premium Commenting out for future implement*/}
           {/* <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm dark:border-gray-700">
             <h3 className="font-display text-xl font-bold text-foreground mb-6">
               Related Premium Flows

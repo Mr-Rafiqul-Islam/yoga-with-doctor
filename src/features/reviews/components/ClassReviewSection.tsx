@@ -61,8 +61,9 @@ export function ClassReviewSection({ slug, isEnrolled }: ClassReviewSectionProps
       stats={stats}
       myReview={myReviewData?.data?.review ?? null}
       isAuthenticated={isAuthenticated}
-      isEnrolled={isEnrolled}
       isSubmitting={isSubmitting}
+      courseId={""}
+      isEnrolled={isEnrolled}
       onSubmit={handleSubmit}
       pagination={pagination}
       onPageChange={setPage}

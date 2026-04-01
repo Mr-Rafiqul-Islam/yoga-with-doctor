@@ -15,6 +15,7 @@ interface ReviewListProps {
   isAuthenticated: boolean;
   courseId: string;
   isSubmitting: boolean;
+  isEnrolled?: boolean;
   onSubmit: (rating: number, review: string) => void;
   pagination: {
     page: number;
@@ -31,6 +32,7 @@ export function ReviewList({
   myReview,
   isAuthenticated,
   courseId,
+  isEnrolled,
   isSubmitting,
   onSubmit,
   pagination,
@@ -44,6 +46,9 @@ export function ReviewList({
   const hasAccessFromApi = accessData?.data?.hasAccess ?? false;
   const isUnlocked = !!courseId && unlockedCourseIds.includes(courseId);
   const effectiveEnrolled = isAuthenticated && (hasAccessFromApi || isUnlocked);
+  const canPostReview =
+    isAuthenticated &&
+    (courseId ? effectiveEnrolled : Boolean(isEnrolled));
 
   return (
     <div className="space-y-6">
@@ -64,7 +69,7 @@ export function ReviewList({
       </div>
 
       {/* Submission form / auth gate */}
-      {isAuthenticated && effectiveEnrolled ? (
+      {canPostReview ? (
         <ReviewForm
           existingReview={myReview}
           isSubmitting={isSubmitting}
@@ -82,7 +87,7 @@ export function ReviewList({
             to leave a review.
           </p>
         </div>
-      ) : !effectiveEnrolled ? (
+      ) : !canPostReview ? (
         <div className="rounded-xl border border-border bg-surface p-5 text-center dark:border-gray-800 dark:bg-surface">
           <p className="text-sm text-muted">
             Enroll in this content to leave a review.
