@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ProgressBar } from "@/components/ui/ProgressBar";
 import type { CourseDetailData } from "@/features/courses/data/courseDetailData";
 import type { LessonWithStatus } from "@/features/courses/data/lessonPageData";
 
@@ -89,23 +90,14 @@ export function LessonOverviewCard({
             </span>
           </Link>
         </div>
-        <div className="mt-6 space-y-2">
-          <div className="flex justify-between text-body-md font-medium">
-            <span className="text-foreground dark:text-gray-300">Your Progress</span>
-            <span className="text-primary">{progressPercent}% Completed</span>
-          </div>
-          <div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-            <div
-              className="h-full rounded-full bg-primary transition-all duration-500"
-              style={{ width: `${progressPercent}%` }}
-              role="progressbar"
-              aria-valuenow={progressPercent}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label="Course progress"
-            />
-          </div>
-        </div>
+        <ProgressBar
+          className="mt-6"
+          variant="lesson"
+          value={progressPercent}
+          leftLabel="Your Progress"
+          rightLabel={`${progressPercent}% Completed`}
+          ariaLabel="Course progress"
+        />
       </div>
     </section>
   );

@@ -1,7 +1,9 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { ProgressBar } from "@/components/ui/ProgressBar";
 import type { ContinueLearningCourse } from "@/features/dashboard/data/dashboardData";
+import { useGetCourseProgressQuery } from "@/slices/courses";
 
 type DashboardContinueLearningCardProps = {
   course: ContinueLearningCourse;
@@ -13,6 +15,16 @@ export function DashboardContinueLearningCard({
   course,
   layout = "carousel",
 }: DashboardContinueLearningCardProps) {
+  const slug = course.slug ?? "";
+  const { data: progressResponse } = useGetCourseProgressQuery(slug, {
+    skip: !slug,
+  });
+
+  const apiPercent = progressResponse?.data?.progress?.progressPercent;
+  const progressPercent = Math.round(
+    typeof apiPercent === "number" ? apiPercent : course.progress
+  );
+
   const layoutClass =
     layout === "grid"
       ? "w-full min-w-0 shrink"
@@ -70,19 +82,14 @@ export function DashboardContinueLearningCard({
           <p className="mb-4 text-body-md text-muted">
             {course.instructorName} • {course.category}
           </p>
-          {course.progress > 0 ? (
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-caption text-muted">
-                <span>Progress</span>
-                <span className="font-semibold">{course.progress}%</span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-                <div
-                  className="h-full rounded-full bg-primary transition-all"
-                  style={{ width: `${course.progress}%` } as React.CSSProperties}
-                />
-              </div>
-            </div>
+          {progressPercent > 0 ? (
+            <ProgressBar
+              variant="compact"
+              value={progressPercent}
+              leftLabel="Progress"
+              rightLabel={`${progressPercent}%`}
+              ariaLabel={`${course.title} progress`}
+            />
           ) : (
             <div className="flex items-center justify-between text-caption text-muted">
               <span>Not Started</span>
