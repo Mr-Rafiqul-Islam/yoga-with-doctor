@@ -35,47 +35,50 @@ export function CourseContentSidebar({
             const isCurrent = item.isCurrent;
             const isCompleted = item.isCompleted;
             const inProgress = item.progressStatus === "in_progress" && !isCurrent;
+            const isCurrentCompleted = isCurrent && isCompleted;
             const href = isLocked ? undefined : lessonUrl(item.id);
-            const iconWrapClass = isCompleted
-              ? "bg-primary/10 text-primary"
-              : isCurrent
-                ? "bg-primary text-white"
-                : inProgress
-                  ? "border border-primary/40 bg-primary/5 text-primary dark:border-primary/50"
-                  : isLocked
-                    ? "border border-gray-300 text-muted dark:border-gray-600"
-                    : "border border-gray-300 text-muted group-hover:text-primary dark:border-gray-600";
+            const iconWrapClass = isLocked
+              ? "border border-gray-300 text-muted dark:border-gray-600"
+              : isCurrentCompleted
+                ? "bg-primary/10 text-primary"
+                : isCurrent
+                  ? "bg-primary text-white"
+                  : isCompleted
+                    ? "bg-primary/10 text-primary"
+                    : inProgress
+                      ? "border border-primary/40 bg-primary/5 text-primary dark:border-primary/50"
+                      : "border border-gray-300 text-muted group-hover:text-primary dark:border-gray-600";
             const content = (
               <>
                 <div
                   className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${iconWrapClass}`}
                 >
-                  {isCompleted && (
+                  {isLocked ? (
+                    <span className="material-icons-outlined text-sm" aria-hidden>
+                      lock
+                    </span>
+                  ) : isCurrentCompleted ? (
                     <span className="material-icons-outlined text-sm font-bold" aria-hidden>
                       check
                     </span>
-                  )}
-                  {isCurrent && (
+                  ) : isCurrent ? (
                     <span
                       className="material-icons-outlined text-sm font-bold animate-pulse"
                       aria-hidden
                     >
                       play_arrow
                     </span>
-                  )}
-                  {inProgress && (
+                  ) : isCompleted ? (
+                    <span className="material-icons-outlined text-sm font-bold" aria-hidden>
+                      check
+                    </span>
+                  ) : inProgress ? (
                     <span className="material-icons-outlined text-sm" aria-hidden>
                       schedule
                     </span>
-                  )}
-                  {!isCompleted && !isCurrent && !inProgress && !isLocked && (
+                  ) : (
                     <span className="material-icons-outlined text-sm" aria-hidden>
                       play_arrow
-                    </span>
-                  )}
-                  {isLocked && (
-                    <span className="material-icons-outlined text-sm" aria-hidden>
-                      lock
                     </span>
                   )}
                 </div>

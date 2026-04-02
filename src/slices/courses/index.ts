@@ -390,6 +390,19 @@ export interface UpdateLessonProgressResponse {
   };
 }
 
+function lessonStatusBeforeUpdate(
+  cached: GetCourseProgressResponse | undefined,
+  lessonId: string
+): string | undefined {
+  const sections = cached?.data?.sections;
+  if (!sections) return undefined;
+  for (const section of sections) {
+    const row = section.lessons.find((l) => l.id === lessonId);
+    if (row) return row.status;
+  }
+  return undefined;
+}
+
 function patchCourseProgressCache(
   draft: GetCourseProgressResponse,
   lessonProgress: LessonProgressUpdatePayload,
@@ -630,6 +643,10 @@ export const coursesApi = createApi({
           const progressEntry = coursesApi.endpoints.getCourseProgress.select(slug)(
             getState()
           );
+          const priorLessonStatus = lessonStatusBeforeUpdate(
+            progressEntry?.data,
+            lessonProgress.lessonId
+          );
           if (progressEntry?.data) {
             dispatch(
               coursesApi.util.updateQueryData(
@@ -647,11 +664,19 @@ export const coursesApi = createApi({
               })
             );
           }
-          if (lessonProgress.status === "COMPLETED") {
+          const newlyCompleted =
+            lessonProgress.status === "COMPLETED" &&
+            priorLessonStatus !== "COMPLETED";
+          if (newlyCompleted) {
             dispatch(
               coursesApi.util.invalidateTags([
                 { type: "CourseContent", id: slug },
               ])
+            );
+            dispatch(
+              coursesApi.endpoints.getCourseProgress.initiate(slug, {
+                forceRefetch: true,
+              })
             );
           }
         } catch {
