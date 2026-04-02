@@ -15,6 +15,7 @@ import {
   type ThemeMode,
 } from "@/stores";
 import { getToken, useGetCurrentUserQuery, useLogoutMutation } from "@/slices/auth";
+import { SiteLogo } from "@/components/layout/SiteLogo";
 
 const mainNavItems = [
   { href: "/", label: "Home" },
@@ -103,21 +104,7 @@ export function Header() {
       <div className="mx-auto flex h-20 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
         {/* Logo — left */}
         <div className="flex flex-1 items-center md:min-w-0">
-          <Link
-            href="/"
-            className="flex items-center gap-2 rounded-radius-sm focus:outline-none"
-            aria-label="YogaDr. — Home"
-          >
-            <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-radius-md bg-primary text-white">
-              <span className="material-icons-outlined text-2xl" aria-hidden>
-                self_improvement
-              </span>
-            </span>
-            <span className="font-display text-xl font-bold tracking-wide text-foreground">
-              Yoga
-              <span className="text-primary">Dr.</span>
-            </span>
-          </Link>
+          <SiteLogo variant="header" priority />
         </div>
 
         {/* Desktop nav — centered */}

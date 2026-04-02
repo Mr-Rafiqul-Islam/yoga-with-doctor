@@ -1,5 +1,5 @@
 import { MaintenanceView } from "@/components/ui/MaintenanceView";
-// import { PricingPageContent } from "@/features/pricing";
+import { PricingPageContent } from "@/features/pricing";
 
 export const metadata = {
   title: "Premium Pricing Plans",
@@ -12,7 +12,7 @@ export const metadata = {
  */
 export default function PricingPage() {
   return (
-  // <PricingPageContent />
-  <MaintenanceView />
+  <PricingPageContent />
+  // <MaintenanceView />
 );
 }

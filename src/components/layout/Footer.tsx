@@ -1,5 +1,6 @@
 'use client';
 import Link from "next/link";
+import { SiteLogo } from "@/components/layout/SiteLogo";
 
 const platformLinks = [
   { href: "/courses", label: "Browse Courses", target:"_self"},
@@ -33,21 +34,7 @@ export function Footer() {
         <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-4">
           {/* Brand */}
           <div className="md:col-span-1">
-            <Link
-              href="/"
-              className="mb-4 flex items-center gap-2 focus:outline-none focus:ring-offset-gray-900 rounded-radius-sm"
-              aria-label="YogaDr. — Home"
-            >
-              <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-primary text-white">
-                <span className="material-icons-outlined text-sm" aria-hidden>
-                  self_improvement
-                </span>
-              </span>
-              <span className="font-display text-xl font-bold tracking-wide text-white">
-                Yoga
-                <span className="text-primary">Dr.</span>
-              </span>
-            </Link>
+            <SiteLogo variant="footer" />
             <p className="mb-6 max-w-xs text-sm text-gray-400">
               Bridging the gap between ancient wisdom and modern medicine for a
               healthier you.
