@@ -22,36 +22,34 @@ export function DashboardContinueLearningCard({
 
   const apiPercent = progressResponse?.data?.progress?.progressPercent;
   const progressPercent = Math.round(
-    typeof apiPercent === "number" ? apiPercent : course.progress
+    typeof apiPercent === "number" ? apiPercent : course.progress,
   );
 
   const layoutClass =
-    layout === "grid"
-      ? "w-full min-w-0 shrink"
-      : "min-w-[320px] shrink-0";
+    layout === "grid" ? "w-full min-w-0 shrink" : "min-w-[320px] shrink-0";
 
   return (
     <article
       className={`group rounded-2xl border border-border bg-surface shadow-elevation-sm transition-shadow hover:shadow-elevation-md ${layoutClass}`}
     >
       <Link
-        href={
-          course.slug ? `/courses/${course.slug}/lesson` : "/courses"
-        }
+        href={course.slug ? `/courses/${course.slug}/lesson` : "/courses"}
         className="block"
       >
         <div className="relative aspect-video overflow-hidden rounded-t-2xl">
-          <Image
-            src={course.bannerImage}
-            alt={course.imageAlt}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes={
-              layout === "grid"
-                ? "(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                : "320px"
-            }
-          />
+          {course.bannerImage && (
+            <Image
+              src={course.bannerImage ?? null}
+              alt={course.imageAlt}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes={
+                layout === "grid"
+                  ? "(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                  : "320px"
+              }
+            />
+          )}
           {course.badge && (
             <span
               className={`absolute left-3 top-3 flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold ${
@@ -73,7 +71,6 @@ export function DashboardContinueLearningCard({
               {course.badge}
             </span>
           )}
-          
         </div>
         <div className="p-5">
           <h3 className="mb-2 line-clamp-2 font-display text-lg font-bold text-foreground group-hover:text-primary">

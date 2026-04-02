@@ -16,7 +16,7 @@ type ContactFormProps = {
 export function ContactForm({ action }: ContactFormProps) {
   return (
     <div className="rounded-3xl border border-border bg-surface p-6 shadow-soft dark:bg-surface-dark md:p-10">
-      <form action={action} className="flex flex-col gap-6" method="POST">
+      <form action={action} className="flex flex-col gap-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="flex flex-col gap-2">
             <label htmlFor="name" className={labelClass}>
