@@ -52,7 +52,9 @@ function collectFingerprint() {
     window.screen.height,
     window.devicePixelRatio,
     nav.hardwareConcurrency,
-    (nav as any).deviceMemory ?? "",
+    "deviceMemory" in nav && typeof nav.deviceMemory === "number"
+      ? nav.deviceMemory
+      : "",
   ]
 
   return data.join("|")

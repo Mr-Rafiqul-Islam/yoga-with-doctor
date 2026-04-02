@@ -164,8 +164,8 @@ export interface Entitlement {
       bannerImage: string | null;
       isActive: boolean;
     } | null;
-    bundle: any | null;
-    liveEvent: any | null;
+    bundle: unknown | null;
+    liveEvent: unknown | null;
   };
   purchase: {
     id: string;
@@ -174,7 +174,7 @@ export interface Entitlement {
     currency: string;
     paidAt: string | null;
   } | null;
-  subscription: any | null;
+  subscription: unknown | null;
 }
 
 // ============================================================================
@@ -487,7 +487,7 @@ export interface PurchaseStatusResponse {
 export interface ConfirmPurchaseResponse {
   success: boolean;
   message: string;
-  data?: any;
+  data?: unknown;
 }
 
 export interface ActionResponse {

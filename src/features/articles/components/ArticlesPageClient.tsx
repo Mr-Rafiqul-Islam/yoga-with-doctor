@@ -6,7 +6,6 @@ import { useGetArticlesQuery } from "@/slices/articles";
 import {
   featuredArticle as fallbackFeaturedArticle,
   type ArticleAuthor,
-  type ArticleDetails,
   type FeaturedArticle,
 } from "@/features/articles/data/dummyArticles";
 import { ArticlesPageContent } from "./ArticlesPageContent";

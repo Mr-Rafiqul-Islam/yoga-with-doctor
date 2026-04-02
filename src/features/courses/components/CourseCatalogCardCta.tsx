@@ -30,7 +30,6 @@ export function CourseCatalogCardCta({
   const isUnlocked = !!courseId && unlockedCourseIds.includes(courseId);
   const effectiveEnrolled =
   isAuthenticated && (hasAccessFromApi || isUnlocked);
-  const isPublic = access === "FREE" || access === "PUBLIC";
 
   const handleClick = (e: React.MouseEvent, onAuthed: () => void) => {
     e.preventDefault();

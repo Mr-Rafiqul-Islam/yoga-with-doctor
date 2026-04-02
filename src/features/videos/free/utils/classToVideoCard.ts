@@ -1,4 +1,5 @@
 import type { ClassItem } from "@/slices/classes";
+import type { FreeVideoDetails } from "../data/freeVideoDetailsData";
 import type { VideoCardProps } from "../components/VideoCard";
 
 function formatDurationFromMinutes(minutes: number | undefined): string {
@@ -9,7 +10,9 @@ function formatDurationFromMinutes(minutes: number | undefined): string {
 
 
 
-export function classItemToVideoCard(classItem: ClassItem): VideoCardProps {
+export function classItemToVideoCard(
+  classItem: ClassItem | FreeVideoDetails,
+): VideoCardProps {
   return {
     slug: classItem.slug,
     thumbnailUrl: classItem.video?.thumbnail ?? null,

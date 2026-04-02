@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import MuxPlayer from "@mux/mux-player-react";
 import { formatLevelWithHyphenToSpace } from "../utils/formatLevel";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ElementRef } from "react";
 import { useLazyGetVideoPlaybackTokenQuery } from "@/slices/videos";
 import { formatDuration } from "@/features/home/VideoCard";
 
@@ -45,7 +45,6 @@ export interface VideoCardProps {
  */
 export function VideoCard({
   thumbnailUrl,
-  duration = "0:00",
   category,
   title,
   description,
@@ -62,8 +61,7 @@ export function VideoCard({
   const [playbackPolicy, setPlaybackPolicy] = useState<string | undefined>(
     undefined,
   );
-  const [getPlaybackToken, { isLoading: isLoadingToken }] =
-    useLazyGetVideoPlaybackTokenQuery();
+  const [getPlaybackToken] = useLazyGetVideoPlaybackTokenQuery();
 
   useEffect(() => {
     // Fetch playback token if video exists and has muxPlaybackId
@@ -89,7 +87,7 @@ export function VideoCard({
       setPlaybackToken(null);
     }
   }, [id, muxPlaybackId, status, getPlaybackToken]);
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<ElementRef<typeof MuxPlayer>>(null);
   const [videoDuration, setVideoDuration] = useState<string | number | null>(
     null,
   );

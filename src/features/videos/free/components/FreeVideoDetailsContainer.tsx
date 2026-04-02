@@ -1,13 +1,29 @@
 "use client";
 
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
-import { useGetClassBySlugQuery } from "@/slices/classes";
-import type { ClassItem } from "@/slices/classes";
+import {
+  useGetClassBySlugQuery,
+  type ClassItem,
+  type ClassResponse,
+} from "@/slices/classes";
 import type { FreeVideoDetails } from "../data/freeVideoDetailsData";
 import { classItemToVideoCard } from "../utils/classToVideoCard";
 import { FreeVideoDetailsContent } from "./FreeVideoDetailsContent";
 
-
+function resolveClassPayload(
+  response: ClassResponse | undefined,
+): ClassItem | FreeVideoDetails | null {
+  const inner = response?.data;
+  if (inner == null || typeof inner !== "object") return null;
+  if (
+    "class" in inner &&
+    inner.class != null &&
+    typeof inner.class === "object"
+  ) {
+    return inner.class as ClassItem;
+  }
+  return inner as FreeVideoDetails;
+}
 
 export interface FreeVideoDetailsContainerProps {
   slug: string;
@@ -16,8 +32,7 @@ export interface FreeVideoDetailsContainerProps {
 export function FreeVideoDetailsContainer({ slug }: FreeVideoDetailsContainerProps) {
   const { data, isLoading, isFetching, error } = useGetClassBySlugQuery(slug);
 
-  // Support both shapes: data.class or data directly
-  const classData = (data as any)?.data?.class ?? (data as any)?.data ?? null;
+  const classData = resolveClassPayload(data);
   if ((isLoading || isFetching) && !classData) {
     return (
       <LoadingScreen
@@ -43,8 +58,13 @@ export function FreeVideoDetailsContainer({ slug }: FreeVideoDetailsContainerPro
     );
   }
 
-  const videoCard = classItemToVideoCard(classData as ClassItem);
+  const videoCard = classItemToVideoCard(classData);
 
-  return <FreeVideoDetailsContent video={videoCard} details={classData as FreeVideoDetails} />;
+  return (
+    <FreeVideoDetailsContent
+      video={videoCard}
+      details={classData as FreeVideoDetails}
+    />
+  );
 }
 

@@ -14,8 +14,6 @@ export function CourseContentSidebar({
   totalDuration,
   lessonUrl,
 }: CourseContentSidebarProps) {
-  let lastModule = "";
-
   return (
     <aside className="lg:col-span-1" aria-label="Course content">
       <div className="sticky top-28 flex h-[calc(100vh-12rem)] flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-soft dark:border-gray-800 dark:bg-surface">
@@ -28,9 +26,10 @@ export function CourseContentSidebar({
           </p>
         </div>
         <div className="flex-1 space-y-1 overflow-y-auto p-2">
-          {curriculum.map((item) => {
-            const showModule = item.moduleTitle !== lastModule;
-            if (showModule) lastModule = item.moduleTitle;
+          {curriculum.map((item, index) => {
+            const showModule =
+              index === 0 ||
+              item.moduleTitle !== curriculum[index - 1].moduleTitle;
             const isLocked = item.isLocked;
             const isCurrent = item.isCurrent;
             const isCompleted = item.isCompleted;

@@ -1,7 +1,7 @@
 "use client";
 import MuxPlayer from "@mux/mux-player-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef, useState, type ElementRef } from "react";
 
 export type VideoCardProps = {
   thumbnailUrl?: string | null;
@@ -34,7 +34,7 @@ export function VideoCard({
   slug,
   muxPlaybackId,
 }: VideoCardProps) {
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<ElementRef<typeof MuxPlayer>>(null);
   const [videoDuration, setVideoDuration] = useState<string | number | null>(null);
   const handleLoadedMetadata = () => {
     const d = playerRef.current?.duration;

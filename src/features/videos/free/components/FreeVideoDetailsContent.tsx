@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ElementRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import MuxPlayer from "@mux/mux-player-react";
@@ -34,11 +34,10 @@ export function FreeVideoDetailsContent({
   // const [followed, setFollowed] = useState(false);
   const [playbackId, setPlaybackId] = useState<string | undefined>(undefined);
   const [playbackToken, setPlaybackToken] = useState<string | null>(null);
-  const [_playbackPolicy, setPlaybackPolicy] = useState<string | undefined>(
-    undefined,
-  );
+  // const [_playbackPolicy, setPlaybackPolicy] = useState<string | undefined>(
+  //   undefined,
+  // );
   const [getPlaybackToken] = useLazyGetVideoPlaybackTokenQuery();
-  console.log('details', details.id);
 
   useEffect(() => {
     // Fetch playback token if video exists and has muxPlaybackId
@@ -49,7 +48,7 @@ export function FreeVideoDetailsContent({
           if (result.success && result.data) {
             setPlaybackId(result.data.playbackId);
             setPlaybackToken(result.data.playbackToken || null);
-            setPlaybackPolicy(result.data.playbackPolicy || undefined);
+            // setPlaybackPolicy(result.data.playbackPolicy || undefined);
           }
         })
         .catch((error) => {
@@ -69,7 +68,7 @@ export function FreeVideoDetailsContent({
     enrollRequestRef.current = false;
   }, [details.slug]);
 
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<ElementRef<typeof MuxPlayer>>(null);
   const [videoDuration, setVideoDuration] = useState<string | number | null>(
     null,
   );

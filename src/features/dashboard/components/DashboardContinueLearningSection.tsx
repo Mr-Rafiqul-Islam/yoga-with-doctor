@@ -3,8 +3,35 @@
 import Link from "next/link";
 import { useEffect, useMemo } from "react";
 import type { ContinueLearningCourse } from "@/features/dashboard/data/dashboardData";
+import type { LevelOption } from "@/features/courses/components";
+import type { EnrollmentCourseSummary } from "@/slices/enrollment/api";
 import { useLazyGetMyEnrollmentsQuery } from "@/slices/enrollment";
 import { DashboardContinueLearningCard } from "./DashboardContinueLearningCard";
+
+type EnrolledCourse = EnrollmentCourseSummary & {
+  bannerUrl?: string | null;
+  level?: string | null;
+};
+
+function mapLevel(raw: string | null | undefined): LevelOption {
+  const s = (raw ?? "beginner").toLowerCase();
+  if (s === "intermediate" || s === "advanced") return s;
+  return "beginner";
+}
+
+function catalogAccess(
+  raw: string | null | undefined,
+): "FREE" | "PAID" | "PUBLIC" | "PREMIUM" {
+  if (
+    raw === "FREE" ||
+    raw === "PAID" ||
+    raw === "PUBLIC" ||
+    raw === "PREMIUM"
+  ) {
+    return raw;
+  }
+  return "PUBLIC";
+}
 
 export function DashboardContinueLearningSection() {
   const [fetchEnrollments, { data, isFetching, isLoading, isError }] =
@@ -21,14 +48,15 @@ export function DashboardContinueLearningSection() {
     return data.data
       .filter((enrollment) => enrollment.course)
       .map((enrollment) => {
-        const course = enrollment.course!;
+        const course = enrollment.course as EnrolledCourse;
 
         const bannerImage =
-          (course as any).bannerImage ??
-          (course as any).bannerUrl ??
+          course.bannerImage ??
+          course.bannerUrl ??
           "/images/placeholders/course-banner.jpg";
 
         const slug = course.slug ?? undefined;
+        const access = catalogAccess(course.access);
 
         const mapped: ContinueLearningCourse = {
           title: course.title,
@@ -42,14 +70,14 @@ export function DashboardContinueLearningSection() {
           originalPrice: undefined,
           isEnrolled: true,
           courseId: course.id,
-          access: (course as any).access ?? "PUBLIC",
+          access,
           href: slug ? `/courses/${slug}` : undefined,
           slug,
           imageBadge: undefined,
-          premiumBadge: (course as any).access === "PREMIUM",
+          premiumBadge: access === "PREMIUM",
           rating: undefined,
 
-          level: ((course as any).level ?? "BEGINNER") as any,
+          level: mapLevel(course.level),
           goals: [],
 
           progress: 0,

@@ -131,7 +131,6 @@ function flattenCurriculum(
 
 function buildCurriculumFromCourse(course: CourseDetailData): LessonWithStatus[] {
   const result: LessonWithStatus[] = [];
-  let currentIndex = 0;
   for (const mod of course.curriculum) {
     for (const les of mod.lessons) {
       result.push({
@@ -144,7 +143,6 @@ function buildCurriculumFromCourse(course: CourseDetailData): LessonWithStatus[]
         isLocked: les.isLocked ?? false,
         progressStatus: "not_started",
       });
-      currentIndex++;
     }
   }
   return result;
@@ -166,8 +164,6 @@ export function getLessonPageData(courseSlug: string, lessonId?: string): Lesson
 
   if (curriculumModules) {
     const flat = flattenCurriculum(curriculumModules);
-    const totalLessons = flat.length;
-    const completedCount = lessonId ? flat.findIndex((l) => l.id === lessonId) : 0;
     const currentId = lessonId ?? flat.find((l) => !l.isLocked)?.id ?? flat[0]?.id;
 
     curriculum = flat.map((les, index) => {

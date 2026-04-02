@@ -40,7 +40,9 @@ export async function generateStaticParams() {
     const res = await fetch(`${baseUrl}/api/v1/client/courses/all-types`);
     const json = await res.json();
     const courses = json?.data?.courses;
-    return courses.map((course: any) => ({ slug: course.slug }));
+    return (courses as { slug: string }[]).map((course) => ({
+      slug: course.slug,
+    }));
   } catch {
     return [];
   }

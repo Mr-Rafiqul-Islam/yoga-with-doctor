@@ -11,6 +11,14 @@ import { CourseReviewSection } from "@/features/reviews/components/CourseReviewS
 
 const TABS = ["About Course", "Curriculum", "Reviews"] as const;
 
+function muxPlaybackIdFromVideo(video: unknown): string | undefined {
+  if (video && typeof video === "object" && "muxPlaybackId" in video) {
+    const id = (video as { muxPlaybackId?: unknown }).muxPlaybackId;
+    return typeof id === "string" ? id : undefined;
+  }
+  return undefined;
+}
+
 export interface CourseDetailContentProps {
   course: CourseDetailData;
 }
@@ -24,12 +32,11 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
       (lesson) =>
         lesson.isPreview &&
         lesson.video &&
-        (lesson.video as any)?.muxPlaybackId
+        muxPlaybackIdFromVideo(lesson.video),
     );
   }, [course.curriculum]);
 
-  const muxPlaybackId =
-    (previewLesson?.video as any)?.muxPlaybackId as string | undefined;
+  const muxPlaybackId = muxPlaybackIdFromVideo(previewLesson?.video);
     
 
   return (

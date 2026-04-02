@@ -38,6 +38,7 @@ export function ProfilePersonalInfoSection() {
     setBio(user.bio ?? "");
     setOtp("");
     setOtpRequestedFor(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- re-hydrate form only when user id/revision changes
   }, [user?.id, user?.updatedAt]);
 
   useEffect(() => {
