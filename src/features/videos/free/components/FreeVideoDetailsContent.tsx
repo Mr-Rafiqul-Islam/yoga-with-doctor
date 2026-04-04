@@ -86,7 +86,11 @@ export function FreeVideoDetailsContent({
       .unwrap()
       .then(() => {
         dispatch(
-          classApi.util.invalidateTags([{ type: "Class", id: details.slug }]),
+          classApi.util.invalidateTags([
+            { type: "Class", id: details.slug },
+            { type: "ClassReviews", id: details.slug },
+            { type: "MyClassReview", id: details.slug },
+          ]),
         );
       })
       .catch(() => {
