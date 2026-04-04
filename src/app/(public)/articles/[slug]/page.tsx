@@ -4,6 +4,7 @@ type Props = {
   params: { slug: string };
 };
 
-export default function ArticleDetailsPage({ params }: Props) {
-  return <ArticleDetailsPageClient slug={params.slug} />;
+export default async function ArticleDetailsPage({ params }: Props) {
+  const { slug } = await params;
+  return <ArticleDetailsPageClient slug={slug} />;
 }

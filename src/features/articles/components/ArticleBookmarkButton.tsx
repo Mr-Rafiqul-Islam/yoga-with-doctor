@@ -73,8 +73,8 @@ export function ArticleBookmarkButton({
       variant: "success",
       title: nextSaved ? "Saved" : "Removed",
       message: nextSaved
-        ? "Added to your reading list."
-        : "Removed from your reading list.",
+        ? "Added to your Library Page in dashboard."
+        : "Removed from your Library Page in dashboard.",
     });
   }, [article, articleApiId, isAuthenticated, userId]);
 
