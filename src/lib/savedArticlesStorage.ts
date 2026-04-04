@@ -72,6 +72,17 @@ export function isArticleSaved(userId: string, articleId: string): boolean {
   return readSavedArticleRows(userId).some((r) => r.id === articleId);
 }
 
+export function removeSavedArticleBySlug(
+  userId: string,
+  slug: string
+): void {
+  const rows = readSavedArticleRows(userId);
+  const next = rows.filter((r) => r.slug !== slug);
+  if (next.length === rows.length) return;
+  writeSavedArticleRows(userId, next);
+  dispatchSavedArticlesChanged(userId);
+}
+
 export function toggleSavedArticle(
   userId: string,
   row: Omit<StoredSavedArticleRow, "savedAt">

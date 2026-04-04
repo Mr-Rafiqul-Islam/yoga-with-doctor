@@ -161,8 +161,8 @@ export function Header() {
             />
           </div>
 
-          {/* Notification */}
-          <button
+          {/* Notification commentting for later use */}
+          {/* <button
             type="button"
             className="relative rounded-radius-sm p-2 text-muted transition-colors hover:text-foreground focus:outline-none "
             aria-label="Notifications"
@@ -171,7 +171,7 @@ export function Header() {
               notifications
             </span>
             <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-error" aria-hidden />
-          </button>
+          </button> */}
 
           {/* Profile / Login */}
           {isRestoringSession ? (

@@ -50,7 +50,7 @@ export function SavedArticlesPageContent() {
           No saved articles yet. Open an article and tap the bookmark to add it here.
         </p>
       ) : (
-        <SavedArticlesList articles={articles} />
+        <SavedArticlesList articles={articles} userId={userId} />
       )}
     </>
   );

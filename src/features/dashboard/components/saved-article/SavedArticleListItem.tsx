@@ -4,16 +4,20 @@ import type { SavedArticle } from "@/features/dashboard/data/savedArticlesData";
 
 type SavedArticleListItemProps = {
   article: SavedArticle;
+  onRemove: () => void;
 };
 
-export function SavedArticleListItem({ article }: SavedArticleListItemProps) {
+export function SavedArticleListItem({
+  article,
+  onRemove,
+}: SavedArticleListItemProps) {
   const isFinished = article.status === "finished";
 
   return (
-    <li>
+    <li className="flex min-h-[88px] items-stretch gap-2">
       <Link
         href={article.href}
-        className="group flex items-center gap-4 rounded-xl border border-border bg-surface p-4 shadow-elevation-sm transition-shadow hover:shadow-elevation-md"
+        className="group flex min-w-0 flex-1 items-center gap-4 rounded-xl border border-border bg-surface p-4 shadow-elevation-sm transition-shadow hover:shadow-elevation-md"
       >
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
           <span
@@ -52,6 +56,20 @@ export function SavedArticleListItem({ article }: SavedArticleListItemProps) {
           chevron_right
         </span>
       </Link>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          onRemove();
+        }}
+        className="flex shrink-0 items-center justify-center self-stretch rounded-xl border border-border bg-surface px-3 text-muted shadow-elevation-sm transition-colors hover:border-destructive/40 hover:bg-destructive/5 hover:text-destructive"
+        aria-label={`Remove “${article.title}” from saved articles`}
+        title="Remove from saved"
+      >
+        <span className="material-icons-outlined text-xl" aria-hidden>
+          bookmark_remove
+        </span>
+      </button>
     </li>
   );
 }
