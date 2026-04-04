@@ -286,6 +286,8 @@ export interface AllTypeCourseItem {
   isActive: boolean;
   instructorName: string;
   category: string | string[] | null;
+  avgRating: number | null;
+  ratingCount: number | null;
   createdAt: string;
   updatedAt: string;
   products: AllTypeCourseProduct[];

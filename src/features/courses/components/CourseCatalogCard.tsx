@@ -32,6 +32,7 @@ export type CourseCatalogCardProps = {
   /** Show premium badge icon top-right */
   premiumBadge?: boolean;
   rating?: string;
+  ratingCount?: number;
 };
 
 export function CourseCatalogCard({

@@ -84,8 +84,8 @@ function mapAllTypeCourseToCourseWithMeta(
     href: `/courses/${course.slug}`,
     imageBadge: course.access === "PAID" ? "BESTSELLER" : undefined,
     premiumBadge: course.access === "PREMIUM",
-    rating: FALLBACK_RATING,
-
+    rating: course.avgRating != 0 ? course.avgRating?.toFixed(1) : FALLBACK_RATING,
+    ratingCount: course.ratingCount ?? 0,
     // Filter/sort metadata
     level,
     goals: [goal],
