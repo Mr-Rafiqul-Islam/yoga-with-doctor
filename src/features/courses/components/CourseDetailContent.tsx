@@ -64,14 +64,14 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
             />
           ) : (
             <>
-              <Image
-                src={course.thumbnailUrl}
+              {course.thumbnailUrl && <Image
+                src={course.thumbnailUrl ?? null}
                 alt=""
                 fill
                 className="object-cover opacity-60"
                 sizes="(max-width: 1024px) 100vw, 66vw"
                 priority
-              />
+              />}
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
                 <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 ring-1 ring-white/30 backdrop-blur-md">
                   <span className="material-icons-outlined text-3xl text-white">lock</span>

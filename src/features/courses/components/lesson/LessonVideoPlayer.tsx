@@ -163,7 +163,7 @@ export function LessonVideoPlayer({
         />
       ) : (
         <Image
-          src={thumbnailUrl}
+          src={thumbnailUrl ?? null}
           alt=""
           fill
           className="object-cover opacity-80 transition-opacity group-hover:opacity-60"
