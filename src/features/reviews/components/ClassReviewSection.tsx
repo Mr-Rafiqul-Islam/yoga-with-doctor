@@ -1,22 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAppSelector } from "@/stores";
 import {
   useGetClassReviewsQuery,
   useGetMyClassReviewQuery,
   useUpsertClassReviewMutation,
 } from "@/slices/classes";
+import { useLazyGetMyEnrollmentsQuery } from "@/slices/enrollment";
 import { ReviewList } from "./ReviewList";
 
 interface ClassReviewSectionProps {
   slug: string;
-  isEnrolled: boolean;
 }
 
-export function ClassReviewSection({ slug, isEnrolled }: ClassReviewSectionProps) {
+export function ClassReviewSection({ slug }: ClassReviewSectionProps) {
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const [page, setPage] = useState(1);
+
+  const [fetchEnrollments, { data: enrollmentsData }] =
+    useLazyGetMyEnrollmentsQuery();
+
+  useEffect(() => {
+    if (!isAuthenticated || !slug) return;
+    void fetchEnrollments({ type: "class", page: 1, limit: 100 });
+  }, [fetchEnrollments, isAuthenticated, slug]);
+
+  const isEnrolled = useMemo(() => {
+    if (!isAuthenticated) return false;
+    return (enrollmentsData?.data ?? []).some(
+      (e) => e.type === "class" && e.class?.slug === slug,
+    );
+  }, [isAuthenticated, enrollmentsData, slug]);
 
   const { data: reviewsData, isLoading: isLoadingReviews } =
     useGetClassReviewsQuery({ slug, page, limit: 10 });

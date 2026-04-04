@@ -280,7 +280,6 @@ export function FreeVideoDetailsContent({
           {activeTab === "reviews" && (
             <ClassReviewSection
               slug={details.slug}
-              isEnrolled={details.isEnrolled}
             />
           )}
 
