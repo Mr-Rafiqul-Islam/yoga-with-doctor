@@ -193,12 +193,37 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
     const currentVideoStatus = currentVideo?.status ?? undefined;
 
     const apiNext = hasProgress ? progressPayload?.progress?.nextLessonId : undefined;
+
+    const currentCurriculumIdx = currentLesson
+      ? curriculum.findIndex((l) => l.id === currentLesson.id)
+      : -1;
+
+    const sequentialNextId = currentLesson
+      ? (() => {
+          if (currentCurriculumIdx < 0) return currentLesson.id;
+          for (let i = currentCurriculumIdx + 1; i < curriculum.length; i++) {
+            if (!curriculum[i].isLocked) return curriculum[i].id;
+          }
+          return currentLesson.id;
+        })()
+      : undefined;
+
+    const apiNextIdx =
+      apiNext != null ? curriculum.findIndex((l) => l.id === apiNext) : -1;
+    const apiNextRow = apiNextIdx >= 0 ? curriculum[apiNextIdx] : undefined;
+    const apiNextInCourse = Boolean(apiNext && flat.some((x) => x.lesson.id === apiNext));
+    const apiNextIsForward =
+      currentCurriculumIdx < 0 ||
+      (apiNextIdx >= 0 && apiNextIdx > currentCurriculumIdx);
+
     const continueLessonId =
-      apiNext && flat.some((x) => x.lesson.id === apiNext)
+      apiNext &&
+      apiNextInCourse &&
+      apiNextRow &&
+      !apiNextRow.isLocked &&
+      apiNextIsForward
         ? apiNext
-        : currentLesson
-          ? curriculum.find((l) => !l.isLocked && !l.isCurrent)?.id ?? currentLesson.id
-          : undefined;
+        : sequentialNextId;
 
     return {
       detailData,

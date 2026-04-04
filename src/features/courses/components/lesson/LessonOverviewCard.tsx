@@ -22,6 +22,18 @@ export interface LessonOverviewCardProps {
   preferredNextLessonId?: string;
 }
 
+function nextUnlockedLessonIdAfter(
+  curriculum: LessonWithStatus[],
+  currentId: string,
+): string | undefined {
+  const idx = curriculum.findIndex((l) => l.id === currentId);
+  if (idx < 0) return undefined;
+  for (let i = idx + 1; i < curriculum.length; i++) {
+    if (!curriculum[i].isLocked) return curriculum[i].id;
+  }
+  return undefined;
+}
+
 export function LessonOverviewCard({
   course,
   currentLesson,
@@ -36,7 +48,9 @@ export function LessonOverviewCard({
       if (row && !row.isLocked) return preferredNextLessonId;
     }
     if (!currentLesson) return undefined;
-    return curriculum.find((l) => !l.isLocked && !l.isCurrent)?.id ?? currentLesson.id;
+    return (
+      nextUnlockedLessonIdAfter(curriculum, currentLesson.id) ?? currentLesson.id
+    );
   })();
   const continueHref = nextLessonId ? lessonUrl(nextLessonId) : "#";
 

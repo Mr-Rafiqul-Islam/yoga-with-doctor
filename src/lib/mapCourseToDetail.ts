@@ -44,16 +44,21 @@ export function mapCourseToCourseDetailData(course: Course): CourseDetailData {
     typeof product.price === "number" &&
     product.currency;
 
+  const STATIC_DISCOUNT_PERCENT = 20;
+
   const price = hasPrice
     ? formatPrice(product!.price!, product!.currency ?? "BDT")
     : isFreeAccess
       ? "Free"
       : "৳ 997";
-      
-      const STATIC_DISCOUNT_PERCENT = 20;
-      const STATIC_ORIGINAL_PRICE = (product!.price! * STATIC_DISCOUNT_PERCENT) / 100 + product!.price!;
 
-  const originalPrice = hasPrice ? formatPrice(STATIC_ORIGINAL_PRICE, product!.currency ?? "BDT") : "";
+  const staticOriginalPriceAmount = hasPrice
+    ? (product!.price! * STATIC_DISCOUNT_PERCENT) / 100 + product!.price!
+    : 0;
+
+  const originalPrice = hasPrice
+    ? formatPrice(staticOriginalPriceAmount, product!.currency ?? "BDT")
+    : "";
   const discountPercent = hasPrice ? STATIC_DISCOUNT_PERCENT : 0;
 
   const intro = course.introVideo ?? null;
