@@ -10,14 +10,15 @@ export interface CourseDetailPageClientProps {
 }
 
 export function CourseDetailPageClient({ slug }: CourseDetailPageClientProps) {
-  const { data, isLoading, isError, isFetching } = useGetCourseBySlugQuery(
-    slug,
-    { skip: !slug }
-  );
+  const { data, isLoading, isError } = useGetCourseBySlugQuery(slug, {
+    skip: !slug,
+  });
 
   if (!slug) notFound();
 
-  if (isLoading || isFetching) {
+  // Only block on first load; background refetches (e.g. after review submit
+  // invalidates Course) keep the page visible so the UI updates via cache.
+  if (isLoading) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6 h-5 w-48 animate-pulse rounded bg-muted" />
