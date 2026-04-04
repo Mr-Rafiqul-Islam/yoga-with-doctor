@@ -10,8 +10,5 @@ export { PaymentSuccessActions } from "./PaymentSuccessActions";
 export { PaymentSuccessBackground } from "./PaymentSuccessBackground";
 export { PaymentSuccessHeading } from "./PaymentSuccessHeading";
 export { PaymentSuccessIcon } from "./PaymentSuccessIcon";
-export {
-  PaymentSuccessReceiptCard,
-  type PaymentSuccessCourseData,
-} from "./PaymentSuccessReceiptCard";
+export { PaymentSuccessReceiptCard } from "./PaymentSuccessReceiptCard";
 export { PromoCodeInput } from "./PromoCodeInput";

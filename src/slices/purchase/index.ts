@@ -117,6 +117,13 @@ export interface GetPurchaseSummaryResponse {
   data: GetPurchaseSummaryData;
 }
 
+/** GET /api/v1/client/purchases/by-transaction/:transactionId */
+export interface GetPurchaseByTransactionResponse {
+  success: boolean;
+  message?: string;
+  data: PurchaseRecord;
+}
+
 function buildPurchasesQueryString(params: GetPurchaseHistoryParams | void): string {
   if (!params) return "";
   const sp = new URLSearchParams();
@@ -161,11 +168,26 @@ export const purchaseApi = createApi({
       }),
       providesTags: [{ type: "Purchase" as const, id: "SUMMARY" }],
     }),
+
+    /**
+     * GET /api/v1/client/purchases/by-transaction/:transactionId
+     */
+    getPurchaseByTransaction: builder.query<GetPurchaseByTransactionResponse, string>({
+      query: (transactionId) => ({
+        url: `/api/v1/client/purchases/by-transaction/${encodeURIComponent(transactionId)}`,
+        method: "GET",
+      }),
+      providesTags: (result) =>
+        result?.data
+          ? [{ type: "Purchase" as const, id: result.data.id }]
+          : [{ type: "Purchase" as const, id: "LIST" }],
+    }),
   }),
 });
 
 export const {
   useGetPurchaseHistoryQuery,
   useGetPurchaseSummaryQuery,
+  useGetPurchaseByTransactionQuery,
   useLazyGetPurchaseHistoryQuery,
 } = purchaseApi;
