@@ -36,8 +36,12 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
     );
   }, [course.curriculum]);
 
-  const muxPlaybackId = muxPlaybackIdFromVideo(previewLesson?.video);
-    
+  const previewMuxPlaybackId = muxPlaybackIdFromVideo(previewLesson?.video);
+  const heroMuxPlaybackId = course.introMuxPlaybackId ?? previewMuxPlaybackId;
+  const heroPosterUrl =
+    (course.introMuxPlaybackId
+      ? (course.introPosterUrl ?? course.thumbnailUrl)
+      : course.thumbnailUrl) ?? undefined;
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -45,10 +49,10 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
       <div className="space-y-8 lg:col-span-2">
         {/* Video section: autoplay preview if available, otherwise locked thumbnail */}
         <div className="relative aspect-video overflow-hidden rounded-2xl bg-black shadow-lg">
-          {muxPlaybackId ? (
+          {heroMuxPlaybackId ? (
             <MuxPlayer
-              playbackId={muxPlaybackId}
-              poster={course.thumbnailUrl}
+              playbackId={heroMuxPlaybackId}
+              poster={heroPosterUrl}
               autoPlay
               playsInline
               streamType="on-demand"

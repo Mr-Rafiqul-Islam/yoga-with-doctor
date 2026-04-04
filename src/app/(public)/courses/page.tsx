@@ -13,6 +13,8 @@ import {
 } from "@/slices/courses";
 import { useMemo } from "react";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
+import { formatCheckoutPrice } from "@/features/checkout/data/checkoutReviewData";
+import { pickPrimaryCategory } from "@/lib/pickPrimaryCategory";
 
 const FALLBACK_INSTRUCTOR_AVATAR =
   "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-About.jpeg";
@@ -54,8 +56,13 @@ function mapAllTypeCourseToCourseWithMeta(
         : FALLBACK_PRICE;
 
   const level = mapLevel(course.level);
-  const goal = course.category ??
-    FALLBACK_GOALS[index % FALLBACK_GOALS.length] ?? FALLBACK_GOALS[0];
+  const primaryCategory = pickPrimaryCategory(course.category);
+  const goal =
+    primaryCategory ??
+    FALLBACK_GOALS[index % FALLBACK_GOALS.length] ??
+    FALLBACK_GOALS[0];
+    const STATIC_DISCOUNT_PERCENT = 20;
+    const STATIC_ORIGINAL_PRICE = (productPrice! * STATIC_DISCOUNT_PERCENT) / 100 + productPrice!;
 
   return {
     // Card display props
@@ -65,12 +72,12 @@ function mapAllTypeCourseToCourseWithMeta(
       dummyCourses[index % dummyCourses.length]?.bannerImage ??
       "https://via.placeholder.com/640x360.png?text=Course",
     imageAlt: course.title,
-    category: (goal ?? "Wellness").toUpperCase(),
+    category: (goal ?? "Wellness"),
     instructorName: course.instructorName ?? "Yoga with Doctor",
     instructorAvatarSrc: FALLBACK_INSTRUCTOR_AVATAR,
     price,
     originalPrice:
-      course.access === "PAID" ? dummyCourses[0]?.originalPrice : undefined,
+      course.access === "PAID" ? formatCheckoutPrice(STATIC_ORIGINAL_PRICE, productCurrency ?? "BDT") : undefined,
     courseId: course.id,
     access: course.access,
     slug: course.slug,

@@ -39,6 +39,10 @@ export interface CourseDetailData {
   thumbnailUrl: string;
   /** Optional Mux playback ID for the primary course video (used on lesson page). */
   muxPlaybackId?: string;
+  /** Hero/marketing intro from API `introVideo` when READY with playback id. */
+  introMuxPlaybackId?: string;
+  /** Poster for hero intro; falls back to `thumbnailUrl` when null/omitted. */
+  introPosterUrl?: string | null;
   rating: string;
   reviewCount: number;
   instructorName: string;

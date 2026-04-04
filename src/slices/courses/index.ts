@@ -29,6 +29,22 @@ export interface Video {
   isPremium?: boolean;
 }
 
+/** Course marketing intro video from course-detail API (nullable fields per response) */
+export interface CourseIntroVideo {
+  id: string;
+  title: string | null;
+  thumbnail: string | null;
+  duration: number | null;
+  status: "PROCESSING" | "READY" | "FAILED";
+  muxPlaybackId: string | null;
+  muxAssetId?: string | null;
+  muxUploadId?: string | null;
+  isPremium?: boolean | null;
+  level?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+}
+
 export interface VideoPlaybackResponse {
   success: boolean;
   message: string;
@@ -128,6 +144,7 @@ export interface Course {
   resources?: CourseResource[];
   quizzes?: CourseQuiz[];
   productData?: ProductData;
+  introVideo?: CourseIntroVideo | null;
   _count?: {
     sections: number;
     resources: number;
@@ -268,7 +285,7 @@ export interface AllTypeCourseItem {
   access: "FREE" | "PAID" | "PUBLIC" | "PREMIUM";
   isActive: boolean;
   instructorName: string;
-  category: string | null;
+  category: string | string[] | null;
   createdAt: string;
   updatedAt: string;
   products: AllTypeCourseProduct[];

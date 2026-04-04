@@ -17,8 +17,7 @@ const STATIC_LEARNING_OUTCOMES = [
   "Lifetime access to course materials",
   "Access on mobile and desktop",
 ];
-const STATIC_ORIGINAL_PRICE = "৳ 1,499";
-const STATIC_DISCOUNT_PERCENT = 20;
+
 
 
 
@@ -50,14 +49,25 @@ export function mapCourseToCourseDetailData(course: Course): CourseDetailData {
     : isFreeAccess
       ? "Free"
       : "৳ 997";
+      
+      const STATIC_DISCOUNT_PERCENT = 20;
+      const STATIC_ORIGINAL_PRICE = (product!.price! * STATIC_DISCOUNT_PERCENT) / 100 + product!.price!;
 
-  const originalPrice = hasPrice ? STATIC_ORIGINAL_PRICE : "";
+  const originalPrice = hasPrice ? formatPrice(STATIC_ORIGINAL_PRICE, product!.currency ?? "BDT") : "";
   const discountPercent = hasPrice ? STATIC_DISCOUNT_PERCENT : 0;
+
+  const intro = course.introVideo ?? null;
+  const hasIntroPlayback =
+    intro?.status === "READY" &&
+    intro.muxPlaybackId != null &&
+    intro.muxPlaybackId !== "";
 
   const firstLessonId =
     sections[0]?.lessons?.[0]?.id ??
     sections.flatMap((s) => s.lessons ?? [])[0]?.id ??
     null;
+
+  const previewLessonId = hasIntroPlayback ? null : firstLessonId;
 
   const curriculum: DetailModule[] = sections.map((section) => {
     const lessons = section.lessons ?? [];
@@ -80,9 +90,8 @@ export function mapCourseToCourseDetailData(course: Course): CourseDetailData {
       videoId: lesson.videoId ?? null,
       video: lesson.video ?? null,
       locked: lesson.locked,
-      // For now: only the first lesson is preview across all courses.
-      // Later: replace with an API flag if/when available.
-      isPreview: firstLessonId != null && lesson.id === firstLessonId,
+      // First lesson preview only when there is no dedicated intro video.
+      isPreview: previewLessonId != null && lesson.id === previewLessonId,
       isLocked: lesson.locked ?? false,
     }));
 
@@ -133,6 +142,12 @@ export function mapCourseToCourseDetailData(course: Course): CourseDetailData {
     description: course.description ?? "",
     thumbnailUrl:
       course.bannerUrl ?? course.bannerImage ?? FALLBACK_THUMBNAIL,
+    ...(hasIntroPlayback && intro
+      ? {
+          introMuxPlaybackId: intro.muxPlaybackId!,
+          introPosterUrl: intro.thumbnail,
+        }
+      : {}),
     rating: course.avgRating != null ? course.avgRating.toFixed(1) : "0.0",
     reviewCount: course.ratingCount ?? 0,
     instructorName: course.instructorName ?? "Yoga with Doctor",

@@ -2,6 +2,7 @@
 
 import { useId, useState, useCallback, useMemo } from "react";
 import { useGetAllTypeCoursesQuery } from "@/slices/courses";
+import { pickPrimaryCategory } from "@/lib/pickPrimaryCategory";
 
 export type LevelOption = "beginner" | "intermediate" | "advanced";
 
@@ -45,8 +46,8 @@ export function FilterSidebar({
   const goalOptions = useMemo(() => {
     const courses = allTypesData?.data?.courses ?? [];
     const categories = courses
-      .map((c) => c.category)
-      .filter((c): c is string => typeof c === "string" && c.trim() !== "");
+      .map((c) => pickPrimaryCategory(c.category))
+      .filter((c): c is string => c != null && c !== "");
     return Array.from(new Set(categories)).sort((a, b) => a.localeCompare(b));
   }, [allTypesData]);
 
