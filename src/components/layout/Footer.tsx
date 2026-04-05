@@ -92,7 +92,7 @@ export function Footer() {
           {/* Platform */}
           <div className="flex min-h-0 h-full flex-col">
             <h3 className="mb-4 shrink-0 font-semibold text-white">Platform</h3>
-            <ul className="mt-auto space-y-3 text-sm">
+            <ul className="lg:mt-auto space-y-3 text-sm">
               {platformLinks.map(({ href, label, target }) => (
                 <li key={label}>
                   <Link
@@ -110,7 +110,7 @@ export function Footer() {
           {/* Support */}
           <div className="flex min-h-0 h-full flex-col">
             <h3 className="mb-4 shrink-0 font-semibold text-white">Support</h3>
-            <ul className="mt-auto space-y-3 text-sm">
+            <ul className="lg:mt-auto space-y-3 text-sm">
               {supportLinks.map(({ href, label }) => (
                 <li key={label}>
                   <Link
@@ -137,7 +137,7 @@ export function Footer() {
               </Link>
               .
             </p>
-            <ul className="mt-auto space-y-2 pt-2" role="list">
+            <ul className="lg:mt-auto space-y-2 pt-4" role="list">
               <li>
                 <a
                   href={whatsappSupportUrl}
@@ -156,7 +156,7 @@ export function Footer() {
                     WhatsApp support
                   </span>
                   <span
-                    className="material-icons-outlined text-base text-gray-500 transition-colors group-hover:text-emerald-400"
+                    className="material-icons-outlined text-base text-gray-500 transition-colors group-hover:text-emerald-400 lg:block hidden"
                     aria-hidden
                   >
                     chat
@@ -179,7 +179,7 @@ export function Footer() {
                     Direct call
                   </span>
                   <span
-                    className="material-icons-outlined text-base text-gray-500 transition-colors group-hover:text-primary"
+                    className="material-icons-outlined text-base text-gray-500 transition-colors group-hover:text-primary lg:block hidden"
                     aria-hidden
                   >
                     call
