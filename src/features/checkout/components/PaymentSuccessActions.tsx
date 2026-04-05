@@ -7,7 +7,7 @@ type PaymentSuccessActionsProps = {
 
 export function PaymentSuccessActions({ courseSlug }: PaymentSuccessActionsProps) {
   const slug = courseSlug?.trim() ?? "";
-  const primaryHref = slug ? `/courses/${slug}` : "/dashboard";
+  const primaryHref = slug ? `/courses/${slug}/lesson` : "/dashboard";
   const primaryLabel = slug ? "Start Learning Now" : "Go to Dashboard";
 
   return (

@@ -11,13 +11,13 @@ const CONTACT_DETAILS: ContactDetail[] = [
     icon: "mail",
     label: "Email",
     value: (
-      <a href="mailto:hello@yogawithdoctor.com">hello@yogawithdoctor.com</a>
+      <a href="mailto:support@yogawithdoctor.com">support@yogawithdoctor.com</a>
     ),
   },
   {
     icon: "location_on",
     label: "Office",
-    value: "123 Wellness Blvd, Medical District",
+    value: "House-56, Road-1, Block-A, Aftabnagar. Badda. Dhaka",
   },
   {
     icon: "schedule",
