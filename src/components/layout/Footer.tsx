@@ -1,6 +1,9 @@
 'use client';
 import Link from "next/link";
 import { SiteLogo } from "@/components/layout/SiteLogo";
+import { FaFacebook, FaLinkedin, FaYoutube } from "react-icons/fa";
+import { BsQuora } from "react-icons/bs";
+import { AiFillTikTok } from "react-icons/ai";
 
 const platformLinks = [
   { href: "/courses", label: "Browse Courses", target:"_self"},
@@ -17,9 +20,10 @@ const supportLinks = [
 ] as const;
 
 const socialLinks = [
-  { href: "#", label: "Facebook", icon: "facebook" },
-  { href: "#", label: "YouTube", icon: "smart_display" },
-  { href: "#", label: "Instagram", icon: "camera_alt" },
+  { href: "https://www.facebook.com/yogawithdoctor", label: "Facebook", icon: <FaFacebook /> },
+  { href: "https://www.youtube.com/@yogawithdoctor", label: "YouTube", icon: <FaYoutube /> },
+  { href: "https://www.linkedin.com/company/yoga-with-doctorbd/", label: "LinkedIn", icon: <FaLinkedin /> },
+  { href: "https://www.tiktok.com/@yogawithdoctor", label: "Tiktok", icon: <AiFillTikTok /> },
 ] as const;
 
 export function Footer() {
@@ -42,7 +46,8 @@ export function Footer() {
             <div className="flex gap-4">
               {socialLinks.map(({ href, label, icon }) => (
                 <a
-                  key={icon}
+                  key={label}
+                  target="_blank"
                   href={href}
                   className="text-gray-400 transition-colors hover:text-white focus:outline-none focus:ring-offset-gray-900 rounded-radius-sm"
                   aria-label={label}
