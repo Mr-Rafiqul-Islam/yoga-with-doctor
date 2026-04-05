@@ -1,7 +1,12 @@
 "use client";
 
+import {
+  downloadPurchaseInvoicePdf,
+  profileUserToInvoiceCustomer,
+} from "@/features/billing/invoicePdf";
 import { InfoCard, TransactionList } from "@/features/subscription/components";
 import type { TransactionListItem } from "@/features/subscription/components/TransactionList";
+import { useGetProfileQuery } from "@/slices/profile";
 import {
   useGetPurchaseHistoryQuery,
   useGetPurchaseSummaryQuery,
@@ -129,6 +134,38 @@ function mapPurchaseToTransaction(p: PurchaseRecord): TransactionListItem {
   };
 }
 
+function mapPurchaseToTransactionWithInvoice(
+  p: PurchaseRecord,
+  profileUser:
+    | {
+        name: string;
+        email?: string | null;
+        phone?: string | null;
+        address?: string | null;
+        city?: string | null;
+      }
+    | undefined,
+  profileLoading: boolean,
+): TransactionListItem {
+  const base = mapPurchaseToTransaction(p);
+  if (p.status !== "PAID") return base;
+  return {
+    ...base,
+    invoiceDownload: {
+      disabled: profileLoading || !profileUser,
+      disabledReason: profileLoading
+        ? "Loading profile…"
+        : !profileUser
+          ? "Profile required for invoice details."
+          : undefined,
+      onClick: () => {
+        if (!profileUser) return;
+        downloadPurchaseInvoicePdf(p, profileUserToInvoiceCustomer(profileUser));
+      },
+    },
+  };
+}
+
 export function BillingPageClient() {
   const {
     data: summaryRes,
@@ -140,16 +177,20 @@ export function BillingPageClient() {
     isLoading: historyLoading,
     isError: historyError,
   } = useGetPurchaseHistoryQuery({ page: 1, limit: 20 });
+  const { data: profileRes, isLoading: profileLoading } = useGetProfileQuery();
+  const profileUser = profileRes?.data?.user;
 
   const summary = summaryRes?.data;
   const purchases = historyRes?.data?.purchases ?? [];
   const pagination = historyRes?.data?.pagination;
-  const transactions = purchases.map(mapPurchaseToTransaction);
+  const transactions = purchases.map((p) =>
+    mapPurchaseToTransactionWithInvoice(p, profileUser, profileLoading),
+  );
 
   const summaryCurrency = summary?.currency ?? "BDT";
 
   return (
-    < >
+    <>
       <section className="grid grid-cols-1 gap-4 md:grid-cols-3" aria-label="Purchase summary">
         <div className="rounded-3xl border border-transparent bg-surface p-6 shadow-card dark:bg-surface-dark">
           <p className="text-sm font-medium text-muted">Total spent (paid)</p>
@@ -202,11 +243,11 @@ export function BillingPageClient() {
           <section className="grid grid-cols-1 gap-4 md:grid-cols-2" aria-label="Support and history">
             <InfoCard
               title="Invoices"
-              subtitle="Download history"
+              subtitle="From transactions"
               icon="receipt_long"
               iconBgClassName="bg-teal-50 dark:bg-teal-900/20"
               iconClassName="text-teal-600 dark:text-teal-400"
-              href="#"
+              href="#transactions-heading"
             />
             <InfoCard
               title="Billing Support"

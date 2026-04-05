@@ -3,7 +3,12 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
+import { useCallback } from "react";
 
+import {
+  downloadPurchaseInvoicePdf,
+  profileUserToInvoiceCustomer,
+} from "@/features/billing/invoicePdf";
 import {
   PaymentSuccessActions,
   PaymentSuccessBackground,
@@ -11,6 +16,7 @@ import {
   PaymentSuccessIcon,
   PaymentSuccessReceiptCard,
 } from "@/features/checkout/components";
+import { useGetProfileQuery } from "@/slices/profile";
 import {
   useGetPurchaseByTransactionQuery,
   type PurchaseProductType,
@@ -62,6 +68,8 @@ function receiptSubtitle(purchase: PurchaseRecord): string {
 export function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const transactionId = searchParams.get("transactionId")?.trim() ?? "";
+  const { data: profileRes, isLoading: profileLoading } = useGetProfileQuery();
+  const profileUser = profileRes?.data?.user;
 
   const { data: purchaseRes, isLoading, isError } = useGetPurchaseByTransactionQuery(
     transactionId,
@@ -69,6 +77,11 @@ export function PaymentSuccessContent() {
   );
 
   const purchase: PurchaseRecord | undefined = purchaseRes?.data;
+
+  const handleDownloadInvoice = useCallback(() => {
+    if (!purchase || !profileUser) return;
+    downloadPurchaseInvoicePdf(purchase, profileUserToInvoiceCustomer(profileUser));
+  }, [purchase, profileUser]);
 
   const shell = (children: ReactNode) => (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-background transition-colors duration-300">
@@ -156,6 +169,9 @@ export function PaymentSuccessContent() {
   const purchaseDate = formatPurchaseDate(purchase.paidAt ?? purchase.createdAt);
   const totalFormatted = formatMoney(purchase.amount, purchase.currency);
   const courseSlug = purchase.product.course?.slug;
+  const invoiceReady = purchase.status === "PAID";
+  const invoiceDisabled =
+    !invoiceReady || profileLoading || !profileUser;
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-background transition-colors duration-300">
@@ -178,7 +194,20 @@ export function PaymentSuccessContent() {
             purchaseDate={purchaseDate}
             totalFormatted={totalFormatted}
           />
-          <PaymentSuccessActions courseSlug={courseSlug} />
+          <PaymentSuccessActions
+            courseSlug={courseSlug}
+            onDownloadInvoice={handleDownloadInvoice}
+            invoiceDisabled={invoiceDisabled}
+            invoiceDisabledReason={
+              !invoiceReady
+                ? "Invoice is available once payment is confirmed."
+                : profileLoading
+                  ? "Loading your profile…"
+                  : !profileUser
+                    ? "Could not load profile for billing details."
+                    : undefined
+            }
+          />
         </div>
       </main>
     </div>

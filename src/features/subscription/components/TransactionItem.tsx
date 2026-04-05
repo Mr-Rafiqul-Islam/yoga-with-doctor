@@ -9,6 +9,11 @@ export interface TransactionItemProps {
   iconClassName?: string;
   statusDotClassName?: string;
   className?: string;
+  invoiceDownload?: {
+    onClick: () => void;
+    disabled?: boolean;
+    disabledReason?: string;
+  };
 }
 
 export function TransactionItem({
@@ -22,6 +27,7 @@ export function TransactionItem({
   iconClassName = "text-gray-500 dark:text-gray-400",
   statusDotClassName = "bg-primary",
   className = "",
+  invoiceDownload,
 }: TransactionItemProps) {
   return (
     <article className={`flex items-start gap-4 ${className}`}>
@@ -48,6 +54,17 @@ export function TransactionItem({
             <div className={`h-2 w-2 rounded-full ${statusDotClassName}`} aria-hidden />
           </div>
         </div>
+        {invoiceDownload ? (
+          <button
+            type="button"
+            disabled={invoiceDownload.disabled}
+            title={invoiceDownload.disabled ? invoiceDownload.disabledReason : undefined}
+            onClick={invoiceDownload.onClick}
+            className="mt-2 text-xs font-medium text-primary hover:underline disabled:cursor-not-allowed disabled:opacity-50 disabled:no-underline"
+          >
+            Download invoice
+          </button>
+        ) : null}
       </div>
     </article>
   );

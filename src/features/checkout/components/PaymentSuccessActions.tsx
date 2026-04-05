@@ -3,9 +3,17 @@ import Link from "next/link";
 type PaymentSuccessActionsProps = {
   /** Course detail route uses `[slug]`; prefer this over a raw id. */
   courseSlug?: string;
+  onDownloadInvoice?: () => void;
+  invoiceDisabled?: boolean;
+  invoiceDisabledReason?: string;
 };
 
-export function PaymentSuccessActions({ courseSlug }: PaymentSuccessActionsProps) {
+export function PaymentSuccessActions({
+  courseSlug,
+  onDownloadInvoice,
+  invoiceDisabled,
+  invoiceDisabledReason,
+}: PaymentSuccessActionsProps) {
   const slug = courseSlug?.trim() ?? "";
   const primaryHref = slug ? `/courses/${slug}/lesson` : "/dashboard";
   const primaryLabel = slug ? "Start Learning Now" : "Go to Dashboard";
@@ -24,16 +32,19 @@ export function PaymentSuccessActions({ courseSlug }: PaymentSuccessActionsProps
           {slug ? "play_circle" : "dashboard"}
         </span>
       </Link>
-      {slug ? (
-        <Link
-          href="/dashboard"
-          className="mt-2 flex items-center gap-1 text-sm text-muted transition-colors hover:text-primary dark:hover:text-primary"
+      {onDownloadInvoice ? (
+        <button
+          type="button"
+          disabled={invoiceDisabled}
+          title={invoiceDisabled ? invoiceDisabledReason : undefined}
+          onClick={onDownloadInvoice}
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-primary/50 bg-transparent px-8 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-50 sm:w-80"
         >
-          <span className="material-icons-outlined text-sm" aria-hidden>
-            arrow_back
+          <span className="material-icons-outlined text-lg" aria-hidden>
+            download
           </span>
-          Back to Dashboard
-        </Link>
+          Download invoice
+        </button>
       ) : null}
     </div>
   );
