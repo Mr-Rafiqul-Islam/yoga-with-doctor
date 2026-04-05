@@ -4,3 +4,4 @@ export { ContactDetailsSection } from "./ContactDetailsSection";
 export { ContactQuoteBlock } from "./ContactQuoteBlock";
 export { ContactSuccessBanner } from "./ContactSuccessBanner";
 export { ContactForm } from "./ContactForm";
+export { ContactSupportNumbersSection } from "./ContactSupportNumbersSection";

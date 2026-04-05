@@ -6,6 +6,7 @@ import {
   ContactPageHeader,
   ContactQuoteBlock,
   ContactSuccessBanner,
+  ContactSupportNumbersSection,
 } from "@/app/(public)/contact/_components";
 
 export const metadata = {
@@ -47,6 +48,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
             {showSuccess && <ContactSuccessBanner />}
             <ContactForm action={submitContact} />
           </section>
+          <ContactSupportNumbersSection className="lg:col-span-2" />
         </div>
       </div>
     </main>
