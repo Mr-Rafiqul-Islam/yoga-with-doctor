@@ -1,6 +1,16 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { createReauthBaseQuery } from "@/slices/auth";
 
+/**
+ * Core API course discussion routes (see ywd-core-api COMMUNITY_DISCUSSION.md).
+ * Base: /api/v1/client/community-discussions — paths relative to that mount.
+ */
+const COMMUNITY_DISCUSSIONS_BASE = "/api/v1/client/community-discussions";
+
+function courseDiscussionChannelPath(courseId: string): string {
+  return `${COMMUNITY_DISCUSSIONS_BASE}/course/channel/${courseId}`;
+}
+
 // =============================================================================
 // Types — channel + questions (community payload is loosely typed)
 // =============================================================================
@@ -217,7 +227,7 @@ export const courseDiscussionApi = createApi({
       string
     >({
       query: (courseId) => ({
-        url: `/api/v1/client/course-discussion-channel/channel/${courseId}`,
+        url: courseDiscussionChannelPath(courseId),
         method: "GET",
       }),
       providesTags: (_result, _error, courseId) => [
@@ -237,7 +247,7 @@ export const courseDiscussionApi = createApi({
         if (sortOrder) params.set("sortOrder", sortOrder);
         if (filterType) params.set("filterType", filterType);
         return {
-          url: `/api/v1/client/course-discussion-channel/channel/${courseId}/questions?${params.toString()}`,
+          url: `${courseDiscussionChannelPath(courseId)}/questions?${params.toString()}`,
           method: "GET",
         };
       },
@@ -261,7 +271,7 @@ export const courseDiscussionApi = createApi({
       CreateCourseDiscussionQuestionArg
     >({
       query: ({ courseId, body }) => ({
-        url: `/api/v1/client/course-discussion-channel/channel/${courseId}/questions`,
+        url: `${courseDiscussionChannelPath(courseId)}/questions`,
         method: "POST",
         body,
       }),
@@ -275,7 +285,7 @@ export const courseDiscussionApi = createApi({
       CreateCourseDiscussionAnswerArg
     >({
       query: ({ courseId, body }) => ({
-        url: `/api/v1/client/course-discussion-channel/channel/${courseId}/answers`,
+        url: `${courseDiscussionChannelPath(courseId)}/answers`,
         method: "POST",
         body,
       }),

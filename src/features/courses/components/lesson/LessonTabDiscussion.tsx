@@ -456,6 +456,19 @@ export function LessonTabDiscussion({ courseId, lessonId }: LessonTabDiscussionP
                             </span>
                             Replies ({answerList.length})
                           </h4>
+                          <div
+                            className={
+                              answerList.length > 3
+                                ? "max-h-[min(26rem,45vh)] overflow-y-auto overscroll-y-contain rounded-lg border border-border/70 bg-muted/20 py-3 pl-2 pr-3 dark:border-gray-700 dark:bg-gray-950/40"
+                                : undefined
+                            }
+                            {...(answerList.length > 3
+                              ? {
+                                  role: "region",
+                                  "aria-label": "Replies — scroll to see all",
+                                }
+                              : {})}
+                          >
                           <ul className="space-y-4">
                             {answerList.map((ans) => (
                               <li
@@ -506,6 +519,7 @@ export function LessonTabDiscussion({ courseId, lessonId }: LessonTabDiscussionP
                               </li>
                             ))}
                           </ul>
+                          </div>
                         </div>
                       )}
 
