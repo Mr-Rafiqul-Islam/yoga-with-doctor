@@ -7,7 +7,7 @@ export {
   type LessonTabId,
 } from "./LessonDetailsTabs";
 export { LessonTabResources } from "./LessonTabResources";
-export { LessonTabDiscussion } from "./LessonTabDiscussion";
+export { LessonTabDiscussion, type LessonTabDiscussionProps } from "./LessonTabDiscussion";
 export { LessonTabCertificate } from "./LessonTabCertificate";
 export {
   CourseContentSidebar,

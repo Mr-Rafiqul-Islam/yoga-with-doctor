@@ -26,6 +26,22 @@ export interface CourseDiscussionQuestionAuthor {
   [key: string]: unknown;
 }
 
+/** Answer row nested on each question from GET .../questions (community shape). */
+export interface CourseDiscussionAnswer {
+  id: string;
+  questionId: string;
+  authorId: string;
+  content: string;
+  isActive: boolean;
+  isPinned: boolean;
+  isBest: boolean;
+  likeCount: number;
+  createdAt: string;
+  updatedAt: string;
+  author?: CourseDiscussionQuestionAuthor | null;
+  [key: string]: unknown;
+}
+
 export interface CourseDiscussionQuestion {
   id: string;
   title?: string | null;
@@ -39,6 +55,8 @@ export interface CourseDiscussionQuestion {
   updatedAt?: string | null;
   author?: CourseDiscussionQuestionAuthor | null;
   user?: CourseDiscussionQuestionAuthor | null;
+  /** Nested replies when the API includes them on each question. */
+  answers?: CourseDiscussionAnswer[] | null;
   [key: string]: unknown;
 }
 
@@ -106,12 +124,8 @@ export interface CreateCourseDiscussionAnswerArg {
   body: CreateCourseDiscussionAnswerBody;
 }
 
-export interface ChannelAnswerPayload {
-  id: string;
-  content?: string | null;
-  questionId?: string | null;
-  [key: string]: unknown;
-}
+/** Create-answer response; aligns with community answer object. */
+export type ChannelAnswerPayload = CourseDiscussionAnswer;
 
 export interface CreateCourseDiscussionAnswerResponse {
   success: boolean;
@@ -121,6 +135,18 @@ export interface CreateCourseDiscussionAnswerResponse {
 
 function isRecord(v: unknown): v is Record<string, unknown> {
   return v !== null && typeof v === "object" && !Array.isArray(v);
+}
+
+function normalizeQuestionAnswers(q: CourseDiscussionQuestion): CourseDiscussionQuestion {
+  const raw = q.answers;
+  if (!Array.isArray(raw)) {
+    return q;
+  }
+  const answers = [...raw].sort(
+    (a, b) =>
+      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  );
+  return { ...q, answers };
 }
 
 function pickPagination(o: Record<string, unknown>): CourseDiscussionQuestionsPagination | undefined {
@@ -160,13 +186,15 @@ export function normalizeCourseDiscussionQuestionsData(
 ): CourseDiscussionQuestionsNormalized {
   if (raw == null) return { questions: [] };
   if (Array.isArray(raw)) {
-    return { questions: raw as CourseDiscussionQuestion[] };
+    const questions = (raw as CourseDiscussionQuestion[]).map(normalizeQuestionAnswers);
+    return { questions };
   }
   if (!isRecord(raw)) return { questions: [] };
   const list = raw.questions ?? raw.items ?? raw.data;
   if (Array.isArray(list)) {
+    const questions = (list as CourseDiscussionQuestion[]).map(normalizeQuestionAnswers);
     return {
-      questions: list as CourseDiscussionQuestion[],
+      questions,
       pagination: pickPagination(raw),
     };
   }

@@ -365,7 +365,12 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
           <LessonDetailsTabs
             overviewContent={<DoctorsNotesSection doctorNotes={null} />}
             resourcesContent={<LessonTabResources />}
-            discussionContent={<LessonTabDiscussion />}
+            discussionContent={
+              <LessonTabDiscussion
+                courseId={detailData.courseId}
+                lessonId={currentLesson?.id}
+              />
+            }
             certificateContent={<LessonTabCertificate />}
           />
         </div>

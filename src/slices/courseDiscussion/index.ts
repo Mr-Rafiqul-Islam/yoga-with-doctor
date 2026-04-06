@@ -10,6 +10,7 @@ export {
 export type {
   CourseDiscussionChannel,
   CourseDiscussionChannelResponse,
+  CourseDiscussionAnswer,
   CourseDiscussionQuestion,
   CourseDiscussionQuestionAuthor,
   CourseDiscussionQuestionsPagination,
