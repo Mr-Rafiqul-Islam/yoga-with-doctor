@@ -166,6 +166,10 @@ export function PaymentSuccessContent() {
       ? purchase.transactionId
       : transactionId;
   const productTitle = purchase.product.title?.trim() || "Purchase";
+  const headingProductTitle =
+    purchase.product.type === "COURSE_ONE_TIME"
+      ? purchase.product.course?.title?.trim() || productTitle
+      : productTitle;
   const purchaseDate = formatPurchaseDate(purchase.paidAt ?? purchase.createdAt);
   const totalFormatted = formatMoney(purchase.amount, purchase.currency);
   const courseSlug = purchase.product.course?.slug;
@@ -186,7 +190,7 @@ export function PaymentSuccessContent() {
               page or check billing if amounts look wrong.
             </p>
           ) : null}
-          <PaymentSuccessHeading productTitle={productTitle} />
+          <PaymentSuccessHeading productTitle={headingProductTitle} />
           <PaymentSuccessReceiptCard
             transactionLabel={transactionLabel}
             productTitle={productTitle}

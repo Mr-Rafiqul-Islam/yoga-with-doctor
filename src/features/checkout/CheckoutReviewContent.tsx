@@ -87,6 +87,7 @@ export function CheckoutReviewContent() {
   const handleApplyPromo = () => {
     setDiscountApplied(0);
   };
+  const totalWithDiscount = subtotal + tax - discountApplied;
 
   const course = courseResponse?.data?.course;
 
@@ -122,7 +123,7 @@ export function CheckoutReviewContent() {
 
       const amountForInit =
         typeof course?.productData?.price === "number"
-          ? course.productData.price
+          ? totalWithDiscount
           : 0;
       const initPayment = await initializePayment({
         amount: amountForInit,
@@ -155,7 +156,7 @@ export function CheckoutReviewContent() {
       if (transactionId) {
         const amountForAttempt =
           typeof course?.productData?.price === "number"
-            ? course.productData.price
+            ? totalWithDiscount
             : 0;
         try {
           startAttemptData = await startPaymentAttempt({
@@ -188,7 +189,6 @@ export function CheckoutReviewContent() {
     }
   };
 
-  const totalWithDiscount = subtotal + tax - discountApplied;
 
   return (
     <div className="min-h-screen flex flex-col bg-background transition-colors duration-300">
