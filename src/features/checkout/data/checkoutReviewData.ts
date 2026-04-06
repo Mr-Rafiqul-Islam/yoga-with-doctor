@@ -4,10 +4,6 @@ export const CHECKOUT_REVIEW = {
   defaultDiscount: 0,
 } as const;
 
-export const TAX = Math.round(
-  CHECKOUT_REVIEW.subtotal * CHECKOUT_REVIEW.taxRate * 100
-) / 100;
-
 /** Format price for checkout display using product currency (e.g. BDT → ৳, USD → $) */
 export function formatCheckoutPrice(
   price: number,

@@ -158,9 +158,12 @@ function mapPurchaseToTransactionWithInvoice(
         : !profileUser
           ? "Profile required for invoice details."
           : undefined,
-      onClick: () => {
+      onClick: async () => {
         if (!profileUser) return;
-        downloadPurchaseInvoicePdf(p, profileUserToInvoiceCustomer(profileUser));
+        await downloadPurchaseInvoicePdf(
+          p,
+          profileUserToInvoiceCustomer(profileUser),
+        );
       },
     },
   };

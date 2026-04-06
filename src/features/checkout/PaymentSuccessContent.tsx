@@ -78,9 +78,12 @@ export function PaymentSuccessContent() {
 
   const purchase: PurchaseRecord | undefined = purchaseRes?.data;
 
-  const handleDownloadInvoice = useCallback(() => {
+  const handleDownloadInvoice = useCallback(async () => {
     if (!purchase || !profileUser) return;
-    downloadPurchaseInvoicePdf(purchase, profileUserToInvoiceCustomer(profileUser));
+    await downloadPurchaseInvoicePdf(
+      purchase,
+      profileUserToInvoiceCustomer(profileUser),
+    );
   }, [purchase, profileUser]);
 
   const shell = (children: ReactNode) => (
