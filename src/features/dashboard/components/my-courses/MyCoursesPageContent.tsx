@@ -1,61 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { ContinueLearningCourse } from "@/features/dashboard/data/dashboardData";
 import { useLazyGetMyEnrollmentsQuery } from "@/slices/enrollment";
-import type { EnrollmentSummary } from "@/slices/enrollment/api";
+import { useGetEntitlementsQuery } from "@/slices/courses";
+import {
+  mapEnrollmentsToCourses,
+  mapEntitlementsToCourses,
+  mergeEnrollmentAndEntitlements,
+} from "@/features/dashboard/lib/myLibraryMerge";
 import { DashboardContinueLearningCard } from "../DashboardContinueLearningCard";
 
 const PAGE_SIZE = 12;
 
-function mapEnrollmentsToCourses(
-  enrollments: EnrollmentSummary[],
-): ContinueLearningCourse[] {
-  return enrollments
-    .filter((enrollment) => enrollment.course)
-    .map((enrollment) => {
-      const course = enrollment.course!;
-
-      const bannerImage =
-        (course as { bannerUrl?: string }).bannerUrl ??
-        course.bannerImage ??
-        "/images/placeholders/course-banner.jpg";
-
-      const slug = course.slug ?? undefined;
-
-      return {
-        title: course.title,
-        bannerImage,
-        imageAlt: course.title,
-        category: "Course",
-        instructorName: "Dr. Shah Alam",
-        instructorAvatarSrc:
-          "https://images.pexels.com/photos/3760852/pexels-photo-3760852.jpeg?auto=compress&cs=tinysrgb&w=80",
-        price: "Included in your access",
-        originalPrice: undefined,
-        isEnrolled: true,
-        courseId: course.id,
-        access: ((course as { access?: string }).access ??
-          "PUBLIC") as ContinueLearningCourse["access"],
-        href: slug ? `/courses/${slug}` : undefined,
-        slug,
-        imageBadge: undefined,
-        premiumBadge: (course as { access?: string }).access === "PREMIUM",
-        rating: undefined,
-        level: ((course as { level?: string }).level ??
-          "BEGINNER") as ContinueLearningCourse["level"],
-        goals: [],
-        progress: 0,
-        timeLeft: undefined,
-        badge: undefined,
-      } satisfies ContinueLearningCourse;
-    });
-}
-
 export function MyCoursesPageContent() {
   const [page, setPage] = useState(1);
-  const [courses, setCourses] = useState<ContinueLearningCourse[]>([]);
+  const [enrollmentCourses, setEnrollmentCourses] = useState<
+    ContinueLearningCourse[]
+  >([]);
+
+  const {
+    data: entitlementsResponse,
+    isLoading: entitlementsLoading,
+    isError: entitlementsError,
+  } = useGetEntitlementsQuery();
 
   const [fetchEnrollments, { data, isFetching, isLoading, isError }] =
     useLazyGetMyEnrollmentsQuery();
@@ -68,9 +37,9 @@ export function MyCoursesPageContent() {
     if (!data?.data) return;
     const mapped = mapEnrollmentsToCourses(data.data);
     if (page === 1) {
-      setCourses(mapped);
+      setEnrollmentCourses(mapped);
     } else {
-      setCourses((prev) => {
+      setEnrollmentCourses((prev) => {
         const seen = new Set(prev.map((c) => c.courseId));
         const next = mapped.filter((c) => !seen.has(c.courseId));
         return [...prev, ...next];
@@ -78,18 +47,72 @@ export function MyCoursesPageContent() {
     }
   }, [data, page]);
 
+  const entitlementCourses = useMemo(
+    () => mapEntitlementsToCourses(entitlementsResponse?.data ?? []),
+    [entitlementsResponse?.data],
+  );
+
+  const mergedCourses = useMemo(
+    () =>
+      mergeEnrollmentAndEntitlements(enrollmentCourses, entitlementCourses),
+    [enrollmentCourses, entitlementCourses],
+  );
+
   const pagination = data?.pagination;
   const hasNextPage = pagination?.hasNextPage ?? false;
-  const total = pagination?.total;
-  const isInitialLoading = (isLoading || isFetching) && page === 1;
+
+  const enrollmentsFirstPageBusy =
+    page === 1 && (isLoading || isFetching);
+  const isInitialLoading =
+    enrollmentsFirstPageBusy || entitlementsLoading;
+
   const isLoadingMore = isFetching && page > 1;
+
+  const loadFailedPartial =
+    !isInitialLoading &&
+    mergedCourses.length > 0 &&
+    (isError || entitlementsError);
+
+  const bothLoadFailed =
+    !isInitialLoading &&
+    mergedCourses.length === 0 &&
+    isError &&
+    entitlementsError;
+
+  const enrollmentFailedOnly =
+    !isInitialLoading &&
+    mergedCourses.length === 0 &&
+    isError &&
+    !entitlementsError;
+
+  const entitlementsFailedOnly =
+    !isInitialLoading &&
+    mergedCourses.length === 0 &&
+    entitlementsError &&
+    !isError;
+
+  const showEmptyLibrary =
+    !isInitialLoading &&
+    mergedCourses.length === 0 &&
+    !bothLoadFailed &&
+    !enrollmentFailedOnly &&
+    !entitlementsFailedOnly;
 
   return (
     <div className="space-y-8">
-      {typeof total === "number" && total > 0 && (
+      {mergedCourses.length > 0 && (
         <p className="text-body-md text-muted">
-          <span className="font-semibold text-foreground">{total}</span>
-          {total === 1 ? " course" : " courses"} enrolled
+          <span className="font-semibold text-foreground">
+            {mergedCourses.length}
+          </span>
+          {mergedCourses.length === 1 ? " course" : " courses"} in your library
+        </p>
+      )}
+
+      {loadFailedPartial && (
+        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-body-md text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/40 dark:text-amber-100">
+          Some data could not be refreshed. What you see below may be
+          incomplete.
         </p>
       )}
 
@@ -111,7 +134,19 @@ export function MyCoursesPageContent() {
         </div>
       )}
 
-      {isError && !isInitialLoading && (
+      {bothLoadFailed && (
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 dark:border-red-900/40 dark:bg-red-950/30">
+          <p className="font-semibold text-red-800 dark:text-red-200">
+            Something went wrong
+          </p>
+          <p className="mt-1 text-body-md text-red-700/90 dark:text-red-300/90">
+            We couldn&apos;t load your courses or purchase access. Please try
+            again in a moment.
+          </p>
+        </div>
+      )}
+
+      {enrollmentFailedOnly && (
         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 dark:border-red-900/40 dark:bg-red-950/30">
           <p className="font-semibold text-red-800 dark:text-red-200">
             Something went wrong
@@ -123,7 +158,19 @@ export function MyCoursesPageContent() {
         </div>
       )}
 
-      {!isInitialLoading && !isError && courses.length === 0 && (
+      {entitlementsFailedOnly && (
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 dark:border-red-900/40 dark:bg-red-950/30">
+          <p className="font-semibold text-red-800 dark:text-red-200">
+            Something went wrong
+          </p>
+          <p className="mt-1 text-body-md text-red-700/90 dark:text-red-300/90">
+            We couldn&apos;t load your purchase access. Enrolled courses may be
+            missing from this list.
+          </p>
+        </div>
+      )}
+
+      {showEmptyLibrary && (
         <div className="rounded-2xl border border-dashed border-border bg-surface/80 px-8 py-14 text-center shadow-elevation-sm">
           <span
             className="material-icons-outlined mb-4 inline-block text-5xl text-muted"
@@ -132,11 +179,11 @@ export function MyCoursesPageContent() {
             school
           </span>
           <h2 className="font-display text-xl font-bold text-foreground">
-            No enrolled courses yet
+            No courses in your library yet
           </h2>
           <p className="mx-auto mt-2 max-w-md text-body-md text-muted">
-            When you join a course, it will show up here so you can continue
-            learning anytime.
+            When you enroll in or purchase a course, it will show up here so you
+            can continue learning anytime.
           </p>
           <Link
             href="/courses"
@@ -147,13 +194,13 @@ export function MyCoursesPageContent() {
         </div>
       )}
 
-      {!isInitialLoading && !isError && courses.length > 0 && (
+      {!isInitialLoading && mergedCourses.length > 0 && (
         <>
           <ul
             className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
             role="list"
           >
-            {courses.map((course) => (
+            {mergedCourses.map((course) => (
               <li key={course.courseId}>
                 <DashboardContinueLearningCard
                   course={course}

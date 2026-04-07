@@ -1,28 +1,53 @@
 "use client";
 
-import { useEffect } from "react";
-import { useLazyGetMyEnrollmentsQuery } from "@/slices/enrollment";
-
+import { useMemo } from "react";
+import { useGetMyEnrollmentsQuery } from "@/slices/enrollment";
+import { useGetEntitlementsQuery } from "@/slices/courses";
+import { countMergedLibraryCourses } from "@/features/dashboard/lib/myLibraryMerge";
 import { DashboardProfileCard } from "./DashboardProfileCard";
 import { DashboardStatCard } from "./DashboardStatCard";
 
-
+/** Large enough for an accurate merged stat for typical libraries; "+" when more pages exist. */
+const ENROLLMENT_STAT_PAGE_LIMIT = 500;
 
 export function DashboardTopSection() {
-  const [fetchEnrollments, { data, isFetching, isError }] =
-    useLazyGetMyEnrollmentsQuery();
+  const {
+    data: enrollmentsResponse,
+    isLoading: enrollmentsLoading,
+    isFetching: enrollmentsFetching,
+  } = useGetMyEnrollmentsQuery({
+    type: "course",
+    page: 1,
+    limit: ENROLLMENT_STAT_PAGE_LIMIT,
+  });
 
-  useEffect(() => {
-    void fetchEnrollments({ type: "course", page: 1, limit: 1 });
-  }, [fetchEnrollments]);
+  const {
+    data: entitlementsResponse,
+    isLoading: entitlementsLoading,
+    isFetching: entitlementsFetching,
+  } = useGetEntitlementsQuery();
 
-  const courseTotal =
-    !isError && data?.success && data.pagination
-      ? data.pagination.total
-      : null;
+  const mergedCount = useMemo(
+    () =>
+      countMergedLibraryCourses(
+        enrollmentsResponse?.data ?? [],
+        entitlementsResponse?.data ?? [],
+      ),
+    [enrollmentsResponse?.data, entitlementsResponse?.data],
+  );
 
-  const coursesValue =
-    isFetching && courseTotal === null ? "…" : String(courseTotal ?? 0);
+  const hasMoreEnrollments =
+    enrollmentsResponse?.pagination?.hasNextPage ?? false;
+
+  const dataPending =
+    enrollmentsLoading ||
+    entitlementsLoading ||
+    (enrollmentsFetching && enrollmentsResponse === undefined) ||
+    (entitlementsFetching && entitlementsResponse === undefined);
+
+  const coursesValue = dataPending
+    ? "…"
+    : `${mergedCount}${hasMoreEnrollments ? "+" : ""}`;
 
   return (
     <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
