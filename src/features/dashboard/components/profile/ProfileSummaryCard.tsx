@@ -1,26 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
-
-import { useLazyGetMyEnrollmentsQuery } from "@/slices/enrollment";
-
+import { useMergedLibraryCourseCount } from "@/features/dashboard/hooks/useMergedLibraryCourseCount";
 import { DashboardProfileCard } from "../DashboardProfileCard";
 
 export function ProfileSummaryCard() {
-  const [fetchEnrollments, { data, isFetching, isError }] =
-    useLazyGetMyEnrollmentsQuery();
-
-  useEffect(() => {
-    void fetchEnrollments({ type: "course", page: 1, limit: 1 });
-  }, [fetchEnrollments]);
-
-  const courseCount =
-    !isError && data?.success && data.pagination
-      ? data.pagination.total
-      : null;
-
-  const coursesDisplay =
-    isFetching && courseCount === null ? "…" : String(courseCount ?? 0);
+  const { coursesDisplay } = useMergedLibraryCourseCount();
 
   return (
     <div>

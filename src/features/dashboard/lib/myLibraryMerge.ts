@@ -4,11 +4,28 @@ import type { Entitlement } from "@/slices/courses";
 
 const PLACEHOLDER_BANNER = "/images/placeholders/course-banner.jpg";
 
+/** One enrollment row per course `id`; prefers newest `updatedAt`. */
+function dedupeEnrollmentsByCourseId(
+  enrollments: EnrollmentSummary[],
+): EnrollmentSummary[] {
+  const byCourseId = new Map<string, EnrollmentSummary>();
+
+  for (const row of enrollments) {
+    if (!row.course) continue;
+    const id = row.course.id;
+    const prev = byCourseId.get(id);
+    if (!prev || row.updatedAt > prev.updatedAt) {
+      byCourseId.set(id, row);
+    }
+  }
+
+  return [...byCourseId.values()];
+}
+
 export function mapEnrollmentsToCourses(
   enrollments: EnrollmentSummary[],
 ): ContinueLearningCourse[] {
-  return enrollments
-    .filter((enrollment) => enrollment.course)
+  return dedupeEnrollmentsByCourseId(enrollments)
     .map((enrollment) => {
       const course = enrollment.course!;
 

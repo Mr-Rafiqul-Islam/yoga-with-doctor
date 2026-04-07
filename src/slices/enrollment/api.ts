@@ -168,7 +168,6 @@ export const enrollmentApi = createApi({
                 { type: "Enrollments", id: "LIST" },
               ]
             : [{ type: "Enrollments", id: "LIST" }],
-        
       }
     ),
 
@@ -185,6 +184,7 @@ export const enrollmentApi = createApi({
         method: "POST",
         body,
       }),
+      invalidatesTags: [{ type: "Enrollments", id: "LIST" }],
     }),
   }),
 });
