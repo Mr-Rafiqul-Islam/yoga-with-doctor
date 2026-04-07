@@ -16,7 +16,7 @@ const NAV_ITEMS = [
 
 const LIBRARY_SUB_ITEMS = [
   { href: "/dashboard/library/saved-articles", label: "Saved Articles" },
-  { href: "/dashboard/library/downloads", label: "Downloads" },
+  // { href: "/dashboard/library/downloads", label: "Downloads" },
 ] as const;
 
 const BOTTOM_NAV_ITEMS = [
