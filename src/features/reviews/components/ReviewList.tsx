@@ -7,6 +7,8 @@ import { useAppSelector } from "@/stores";
 import { useCheckCourseAccessQuery } from "@/slices/courses";
 import { ReviewCard } from "./ReviewCard";
 import { ReviewForm } from "./ReviewForm";
+import { useLazyGetMyEnrollmentsQuery } from "@/slices/enrollment";
+import { useEffect, useMemo } from "react";
 
 interface ReviewListProps {
   reviews: Review[];
@@ -43,12 +45,26 @@ export function ReviewList({
   const { data: accessData } = useCheckCourseAccessQuery(courseId ?? "", {
     skip: !courseId || !isAuthenticated,
   });
+  const [fetchEnrollments, { data: enrollmentsData }] =
+    useLazyGetMyEnrollmentsQuery();
+
+  useEffect(() => {
+    if (!isAuthenticated || !courseId) return;
+    void fetchEnrollments({ type: "course", page: 1, limit: 100 });
+  }, [fetchEnrollments, isAuthenticated, courseId]);
+
+  const isCourseEnrolled = useMemo(() => {
+    if (!isAuthenticated) return false;
+    return (enrollmentsData?.data ?? []).some(
+      (e) => e.type === "course" && e.course?.id === courseId,
+    );
+  }, [isAuthenticated, enrollmentsData, courseId]);
+
   const hasAccessFromApi = accessData?.data?.hasAccess ?? false;
   const isUnlocked = !!courseId && unlockedCourseIds.includes(courseId);
-  const effectiveEnrolled = isAuthenticated && (hasAccessFromApi || isUnlocked);
+  const effectiveEnrolled = isAuthenticated && (hasAccessFromApi || isUnlocked) && isCourseEnrolled;
   const canPostReview =
-    isAuthenticated &&
-    (courseId ? effectiveEnrolled : Boolean(isEnrolled));
+    isAuthenticated && (courseId ? effectiveEnrolled : Boolean(isEnrolled));
 
   return (
     <div className="space-y-6">
@@ -90,7 +106,12 @@ export function ReviewList({
       ) : !canPostReview ? (
         <div className="rounded-xl border border-border bg-surface p-5 text-center dark:border-gray-800 dark:bg-surface">
           <p className="text-sm text-muted">
-            Enroll in this content to leave a review.
+            Enroll in this content to leave a review. To enroll, please click
+            the play icon{" "}
+            {courseId
+              ? "of the first lesson of your PAID OR FREE course in Course lesson page"
+              : "in the video"}
+            .
           </p>
         </div>
       ) : null}

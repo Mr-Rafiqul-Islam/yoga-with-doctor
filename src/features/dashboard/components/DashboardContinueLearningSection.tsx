@@ -118,7 +118,7 @@ export function DashboardContinueLearningSection() {
       {!isLoadingState && !isError && courses.length === 0 && (
         <p className="text-sm text-muted">
           You haven&apos;t enrolled in any courses yet. Start your first course
-          to see it here.
+          to see it here. To enroll, please click the play icon in the first lesson of your PAID OR FREE course.
         </p>
       )}
 
