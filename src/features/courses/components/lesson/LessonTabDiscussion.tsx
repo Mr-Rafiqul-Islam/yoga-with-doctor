@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useMemo, useState, type FormEvent } from "react";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { useAppSelector } from "@/stores/hooks";

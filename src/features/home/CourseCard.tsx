@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Modal } from "@/components/Modal";
+import { CourseCatalogCardCta } from "@/features/courses/components/CourseCatalogCardCta";
 
 export type CourseCardProps = {
   title: string;
@@ -25,8 +26,8 @@ export type CourseCardProps = {
   slug?: string;
   /** Override detail link (used when slug not set) */
   href?: string;
-  /** When true, show "Details" instead of "Enroll Now" */
-  isEnrolled?: boolean;
+  courseId?: string;
+  access?: "FREE" | "PAID" | "PUBLIC" | "PREMIUM";
 };
 
 const IMAGE_BADGE_STYLES = {
@@ -55,21 +56,11 @@ export function CourseCard({
   imageAlt,
   slug,
   href = "/courses",
-  isEnrolled = false,
+  courseId,
+  access,
 }: CourseCardProps) {
   const linkHref = slug ? `/courses/${slug}` : href;
-  const isAuthenticated = false; // Auth to be reimplemented
   const [showLoginModal, setShowLoginModal] = useState(false);
-
-  const handleEnrollClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!isAuthenticated) {
-      setShowLoginModal(true);
-    } else {
-      // Future: open enroll / checkout flow
-    }
-  };
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl bg-surface shadow-elevation-sm transition-all hover:shadow-elevation-md dark:bg-gray-800 sm:flex-row">
@@ -144,19 +135,12 @@ export function CourseCard({
               <span className="text-xl font-bold text-foreground dark:text-white">
                 {price}
               </span>
-              {isEnrolled ? (
-                <span className="rounded-lg border border-border bg-gray-100 px-4 py-2 text-sm font-medium text-foreground dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                  Details
-                </span>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleEnrollClick}
-                  className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-                >
-                  Enroll Now
-                </button>
-              )}
+              <CourseCatalogCardCta
+                courseId={courseId}
+                slug={slug}
+                access={access}
+                onRequireLogin={() => setShowLoginModal(true)}
+              />
             </div>
           </div>
         </div>

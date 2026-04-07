@@ -1,48 +1,91 @@
-import Link from "next/link";
-import { CourseCard } from "./CourseCard";
+"use client";
 
-const TRENDING_COURSES = [
-  {
-    title: "30 Days Morning Challenge",
-    description:
-      "Transform your morning routine completely with this structured 4-week program designed to boost energy.",
-    instructorName: "Dr. Sarah West",
-    instructorTitle: "Yoga Therapist",
-    instructorAvatarSrc:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCcCPXblS8FdKk_trqEsEscmah-35VqgwkRX_bvp_bmBDKLHrRxNJH7DTuV-j4mdjK7BqjYOlF2MFFVSDoo6BMFqlB_XwL4gWJxx-WHDIVECFZ2kIwyWxS_miy3FrdDyo8TT6nDzAHqdfbIcfgt5H65XCDXaWySLEhfXXPZ2wKoh5kvvY8tNSetwYaftrF-67lB9A5faoB2ahLwTdw7Hs-NWfRk2cgojoOwtF2svDzWejtly4w90hBuSnUYbUDgV25ZP3mwWkcILQ",
-    price: "৳ 2,500",
-    slug: "30-days-morning-challenge",
-    imageBadge: "BESTSELLER",
-    imageBadgeVariant: "green" as const,
-    contentTag: "New Course",
-    contentTagVariant: "blue" as const,
-    rating: "4.9",
+import Link from "next/link";
+import { useMemo } from "react";
+import { CourseCard, type CourseCardProps } from "./CourseCard";
+import {
+  useGetAllTypeCoursesQuery,
+  type AllTypeCourseItem,
+} from "@/slices/courses";
+import { pickPrimaryCategory } from "@/lib/pickPrimaryCategory";
+
+const FALLBACK_INSTRUCTOR_AVATAR =
+  "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-About.jpeg";
+const FALLBACK_PRICE = "$29.00";
+const TRENDING_LIMIT = 2;
+
+function formatLevelLabel(level: string): string | null {
+  const t = level.trim();
+  if (!t) return null;
+  return t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
+}
+
+function mapCourseToCardProps(course: AllTypeCourseItem): CourseCardProps {
+  const firstProduct = course.products?.[0];
+  const productPrice = firstProduct?.price ?? null;
+  const productCurrency = firstProduct?.currency ?? null;
+  const isFreeAccess =
+    course.access === "FREE" || course.access === "PUBLIC";
+
+  const price =
+    productPrice != null && productCurrency
+      ? `${productCurrency} ${productPrice.toFixed(2)}`
+      : isFreeAccess
+        ? "Free"
+        : FALLBACK_PRICE;
+
+  const primaryCategory = pickPrimaryCategory(course.category);
+  const levelLabel = formatLevelLabel(course.level ?? "");
+  const instructorTitle =
+    primaryCategory ?? levelLabel ?? "Yoga Instructor";
+
+  const rating =
+    course.avgRating != null && course.avgRating > 0
+      ? course.avgRating.toFixed(1)
+      : undefined;
+
+  const description =
+    course.description?.trim() ||
+    "Explore this course on Yoga with Doctor.";
+
+  return {
+    title: course.title,
+    description,
+    instructorName: course.instructorName || "Yoga with Doctor",
+    instructorTitle,
+    instructorAvatarSrc: FALLBACK_INSTRUCTOR_AVATAR,
+    price,
+    courseId: course.id,
+    access: course.access,
+    slug: course.slug,
     bannerImage:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAl5sh3m1JkzS6vXJf1AiHbQ7HbkwXmogEuoUNu89BY4FiNl-Jt6VNdrATCw48Ac6bKq6C1YvGUXzH96rvEzBziDcgVzL-pJjtdJcVx_p1yD10XgC9c0VDiOyesOlruYCZj4p22QmZ5AKgFe3EQI6zrfWtB8yFNpLb612L9bPIC-yOtQsP4AyS0ZuSi-X8HYLGenWyxVeOwjZ1ffveWdIp1tfaU_SkZM3SyEqvwCFiTK37yuKpKL9rjVPo_Ksy0y246nsk76c2SCg",
-    imageAlt: "30 Days Morning Challenge",
-  },
-  {
-    title: "Spine Health & Posture",
-    description:
-      "Correct posture imbalances and alleviate chronic back pain with targeted movements.",
-    instructorName: "Dr. James Lee",
-    instructorTitle: "Orthopedic Specialist",
-    instructorAvatarSrc:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAaeIKDB_CNf-nNcubY2BP5dpybYevP51rzL3_wgmphX7WM_6--LZXN2So9gXdUPQircQ2wX7QTYbYGQ6ZkbSVLRoicMc0apT2QMgCjoLR4I_1yZ5HTUa8KytSfQPqQuhoBoFEVbluPC6DafejugL3Pp4clr_1d5W9lI-SSdwNMNKHXpYY8gsQH7GHqZWtDK6ytlAu705M3KLVO3bW_-HAeeMLrnsmIkCvYUyYM9Mc2ubvN-mQ8t75gfc3Q7qRW7WX9tHBvM0f8kQ",
-    price: "৳ 3,200",
-    slug: "spine-health-posture",
-    imageBadge: "MEDICAL INSIGHT",
-    imageBadgeVariant: "blue" as const,
-    contentTag: "Updated",
-    contentTagVariant: "purple" as const,
-    rating: "4.8",
-    bannerImage:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCXenBRNUIpbGZ3QkXPBagzXQtePaEveSt8c589bfMqRryVB8OmOtnJq6FYFvqhlqTZ3v2XIs5OXZnHV0ce8s_blNR0mnvMtRNBgpt40NzcVo8HWxU_JV5yaoQan-IuBUrZCbdhsjI03mCEk7DeohAKGa4MnBydTcmMBefwrHD_bLJk0Af4qV2S0e5MI3jM9eK48gzaDK-JEAhkGCZGMkJCkeGRvXUOZh4Xm3mB5RbGoaURhOdrnmuTc6umsO7g2p1pbJt_iaaJUA",
-    imageAlt: "Spine Health & Posture",
-  },
-];
+      course.bannerUrl ??
+      "https://via.placeholder.com/640x360.png?text=Course",
+    imageAlt: course.title,
+    imageBadge: "POPULAR",
+    imageBadgeVariant: "green",
+    rating,
+  };
+}
 
 export function TrendingCoursesSection() {
+  const { data, isLoading, isFetching } = useGetAllTypeCoursesQuery();
+  const showSkeleton = isLoading || isFetching;
+
+  const cardProps = useMemo(() => {
+    const raw = data?.data?.courses ?? [];
+    const sorted = [...raw]
+      .filter((c) => c.isActive && c.access !== "PREMIUM")
+      .sort((a, b) => {
+        const rc = (b.ratingCount ?? 0) - (a.ratingCount ?? 0);
+        if (rc !== 0) return rc;
+        return (b.avgRating ?? 0) - (a.avgRating ?? 0);
+      })
+      .slice(0, TRENDING_LIMIT);
+
+    return sorted.map((course) => mapCourseToCardProps(course));
+  }, [data?.data?.courses]);
+
   return (
     <section
       className="mx-auto mb-24 max-w-7xl px-4 sm:px-6 lg:px-8"
@@ -62,15 +105,22 @@ export function TrendingCoursesSection() {
         </div>
         <Link
           href="/courses"
-          className="shrink-0 text-sm font-medium text-primary transition-colors hover:text-primary-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-radius-sm dark:text-primary"
+          className="shrink-0 rounded-radius-sm text-sm font-medium text-primary transition-colors hover:text-primary-variant focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:text-primary"
         >
-          View Catalog
+          View All
         </Link>
       </div>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-        {TRENDING_COURSES.map((course) => (
-          <CourseCard key={course.title} {...course} />
-        ))}
+        {showSkeleton
+          ? Array.from({ length: TRENDING_LIMIT }).map((_, i) => (
+              <div
+                key={i}
+                className="h-72 animate-pulse rounded-2xl bg-gray-200 dark:bg-gray-700 sm:h-64"
+              />
+            ))
+          : cardProps.map((course) => (
+              <CourseCard key={course.slug ?? course.title} {...course} />
+            ))}
       </div>
     </section>
   );
