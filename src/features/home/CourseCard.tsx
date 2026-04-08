@@ -61,6 +61,7 @@ export function CourseCard({
 }: CourseCardProps) {
   const linkHref = slug ? `/courses/${slug}` : href;
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const saniTizeDescription = description.replace(/<[^>]*>?/g, '');
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl bg-surface shadow-elevation-sm transition-all hover:shadow-elevation-md dark:bg-gray-800 sm:flex-row">
@@ -110,7 +111,7 @@ export function CourseCard({
               {title}
             </h3>
             <p className="mb-4 line-clamp-2 text-sm text-muted dark:text-gray-400">
-              {description}
+              {saniTizeDescription}
             </p>
           </div>
           <div>
