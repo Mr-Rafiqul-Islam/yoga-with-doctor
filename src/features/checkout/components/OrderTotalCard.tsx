@@ -34,7 +34,7 @@ export function OrderTotalCard({
             </span>
           </div>
           <div className="flex items-center justify-between text-muted">
-            <span>Tax (8%)</span>
+            <span>Tax (0%)</span>
             <span className="font-medium text-foreground">
               {formatCheckoutPrice(tax, currency)}
             </span>

@@ -50,7 +50,7 @@ export function PaymentProviderSelect({ value, onChange, disabled }: PaymentProv
               key={opt.id}
               htmlFor={inputId}
               className={[
-                "relative flex cursor-pointer items-start gap-4 rounded-xl border-2 border-gray-100 bg-white p-4 transition-all dark:border-gray-700 dark:bg-surface-dark/80",
+                "relative flex cursor-pointer items-start gap-4 rounded-xl border-2 border-gray-100 bg-white p-4 transition-all dark:border-gray-700 dark:bg-surface",
                 disabled ? "cursor-not-allowed opacity-60" : "hover:border-gray-200 dark:hover:border-gray-600",
                 checked && opt.id === "SSL" && "border-primary ring-2 ring-primary/20",
                 checked && opt.id === "BKASH" && "border-[#E2136E] ring-2 ring-[#E2136E]/25",

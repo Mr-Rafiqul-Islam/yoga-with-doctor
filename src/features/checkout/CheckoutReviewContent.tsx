@@ -82,7 +82,7 @@ export function CheckoutReviewContent() {
   const currency = courseResponse?.data?.course?.productData?.currency ?? "BDT";
 
   const subtotal = orderItem.price;
-  const tax = Math.round(subtotal * CHECKOUT_REVIEW.taxRate * 100) / 100;
+  const tax = Math.round(subtotal * 0 * 100) / 100;
 
   const handleApplyPromo = () => {
     setDiscountApplied(0);
