@@ -30,11 +30,11 @@ export function DashboardContinueLearningCard({
 
   return (
     <article
-      className={`group rounded-2xl border border-border bg-surface shadow-elevation-sm transition-shadow hover:shadow-elevation-md ${layoutClass}`}
+      className={`group flex h-full flex-col rounded-2xl border border-border bg-surface shadow-elevation-sm transition-shadow hover:shadow-elevation-md ${layoutClass}`}
     >
       <Link
         href={course.slug ? `/courses/${course.slug}/lesson` : "/courses"}
-        className="block"
+        className="flex h-full min-h-0 flex-1 flex-col"
       >
         <div className="relative aspect-video overflow-hidden rounded-t-2xl">
           {course.bannerImage && (
@@ -72,27 +72,20 @@ export function DashboardContinueLearningCard({
             </span>
           )}
         </div>
-        <div className="p-5">
-          <h3 className="mb-2 line-clamp-2 font-display text-lg font-bold text-foreground group-hover:text-primary">
+        <div className="flex flex-1 flex-col p-5">
+          <h3 className="mb-2 line-clamp-2 min-h-[2lh] font-display text-lg font-bold leading-snug text-foreground group-hover:text-primary">
             {course.title}
           </h3>
           <p className="mb-4 text-body-md text-muted">
             {course.instructorName} • {course.category}
           </p>
-          {progressPercent > 0 ? (
-            <ProgressBar
-              variant="compact"
-              value={progressPercent}
-              leftLabel="Progress"
-              rightLabel={`${progressPercent}%`}
-              ariaLabel={`${course.title} progress`}
-            />
-          ) : (
-            <div className="flex items-center justify-between text-caption text-muted">
-              <span>Not Started</span>
-              <span className="font-semibold">0%</span>
-            </div>
-          )}
+          <ProgressBar
+            variant="compact"
+            value={progressPercent}
+            leftLabel={progressPercent > 0 ? "Progress" : "Not Started"}
+            rightLabel={`${progressPercent}%`}
+            ariaLabel={`${course.title} progress`}
+          />
         </div>
       </Link>
     </article>

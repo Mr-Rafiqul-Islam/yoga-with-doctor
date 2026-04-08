@@ -201,7 +201,7 @@ export function MyCoursesPageContent() {
             role="list"
           >
             {mergedCourses.map((course) => (
-              <li key={course.courseId}>
+              <li key={course.courseId} className="h-full min-h-0">
                 <DashboardContinueLearningCard
                   course={course}
                   layout="grid"

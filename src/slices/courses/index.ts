@@ -178,7 +178,7 @@ export interface Entitlement {
       id: string;
       title: string;
       slug: string;
-      bannerImage: string | null;
+      bannerUrl: string | null;
       isActive: boolean;
     } | null;
     bundle: unknown | null;

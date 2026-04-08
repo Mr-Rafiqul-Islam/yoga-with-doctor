@@ -85,7 +85,7 @@ export function mapEntitlementsToCourses(
     const course = entitlement.product.course!;
 
     const bannerImage =
-      course.bannerImage?.trim() ? course.bannerImage : PLACEHOLDER_BANNER;
+      course.bannerUrl?.trim() ? course.bannerUrl : PLACEHOLDER_BANNER;
     const slug = course.slug || undefined;
 
     return {
