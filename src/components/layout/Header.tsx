@@ -196,6 +196,7 @@ export function Header() {
                 {displayUser.profilePicture ? (
                   <Image
                     src={displayUser.profilePicture}
+                    loading="eager"
                     alt=""
                     width={40}
                     height={40}
