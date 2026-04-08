@@ -1,11 +1,23 @@
+"use client";
+
 import Image from "next/image";
 import MuxPlayer from "@mux/mux-player-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import type MuxPlayerElement from "@mux/mux-player";
-import { useLazyGetVideoPlaybackTokenQuery } from "@/slices/videos";
+import { useMemo } from "react";
+import { watermarkContactFromUser } from "@/features/courses/lib/lessonVideoPlayerUtils";
+import { useAppSelector } from "@/stores/hooks";
+import { LessonVideoWatermark } from "./LessonVideoWatermark";
+import { useLessonMuxPlayback } from "./useLessonMuxPlayback";
+import { useLessonWatchProgress } from "./useLessonWatchProgress";
+import { useMovingVideoWatermark } from "./useMovingVideoWatermark";
 
-const WATCH_FLUSH_INTERVAL_SEC = 12;
-const MIN_FLUSH_SEC = 0.5;
+const MUX_PLAYER_STYLE = {
+  aspectRatio: "auto",
+  height: "100%",
+  width: "100%",
+  "--controls-backdrop-color": "transparent",
+  "--media-object-fit": "cover",
+  "--media-object-position": "center",
+} as const;
 
 export interface LessonVideoPlayerProps {
   thumbnailUrl: string;
@@ -41,89 +53,32 @@ export function LessonVideoPlayer({
   onLessonProgressStart,
   onLessonWatchDelta,
 }: LessonVideoPlayerProps) {
-  const [playbackId, setPlaybackId] = useState<string | undefined>(undefined);
-  const [playbackToken, setPlaybackToken] = useState<string | null>(null);
-  const [getPlaybackToken] = useLazyGetVideoPlaybackTokenQuery();
-  const [hasStarted, setHasStarted] = useState(false);
+  const user = useAppSelector((s) => s.auth.user);
+  const watermarkText = useMemo(() => watermarkContactFromUser(user), [user]);
+  const showWatermark = Boolean(watermarkText);
 
-  const lastPlaybackPosRef = useRef(0);
-  const pendingDeltaRef = useRef(0);
-  const startSentForLessonRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    lastPlaybackPosRef.current = 0;
-    pendingDeltaRef.current = 0;
-    startSentForLessonRef.current = null;
-  }, [lessonId, playbackId]);
-
-  const flushPending = useCallback(() => {
-    if (
-      !progressEnabled ||
-      !lessonId ||
-      !onLessonWatchDelta ||
-      pendingDeltaRef.current < MIN_FLUSH_SEC
-    ) {
-      pendingDeltaRef.current = 0;
-      return;
-    }
-    const send = pendingDeltaRef.current;
-    pendingDeltaRef.current = 0;
-    onLessonWatchDelta(lessonId, send);
-  }, [lessonId, progressEnabled, onLessonWatchDelta]);
-
-  useEffect(() => () => flushPending(), [flushPending]);
-
-  useEffect(() => {
-    // Fetch playback token for this lesson's video when it's ready
-    if (videoId && muxPlaybackId && videoStatus === "READY") {
-      getPlaybackToken(videoId)
-        .unwrap()
-        .then((result: { success?: boolean; data?: { playbackId: string; playbackToken?: string | null } }) => {
-          if (result?.success && result.data) {
-            setPlaybackId(result.data.playbackId);
-            setPlaybackToken(result.data.playbackToken || null);
-          }
-        })
-        .catch(() => {
-          setPlaybackId(muxPlaybackId);
-          setPlaybackToken(null);
-        });
-    } else if (muxPlaybackId) {
-      setPlaybackId(muxPlaybackId);
-      setPlaybackToken(null);
-    } else {
-      setPlaybackId(undefined);
-      setPlaybackToken(null);
-    }
-  }, [videoId, muxPlaybackId, videoStatus, getPlaybackToken]);
-
-  const handleTimeUpdate = useCallback(
-    (e: Event) => {
-      if (!progressEnabled || !lessonId || !onLessonWatchDelta) return;
-      const media = e.target as MuxPlayerElement;
-      const t = media.currentTime;
-      const prev = lastPlaybackPosRef.current;
-      if (t < prev - 0.25) {
-        lastPlaybackPosRef.current = t;
-        return;
-      }
-      const d = t - prev;
-      lastPlaybackPosRef.current = t;
-      if (d <= 0) return;
-      pendingDeltaRef.current += d;
-      if (pendingDeltaRef.current >= WATCH_FLUSH_INTERVAL_SEC) {
-        const send = pendingDeltaRef.current;
-        pendingDeltaRef.current = 0;
-        onLessonWatchDelta(lessonId, send);
-      }
-    },
-    [lessonId, progressEnabled, onLessonWatchDelta]
+  const { playbackId, playbackToken } = useLessonMuxPlayback(
+    videoId,
+    muxPlaybackId,
+    videoStatus
   );
+
+  const watermarkPosition = useMovingVideoWatermark(showWatermark);
+
+  const { handleTimeUpdate, flushPending, handlePlay } = useLessonWatchProgress({
+    lessonId,
+    playbackId,
+    progressEnabled,
+    onFirstPlay,
+    onLessonProgressStart,
+    onLessonWatchDelta,
+  });
 
   return (
     <section
       aria-label="Lesson video"
       className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-elevation-md"
+      onContextMenu={(e) => e.preventDefault()}
     >
       {playbackId ? (
         <MuxPlayer
@@ -135,31 +90,10 @@ export function LessonVideoPlayer({
           autoPlay={false}
           playsInline
           onTimeUpdate={handleTimeUpdate}
-          onPlay={() => {
-            if (!hasStarted) {
-              setHasStarted(true);
-              onFirstPlay?.();
-            }
-            if (
-              progressEnabled &&
-              lessonId &&
-              onLessonProgressStart &&
-              startSentForLessonRef.current !== lessonId
-            ) {
-              startSentForLessonRef.current = lessonId;
-              onLessonProgressStart(lessonId);
-            }
-          }}
+          onPlay={handlePlay}
           onPause={flushPending}
           onEnded={flushPending}
-          style={{
-            aspectRatio: "auto",
-            height: "100%",
-            width: "100%",
-            "--controls-backdrop-color": "transparent",
-            "--media-object-fit": "cover",
-            "--media-object-position": "center",
-          }}
+          style={MUX_PLAYER_STYLE}
         />
       ) : (
         <Image
@@ -171,6 +105,7 @@ export function LessonVideoPlayer({
           priority
         />
       )}
+      <LessonVideoWatermark text={watermarkText} position={watermarkPosition} />
     </section>
   );
 }
