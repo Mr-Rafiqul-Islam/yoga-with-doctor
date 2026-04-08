@@ -1,16 +1,29 @@
 "use client";
 
 import { useCallback, useMemo, useState, type FormEvent } from "react";
-import Image from "next/image";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import {
+  answersForQuestion,
+  answerParticipantLabel,
+  formatAnswerTimestamp,
+  formatDiscDate,
+  getFetchErrorMessage,
+  LESSON_DISCUSSION_FILTERS,
+  LESSON_DISCUSSION_PAGE_SIZE,
+  questionCardAccentClass,
+  questionParticipantLabel,
+  replyShellClasses,
+} from "@/features/courses/lib/lessonTabDiscussionUtils";
+import {
+  DiscussionAuthorAvatar,
+  RoleBadge,
+} from "@/features/courses/components/lesson/LessonTabDiscussionWidgets";
 import { useAppSelector } from "@/stores/hooks";
 import {
   useCreateCourseDiscussionAnswerMutation,
   useCreateCourseDiscussionQuestionMutation,
   useGetCourseDiscussionChannelQuery,
   useGetCourseDiscussionQuestionsQuery,
-  type CourseDiscussionAnswer,
-  type CourseDiscussionAuthor,
   type CourseDiscussionQuestion,
   type CourseDiscussionQuestionFilterType,
   type CourseDiscussionQuestionsNormalized,
@@ -19,217 +32,6 @@ import {
 export interface LessonTabDiscussionProps {
   courseId?: string;
   lessonId?: string;
-}
-
-const FILTERS: { value: CourseDiscussionQuestionFilterType; label: string }[] = [
-  { value: "LATEST", label: "Latest" },
-  { value: "TOP", label: "Top" },
-  { value: "UNANSWERED", label: "Unanswered" },
-  { value: "SOLVED", label: "Solved" },
-  { value: "MY", label: "My questions" },
-];
-
-const PAGE_SIZE = 10;
-
-function getFetchErrorMessage(error: FetchBaseQueryError | undefined): string | null {
-  if (!error) return null;
-  const data = error.data;
-  if (data && typeof data === "object" && "error" in data) {
-    const msg = (data as { error?: unknown }).error;
-    if (typeof msg === "string") return msg;
-  }
-  if (data && typeof data === "object" && "message" in data) {
-    const msg = (data as { message?: unknown }).message;
-    if (typeof msg === "string") return msg;
-  }
-  return null;
-}
-
-function roleFallbackLabel(role: string | null | undefined): string {
-  const r = role?.toUpperCase();
-  if (r === "INSTRUCTOR") return "Instructor";
-  if (r === "MODERATOR") return "Moderator";
-  if (r === "USER") return "Member";
-  return "Member";
-}
-
-/** Question: always prefer display name when present. */
-function questionParticipantLabel(
-  author: CourseDiscussionAuthor | null | undefined
-): string {
-  const name = author?.name?.trim();
-  if (name) return name;
-  return roleFallbackLabel(author?.role ?? undefined);
-}
-
-/**
- * Answer: moderators are labeled by role (not personal name).
- * Others use name, then role fallback.
- */
-function answerParticipantLabel(
-  author: CourseDiscussionAuthor | null | undefined
-): string {
-  if (author?.role?.toUpperCase() === "MODERATOR") return "Moderator";
-  const name = author?.name?.trim();
-  if (name) return name;
-  return roleFallbackLabel(author?.role ?? undefined);
-}
-
-function authorProfileSrc(
-  author: CourseDiscussionAuthor | null | undefined
-): string | undefined {
-  const a = author?.profilePicture?.trim();
-  if (a) return a;
-  const legacy = author?.avatarUrl?.trim();
-  if (legacy) return legacy;
-  return undefined;
-}
-
-function avatarFallbackLetter(author: CourseDiscussionAuthor | null | undefined): string {
-  const name = author?.name?.trim();
-  if (name) return name.slice(0, 1).toUpperCase();
-  const r = author?.role?.toUpperCase();
-  if (r === "MODERATOR") return "M";
-  if (r === "INSTRUCTOR") return "I";
-  if (r === "USER") return "U";
-  return "?";
-}
-
-function avatarRingClass(role: string | null | undefined): string {
-  const r = role?.toUpperCase();
-  if (r === "MODERATOR") return "ring-amber-400/60 dark:ring-amber-500/50";
-  if (r === "INSTRUCTOR") return "ring-violet-400/60 dark:ring-violet-500/50";
-  return "ring-primary/35";
-}
-
-function replyShellClasses(role: string | null | undefined): string {
-  const r = role?.toUpperCase();
-  if (r === "MODERATOR") {
-    return "border-l-4 border-amber-500 bg-amber-50/60 dark:border-amber-500/80 dark:bg-amber-950/30";
-  }
-  if (r === "INSTRUCTOR") {
-    return "border-l-4 border-violet-500 bg-violet-50/50 dark:border-violet-500/80 dark:bg-violet-950/30";
-  }
-  return "border-l-4 border-primary/45 bg-muted/15 dark:bg-gray-900/35";
-}
-
-function questionCardAccentClass(role: string | null | undefined): string {
-  const r = role?.toUpperCase();
-  if (r === "MODERATOR") return "border-l-4 border-l-amber-500/80";
-  if (r === "INSTRUCTOR") return "border-l-4 border-l-violet-500/80";
-  return "";
-}
-
-function RoleBadge({
-  role,
-  suppressModeratorChip,
-}: {
-  role: string | null | undefined;
-  /** When the headline already shows "Moderator" (answers). */
-  suppressModeratorChip?: boolean;
-}) {
-  const r = role?.toUpperCase();
-  if (!r) return null;
-  if (r === "MODERATOR") {
-    if (suppressModeratorChip) return null;
-    return (
-      <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-900 dark:bg-amber-900/45 dark:text-amber-100">
-        Moderator
-      </span>
-    );
-  }
-  if (r === "USER") {
-    return (
-      <span className="rounded-full bg-slate-300 px-2 py-0.5 text-xs font-medium text-muted-foreground dark:bg-gray-800 dark:text-gray-300">
-        Student
-      </span>
-    );
-  }
-  if (r === "INSTRUCTOR") {
-    return (
-      <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-900 dark:bg-violet-900/45 dark:text-violet-100">
-        Instructor
-      </span>
-    );
-  }
-  return (
-    <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-      {r.charAt(0) + r.slice(1).toLowerCase()}
-    </span>
-  );
-}
-
-function DiscussionAuthorAvatar({
-  author,
-  size = "md",
-}: {
-  author?: CourseDiscussionAuthor | null;
-  size?: "sm" | "md";
-}) {
-  const [imgFailed, setImgFailed] = useState(false);
-  const url = authorProfileSrc(author);
-  const role = author?.role ?? undefined;
-  const ring = avatarRingClass(role ?? null);
-  const dim =
-    size === "sm" ? "h-8 w-8 min-h-8 min-w-8 text-body-xs" : "h-10 w-10 min-h-10 min-w-10 text-sm";
-  const initial = avatarFallbackLetter(author);
-
-  if (url && !imgFailed) {
-    return (
-      <span
-        className={`relative shrink-0 overflow-hidden rounded-full ring-2 ring-offset-2 ring-offset-surface dark:ring-offset-gray-950 ${ring} ${dim}`}
-      >
-        <Image
-          src={url}
-          alt=""
-          width={size === "sm" ? 32 : 40}
-          height={size === "sm" ? 32 : 40}
-          className="h-full w-full object-cover"
-          onError={() => setImgFailed(true)}
-        />
-      </span>
-    );
-  }
-
-  return (
-    <span
-      className={`flex shrink-0 items-center justify-center rounded-full bg-primary/15 font-semibold text-primary ring-2 ring-offset-2 ring-offset-surface dark:bg-primary/20 dark:ring-offset-gray-950 ${ring} ${dim}`}
-      aria-hidden
-    >
-      {initial}
-    </span>
-  );
-}
-
-function formatDiscDate(iso: string | null | undefined): string {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
-function formatAnswerTimestamp(iso: string | null | undefined): string {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true, 
-  });
-}
-
-function answersForQuestion(q: CourseDiscussionQuestion): CourseDiscussionAnswer[] {
-  const raw = q.answers;
-  if (!Array.isArray(raw)) return [];
-  return raw.filter((a) => a.isActive !== false);
 }
 
 export function LessonTabDiscussion({ courseId, lessonId }: LessonTabDiscussionProps) {
@@ -261,7 +63,7 @@ export function LessonTabDiscussion({ courseId, lessonId }: LessonTabDiscussionP
       ({
         courseId: courseId ?? "",
         page,
-        limit: PAGE_SIZE,
+        limit: LESSON_DISCUSSION_PAGE_SIZE,
         filterType,
       }) as const,
     [courseId, page, filterType]
@@ -483,7 +285,7 @@ export function LessonTabDiscussion({ courseId, lessonId }: LessonTabDiscussionP
 
           <div className="mt-8">
             <div className="mb-4 flex flex-wrap gap-2">
-              {FILTERS.map((f) => (
+              {LESSON_DISCUSSION_FILTERS.map((f) => (
                 <button
                   key={f.value}
                   type="button"
