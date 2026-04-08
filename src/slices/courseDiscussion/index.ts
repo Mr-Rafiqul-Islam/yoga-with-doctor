@@ -11,6 +11,8 @@ export type {
   CourseDiscussionChannel,
   CourseDiscussionChannelResponse,
   CourseDiscussionAnswer,
+  CourseDiscussionAuthor,
+  CourseDiscussionParticipantRole,
   CourseDiscussionQuestion,
   CourseDiscussionQuestionAuthor,
   CourseDiscussionQuestionsPagination,

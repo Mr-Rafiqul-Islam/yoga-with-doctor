@@ -29,12 +29,26 @@ export interface CourseDiscussionChannelResponse {
   error?: string;
 }
 
-export interface CourseDiscussionQuestionAuthor {
-  id?: string;
+/** Participant on a question or answer (community API). */
+export type CourseDiscussionParticipantRole =
+  | "USER"
+  | "INSTRUCTOR"
+  | "MODERATOR"
+  | (string & {});
+
+export interface CourseDiscussionAuthor {
+  id: string;
   name?: string | null;
+  profilePicture?: string | null;
+  role?: CourseDiscussionParticipantRole | null;
+  isActive?: boolean;
+  /** Alternate field; prefer profilePicture when both exist. */
   avatarUrl?: string | null;
   [key: string]: unknown;
 }
+
+/** @deprecated Use CourseDiscussionAuthor */
+export type CourseDiscussionQuestionAuthor = CourseDiscussionAuthor;
 
 /** Answer row nested on each question from GET .../questions (community shape). */
 export interface CourseDiscussionAnswer {
@@ -42,30 +56,45 @@ export interface CourseDiscussionAnswer {
   questionId: string;
   authorId: string;
   content: string;
+  parentAnswerId?: string | null;
+  mentionedUserIds?: string[] | null;
+  attachmentAssetIds?: string[] | null;
   isActive: boolean;
   isPinned: boolean;
   isBest: boolean;
+  tags?: string[] | null;
   likeCount: number;
   createdAt: string;
   updatedAt: string;
-  author?: CourseDiscussionQuestionAuthor | null;
+  author?: CourseDiscussionAuthor | null;
   [key: string]: unknown;
 }
 
+/** Question row from GET .../questions `data.questions[]`. */
 export interface CourseDiscussionQuestion {
   id: string;
+  channelId?: string;
+  authorId?: string;
   title?: string | null;
   content?: string | null;
-  answerCount?: number | null;
-  bestAnswerId?: string | null;
-  isSolved?: boolean | null;
-  isPinned?: boolean | null;
+  tags?: string[] | null;
   lessonId?: string | null;
+  mentionedUserIds?: string[] | null;
+  contextType?: string | null;
+  contextId?: string | null;
+  attachmentAssetIds?: string[] | null;
+  isPinned?: boolean | null;
+  isSolved?: boolean | null;
+  isActive?: boolean | null;
+  bestAnswerId?: string | null;
+  answerCount?: number | null;
+  likeCount?: number | null;
+  viewCount?: number | null;
+  lastActivityAt?: string | null;
   createdAt?: string | null;
   updatedAt?: string | null;
-  author?: CourseDiscussionQuestionAuthor | null;
-  user?: CourseDiscussionQuestionAuthor | null;
-  /** Nested replies when the API includes them on each question. */
+  author?: CourseDiscussionAuthor | null;
+  user?: CourseDiscussionAuthor | null;
   answers?: CourseDiscussionAnswer[] | null;
   [key: string]: unknown;
 }

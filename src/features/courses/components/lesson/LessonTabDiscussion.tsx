@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState, type FormEvent } from "react";
+import Image from "next/image";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { useAppSelector } from "@/stores/hooks";
 import {
@@ -9,6 +10,7 @@ import {
   useGetCourseDiscussionChannelQuery,
   useGetCourseDiscussionQuestionsQuery,
   type CourseDiscussionAnswer,
+  type CourseDiscussionAuthor,
   type CourseDiscussionQuestion,
   type CourseDiscussionQuestionFilterType,
   type CourseDiscussionQuestionsNormalized,
@@ -43,10 +45,160 @@ function getFetchErrorMessage(error: FetchBaseQueryError | undefined): string | 
   return null;
 }
 
-function authorLabel(q: CourseDiscussionQuestion): string {
-  const a = q.author ?? q.user;
-  if (a && typeof a.name === "string" && a.name.trim()) return a.name;
+function roleFallbackLabel(role: string | null | undefined): string {
+  const r = role?.toUpperCase();
+  if (r === "INSTRUCTOR") return "Instructor";
+  if (r === "MODERATOR") return "Moderator";
+  if (r === "USER") return "Member";
   return "Member";
+}
+
+/** Question: always prefer display name when present. */
+function questionParticipantLabel(
+  author: CourseDiscussionAuthor | null | undefined
+): string {
+  const name = author?.name?.trim();
+  if (name) return name;
+  return roleFallbackLabel(author?.role ?? undefined);
+}
+
+/**
+ * Answer: moderators are labeled by role (not personal name).
+ * Others use name, then role fallback.
+ */
+function answerParticipantLabel(
+  author: CourseDiscussionAuthor | null | undefined
+): string {
+  if (author?.role?.toUpperCase() === "MODERATOR") return "Moderator";
+  const name = author?.name?.trim();
+  if (name) return name;
+  return roleFallbackLabel(author?.role ?? undefined);
+}
+
+function authorProfileSrc(
+  author: CourseDiscussionAuthor | null | undefined
+): string | undefined {
+  const a = author?.profilePicture?.trim();
+  if (a) return a;
+  const legacy = author?.avatarUrl?.trim();
+  if (legacy) return legacy;
+  return undefined;
+}
+
+function avatarFallbackLetter(author: CourseDiscussionAuthor | null | undefined): string {
+  const name = author?.name?.trim();
+  if (name) return name.slice(0, 1).toUpperCase();
+  const r = author?.role?.toUpperCase();
+  if (r === "MODERATOR") return "M";
+  if (r === "INSTRUCTOR") return "I";
+  if (r === "USER") return "U";
+  return "?";
+}
+
+function avatarRingClass(role: string | null | undefined): string {
+  const r = role?.toUpperCase();
+  if (r === "MODERATOR") return "ring-amber-400/60 dark:ring-amber-500/50";
+  if (r === "INSTRUCTOR") return "ring-violet-400/60 dark:ring-violet-500/50";
+  return "ring-primary/35";
+}
+
+function replyShellClasses(role: string | null | undefined): string {
+  const r = role?.toUpperCase();
+  if (r === "MODERATOR") {
+    return "border-l-4 border-amber-500 bg-amber-50/60 dark:border-amber-500/80 dark:bg-amber-950/30";
+  }
+  if (r === "INSTRUCTOR") {
+    return "border-l-4 border-violet-500 bg-violet-50/50 dark:border-violet-500/80 dark:bg-violet-950/30";
+  }
+  return "border-l-4 border-primary/45 bg-muted/15 dark:bg-gray-900/35";
+}
+
+function questionCardAccentClass(role: string | null | undefined): string {
+  const r = role?.toUpperCase();
+  if (r === "MODERATOR") return "border-l-4 border-l-amber-500/80";
+  if (r === "INSTRUCTOR") return "border-l-4 border-l-violet-500/80";
+  return "";
+}
+
+function RoleBadge({
+  role,
+  suppressModeratorChip,
+}: {
+  role: string | null | undefined;
+  /** When the headline already shows "Moderator" (answers). */
+  suppressModeratorChip?: boolean;
+}) {
+  const r = role?.toUpperCase();
+  if (!r) return null;
+  if (r === "MODERATOR") {
+    if (suppressModeratorChip) return null;
+    return (
+      <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-900 dark:bg-amber-900/45 dark:text-amber-100">
+        Moderator
+      </span>
+    );
+  }
+  if (r === "USER") {
+    return (
+      <span className="rounded-full bg-slate-300 px-2 py-0.5 text-xs font-medium text-muted-foreground dark:bg-gray-800 dark:text-gray-300">
+        Student
+      </span>
+    );
+  }
+  if (r === "INSTRUCTOR") {
+    return (
+      <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-900 dark:bg-violet-900/45 dark:text-violet-100">
+        Instructor
+      </span>
+    );
+  }
+  return (
+    <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+      {r.charAt(0) + r.slice(1).toLowerCase()}
+    </span>
+  );
+}
+
+function DiscussionAuthorAvatar({
+  author,
+  size = "md",
+}: {
+  author?: CourseDiscussionAuthor | null;
+  size?: "sm" | "md";
+}) {
+  const [imgFailed, setImgFailed] = useState(false);
+  const url = authorProfileSrc(author);
+  const role = author?.role ?? undefined;
+  const ring = avatarRingClass(role ?? null);
+  const dim =
+    size === "sm" ? "h-8 w-8 min-h-8 min-w-8 text-body-xs" : "h-10 w-10 min-h-10 min-w-10 text-sm";
+  const initial = avatarFallbackLetter(author);
+
+  if (url && !imgFailed) {
+    return (
+      <span
+        className={`relative shrink-0 overflow-hidden rounded-full ring-2 ring-offset-2 ring-offset-surface dark:ring-offset-gray-950 ${ring} ${dim}`}
+      >
+        <Image
+          src={url}
+          alt=""
+          width={size === "sm" ? 32 : 40}
+          height={size === "sm" ? 32 : 40}
+          className="h-full w-full object-cover"
+          onError={() => setImgFailed(true)}
+        />
+      </span>
+    );
+  }
+
+  return (
+    <span
+      className={`flex shrink-0 items-center justify-center rounded-full bg-primary/15 font-semibold text-primary ring-2 ring-offset-2 ring-offset-surface dark:bg-primary/20 dark:ring-offset-gray-950 ${ring} ${dim}`}
+      aria-hidden
+    >
+      {initial}
+    </span>
+  );
 }
 
 function formatDiscDate(iso: string | null | undefined): string {
@@ -72,13 +224,6 @@ function formatAnswerTimestamp(iso: string | null | undefined): string {
     minute: "2-digit",
     hour12: true, 
   });
-}
-
-function answerAuthorLabel(a: CourseDiscussionAnswer): string {
-  const name = a.author?.name;
-  if (typeof name === "string" && name.trim()) return name.trim();
-  if (a.authorId) return `Student ${a.authorId.slice(0, 8)}...`;
-  return "Member";
 }
 
 function answersForQuestion(q: CourseDiscussionQuestion): CourseDiscussionAnswer[] {
@@ -403,22 +548,34 @@ export function LessonTabDiscussion({ courseId, lessonId }: LessonTabDiscussionP
                   const answerList = answersForQuestion(q);
                   const answerCountBadge = q.answerCount ?? answerList.length;
                   const open = openAnswerId === id;
+                  const qAuthor = q.author ?? q.user;
+                  const qLabel = questionParticipantLabel(qAuthor);
                   return (
                     <li
                       key={id}
-                      className="rounded-xl border border-border p-4 dark:border-gray-700"
+                      className={`rounded-xl border border-border p-4 dark:border-gray-700 ${questionCardAccentClass(qAuthor?.role ?? null)}`}
                     >
-                      <div className="flex flex-wrap items-start justify-between gap-2">
-                        <div>
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
                           <p className="font-display text-lg font-semibold text-foreground dark:text-white">
                             {title}
                           </p>
-                          <p className="mt-1 text-body-sm text-muted">
-                            {authorLabel(q)}
-                            {q.createdAt ? ` · ${formatDiscDate(q.createdAt)}` : ""}
-                          </p>
+                          <div className="mt-3 flex gap-3">
+                            <DiscussionAuthorAvatar author={qAuthor} size="md" />
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <p className="text-body-sm font-medium text-foreground dark:text-white">
+                                  {qLabel}
+                                </p>
+                                <RoleBadge role={qAuthor?.role ?? null} />
+                              </div>
+                              <p className="mt-0.5 text-xs text-muted">
+                                {q.createdAt ? formatDiscDate(q.createdAt) : ""}
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex shrink-0 flex-wrap justify-end gap-2">
                           {pinned && (
                             <span className="rounded bg-amber-100 px-2 py-0.5 text-body-xs font-medium text-amber-900 dark:bg-amber-900/40 dark:text-amber-100">
                               Pinned
@@ -468,25 +625,32 @@ export function LessonTabDiscussion({ courseId, lessonId }: LessonTabDiscussionP
                                 }
                               : {})}
                           >
-                          <ul className="space-y-4">
-                            {answerList.map((ans) => (
+                          <ul className="space-y-3">
+                            {answerList.map((ans) => {
+                              const aAuthor = ans.author;
+                              const aRole = aAuthor?.role ?? null;
+                              const aLabel = answerParticipantLabel(aAuthor);
+                              return (
                               <li
                                 key={ans.id}
-                                className="relative border-l-2 border-primary/35 pl-4"
+                                className={`relative rounded-r-lg py-3 pl-3 pr-2 ${replyShellClasses(aRole)}`}
                               >
                                 <div className="flex flex-wrap items-start justify-between gap-2">
-                                  <div className="flex min-w-0 items-center gap-2">
-                                    <span
-                                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-body-xs font-semibold text-primary"
-                                      aria-hidden
-                                    >
-                                      {(answerAuthorLabel(ans).slice(0, 1) || "?").toUpperCase()}
-                                    </span>
+                                  <div className="flex min-w-0 items-start gap-2">
+                                    <DiscussionAuthorAvatar author={aAuthor} size="sm" />
                                     <div className="min-w-0">
-                                      <p className="truncate text-body-sm font-medium text-foreground dark:text-white">
-                                        {answerAuthorLabel(ans)}
-                                      </p>
-                                      <p className="text-body-xs text-muted">
+                                      <div className="flex flex-wrap items-center gap-2">
+                                        <p className="truncate text-sm font-medium text-foreground dark:text-white">
+                                          {aLabel}
+                                        </p>
+                                        <RoleBadge
+                                          role={aRole}
+                                          suppressModeratorChip={
+                                            aRole?.toUpperCase() === "MODERATOR"
+                                          }
+                                        />
+                                      </div>
+                                      <p className="text-xs text-muted">
                                         {formatAnswerTimestamp(ans.createdAt)}
                                       </p>
                                     </div>
@@ -516,7 +680,8 @@ export function LessonTabDiscussion({ courseId, lessonId }: LessonTabDiscussionP
                                   {ans.content}
                                 </p>
                               </li>
-                            ))}
+                            );
+                            })}
                           </ul>
                           </div>
                         </div>
