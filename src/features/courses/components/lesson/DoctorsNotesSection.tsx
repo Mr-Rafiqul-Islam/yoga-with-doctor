@@ -1,18 +1,44 @@
 import type { DoctorNotes } from "@/features/courses/data/lessonPageData";
 
 export interface DoctorsNotesSectionProps {
+  /** Per-lesson copy from the course API, shown above the doctor's notes block. */
+  lessonDescription?: string | null;
   doctorNotes: DoctorNotes | null;
 }
 
 const BOLD_PHRASE = "proper form trumps depth";
 
-export function DoctorsNotesSection({ doctorNotes }: DoctorsNotesSectionProps) {
+export function DoctorsNotesSection({
+  lessonDescription,
+  doctorNotes,
+}: DoctorsNotesSectionProps) {
+  const descriptionText = lessonDescription?.trim() ?? "";
+  const showDescription = descriptionText.length > 0;
+
   return (
     <section
       id="overview"
       aria-labelledby="doctors-notes-heading"
       className="rounded-2xl border border-border bg-surface p-6 shadow-soft dark:border-gray-800 dark:bg-surface sm:p-8"
     >
+      {showDescription ? (
+        <div className="mb-8 border-b border-border pb-8 dark:border-gray-700">
+          <h3
+            id="lesson-description-heading"
+            className="mb-4 flex items-center gap-2 font-display text-xl font-bold text-foreground dark:text-white"
+          >
+            <span className="material-icons-outlined text-primary" aria-hidden>
+              article
+            </span>
+            About this lesson
+          </h3>
+          <div className="prose prose-lg max-w-none dark:prose-invert">
+            <p className="leading-relaxed whitespace-pre-wrap text-foreground/90 dark:text-gray-300">
+              {descriptionText}
+            </p>
+          </div>
+        </div>
+      ) : null}
       <h2
         id="doctors-notes-heading"
         className="mb-6 flex items-center gap-2 font-display text-2xl font-bold text-foreground dark:text-white"

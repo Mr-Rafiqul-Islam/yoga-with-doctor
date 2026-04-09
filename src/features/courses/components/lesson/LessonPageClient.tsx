@@ -184,6 +184,8 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
         }
       : null;
 
+    const currentLessonDescription = current?.lesson.description?.trim() || null;
+
     const currentRow = current ? lessonProgressById.get(current.lesson.id) : undefined;
     const currentLessonLocked = currentRow?.isLocked ?? current?.lesson.locked ?? false;
 
@@ -229,6 +231,7 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
       detailData,
       curriculum,
       currentLesson,
+      currentLessonDescription,
       currentMuxPlaybackId,
       currentVideoId,
       currentVideoStatus,
@@ -313,6 +316,7 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
     detailData,
     curriculum,
     currentLesson,
+    currentLessonDescription,
     currentMuxPlaybackId,
     currentVideoId,
     currentVideoStatus,
@@ -363,7 +367,12 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
           />
 
           <LessonDetailsTabs
-            overviewContent={<DoctorsNotesSection doctorNotes={null} />}
+            overviewContent={
+              <DoctorsNotesSection
+                lessonDescription={currentLessonDescription}
+                doctorNotes={null}
+              />
+            }
             resourcesContent={<LessonTabResources />}
             discussionContent={
               <LessonTabDiscussion
