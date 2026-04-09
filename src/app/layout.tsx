@@ -7,6 +7,7 @@ import { ToastToaster } from "@/components/ToastToaster";
 import { AppProviders } from "@/components/providers/AppProviders";
 import { QueryProvider } from "@/lib/query";
 import "./globals.css";
+// import InspectGuard from "@/components/layout/InspectGuard";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -72,6 +73,7 @@ export default function RootLayout({
       <body className="flex min-h-screen flex-col font-sans">
         <AppProviders>
           <QueryProvider>
+            {/* <InspectGuard /> */}
             <a
               href="#main-content"
               className="sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:block focus:h-auto focus:w-auto focus:overflow-visible focus:rounded-radius-sm focus:bg-primary focus:px-4 focus:py-2 focus:text-body-md focus:font-semibold focus:text-white focus:outline-none focus:[clip:auto] focus:m-0 focus:whitespace-normal"
