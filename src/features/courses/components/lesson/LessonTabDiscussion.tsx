@@ -24,7 +24,6 @@ import {
   useCreateCourseDiscussionQuestionMutation,
   useGetCourseDiscussionChannelQuery,
   useGetCourseDiscussionQuestionsQuery,
-  type CourseDiscussionQuestion,
   type CourseDiscussionQuestionFilterType,
   type CourseDiscussionQuestionsNormalized,
 } from "@/slices/courseDiscussion";
