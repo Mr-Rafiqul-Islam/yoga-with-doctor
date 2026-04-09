@@ -10,5 +10,5 @@ export const LESSON_VIDEO_SEEK_JUMP_TOLERANCE_SEC = 0.25;
 /** Reposition overlay on this interval while visible. */
 export const LESSON_VIDEO_WATERMARK_MOVE_MS = 10_000;
 
+/** Inset from player edges (each side), as fraction of width/height. */
 export const LESSON_VIDEO_WATERMARK_MIN_PCT = 10;
-export const LESSON_VIDEO_WATERMARK_SPAN_PCT = 70;

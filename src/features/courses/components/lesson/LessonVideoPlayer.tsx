@@ -70,7 +70,7 @@ export function LessonVideoPlayer({
     videoStatus
   );
 
-  const watermarkPosition = useMovingVideoWatermark(showWatermark);
+  const watermarkPosition = useMovingVideoWatermark(showWatermark, sectionRef, watermarkText);
 
   const { handleTimeUpdate, flushPending, handlePlay } = useLessonWatchProgress({
     lessonId,

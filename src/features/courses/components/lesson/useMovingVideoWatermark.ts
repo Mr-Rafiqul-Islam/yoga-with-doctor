@@ -1,32 +1,69 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useState, type RefObject } from "react";
 import type MuxPlayerElement from "@mux/mux-player";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+  type RefObject,
+} from "react";
 import {
   LESSON_VIDEO_WATERMARK_MIN_PCT,
   LESSON_VIDEO_WATERMARK_MOVE_MS,
-  LESSON_VIDEO_WATERMARK_SPAN_PCT,
 } from "./videoPlayerConstants";
 
+/** `top` / `left` CSS lengths (px), relative to the player container. */
 export interface WatermarkPositionPct {
   top: string;
   left: string;
 }
 
-function randomWatermarkPosition(): WatermarkPositionPct {
-  const t =
-    Math.floor(Math.random() * LESSON_VIDEO_WATERMARK_SPAN_PCT) +
-    LESSON_VIDEO_WATERMARK_MIN_PCT;
-  const l =
-    Math.floor(Math.random() * LESSON_VIDEO_WATERMARK_SPAN_PCT) +
-    LESSON_VIDEO_WATERMARK_MIN_PCT;
-  return { top: `${t}%`, left: `${l}%` };
-}
 type MuxWithMediaController = MuxPlayerElement & {
   mediaController?: { fullscreenElement?: HTMLElement | MuxPlayerElement } | null;
 };
 
 const MUX_FS_WIRE_MAX_FRAMES = 180;
+
+/** Matches `LessonVideoWatermark` typography (`bold` + `1.5rem` + `sans-serif`). */
+function measureWatermarkLabelPx(label: string): { width: number; height: number } {
+  if (typeof document === "undefined") {
+    return { width: 0, height: 0 };
+  }
+  const rootPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  const fontPx = 1.5 * rootPx;
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return { width: 0, height: Math.ceil(fontPx) };
+  }
+  ctx.font = `bold ${fontPx}px sans-serif`;
+  const metrics = ctx.measureText(label);
+  const width = Math.ceil(metrics.width);
+  const ascent = metrics.actualBoundingBoxAscent ?? fontPx * 0.72;
+  const descent = metrics.actualBoundingBoxDescent ?? fontPx * 0.28;
+  const height = Math.ceil(ascent + descent);
+  return { width, height };
+}
+
+function randomWatermarkPositionPx(containerW: number, containerH: number, label: string): WatermarkPositionPct {
+  const padX = containerW * (LESSON_VIDEO_WATERMARK_MIN_PCT / 100);
+  const padY = containerH * (LESSON_VIDEO_WATERMARK_MIN_PCT / 100);
+  const { width: tw, height: th } = measureWatermarkLabelPx(label);
+
+  const minLeft = padX;
+  const minTop = padY;
+  const maxLeft = containerW - padX - tw;
+  const maxTop = containerH - padY - th;
+
+  const spanLeft = Math.max(0, maxLeft - minLeft);
+  const spanTop = Math.max(0, maxTop - minTop);
+
+  const left = minLeft + Math.random() * spanLeft;
+  const top = minTop + Math.random() * spanTop;
+
+  return { left: `${Math.round(left)}px`, top: `${Math.round(top)}px` };
+}
 
 export function useLayoutEffectWithMuxFullscreen(
   muxRef: RefObject<MuxPlayerElement | null>,
@@ -71,20 +108,39 @@ export function useLayoutEffectWithMuxFullscreen(
   }, [active, fullscreenRootId]);
 }
 
-/** Periodically moves a pseudo-random overlay position (anti-screenshot). */
-export function useMovingVideoWatermark(active: boolean): WatermarkPositionPct {
-  const [position, setPosition] = useState<WatermarkPositionPct>(() =>
-    randomWatermarkPosition()
-  );
+/** Periodically moves the overlay; positions stay inside the player using measured label size (px). */
+export function useMovingVideoWatermark(
+  active: boolean,
+  containerRef: RefObject<HTMLElement | null>,
+  label: string
+): WatermarkPositionPct {
+  const [position, setPosition] = useState<WatermarkPositionPct>({ top: "0px", left: "0px" });
 
-  const tick = useCallback(() => setPosition(randomWatermarkPosition()), []);
+  const reposition = useCallback(() => {
+    const el = containerRef.current;
+    if (!el || !active || !label) return;
+    const w = el.clientWidth;
+    const h = el.clientHeight;
+    if (w < 2 || h < 2) return;
+    setPosition(randomWatermarkPositionPx(w, h, label));
+  }, [active, label, containerRef]);
+
+  useLayoutEffect(() => {
+    if (!active || !label) return;
+    const el = containerRef.current;
+    if (!el) return;
+
+    reposition();
+    const ro = new ResizeObserver(reposition);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [active, label, reposition]);
 
   useEffect(() => {
-    if (!active) return;
-    tick();
-    const id = window.setInterval(tick, LESSON_VIDEO_WATERMARK_MOVE_MS);
+    if (!active || !label) return;
+    const id = window.setInterval(reposition, LESSON_VIDEO_WATERMARK_MOVE_MS);
     return () => window.clearInterval(id);
-  }, [active, tick]);
+  }, [active, label, reposition]);
 
   return position;
 }
