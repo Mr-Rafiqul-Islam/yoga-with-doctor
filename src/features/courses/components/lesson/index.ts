@@ -6,7 +6,7 @@ export {
   type LessonDetailsTabsProps,
   type LessonTabId,
 } from "./LessonDetailsTabs";
-export { LessonTabResources } from "./LessonTabResources";
+export { LessonTabResources, type LessonTabResourcesProps } from "./LessonTabResources";
 export { LessonTabDiscussion, type LessonTabDiscussionProps } from "./LessonTabDiscussion";
 export { LessonTabCertificate } from "./LessonTabCertificate";
 export {

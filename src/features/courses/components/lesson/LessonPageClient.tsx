@@ -373,7 +373,12 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
                 doctorNotes={null}
               />
             }
-            resourcesContent={<LessonTabResources />}
+            resourcesContent={
+              <LessonTabResources
+                courseId={detailData.courseId}
+                lessonId={currentLesson?.id}
+              />
+            }
             discussionContent={
               <LessonTabDiscussion
                 courseId={detailData.courseId}
