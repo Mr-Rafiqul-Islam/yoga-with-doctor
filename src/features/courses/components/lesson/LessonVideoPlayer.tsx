@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import MuxPlayer from "@mux/mux-player-react";
-import { useMemo } from "react";
+import type MuxPlayerElement from "@mux/mux-player";
+import { useId, useMemo, useRef } from "react";
 import { watermarkContactFromUser } from "@/features/courses/lib/lessonVideoPlayerUtils";
 import { useAppSelector } from "@/stores/hooks";
 import { LessonVideoWatermark } from "./LessonVideoWatermark";
 import { useLessonMuxPlayback } from "./useLessonMuxPlayback";
 import { useLessonWatchProgress } from "./useLessonWatchProgress";
-import { useMovingVideoWatermark } from "./useMovingVideoWatermark";
+import { useLayoutEffectWithMuxFullscreen, useMovingVideoWatermark } from "./useMovingVideoWatermark";
 
 const MUX_PLAYER_STYLE = {
   aspectRatio: "auto",
@@ -18,6 +19,8 @@ const MUX_PLAYER_STYLE = {
   "--media-object-fit": "cover",
   "--media-object-position": "center",
 } as const;
+
+
 
 export interface LessonVideoPlayerProps {
   thumbnailUrl: string;
@@ -53,6 +56,10 @@ export function LessonVideoPlayer({
   onLessonProgressStart,
   onLessonWatchDelta,
 }: LessonVideoPlayerProps) {
+  const fullscreenRootId = `lesson-video-fs-${useId().replace(/:/g, "")}`;
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const muxPlayerRef = useRef<MuxPlayerElement | null>(null);
+
   const user = useAppSelector((s) => s.auth.user);
   const watermarkText = useMemo(() => watermarkContactFromUser(user), [user]);
   const showWatermark = Boolean(watermarkText);
@@ -74,21 +81,32 @@ export function LessonVideoPlayer({
     onLessonWatchDelta,
   });
 
+  /* Fullscreen must target the outer section so the watermark (sibling overlay) stays in the fullscreen subtree.
+   * Mux only applies `fullscreen-element` from the attribute when `mediaController` already exists; if the
+   * attribute is set earlier, it is skipped and never retried. We re-sync once the controller is ready. */
+  useLayoutEffectWithMuxFullscreen(muxPlayerRef, sectionRef, fullscreenRootId, Boolean(playbackId));
+
   return (
     <section
+      ref={sectionRef}
+      id={fullscreenRootId}
       aria-label="Lesson video"
       className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-elevation-md"
       onContextMenu={(e) => e.preventDefault()}
     >
       {playbackId ? (
+        /* fullscreenElement: section id; mediaController sync in useLayoutEffect for reliability */
         <MuxPlayer
+          ref={muxPlayerRef}
           className="h-full w-full"
           playbackId={playbackId}
           poster={thumbnailUrl}
           {...(playbackToken ? { tokens: { playback: playbackToken } } : {})}
+          fullscreenElement={fullscreenRootId}
           streamType="on-demand"
           autoPlay={false}
-          playsInline
+          disablePictureInPicture={true}
+          playsInline={true}
           onTimeUpdate={handleTimeUpdate}
           onPlay={handlePlay}
           onPause={flushPending}

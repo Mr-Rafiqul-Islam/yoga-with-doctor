@@ -12,7 +12,8 @@ const WRAPPER_STYLE: CSSProperties = {
   filter: "blur(0.5px)",
   textShadow: "1px 1px 2px black",
   whiteSpace: "nowrap",
-  zIndex: 10,
+  /* Above Mux / Media Chrome layers in fullscreen when the root is an ancestor of mux-player */
+  zIndex: 40,
   transition: "top 0.5s ease, left 0.5s ease",
   fontWeight: "bold",
   fontFamily: "sans-serif",
