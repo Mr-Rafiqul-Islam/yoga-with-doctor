@@ -118,7 +118,6 @@ const MORNING_SUNSHINE: CourseDetailData = {
     { icon: "description", text: "3 Downloadable resources" },
     { icon: "all_inclusive", text: "Full lifetime access" },
     { icon: "devices", text: "Access on mobile and desktop" },
-    { icon: "verified", text: "Certificate of completion" },
   ],
 };
 
@@ -128,7 +127,6 @@ export const DEFAULT_INCLUDES: CourseDetailData["includes"] = [
   { icon: "description", text: "3 Downloadable resources" },
   { icon: "all_inclusive", text: "Full lifetime access" },
   { icon: "devices", text: "Access on mobile and desktop" },
-  { icon: "verified", text: "Certificate of completion" },
 ];
 
 const COURSE_30_DAYS: CourseDetailData = {

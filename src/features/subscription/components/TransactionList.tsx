@@ -14,7 +14,7 @@ export function TransactionList({ transactions, seeAllHref }: TransactionListPro
   return (
     <section className="h-full rounded-3xl border border-gray-100 bg-surface p-6 shadow-card dark:border-gray-800 dark:bg-surface-dark">
       <div className="mb-6 flex items-center justify-between gap-4">
-        <h3 className="text-xl font-bold text-foreground">Transactions</h3>
+        <h3  id="transactions-heading" className="text-xl font-bold text-foreground">Transactions</h3>
         {seeAllHref ? (
           <Link href={seeAllHref} className="text-sm font-medium text-primary hover:underline">
             See all

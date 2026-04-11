@@ -32,7 +32,6 @@ export {
   LessonDetailsTabs,
   LessonTabResources,
   LessonTabDiscussion,
-  LessonTabCertificate,
   CourseContentSidebar,
   type LessonVideoPlayerProps,
   type LessonOverviewCardProps,

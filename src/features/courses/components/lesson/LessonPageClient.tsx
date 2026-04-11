@@ -8,7 +8,6 @@ import {
   DoctorsNotesSection,
   LessonDetailsTabs,
   LessonOverviewCard,
-  LessonTabCertificate,
   LessonTabDiscussion,
   LessonTabResources,
   LessonVideoPlayer,
@@ -385,7 +384,6 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
                 lessonId={currentLesson?.id}
               />
             }
-            certificateContent={<LessonTabCertificate />}
           />
         </div>
 

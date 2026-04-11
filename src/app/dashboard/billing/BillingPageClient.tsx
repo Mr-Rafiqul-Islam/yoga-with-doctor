@@ -263,8 +263,8 @@ export function BillingPageClient() {
           </section>
         </div>
 
-        <aside className="lg:col-span-1" aria-labelledby="transactions-heading">
-          <h2 id="transactions-heading" className="sr-only">
+        <aside className="lg:col-span-1">
+          <h2 className="sr-only">
             Recent purchases
           </h2>
           {historyLoading ? (

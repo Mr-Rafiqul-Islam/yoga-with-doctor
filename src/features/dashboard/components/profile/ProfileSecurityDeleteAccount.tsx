@@ -54,7 +54,7 @@ export function ProfileSecurityDeleteAccount() {
   }, [confirmChecked, deleteAccount, dispatch, password]);
 
   return (
-    <div className="rounded-xl border border-error/30 bg-error/5 p-4 dark:bg-error/10">
+    <div className="rounded-xl border border-error bg-error/5 p-4 dark:bg-error/10">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex gap-3">
           <span

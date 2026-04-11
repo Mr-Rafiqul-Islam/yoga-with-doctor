@@ -21,7 +21,6 @@ const LIBRARY_SUB_ITEMS = [
 
 const BOTTOM_NAV_ITEMS = [
   { href: "/dashboard/my-courses", label: "My Courses", icon: "school" },
-  // { href: "/dashboard/certificates", label: "Certificates", icon: "verified" },
   {
     href: "/dashboard/billing",
     label: "Billing & Subscription",

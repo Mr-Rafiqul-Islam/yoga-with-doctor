@@ -2,27 +2,24 @@
 
 import { useState } from "react";
 
-export type LessonTabId = "overview" | "resources" | "discussion" | "certificate";
+export type LessonTabId = "overview" | "resources" | "discussion";
 
 const TABS: { id: LessonTabId; label: string; icon: string }[] = [
   { id: "overview", label: "Overview", icon: "info" },
   { id: "resources", label: "Resources", icon: "folder" },
   { id: "discussion", label: "Discussion", icon: "forum" },
-  { id: "certificate", label: "Certificate", icon: "verified" },
 ];
 
 export interface LessonDetailsTabsProps {
   overviewContent: React.ReactNode;
   resourcesContent: React.ReactNode;
   discussionContent: React.ReactNode;
-  certificateContent: React.ReactNode;
 }
 
 export function LessonDetailsTabs({
   overviewContent,
   resourcesContent,
   discussionContent,
-  certificateContent,
 }: LessonDetailsTabsProps) {
   const [activeTab, setActiveTab] = useState<LessonTabId>("overview");
 
@@ -30,7 +27,6 @@ export function LessonDetailsTabs({
     overview: overviewContent,
     resources: resourcesContent,
     discussion: discussionContent,
-    certificate: certificateContent,
   };
 
   return (

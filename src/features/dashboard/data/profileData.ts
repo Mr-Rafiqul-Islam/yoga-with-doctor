@@ -10,7 +10,6 @@ export type ProfileUser = {
 
 export type ProfileStats = {
   courses: number;
-  certificates: number;
   points: string;
 };
 
@@ -28,7 +27,6 @@ export type ProfilePreferences = {
 
 export const DEFAULT_PROFILE_STATS: ProfileStats = {
   courses: 15,
-  certificates: 12,
   points: "2.5k",
 };
 

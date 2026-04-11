@@ -5,20 +5,20 @@ export function ProfileQuickNavCard() {
     <article className="rounded-2xl border border-border bg-surface p-4 shadow-elevation-sm">
       <nav aria-label="Quick navigation">
         <ul className="flex flex-col gap-2">
-          {/* <li>
+          <li>
             <Link
-              href="/dashboard/wishlist"
+              href="/dashboard/billing#transactions-heading"
               className="flex items-center justify-between rounded-lg px-4 py-3 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               <div className="flex items-center gap-3">
                 <span
-                  className="material-icons-outlined text-red-500 text-xl"
+                  className="material-icons-outlined text-teal-600 dark:text-teal-400 text-xl"
                   aria-hidden
                 >
-                  favorite
+                  receipt_long
                 </span>
                 <span className="text-body-md font-medium text-foreground">
-                  My Wishlist
+                 Invoices
                 </span>
               </div>
               <span
@@ -28,7 +28,7 @@ export function ProfileQuickNavCard() {
                 chevron_right
               </span>
             </Link>
-          </li> */}
+          </li>
           <li>
             <Link
               href="/dashboard/library/saved-articles"

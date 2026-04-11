@@ -8,7 +8,6 @@ export {
 } from "./LessonDetailsTabs";
 export { LessonTabResources, type LessonTabResourcesProps } from "./LessonTabResources";
 export { LessonTabDiscussion, type LessonTabDiscussionProps } from "./LessonTabDiscussion";
-export { LessonTabCertificate } from "./LessonTabCertificate";
 export {
   CourseContentSidebar,
   type CourseContentSidebarProps,
