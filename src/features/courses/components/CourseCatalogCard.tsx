@@ -31,7 +31,7 @@ export type CourseCatalogCardProps = {
   imageBadge?: "BESTSELLER" | "NEW";
   /** Show premium badge icon top-right */
   premiumBadge?: boolean;
-  rating?: string;
+  rating?: string | null;
   ratingCount?: number;
 };
 

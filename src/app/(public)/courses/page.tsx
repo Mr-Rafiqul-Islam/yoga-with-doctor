@@ -20,7 +20,6 @@ const FALLBACK_INSTRUCTOR_AVATAR =
   "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-About.jpeg";
 
 const FALLBACK_PRICE = "$29.00";
-const FALLBACK_RATING = "4.9";
 const FALLBACK_GOALS = [
   "Back Pain",
   "Stress Relief",
@@ -84,7 +83,7 @@ function mapAllTypeCourseToCourseWithMeta(
     href: `/courses/${course.slug}`,
     imageBadge: course.access === "PAID" ? "BESTSELLER" : undefined,
     premiumBadge: course.access === "PREMIUM",
-    rating: course.avgRating != 0 ? course.avgRating?.toFixed(1) : FALLBACK_RATING,
+    rating: course.avgRating != 0 ? course.avgRating?.toFixed(1) : null,
     ratingCount: course.ratingCount ?? 0,
     // Filter/sort metadata
     level,
