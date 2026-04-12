@@ -38,6 +38,7 @@ export function LoginPageContent() {
         <LoginForm
           onLoginSuccess={handleLoginSuccess}
           postLoginPath={postLoginPath}
+          showPhoneUpdatedNotice={searchParams.get("phoneUpdated") === "1"}
         />
       ) : (
         <div className="flex w-full items-center justify-center p-8 lg:w-1/2 lg:p-16">

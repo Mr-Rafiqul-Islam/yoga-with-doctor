@@ -42,6 +42,7 @@ export function DashboardContinueLearningCard({
               src={course.bannerImage ?? null}
               alt={course.imageAlt}
               fill
+              priority
               className="object-cover transition-transform duration-500 group-hover:scale-105"
               sizes={
                 layout === "grid"

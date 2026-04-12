@@ -9,10 +9,13 @@ import { getDeviceId } from "@/utils/deviceId";
 export function LoginForm({
   onLoginSuccess,
   postLoginPath = "/dashboard",
+  showPhoneUpdatedNotice = false,
 }: {
   onLoginSuccess?: (phone: string) => void;
   /** Sanitized pathname after login (e.g. from `returnTo` query). */
   postLoginPath?: string;
+  /** After changing phone on profile, user is redirected here with `phoneUpdated=1`. */
+  showPhoneUpdatedNotice?: boolean;
 } = {}) {
   const [phone, setPhone] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -62,6 +65,15 @@ export function LoginForm({
 
   return (
     <div className="flex w-full flex-col justify-center p-8 lg:w-1/2 lg:p-16">
+      {showPhoneUpdatedNotice ? (
+        <div
+          className="mb-6 rounded-xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground"
+          role="status"
+        >
+          Your phone number was updated. Sign in with your new number.
+        </div>
+      ) : null}
+
       <div className="mb-10 text-center lg:text-left">
         <h2 className="mb-3 font-serif text-4xl text-foreground">
           Welcome Back

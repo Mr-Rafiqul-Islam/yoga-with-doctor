@@ -1,5 +1,6 @@
 import {
   ProfilePersonalInfoSection,
+  ProfilePhoneSection,
   // ProfilePreferencesSection,
   // ProfilePremiumCard,
   ProfileQuickNavCard,
@@ -15,11 +16,12 @@ export default function ProfilePage() {
         <ProfileSummaryCard />
         {/* <ProfilePremiumCard /> */}
         <ProfileQuickNavCard />
+        <ProfilePhoneSection />
       </aside>
 
       {/* Right Column: Detailed Information and Settings */}
       <main className="flex flex-col gap-6 lg:col-span-2">
-        <ProfilePersonalInfoSection  />
+        <ProfilePersonalInfoSection />
 
         <div className="grid grid-cols-1 gap-6 ">
           <ProfileSecuritySection />

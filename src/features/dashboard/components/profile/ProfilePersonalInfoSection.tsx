@@ -3,10 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { authApi, useGetCurrentUserQuery, type User } from "@/slices/auth";
-import {
-  useRequestPhoneChangeOtpMutation,
-  useUpdateProfileMutation,
-} from "@/slices/profile";
+import { useUpdateProfileMutation } from "@/slices/profile";
 import { useAppDispatch } from "@/stores/hooks";
 
 import { messageFromQueryError } from "../../../../lib/queryErrorMessage";
@@ -17,15 +14,11 @@ export function ProfilePersonalInfoSection() {
   const user: User | undefined = data?.data ?? undefined;
 
   const [updateProfile, { isLoading: isSaving }] = useUpdateProfileMutation();
-  const [requestPhoneOtp, { isLoading: isSendingOtp }] =
-    useRequestPhoneChangeOtpMutation();
 
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
   const [bio, setBio] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpRequestedFor, setOtpRequestedFor] = useState<string | null>(null);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
@@ -33,22 +26,11 @@ export function ProfilePersonalInfoSection() {
   useEffect(() => {
     if (!user) return;
     setName(user.name ?? "");
-    setPhone(user.phone ?? "");
     setEmail(user.email ?? "");
+    setAddress(user.address ?? "");
     setBio(user.bio ?? "");
-    setOtp("");
-    setOtpRequestedFor(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- re-hydrate form only when user id/revision changes
   }, [user?.id, user?.updatedAt]);
-
-  useEffect(() => {
-    if (otpRequestedFor === null) return;
-    if (phone.trim() !== otpRequestedFor) {
-      setOtpRequestedFor(null);
-      setOtp("");
-      setInfoMessage(null);
-    }
-  }, [phone, otpRequestedFor]);
 
   const handleSave = useCallback(async () => {
     setErrorMessage(null);
@@ -67,83 +49,43 @@ export function ProfilePersonalInfoSection() {
     }
 
     const bioTrim = bio.trim().slice(0, 500);
-    const phoneTrim = phone.trim();
-    const currentPhone = (user?.phone ?? "").trim();
-    const phoneChanged = phoneTrim !== currentPhone;
+    const addressTrim = address.trim();
 
     const emailPayload = emailTrim === "" ? null : emailTrim;
     const bioPayload = bioTrim === "" ? null : bioTrim;
+    const addressPayload = addressTrim === "" ? null : addressTrim;
+
     const nameChanged = nameTrim !== (user?.name ?? "").trim();
     const emailChanged = emailPayload !== (user?.email ?? null);
     const bioChanged = bioTrim !== (user?.bio ?? "").trim();
-    const otherFieldsChanged = nameChanged || emailChanged || bioChanged;
+    const toAddrPayload = (s: string) =>
+      s.trim() === "" ? null : s.trim();
+    const addressChanged =
+      toAddrPayload(address) !== toAddrPayload(user?.address ?? "");
 
-    const busy = isSaving || isSendingOtp;
-    if (busy || !user) return;
+    if (isSaving || !user) return;
+
+    if (!nameChanged && !emailChanged && !bioChanged && !addressChanged) {
+      setInfoMessage("No changes to save.");
+      return;
+    }
 
     try {
-      if (phoneChanged) {
-        const otpTrim = otp.trim();
-        if (!otpTrim) {
-          if (otherFieldsChanged) {
-            await updateProfile({
-              name: nameTrim,
-              email: emailPayload,
-              bio: bioPayload,
-            }).unwrap();
-            // Do not invalidate auth yet — refetch would reset this form and clear the new phone before OTP.
-          }
-          await requestPhoneOtp({ phone: phoneTrim }).unwrap();
-          setOtpRequestedFor(phoneTrim);
-          setInfoMessage(
-            otherFieldsChanged
-              ? "Other details saved. We sent a code to your new number — enter it below and save again to update your phone."
-              : "We sent a verification code to your new number. Enter it below and click Save again."
-          );
-          return;
-        }
-
-        await updateProfile({
-          name: nameTrim,
-          email: emailPayload,
-          bio: bioPayload,
-          phone: phoneTrim,
-          otp: otpTrim,
-        }).unwrap();
-        setOtp("");
-        setOtpRequestedFor(null);
-      } else {
-        if (!otherFieldsChanged) {
-          setInfoMessage("No changes to save.");
-          return;
-        }
-        await updateProfile({
-          name: nameTrim,
-          email: emailPayload,
-          bio: bioPayload,
-        }).unwrap();
-      }
+      await updateProfile({
+        name: nameTrim,
+        email: emailPayload,
+        bio: bioPayload,
+        address: addressPayload,
+      }).unwrap();
 
       dispatch(authApi.util.invalidateTags(["Auth"]));
       setInfoMessage("Profile saved successfully.");
     } catch (e) {
       setErrorMessage(messageFromQueryError(e));
     }
-  }, [
-    bio,
-    dispatch,
-    email,
-    isSaving,
-    isSendingOtp,
-    name,
-    otp,
-    phone,
-    requestPhoneOtp,
-    updateProfile,
-    user,
-  ]);
+  }, [address, bio, dispatch, email, isSaving, name, updateProfile, user]);
 
-  const pending = isSaving || isSendingOtp;
+  const pending = isSaving;
   const bioLen = bio.length;
 
   return (
@@ -194,51 +136,23 @@ export function ProfilePersonalInfoSection() {
           </div>
           <div>
             <label
-              htmlFor="phone"
+              htmlFor="address"
               className="mb-2 block text-body-md font-medium text-foreground"
             >
-              Phone number
+              Address
             </label>
             <input
-              type="tel"
-              id="phone"
-              name="phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              autoComplete="tel"
-              readOnly={true}
-              disabled
+              type='text'
+              id="address"
+              name="address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              autoComplete="street-address"
+              placeholder="Street, area, postal code"
               className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-body-md text-foreground transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-800"
             />
-            {otpRequestedFor ? (
-              <p className="mt-1.5 text-caption text-muted">
-                Changing your number requires a code sent to the new phone.
-              </p>
-            ) : null}
           </div>
         </div>
-
-        {otpRequestedFor && phone.trim() === otpRequestedFor ? (
-          <div>
-            <label
-              htmlFor="phoneOtp"
-              className="mb-2 block text-body-md font-medium text-foreground"
-            >
-              Verification code
-            </label>
-            <input
-              type="text"
-              id="phoneOtp"
-              name="phoneOtp"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value.replace(/\s/g, ""))}
-              placeholder="Enter the code from SMS"
-              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-body-md text-foreground transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-gray-800"
-            />
-          </div>
-        ) : null}
 
         <div>
           <label

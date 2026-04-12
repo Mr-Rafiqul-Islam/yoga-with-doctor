@@ -271,6 +271,26 @@ export interface RefreshTokenCredentials {
   refreshToken: string;
 }
 
+export interface RequestChangePhonePayload {
+  newPhone: string;
+}
+
+export interface RequestChangePhoneResponse {
+  success: boolean;
+  message: string;
+  data?: { phone: string };
+}
+
+export interface VerifyChangePhonePayload {
+  otp: string;
+}
+
+export interface VerifyChangePhoneResponse {
+  success: boolean;
+  message: string;
+  data?: { phone: string };
+}
+
 // --- Auth API ---
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -415,6 +435,28 @@ export const authApi = createApi({
         method: "GET",
       }),
       providesTags: ["Auth"],
+    }),
+    requestChangePhone: builder.mutation<
+      RequestChangePhoneResponse,
+      RequestChangePhonePayload
+    >({
+      query: (body) => ({
+        url: "/api/v1/client/change-phone",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    verifyChangePhone: builder.mutation<
+      VerifyChangePhoneResponse,
+      VerifyChangePhonePayload
+    >({
+      query: (body) => ({
+        url: "/api/v1/client/change-phone/verify",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Auth"],
     }),
   }),
 });
@@ -586,4 +628,6 @@ export const {
   useRefreshTokenMutation,
   useLogoutMutation,
   useGetCurrentUserQuery,
+  useRequestChangePhoneMutation,
+  useVerifyChangePhoneMutation,
 } = authApi;

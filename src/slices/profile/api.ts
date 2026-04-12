@@ -71,16 +71,6 @@ export interface UpdateProfileResponse {
   data: { user: ProfileUser };
 }
 
-export interface RequestPhoneChangeOtpRequest {
-  phone: string;
-}
-
-export interface RequestPhoneChangeOtpResponse {
-  success: boolean;
-  message: string;
-  data: { phone: string };
-}
-
 export interface ChangePasswordRequest {
   currentPassword: string;
   newPassword: string;
@@ -137,20 +127,6 @@ export const profileApi = createApi({
     }),
 
     /**
-     * POST /api/v1/client/profile/phone/request-otp
-     */
-    requestPhoneChangeOtp: builder.mutation<
-      RequestPhoneChangeOtpResponse,
-      RequestPhoneChangeOtpRequest
-    >({
-      query: (body) => ({
-        url: "/api/v1/client/profile/phone/request-otp",
-        method: "POST",
-        body,
-      }),
-    }),
-
-    /**
      * POST /api/v1/client/profile/change-password
      */
     changePassword: builder.mutation<
@@ -182,7 +158,6 @@ export const {
   useGetProfileQuery,
   useLazyGetProfileQuery,
   useUpdateProfileMutation,
-  useRequestPhoneChangeOtpMutation,
   useChangePasswordMutation,
   useDeleteAccountMutation,
 } = profileApi;

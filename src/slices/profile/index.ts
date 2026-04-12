@@ -3,7 +3,6 @@ export {
   useGetProfileQuery,
   useLazyGetProfileQuery,
   useUpdateProfileMutation,
-  useRequestPhoneChangeOtpMutation,
   useChangePasswordMutation,
   useDeleteAccountMutation,
 } from "./api";
@@ -13,8 +12,6 @@ export type {
   GetProfileResponse,
   UpdateProfileRequest,
   UpdateProfileResponse,
-  RequestPhoneChangeOtpRequest,
-  RequestPhoneChangeOtpResponse,
   ChangePasswordRequest,
   ChangePasswordResponse,
   DeleteAccountRequest,
