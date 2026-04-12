@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type {
+  BaseQueryApi,
   BaseQueryFn,
   FetchArgs,
   FetchBaseQueryError,
@@ -51,14 +52,14 @@ const baseUrl =
 const LOGOUT_ACTION_TYPE = "auth/logout" as const;
 
 function buildPrepareHeaders(
-  extra?: (headers: Headers) => void
-): (headers: Headers) => Headers {
-  return (headers) => {
+  extra?: (headers: Headers, api: Pick<BaseQueryApi, "getState">) => void
+): (headers: Headers, api: Pick<BaseQueryApi, "getState">) => Headers {
+  return (headers, api) => {
     const token = getToken();
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
-    extra?.(headers);
+    extra?.(headers, api);
     return headers;
   };
 }
@@ -68,7 +69,7 @@ function buildPrepareHeaders(
  * so expired sessions clear auth state consistently.
  */
 export function createReauthBaseQuery(
-  extraPrepareHeaders?: (headers: Headers) => void
+  extraPrepareHeaders?: (headers: Headers, api: Pick<BaseQueryApi, "getState">) => void
 ): BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> {
   const innerBaseQuery = fetchBaseQuery({
     baseUrl,

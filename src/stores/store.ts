@@ -13,6 +13,7 @@ import { enrollmentReducer, enrollmentApi } from "@/slices/enrollment";
 import { profileApi } from "@/slices/profile";
 import { purchaseApi } from "@/slices/purchase";
 import { courseDiscussionApi } from "@/slices/courseDiscussion";
+import { notificationsApi } from "@/slices/notifications";
 
 export const authLogoutListener = createListenerMiddleware();
 authLogoutListener.startListening({
@@ -28,6 +29,7 @@ authLogoutListener.startListening({
     listenerApi.dispatch(profileApi.util.resetApiState());
     listenerApi.dispatch(purchaseApi.util.resetApiState());
     listenerApi.dispatch(courseDiscussionApi.util.resetApiState());
+    listenerApi.dispatch(notificationsApi.util.resetApiState());
   },
 });
 
@@ -49,6 +51,7 @@ export const store = configureStore({
     [profileApi.reducerPath]: profileApi.reducer,
     [purchaseApi.reducerPath]: purchaseApi.reducer,
     [courseDiscussionApi.reducerPath]: courseDiscussionApi.reducer,
+    [notificationsApi.reducerPath]: notificationsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().prepend(authLogoutListener.middleware).concat(
@@ -61,7 +64,8 @@ export const store = configureStore({
       enrollmentApi.middleware,
       profileApi.middleware,
       purchaseApi.middleware,
-      courseDiscussionApi.middleware
+      courseDiscussionApi.middleware,
+      notificationsApi.middleware
     ),
 });
 

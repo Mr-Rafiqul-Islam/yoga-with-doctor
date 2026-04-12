@@ -16,6 +16,7 @@ import {
 } from "@/stores";
 import { getToken, useGetCurrentUserQuery, useLogoutMutation } from "@/slices/auth";
 import { SiteLogo } from "@/components/layout/SiteLogo";
+import { HeaderNotifications } from "@/components/layout/HeaderNotifications";
 
 const mainNavItems = [
   { href: "/", label: "Home" },
@@ -161,17 +162,7 @@ export function Header() {
             />
           </div>
 
-          {/* Notification commentting for later use */}
-          {/* <button
-            type="button"
-            className="relative rounded-radius-sm p-2 text-muted transition-colors hover:text-foreground focus:outline-none "
-            aria-label="Notifications"
-          >
-            <span className="material-icons-outlined text-xl" aria-hidden>
-              notifications
-            </span>
-            <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-error" aria-hidden />
-          </button> */}
+          {sessionOk ? <HeaderNotifications sessionOk={sessionOk} /> : null}
 
           {/* Profile / Login */}
           {isRestoringSession ? (

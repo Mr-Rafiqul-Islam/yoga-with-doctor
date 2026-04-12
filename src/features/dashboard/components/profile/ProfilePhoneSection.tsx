@@ -78,7 +78,7 @@ export function ProfilePhoneSection() {
     }
     if (!validateBdNational(national)) {
       setErrorMessage(
-        "Enter a valid Bangladesh mobile number (10 digits after +880, without a leading 0)."
+        "Enter a valid Bangladesh mobile number (10 digits after +880, without a leading 0).",
       );
       return;
     }
@@ -208,9 +208,7 @@ export function ProfilePhoneSection() {
               <button
                 type="button"
                 onClick={handleSendOtp}
-                disabled={
-                  busy || !national.replace(/\D/g, "").length || !user
-                }
+                disabled={busy || !national.replace(/\D/g, "").length || !user}
                 className="rounded-lg bg-primary px-4 py-2.5 text-body-md font-semibold text-primary-foreground transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSendingOtp ? "Sending…" : "Send OTP"}
@@ -232,7 +230,9 @@ export function ProfilePhoneSection() {
                     autoComplete="one-time-code"
                     value={otp}
                     onChange={(e) =>
-                      setOtp(e.target.value.replace(/\D/g, "").slice(0, OTP_LEN))
+                      setOtp(
+                        e.target.value.replace(/\D/g, "").slice(0, OTP_LEN),
+                      )
                     }
                     placeholder="6-digit code"
                     disabled={busy}

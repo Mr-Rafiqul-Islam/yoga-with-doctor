@@ -6,6 +6,18 @@ import {
   getNotificationServiceOrigin,
   type NotificationRealtimePayload,
 } from "@/lib/notificationSocket";
+import { useAppDispatch, type AppDispatch } from "@/stores";
+import { notificationsApi } from "@/slices/notifications";
+import { notifyToast } from "@/lib/notifier";
+
+function invalidateNotificationQueries(dispatch: AppDispatch) {
+  dispatch(
+    notificationsApi.util.invalidateTags([
+      { type: "Notifications", id: "LIST" },
+      "UnreadCount",
+    ])
+  );
+}
 
 /**
  * Connects to the notification service Socket.io server (namespace /notifications)
@@ -14,6 +26,7 @@ import {
  * Set NEXT_PUBLIC_NOTIFICATION_SERVICE_URL (e.g. http://localhost:5005) or it uses API base.
  */
 export function useNotificationSocket(userId: string | undefined) {
+  const dispatch = useAppDispatch();
   const socketRef = useRef<Socket | null>(null);
   const errorLoggedRef = useRef(false);
 
@@ -48,7 +61,7 @@ export function useNotificationSocket(userId: string | undefined) {
     });
 
     socket.on("connect", () => {
-      // Optional: invalidate notification queries here if you add a notification API
+      invalidateNotificationQueries(dispatch);
     });
 
     socket.on(
@@ -61,12 +74,17 @@ export function useNotificationSocket(userId: string | undefined) {
         } else {
           console.info("[Notification]", title);
         }
-        // Optional: dispatch invalidation or show in-app toast when you add notification API/UI
+        invalidateNotificationQueries(dispatch);
+        notifyToast({
+          variant: "info",
+          title,
+          message: message || undefined,
+        });
       }
     );
 
     socket.on("notification:sent", () => {
-      // Optional: invalidate notification list when you add a notification API
+      invalidateNotificationQueries(dispatch);
     });
 
     return () => {
@@ -77,5 +95,5 @@ export function useNotificationSocket(userId: string | undefined) {
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [userId]);
+  }, [userId, dispatch]);
 }
