@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import MuxPlayer from "@mux/mux-player-react";
+import { MuxPlayerLazy } from "@/components/media/MuxPlayerLazy";
 import { Modal } from "@/components/Modal";
 import { CourseCatalogCardCta } from "./CourseCatalogCardCta";
 import type { CourseDetailData, CourseLesson } from "../data/courseDetailData";
@@ -50,7 +50,7 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
         {/* Video section: autoplay preview if available, otherwise locked thumbnail */}
         <div className="relative aspect-video overflow-hidden rounded-2xl bg-black shadow-lg">
           {heroMuxPlaybackId ? (
-            <MuxPlayer
+            <MuxPlayerLazy
               playbackId={heroMuxPlaybackId}
               poster={heroPosterUrl}
               autoPlay

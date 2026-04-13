@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { io, type Socket } from "socket.io-client";
+import type { Socket } from "socket.io-client";
 import {
   getNotificationServiceOrigin,
   type NotificationRealtimePayload,
@@ -37,62 +37,71 @@ export function useNotificationSocket(userId: string | undefined) {
     if (!url) return;
 
     const socketUrl = url.replace(/\/$/, "") + "/notifications";
+    let cancelled = false;
+    let socket: Socket | null = null;
 
-    const socket = io(socketUrl, {
-      path: "/socket.io",
-      auth: { userId },
-      transports: ["websocket", "polling"],
-      reconnectionAttempts: 3,
-      reconnectionDelay: 2000,
-    });
+    void import("socket.io-client").then(({ io }) => {
+      if (cancelled) return;
 
-    socketRef.current = socket;
+      socket = io(socketUrl, {
+        path: "/socket.io",
+        auth: { userId },
+        transports: ["websocket", "polling"],
+        reconnectionAttempts: 3,
+        reconnectionDelay: 2000,
+      });
 
-    socket.on("connect_error", (err) => {
-      if (!errorLoggedRef.current) {
-        errorLoggedRef.current = true;
-        console.warn(
-          "[useNotificationSocket] Realtime unavailable:",
-          socketUrl,
-          "—",
-          err.message
-        );
-      }
-    });
+      socketRef.current = socket;
 
-    socket.on("connect", () => {
-      invalidateNotificationQueries(dispatch);
-    });
-
-    socket.on(
-      "notification:new",
-      (data: NotificationRealtimePayload) => {
-        const title = data?.payload?.title ?? "New notification";
-        const message = data?.payload?.message;
-        if (message) {
-          console.info("[Notification]", `${title}: ${message}`);
-        } else {
-          console.info("[Notification]", title);
+      socket.on("connect_error", (err) => {
+        if (!errorLoggedRef.current) {
+          errorLoggedRef.current = true;
+          console.warn(
+            "[useNotificationSocket] Realtime unavailable:",
+            socketUrl,
+            "—",
+            err.message
+          );
         }
-        invalidateNotificationQueries(dispatch);
-        notifyToast({
-          variant: "info",
-          title,
-          message: message || undefined,
-        });
-      }
-    );
+      });
 
-    socket.on("notification:sent", () => {
-      invalidateNotificationQueries(dispatch);
+      socket.on("connect", () => {
+        invalidateNotificationQueries(dispatch);
+      });
+
+      socket.on(
+        "notification:new",
+        (data: NotificationRealtimePayload) => {
+          const title = data?.payload?.title ?? "New notification";
+          const message = data?.payload?.message;
+          if (message) {
+            console.info("[Notification]", `${title}: ${message}`);
+          } else {
+            console.info("[Notification]", title);
+          }
+          invalidateNotificationQueries(dispatch);
+          notifyToast({
+            variant: "info",
+            title,
+            message: message || undefined,
+          });
+        }
+      );
+
+      socket.on("notification:sent", () => {
+        invalidateNotificationQueries(dispatch);
+      });
     });
 
     return () => {
-      socket.off("connect_error");
-      socket.off("connect");
-      socket.off("notification:new");
-      socket.off("notification:sent");
-      socket.disconnect();
+      cancelled = true;
+      if (socket) {
+        socket.off("connect_error");
+        socket.off("connect");
+        socket.off("notification:new");
+        socket.off("notification:sent");
+        socket.disconnect();
+      }
       socketRef.current = null;
     };
   }, [userId, dispatch]);

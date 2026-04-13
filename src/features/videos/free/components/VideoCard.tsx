@@ -2,9 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import MuxPlayer from "@mux/mux-player-react";
 import { formatLevelWithHyphenToSpace } from "../utils/formatLevel";
-import { useEffect, useRef, useState, type ElementRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import {
+  MuxPlayerLazy,
+  type MuxPlayerLazyRef,
+} from "@/components/media/MuxPlayerLazy";
 import { useLazyGetVideoPlaybackTokenQuery } from "@/slices/videos";
 import { formatDuration } from "@/features/home/VideoCard";
 
@@ -87,7 +91,7 @@ export function VideoCard({
       setPlaybackToken(null);
     }
   }, [id, muxPlaybackId, status, getPlaybackToken]);
-  const playerRef = useRef<ElementRef<typeof MuxPlayer>>(null);
+  const playerRef = useRef<MuxPlayerLazyRef>(null);
   const [videoDuration, setVideoDuration] = useState<string | number | null>(
     null,
   );
@@ -100,7 +104,7 @@ export function VideoCard({
       {/* Thumbnail with play overlay and duration */}
       <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted/60">
         {isFree || playbackPolicy === "public" ? (
-          <MuxPlayer
+          <MuxPlayerLazy
             ref={playerRef}
             className="h-full w-full"
             playbackId={playbackId}

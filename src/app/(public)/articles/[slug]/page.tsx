@@ -1,7 +1,7 @@
 import { ArticleDetailsPageClient } from "@/features/articles/components";
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export default async function ArticleDetailsPage({ params }: Props) {

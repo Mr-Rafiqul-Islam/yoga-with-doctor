@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, type ElementRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import MuxPlayer from "@mux/mux-player-react";
+
+import {
+  MuxPlayerLazy,
+  type MuxPlayerLazyRef,
+} from "@/components/media/MuxPlayerLazy";
 import type { VideoCardProps } from "./VideoCard";
 import type { FreeVideoDetails } from "../data/freeVideoDetailsData";
 import { useLazyGetVideoPlaybackTokenQuery } from "@/slices/videos";
@@ -68,7 +72,7 @@ export function FreeVideoDetailsContent({
     enrollRequestRef.current = false;
   }, [details.slug]);
 
-  const playerRef = useRef<ElementRef<typeof MuxPlayer>>(null);
+  const playerRef = useRef<MuxPlayerLazyRef>(null);
   const [videoDuration, setVideoDuration] = useState<string | number | null>(
     null,
   );
@@ -116,7 +120,7 @@ export function FreeVideoDetailsContent({
         className="relative w-full overflow-hidden rounded-2xl bg-gray-900 shadow-xl aspect-video md:aspect-[21/9] group cursor-pointer"
       >
         {playbackId ? (
-          <MuxPlayer
+          <MuxPlayerLazy
             ref={playerRef}
             className="h-full w-full"
             playbackId={playbackId}

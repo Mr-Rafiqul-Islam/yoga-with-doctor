@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import MuxPlayer from "@mux/mux-player-react";
 import type MuxPlayerElement from "@mux/mux-player";
+import { MuxPlayerLazy } from "@/components/media/MuxPlayerLazy";
 import { useId, useMemo, useRef } from "react";
 import { watermarkContactFromUser } from "@/features/courses/lib/lessonVideoPlayerUtils";
 import { useAppSelector } from "@/stores/hooks";
@@ -96,7 +96,7 @@ export function LessonVideoPlayer({
     >
       {playbackId ? (
         /* fullscreenElement: section id; mediaController sync in useLayoutEffect for reliability */
-        <MuxPlayer
+        <MuxPlayerLazy
           ref={muxPlayerRef}
           className="h-full w-full"
           playbackId={playbackId}

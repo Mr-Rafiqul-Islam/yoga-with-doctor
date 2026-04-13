@@ -9,7 +9,7 @@ export function parsePrice(price: string | undefined): number {
 }
 
 /** Parse rating string (e.g. "4.9") to number. Returns 0 if invalid or missing. */
-export function parseRating(rating: string | undefined): number {
+export function parseRating(rating: string | null | undefined): number {
   if (rating == null || typeof rating !== "string") return 0;
   const num = parseFloat(rating.trim());
   return Number.isFinite(num) && num >= 0 ? num : 0;
