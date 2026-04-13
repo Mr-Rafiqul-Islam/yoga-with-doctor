@@ -7,6 +7,7 @@ import { MuxPlayerLazy } from "@/components/media/MuxPlayerLazy";
 import { Modal } from "@/components/Modal";
 import { CourseCatalogCardCta } from "./CourseCatalogCardCta";
 import type { CourseDetailData, CourseLesson } from "../data/courseDetailData";
+import { formatHumanMediaDuration } from "@/lib/formatMediaDuration";
 import { CourseReviewSection } from "@/features/reviews/components/CourseReviewSection";
 
 const TABS = ["About Course", "Curriculum", "Reviews"] as const;
@@ -327,7 +328,9 @@ function LessonRow({
           >
             {lesson.title}
           </p>
-          <p className={`text-xs ${locked ? "text-muted" : "text-muted"}`}>{lesson.duration}</p>
+          <p className={`text-xs ${locked ? "text-muted" : "text-muted"}`}>
+            {formatHumanMediaDuration(lesson.duration)}
+          </p>
         </div>
       </div>
       

@@ -16,6 +16,7 @@ export interface Video {
   id: string;
   title: string;
   thumbnail: string | null;
+  /** Length in seconds. */
   duration: number | null;
   status: "PROCESSING" | "READY" | "FAILED";
   muxPlaybackId: string | null;
@@ -34,6 +35,7 @@ export interface CourseIntroVideo {
   id: string;
   title: string | null;
   thumbnail: string | null;
+  /** Length in seconds. */
   duration: number | null;
   status: "PROCESSING" | "READY" | "FAILED";
   muxPlaybackId: string | null;

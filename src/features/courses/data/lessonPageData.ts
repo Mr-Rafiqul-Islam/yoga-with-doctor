@@ -5,6 +5,7 @@
 
 import type { CourseDetailData } from "./courseDetailData";
 import { getCourseDetailBySlug } from "./courseDetailData";
+import { formatHumanMediaDuration } from "@/lib/formatMediaDuration";
 
 export type LessonProgressUiStatus = "completed" | "in_progress" | "not_started";
 
@@ -136,7 +137,7 @@ function buildCurriculumFromCourse(course: CourseDetailData): LessonWithStatus[]
       result.push({
         id: les.id,
         title: les.title,
-        duration: les.duration,
+        duration: formatHumanMediaDuration(les.duration),
         moduleTitle: mod.title,
         isCompleted: false,
         isCurrent: false,

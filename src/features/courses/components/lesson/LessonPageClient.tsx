@@ -21,19 +21,12 @@ import {
   type CourseProgressLessonRow,
 } from "@/slices/courses";
 import { mapCourseToCourseDetailData } from "@/lib/mapCourseToDetail";
+import {
+  formatHumanMediaDuration,
+  lessonDurationSeconds,
+} from "@/lib/formatMediaDuration";
+import { formatDuration } from "@/features/home/VideoCard";
 import { useAddEnrollmentByItemIdMutation } from "@/slices/enrollment";
-
-function mmssFromDurationMin(durationMin: number | null | undefined): string {
-  const mins = typeof durationMin === "number" && durationMin > 0 ? durationMin : 0;
-  return `${String(mins).padStart(2, "0")}:00`;
-}
-
-function totalDurationLabelFromMinutes(totalMin: number): string {
-  if (totalMin <= 0) return "—";
-  return totalMin >= 60
-    ? `${Math.floor(totalMin / 60)}h ${totalMin % 60}m`
-    : `${totalMin}m`;
-}
 
 function buildLessonProgressMap(
   sections: { lessons: CourseProgressLessonRow[] }[] | undefined
@@ -130,7 +123,10 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
     const current = currentIdx >= 0 ? flat[currentIdx] : null;
 
     const totalLessons = flat.length;
-    const totalMinutes = flat.reduce((sum, x) => sum + (x.lesson.durationMin ?? 0), 0);
+    const totalSeconds = flat.reduce(
+      (sum, x) => sum + (lessonDurationSeconds(x.lesson) ?? 0),
+      0
+    );
 
     const progressPercent =
       hasProgress && progressPayload?.progress
@@ -149,7 +145,7 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
       return {
         id: x.lesson.id,
         title: x.lesson.title,
-        duration: x.lesson.durationMin ? `${x.lesson.durationMin} min` : "—",
+        duration: formatHumanMediaDuration(lessonDurationSeconds(x.lesson)),
         moduleTitle: x.moduleTitle,
         isCompleted,
         isCurrent: currentId != null && x.lesson.id === currentId,
@@ -176,7 +172,7 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
       ? {
           id: current.lesson.id,
           title: current.lesson.title,
-          duration: mmssFromDurationMin(current.lesson.durationMin),
+          duration: formatDuration(lessonDurationSeconds(current.lesson) ?? 0),
           moduleLabel: current.moduleTitle,
           moduleIndex,
           lessonIndex,
@@ -236,7 +232,8 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
       currentVideoStatus,
       progressPercent,
       totalLessons,
-      totalDuration: totalDurationLabelFromMinutes(totalMinutes),
+      totalDuration:
+        totalSeconds > 0 ? formatHumanMediaDuration(totalSeconds) : "—",
       currentLessonLocked,
       continueLessonId,
     };

@@ -5,6 +5,10 @@ import type {
   CourseModule as DetailModule,
 } from "@/features/courses/data/courseDetailData";
 import { DEFAULT_INCLUDES } from "@/features/courses/data/courseDetailData";
+import {
+  formatHumanMediaDuration,
+  lessonDurationSeconds,
+} from "@/lib/formatMediaDuration";
 
 const FALLBACK_THUMBNAIL =
   "https://via.placeholder.com/640x360.png?text=Course";
@@ -76,19 +80,16 @@ export function mapCourseToCourseDetailData(course: Course): CourseDetailData {
 
   const curriculum: DetailModule[] = sections.map((section) => {
     const lessons = section.lessons ?? [];
-    const totalMin = lessons.reduce(
-      (sum, l) => sum + (l.durationMin ?? 0),
+    const totalSec = lessons.reduce(
+      (sum, l) => sum + (lessonDurationSeconds(l) ?? 0),
       0
     );
-    const totalDuration =
-      totalMin >= 60
-        ? `${Math.floor(totalMin / 60)}h ${totalMin % 60}m`
-        : `${totalMin}m`;
+    const totalDuration = formatHumanMediaDuration(totalSec);
 
     const detailLessons: DetailLesson[] = lessons.map((lesson) => ({
       id: lesson.id,
       title: lesson.title.trim(),
-      duration: lesson.durationMin ? `${lesson.durationMin} min` : "—",
+      duration: lessonDurationSeconds(lesson),
       description: lesson.description ?? null,
       order: lesson.order,
       durationMin: lesson.durationMin ?? null,

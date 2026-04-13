@@ -6,7 +6,8 @@
 export interface CourseLesson {
   id: string;
   title: string;
-  duration: string;
+  /** Total lesson length in seconds (matches API `video.duration`; static fixtures use seconds). */
+  duration: number | null;
   description?: string | null;
   order?: number;
   durationMin?: number | null;
@@ -56,70 +57,7 @@ export interface CourseDetailData {
   includes: { icon: string; text: string }[];
 }
 
-const MORNING_SUNSHINE: CourseDetailData = {
-  slug: "morning-sunshine-flow",
-  title: "Morning Sunshine Flow for Beginners",
-  category: "Mindfulness",
-  description:
-    "Start your day with intention and vitality. This medically-reviewed sequence combines gentle stretching with evidence-based mindfulness techniques to reduce cortisol levels and improve morning joint mobility. Perfect for beginners seeking a scientifically grounded approach to wellness.",
-  thumbnailUrl:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuC1niabbyl6sRL9o0E72XzGDlMT8pgUCqFgBJeIFXXeX1sS7QfHw8Gpv8kqb6elwmeumti1ZK82tCorlFpA1yPfs_Br4oUx3ZAq_FAf4rRzzeYXaMqsULnIJUm6RCO6kRa3Iz8rGlR2EtKLpe4v5Kgkh2JkA3-d53XgPLBDzxM8f5pUk5YgiuxN-hCbiHLFRxcE1iLcgxcYCuW7nahqC9Ou4uomZ9zE2nKlQdqPvnKzF_YCS-8T6qILvVwRXjN2EfnLqAHbQqu88g",
-  rating: "4.9",
-  reviewCount: 245,
-  instructorName: "Dr. Sarah West",
-  instructorTitle: "MD, PhD in Sports Medicine",
-  instructorAvatarUrl:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuCKnT0nefbomqEVDuG3v2MeMMsk8Mj7AvM4UlbHA2qYFirH0S2Rx_ggxxgw8cZe3t7CmrB-S8nUynAF4AdiNIv733KALsYkhbP4IX7iSp3q5dyLIm4WzWLf4RNdmMSBm1Eyvygp2A8jA4p8wIqXDN2zNrBwpw30YLvDa3sYU4gTsyCBN52fDsP5yZjqxtDqleK_i2y0_dX94J3OsB_wfNzoffm1Q6NMXoKmIpVrhMy6eWkAE-ej0Gf_dKAenGFzFTB9gOFNpjLQpA",
-  learningOutcomes: [
-    "Proper alignment for 15 foundational poses",
-    "Breathing techniques to lower heart rate",
-    "Joint mobilization for morning stiffness",
-    "Mindfulness habits for stress reduction",
-  ],
-  curriculum: [
-    {
-      id: "m1",
-      title: "Module 1: Foundations of Flow",
-      lessonCount: 3,
-      totalDuration: "25m",
-      lessons: [
-        { id: "l1", title: "1. Introduction to Breathwork", duration: "8:30 min", isPreview: true },
-        { id: "l2", title: "2. Spinal Warm-up Sequence", duration: "12:15 min", isPreview: true },
-        {
-          id: "l3",
-          title: "3. Sun Salutation A Breakdown",
-          duration: "15:00 min",
-          isPreview: false,
-          isLocked: true,
-        },
-      ],
-    },
-    {
-      id: "m2",
-      title: "Module 2: Building Strength",
-      lessonCount: 4,
-      totalDuration: "45m",
-      lessons: [
-        {
-          id: "l4",
-          title: "4. Warrior Series Fundamentals",
-          duration: "10:45 min",
-          isPreview: false,
-          isLocked: true,
-        },
-      ],
-    },
-  ],
-  price: "$24.00",
-  originalPrice: "$49.00",
-  discountPercent: 51,
-  includes: [
-    { icon: "play_circle", text: "12 On-demand video lessons" },
-    { icon: "description", text: "3 Downloadable resources" },
-    { icon: "all_inclusive", text: "Full lifetime access" },
-    { icon: "devices", text: "Access on mobile and desktop" },
-  ],
-};
+
 
 /** Static "This course includes" list when API does not provide it */
 export const DEFAULT_INCLUDES: CourseDetailData["includes"] = [
@@ -156,9 +94,9 @@ const COURSE_30_DAYS: CourseDetailData = {
       lessonCount: 7,
       totalDuration: "2h 10m",
       lessons: [
-        { id: "l1", title: "1. Introduction & Day 1 Flow", duration: "15:00 min", isPreview: true },
-        { id: "l2", title: "2. Breath & Stretch Basics", duration: "20:00 min", isPreview: true },
-        { id: "l3", title: "3. Day 3–7 Guided Sessions", duration: "18:00 min", isPreview: false, isLocked: true },
+        { id: "l1", title: "1. Introduction & Day 1 Flow", duration: 900, isPreview: true },
+        { id: "l2", title: "2. Breath & Stretch Basics", duration: 1200, isPreview: true },
+        { id: "l3", title: "3. Day 3–7 Guided Sessions", duration: 1080, isPreview: false, isLocked: true },
       ],
     },
     {
@@ -167,7 +105,7 @@ const COURSE_30_DAYS: CourseDetailData = {
       lessonCount: 21,
       totalDuration: "6h 30m",
       lessons: [
-        { id: "l4", title: "4. Week 2 Overview", duration: "22:00 min", isPreview: false, isLocked: true },
+        { id: "l4", title: "4. Week 2 Overview", duration: 1320, isPreview: false, isLocked: true },
       ],
     },
   ],
@@ -204,9 +142,9 @@ const SPINE_HEALTH: CourseDetailData = {
       lessonCount: 4,
       totalDuration: "35m",
       lessons: [
-        { id: "l1", title: "1. Posture Self-Assessment", duration: "10:00 min", isPreview: true },
-        { id: "l2", title: "2. Spinal Mobility Intro", duration: "12:00 min", isPreview: true },
-        { id: "l3", title: "3. Core Activation", duration: "13:00 min", isPreview: false, isLocked: true },
+        { id: "l1", title: "1. Posture Self-Assessment", duration: 600, isPreview: true },
+        { id: "l2", title: "2. Spinal Mobility Intro", duration: 720, isPreview: true },
+        { id: "l3", title: "3. Core Activation", duration: 13, isPreview: false, isLocked: true },
       ],
     },
     {
@@ -215,7 +153,7 @@ const SPINE_HEALTH: CourseDetailData = {
       lessonCount: 5,
       totalDuration: "50m",
       lessons: [
-        { id: "l4", title: "4. Building Support Strength", duration: "15:00 min", isPreview: false, isLocked: true },
+        { id: "l4", title: "4. Building Support Strength", duration: 900, isPreview: false, isLocked: true },
       ],
     },
   ],
@@ -252,9 +190,9 @@ const DEEP_STRETCH: CourseDetailData = {
       lessonCount: 3,
       totalDuration: "20m",
       lessons: [
-        { id: "l1", title: "1. Gentle Warm-up", duration: "5:00 min", isPreview: true },
-        { id: "l2", title: "2. Full Body Stretch", duration: "10:00 min", isPreview: true },
-        { id: "l3", title: "3. Cool Down & Breath", duration: "5:00 min", isPreview: false, isLocked: true },
+        { id: "l1", title: "1. Gentle Warm-up", duration: 300, isPreview: true },
+        { id: "l2", title: "2. Full Body Stretch", duration: 600, isPreview: true },
+        { id: "l3", title: "3. Cool Down & Breath", duration: 300, isPreview: false, isLocked: true },
       ],
     },
   ],
@@ -291,9 +229,9 @@ const MINDFULNESS_MASTERY: CourseDetailData = {
       lessonCount: 4,
       totalDuration: "45m",
       lessons: [
-        { id: "l1", title: "1. What Is Mindfulness?", duration: "12:00 min", isPreview: true },
-        { id: "l2", title: "2. Breath Awareness", duration: "10:00 min", isPreview: true },
-        { id: "l3", title: "3. Body Scan Practice", duration: "15:00 min", isPreview: false, isLocked: true },
+        { id: "l1", title: "1. What Is Mindfulness?", duration: 720, isPreview: true },
+        { id: "l2", title: "2. Breath Awareness", duration: 600, isPreview: true },
+        { id: "l3", title: "3. Body Scan Practice", duration: 900, isPreview: false, isLocked: true },
       ],
     },
   ],
@@ -330,8 +268,8 @@ const ADVANCED_FLOW_BACK: CourseDetailData = {
       lessonCount: 2,
       totalDuration: "18m",
       lessons: [
-        { id: "l1", title: "1. Back Safety Guidelines", duration: "8:00 min", isPreview: true },
-        { id: "l2", title: "2. Warm-up for Back", duration: "10:00 min", isPreview: false, isLocked: true },
+        { id: "l1", title: "1. Back Safety Guidelines", duration: 8, isPreview: true },
+        { id: "l2", title: "2. Warm-up for Back", duration: 600, isPreview: false, isLocked: true },
       ],
     },
     {
@@ -340,7 +278,7 @@ const ADVANCED_FLOW_BACK: CourseDetailData = {
       lessonCount: 4,
       totalDuration: "42m",
       lessons: [
-        { id: "l3", title: "3. Main Relief Sequence", duration: "15:00 min", isPreview: false, isLocked: true },
+        { id: "l3", title: "3. Main Relief Sequence", duration: 900, isPreview: false, isLocked: true },
       ],
     },
   ],
@@ -348,6 +286,13 @@ const ADVANCED_FLOW_BACK: CourseDetailData = {
   originalPrice: "$39.00",
   discountPercent: 26,
   includes: DEFAULT_INCLUDES,
+};
+
+/** Detail stub for enrolled lesson page slug; curriculum for enrolled view comes from lessonPageData. */
+const MORNING_SUNSHINE: CourseDetailData = {
+  ...DEEP_STRETCH,
+  slug: "morning-sunshine-flow",
+  title: "Morning Sunshine Flow",
 };
 
 const DETAIL_BY_SLUG: Record<string, CourseDetailData> = {
