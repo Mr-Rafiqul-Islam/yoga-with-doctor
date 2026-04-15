@@ -76,14 +76,20 @@ export function ArticlesPageClient() {
       : [];
 
   if (isLoading && !data) {
-    return <LoadingScreen message="Loading articles..." />;
+    return (
+      <section className="mx-auto w-full max-w-7xl flex-grow px-4 py-10 sm:px-6 lg:px-8">
+        <LoadingScreen message="Loading articles..." />
+      </section>
+    );
   }
 
   if (isError) {
     return (
-      <p className="text-body-md text-destructive">
-        Failed to load articles. Please try again.
-      </p>
+      <section className="mx-auto w-full max-w-7xl flex-grow px-4 py-10 sm:px-6 lg:px-8 min-h-[400px]">
+        <p className="text-md text-red-500">
+          Unable to load articles from server or no articles has been published yet.
+        </p>
+      </section>
     );
   }
 
