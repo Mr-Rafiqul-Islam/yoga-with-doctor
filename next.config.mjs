@@ -6,7 +6,12 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  allowedDevOrigins: ['web.yogawithdoctor.com', 'localhost:3000', '127.0.0.1:3000'],
+  allowedDevOrigins: [
+    "web.yogawithdoctor.com",
+    "web.thesakib.dev",
+    "localhost:3000",
+    "127.0.0.1:3000",
+  ],
   images: {
     remotePatterns: [
       {
