@@ -7,6 +7,9 @@ import { authApi, getToken, useGetCurrentUserQuery, type User } from "@/slices/a
 import { useUpdateProfileMutation } from "@/slices/profile";
 import { useAppDispatch } from "@/stores/hooks";
 
+const apiBaseUrl =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "";
+
 export function DashboardProfileCard() {
   const dispatch = useAppDispatch();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -35,32 +38,56 @@ export function DashboardProfileCard() {
         setErrorMessage("You need to be signed in to update your photo.");
         return;
       }
+      if (!apiBaseUrl) {
+        setErrorMessage("Upload is not configured. Missing API base URL.");
+        return;
+      }
 
       try {
         setStatus("uploading");
         const formData = new FormData();
         formData.append("file", file);
 
-        const uploadRes = await fetch("/api/cloudinary/upload", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-        });
+        const uploadRes = await fetch(
+          `${apiBaseUrl}/api/v1/client/uploads/image`,
+          {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            credentials: "include",
+            body: formData,
+          }
+        );
 
         const uploadJson = (await uploadRes.json()) as {
           success?: boolean;
-          url?: string;
-          error?: string;
+          message?: string;
+          payload?: {
+            optimizedUrl?: string;
+            uploadedPublicId?: string;
+          };
         };
 
-        if (!uploadRes.ok || !uploadJson.url) {
-          setErrorMessage(uploadJson.error ?? "Could not upload image.");
+        const optimizedUrl = uploadJson.payload?.optimizedUrl;
+        const uploadedPublicId = uploadJson.payload?.uploadedPublicId;
+
+        if (
+          !uploadRes.ok ||
+          !uploadJson.success ||
+          !optimizedUrl ||
+          !uploadedPublicId
+        ) {
+          setErrorMessage(
+            uploadJson.message ?? "Could not upload image."
+          );
           setStatus("idle");
           return;
         }
 
         setStatus("saving");
-        await updateProfile({ profilePicture: uploadJson.url }).unwrap();
+        await updateProfile({
+          profilePicture: optimizedUrl,
+          profilePicturePublicId: uploadedPublicId,
+        }).unwrap();
         dispatch(authApi.util.invalidateTags(["Auth"]));
         setStatus("idle");
       } catch {

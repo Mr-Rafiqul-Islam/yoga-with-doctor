@@ -50,6 +50,7 @@ export interface UpdateProfileRequest {
   phone?: string | null;
   otp?: string;
   profilePicture?: string | null;
+  profilePicturePublicId?: string | null;
   address?: string | null;
   city?: string | null;
   PoliceStation?: string | null;
