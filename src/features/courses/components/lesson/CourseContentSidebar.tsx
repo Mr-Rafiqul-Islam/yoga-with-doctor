@@ -14,9 +14,6 @@ export function CourseContentSidebar({
   totalDuration,
   lessonUrl,
 }: CourseContentSidebarProps) {
-  console.log(curriculum);
-  console.log(totalDuration);
-  console.log(totalLessons);
   return (
     <aside className="lg:col-span-1" aria-label="Course content">
       <div className="sticky top-28 flex h-[calc(100vh-12rem)] flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-soft dark:border-gray-800 dark:bg-surface">
