@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type MouseEvent as ReactMouseEvent,
+} from "react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -8,7 +15,8 @@ import {
   useGetUnreadCountQuery,
   useMarkAllAsReadMutation,
   useMarkAsReadMutation,
-  type Notification,
+  useArchiveNotificationMutation,
+  type ClientNotification,
 } from "@/slices/notifications";
 
 function formatRelativeTime(iso: string): string {
@@ -23,16 +31,26 @@ function formatRelativeTime(iso: string): string {
   return date.toLocaleDateString();
 }
 
-function getInternalPath(n: Notification): string | null {
-  const d = n.data;
+function payloadRecord(n: ClientNotification): Record<string, unknown> | null {
+  const p = n.payload;
+  if (p == null || typeof p !== "object" || Array.isArray(p)) return null;
+  return p as Record<string, unknown>;
+}
+
+function getInternalPath(n: ClientNotification): string | null {
+  const action = n.actionUrl;
+  if (typeof action === "string" && action.startsWith("/")) return action;
+  const d = payloadRecord(n);
   if (!d) return null;
   const link = d.deepLink ?? d.url;
   if (typeof link === "string" && link.startsWith("/")) return link;
   return null;
 }
 
-function getExternalUrl(n: Notification): string | null {
-  const d = n.data;
+function getExternalUrl(n: ClientNotification): string | null {
+  const action = n.actionUrl;
+  if (typeof action === "string" && /^https?:\/\//i.test(action)) return action;
+  const d = payloadRecord(n);
   if (!d) return null;
   const link = d.deepLink ?? d.url;
   if (typeof link === "string" && /^https?:\/\//i.test(link)) return link;
@@ -53,7 +71,7 @@ export function HeaderNotifications({ sessionOk }: HeaderNotificationsProps) {
   const { data: unreadData } = useGetUnreadCountQuery(undefined, {
     skip: !sessionOk,
   });
-  const unreadCount = unreadData?.data?.unreadCount ?? 0;
+  const unreadCount = unreadData?.data?.count ?? 0;
 
   const {
     data: pagesData,
@@ -66,19 +84,20 @@ export function HeaderNotifications({ sessionOk }: HeaderNotificationsProps) {
     hasNextPage,
     isFetchingNextPage,
   } = useGetNotificationsInfiniteQuery(
-    { limit: 20, unreadOnly: false },
+    { limit: 20 },
     { skip: !sessionOk || !open }
   );
 
   const [markAsRead] = useMarkAsReadMutation();
   const [markAllAsRead, { isLoading: markingAll }] = useMarkAllAsReadMutation();
+  const [archiveNotification] = useArchiveNotificationMutation();
 
   const notifications =
-    pagesData?.pages.flatMap((p) => p.data?.notifications ?? []) ?? [];
+    pagesData?.pages.flatMap((p) => p.data?.items ?? []) ?? [];
 
   useEffect(() => {
     if (!open) return;
-    const onDoc = (e: MouseEvent) => {
+    const onDoc = (e: globalThis.MouseEvent) => {
       if (
         containerRef.current &&
         !containerRef.current.contains(e.target as Node)
@@ -86,7 +105,7 @@ export function HeaderNotifications({ sessionOk }: HeaderNotificationsProps) {
         setOpen(false);
       }
     };
-    const onKey = (e: KeyboardEvent) => {
+    const onKey = (e: globalThis.KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
     };
     document.addEventListener("mousedown", onDoc);
@@ -98,9 +117,9 @@ export function HeaderNotifications({ sessionOk }: HeaderNotificationsProps) {
   }, [open]);
 
   const onRowActivate = useCallback(
-    (n: Notification) => {
-      if (!n.isRead) {
-        void markAsRead(n.id).unwrap().catch(() => {});
+    (n: ClientNotification) => {
+      if (n.status === "UNREAD") {
+        void markAsRead({ id: n.id }).unwrap().catch(() => {});
       }
       const internal = getInternalPath(n);
       const external = getExternalUrl(n);
@@ -115,6 +134,15 @@ export function HeaderNotifications({ sessionOk }: HeaderNotificationsProps) {
       }
     },
     [markAsRead, router]
+  );
+
+  const onArchive = useCallback(
+    (e: ReactMouseEvent<HTMLButtonElement>, id: string) => {
+      e.preventDefault();
+      e.stopPropagation();
+      void archiveNotification({ id }).unwrap().catch(() => {});
+    },
+    [archiveNotification]
   );
 
   if (!sessionOk) return null;
@@ -158,7 +186,7 @@ export function HeaderNotifications({ sessionOk }: HeaderNotificationsProps) {
               role="menuitem"
               disabled={markingAll || unreadCount === 0}
               onClick={() => {
-                void markAllAsRead().unwrap().catch(() => {});
+                void markAllAsRead(undefined).unwrap().catch(() => {});
               }}
               className="rounded-radius-sm px-2 py-1 text-xs font-medium text-primary hover:bg-secondary disabled:opacity-50 dark:hover:bg-gray-700"
             >
@@ -199,13 +227,15 @@ export function HeaderNotifications({ sessionOk }: HeaderNotificationsProps) {
             ) : (
               <ul className="divide-y divide-border dark:divide-gray-700">
                 {notifications.map((n) => (
-                  <li key={n.id}>
+                  <li key={n.id} className="flex items-stretch gap-0">
                     <button
                       type="button"
                       role="menuitem"
                       onClick={() => onRowActivate(n)}
-                      className={`flex w-full gap-2 px-3 py-2.5 text-left transition-colors hover:bg-secondary/80 dark:hover:bg-gray-700/80 ${
-                        !n.isRead ? "bg-secondary/40 dark:bg-gray-800/50" : ""
+                      className={`flex min-w-0 flex-1 gap-2 px-3 py-2.5 text-left transition-colors hover:bg-secondary/80 dark:hover:bg-gray-700/80 ${
+                        n.status === "UNREAD"
+                          ? "bg-secondary/40 dark:bg-gray-800/50"
+                          : ""
                       }`}
                     >
                       {n.imageUrl ? (
@@ -221,10 +251,12 @@ export function HeaderNotifications({ sessionOk }: HeaderNotificationsProps) {
                       <span className="min-w-0 flex-1">
                         <span
                           className={`line-clamp-2 text-sm ${
-                            !n.isRead ? "font-semibold text-foreground" : "text-foreground"
+                            n.status === "UNREAD"
+                              ? "font-semibold text-foreground"
+                              : "text-foreground"
                           }`}
                         >
-                          {n.title}
+                          {n.title?.trim() || n.event.replace(/_/g, " ")}
                         </span>
                         {n.body ? (
                           <span className="mt-0.5 line-clamp-2 text-xs text-muted">
@@ -234,6 +266,17 @@ export function HeaderNotifications({ sessionOk }: HeaderNotificationsProps) {
                         <span className="mt-1 block text-xs text-muted">
                           {formatRelativeTime(n.createdAt)}
                         </span>
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Archive notification"
+                      title="Archive"
+                      onClick={(e) => onArchive(e, n.id)}
+                      className="shrink-0 border-l border-border px-2.5 text-muted transition-colors hover:bg-secondary/80 hover:text-foreground dark:border-gray-700 dark:hover:bg-gray-700/80"
+                    >
+                      <span className="material-icons-outlined text-lg" aria-hidden>
+                        inventory_2
                       </span>
                     </button>
                   </li>

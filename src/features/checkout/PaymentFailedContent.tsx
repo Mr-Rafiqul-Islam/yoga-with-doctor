@@ -29,7 +29,7 @@ export function PaymentFailedContent() {
     if (courseId) {
       router.push(`/checkout/review?courseId=${courseId}`);
     } else {
-      router.push("/checkout/review");
+      router.push("/courses");
     }
   };
 

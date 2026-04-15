@@ -7,6 +7,16 @@ function notificationApiOrigin(): string {
   return getNotificationServiceOrigin().replace(/\/+$/, "");
 }
 
+/** Optional; when set, sent as `projectKey` on all client-notification requests. */
+export function getNotificationProjectKey(): string | undefined {
+  const k = process.env.NEXT_PUBLIC_NOTIFICATION_PROJECT_KEY as string | undefined;
+  return k?.trim() || undefined;
+}
+
+function clientNotificationsBase(): string {
+  return `${notificationApiOrigin()}/api/v1/client/notifications`;
+}
+
 const notificationBaseQuery = createReauthBaseQuery((headers, api) => {
   const state = api.getState() as { auth?: { user?: { id: string } | null } };
   const userId = state.auth?.user?.id;
@@ -16,69 +26,99 @@ const notificationBaseQuery = createReauthBaseQuery((headers, api) => {
 });
 
 // =============================================================================
-// Types (aligned with mobile notifications slice / backend)
+// Types — ywd-notification-hub client-notifications API
 // =============================================================================
 
-export interface Notification {
+export type UserNotificationStatus = "UNREAD" | "READ" | "ARCHIVED";
+
+/** Inbox row from GET /api/v1/client/notifications (Prisma UserNotification JSON). */
+export interface ClientNotification {
   id: string;
   userId: string;
-  type: NotificationType;
-  title: string;
+  projectKey: string | null;
+  sourceService: string | null;
+  notificationJobId: string | null;
+  event: string;
+  channel: string;
+  title: string | null;
   body: string;
   imageUrl: string | null;
-  data: Record<string, unknown> | null;
-  isRead: boolean;
+  icon: string | null;
+  actionUrl: string | null;
+  actionType: string;
+  entityType: string | null;
+  entityId: string | null;
+  payload: Record<string, unknown> | null;
+  status: UserNotificationStatus;
+  isSeen: boolean;
+  seenAt: string | null;
   readAt: string | null;
-  groupKey: string | null;
   createdAt: string;
+  updatedAt: string;
 }
 
-export type NotificationType =
-  | "MARKETING"
-  | "SYSTEM"
-  | "COURSE_PUBLISHED"
-  | "BUNDLE_PUBLISHED"
-  | "SERIES_PUBLISHED"
-  | "FREE_CLASS_PUBLISHED"
-  | "COURSE_COMMUNITY_POST"
-  | "COURSE_COMMUNITY_REPLY"
-  | "FEED_POST"
-  | "FEED_POST_PUBLISHED"
-  | "FEED_COMMENT"
-  | "FEED_LIKE"
-  | "COMMENT_REPLY"
-  | "REACT"
-  | "FOLLOW"
-  | "MENTION"
-  | "PURCHASE_PAID"
-  | "SUBSCRIPTION_STATUS";
+/** @deprecated Use ClientNotification — kept for gradual migration */
+export type Notification = ClientNotification;
+
+/** @deprecated Hub uses string `event`; kept as loose alias */
+export type NotificationType = string;
+
+export interface NotificationsListData {
+  items: ClientNotification[];
+  page: number;
+  limit: number;
+  total: number;
+  unreadCount: number;
+}
 
 export interface NotificationsListResponse {
   success: boolean;
-  message?: string;
-  data: {
-    notifications: Notification[];
-  };
-  meta: {
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-    };
-  };
+  message: string;
+  data: NotificationsListData;
 }
 
 export interface UnreadCountResponse {
   success: boolean;
-  message?: string;
+  message: string;
   data: {
-    unreadCount: number;
+    count: number;
   };
 }
 
+export interface MarkReadResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    status: "READ";
+    readAt: string;
+  };
+}
+
+export interface MarkAllReadResponse {
+  success: boolean;
+  message: string;
+  data: {
+    updated: number;
+  };
+}
+
+export interface ArchiveNotificationResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    status: "ARCHIVED";
+  };
+}
+
+function projectParams(projectKey?: string): { projectKey?: string } {
+  const key = projectKey ?? getNotificationProjectKey();
+  return key ? { projectKey: key } : {};
+}
+
 // =============================================================================
-// API slice (no device / push registration — web only)
+// API slice
 // =============================================================================
 
 export const notificationsApi = createApi({
@@ -88,36 +128,45 @@ export const notificationsApi = createApi({
   endpoints: (builder) => ({
     getNotifications: builder.infiniteQuery<
       NotificationsListResponse,
-      { limit?: number; unreadOnly?: boolean } | void,
+      { limit?: number; status?: "UNREAD" | "READ"; projectKey?: string } | void,
       number
     >({
       infiniteQueryOptions: {
         initialPageParam: 1,
         getNextPageParam: (lastPage) => {
-          const { page, totalPages } = lastPage.meta?.pagination ?? {};
-          if (typeof page !== "number" || typeof totalPages !== "number") {
+          const d = lastPage.data;
+          if (!d) return undefined;
+          const { page, limit, total } = d;
+          if (
+            typeof page !== "number" ||
+            typeof limit !== "number" ||
+            typeof total !== "number"
+          ) {
             return undefined;
           }
-          return page < totalPages ? page + 1 : undefined;
+          return page * limit < total ? page + 1 : undefined;
         },
       },
       query: ({ pageParam, queryArg }) => {
         const limit = queryArg?.limit ?? 20;
-        const unreadOnly = queryArg?.unreadOnly ?? false;
+        const status = queryArg?.status;
         return {
-          url: `${notificationApiOrigin()}/api/v1/notifications`,
-          params: { page: pageParam, limit, unreadOnly },
+          url: clientNotificationsBase(),
+          params: {
+            page: pageParam,
+            limit,
+            ...projectParams(queryArg?.projectKey),
+            ...(status ? { status } : {}),
+          },
         };
       },
       providesTags: (result) => {
         if (!result?.pages?.length) {
           return [{ type: "Notifications" as const, id: "LIST" }];
         }
-        const notifications = result.pages.flatMap(
-          (p) => p.data?.notifications ?? []
-        );
+        const items = result.pages.flatMap((p) => p.data?.items ?? []);
         return [
-          ...notifications.map(({ id }) => ({
+          ...items.map(({ id }) => ({
             type: "Notifications" as const,
             id,
           })),
@@ -126,20 +175,24 @@ export const notificationsApi = createApi({
       },
     }),
 
-    getUnreadCount: builder.query<UnreadCountResponse, void>({
-      query: () => `${notificationApiOrigin()}/api/v1/notifications/unread-count`,
+    getUnreadCount: builder.query<
+      UnreadCountResponse,
+      { projectKey?: string } | void
+    >({
+      query: (arg) => ({
+        url: `${clientNotificationsBase()}/unread-count`,
+        params: projectParams(arg?.projectKey),
+      }),
       providesTags: ["UnreadCount"],
     }),
 
-    markAsRead: builder.mutation<
-      { success: boolean; message: string; data: { notification: Notification } },
-      string
-    >({
-      query: (id) => ({
-        url: `${notificationApiOrigin()}/api/v1/notifications/${id}/read`,
+    markAsRead: builder.mutation<MarkReadResponse, { id: string; projectKey?: string }>({
+      query: ({ id, projectKey }) => ({
+        url: `${clientNotificationsBase()}/${id}/read`,
         method: "PATCH",
+        params: projectParams(projectKey),
       }),
-      invalidatesTags: (result, error, id) => [
+      invalidatesTags: (result, error, { id }) => [
         { type: "Notifications", id },
         { type: "Notifications", id: "LIST" },
         "UnreadCount",
@@ -147,25 +200,27 @@ export const notificationsApi = createApi({
     }),
 
     markAllAsRead: builder.mutation<
-      { success: boolean; message: string; data: { updated: number } },
-      void
+      MarkAllReadResponse,
+      { projectKey?: string } | void
     >({
-      query: () => ({
-        url: `${notificationApiOrigin()}/api/v1/notifications/read-all`,
+      query: (arg) => ({
+        url: `${clientNotificationsBase()}/mark-all-read`,
         method: "PATCH",
+        params: projectParams(arg?.projectKey),
       }),
       invalidatesTags: [{ type: "Notifications", id: "LIST" }, "UnreadCount"],
     }),
 
-    deleteNotification: builder.mutation<
-      { success: boolean; message: string },
-      string
+    archiveNotification: builder.mutation<
+      ArchiveNotificationResponse,
+      { id: string; projectKey?: string }
     >({
-      query: (id) => ({
-        url: `/api/v1/client/notifications/${id}`,
-        method: "DELETE",
+      query: ({ id, projectKey }) => ({
+        url: `${clientNotificationsBase()}/${id}/archive`,
+        method: "PATCH",
+        params: projectParams(projectKey),
       }),
-      invalidatesTags: (result, error, id) => [
+      invalidatesTags: (result, error, { id }) => [
         { type: "Notifications", id },
         { type: "Notifications", id: "LIST" },
         "UnreadCount",
@@ -179,5 +234,5 @@ export const {
   useGetUnreadCountQuery,
   useMarkAsReadMutation,
   useMarkAllAsReadMutation,
-  useDeleteNotificationMutation,
+  useArchiveNotificationMutation,
 } = notificationsApi;
