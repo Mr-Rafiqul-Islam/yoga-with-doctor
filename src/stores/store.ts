@@ -1,6 +1,7 @@
 import { configureStore, createListenerMiddleware, isAnyOf } from "@reduxjs/toolkit";
 
 import uiReducer from "../slices/uiSlice";
+import globalSearchReducer from "@/slices/globalSearch";
 import { videoApi } from "@/slices/videos";
 import { authApi, authReducer, logoutAction } from "../slices/auth";
 import { classApi } from "@/slices/classes";
@@ -36,6 +37,7 @@ authLogoutListener.startListening({
 export const store = configureStore({
   reducer: {
     ui: uiReducer,
+    globalSearch: globalSearchReducer,
     auth: authReducer,
     payment: paymentReducer,
     pendingCheckout: pendingCheckoutReducer,

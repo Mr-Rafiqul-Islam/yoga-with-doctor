@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useId, useEffect, useState } from "react";
+import { useId, useEffect, useRef, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 
 import {
@@ -13,6 +13,10 @@ import {
   closeMobileMenu,
   setTheme,
   type ThemeMode,
+  setGlobalSearchQuery,
+  setGlobalSearchOpen,
+  clearGlobalSearch,
+  fetchGlobalSearch,
 } from "@/stores";
 import { getToken, useGetCurrentUserQuery, useLogoutMutation } from "@/slices/auth";
 import { SiteLogo } from "@/components/layout/SiteLogo";
@@ -61,8 +65,37 @@ export function Header() {
   const menuId = useId();
   const buttonId = useId();
   const profileMenuId = useId();
+  const searchWrapRef = useRef<HTMLDivElement>(null);
+
+  const {
+    query: searchQuery,
+    isOpen: searchOpen,
+    loading: searchLoading,
+    error: searchError,
+    results: searchResults,
+  } = useAppSelector((state) => state.globalSearch);
 
   const STORAGE_KEY = "ywd-theme";
+
+  useEffect(() => {
+    const q = searchQuery.trim();
+    if (q.length < 2) return;
+    const t = window.setTimeout(() => {
+      void dispatch(fetchGlobalSearch({ search: q, limitPerType: 5 }));
+    }, 300);
+    return () => window.clearTimeout(t);
+  }, [searchQuery, dispatch]);
+
+  useEffect(() => {
+    if (!searchOpen) return;
+    const onDoc = (e: MouseEvent) => {
+      if (!searchWrapRef.current?.contains(e.target as Node)) {
+        dispatch(setGlobalSearchOpen(false));
+      }
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [searchOpen, dispatch]);
 
   // Sync store from localStorage on mount (so store matches script-applied theme)
   useEffect(() => {
@@ -150,16 +183,109 @@ export function Header() {
         {/* Right: search + utility icons */}
         <div className="flex flex-1 items-center justify-end gap-4 md:min-w-0">
           {/* Search — visible on lg */}
-          <div className="hidden w-64 items-center gap-2 rounded-radius-full bg-background px-4 py-2 lg:flex">
-            <span className="material-icons-outlined shrink-0 text-lg text-muted" aria-hidden>
-              search
-            </span>
-            <input
-              type="search"
-              placeholder="Search videos, courses..."
-              className="w-full min-w-0 border-none bg-transparent text-body-md text-foreground placeholder:text-muted focus:outline-none focus:ring-0"
-              aria-label="Search videos and courses"
-            />
+          <div ref={searchWrapRef} className="relative hidden w-64 lg:block">
+            <div className="flex w-full items-center gap-2 rounded-radius-full bg-background px-4 py-2">
+              <span className="material-icons-outlined shrink-0 text-lg text-muted" aria-hidden>
+                search
+              </span>
+              <input
+                type="search"
+                placeholder="Search videos, courses..."
+                className="w-full min-w-0 border-none bg-transparent text-body-md text-foreground placeholder:text-muted focus:outline-none focus:ring-0"
+                aria-label="Search videos and courses"
+                autoComplete="off"
+                value={searchQuery}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  dispatch(setGlobalSearchQuery(v));
+                  if (v.trim().length >= 1) {
+                    dispatch(setGlobalSearchOpen(true));
+                  }
+                }}
+                onFocus={() => {
+                  if (searchQuery.trim().length >= 1) {
+                    dispatch(setGlobalSearchOpen(true));
+                  }
+                }}
+              />
+            </div>
+            {searchOpen && searchQuery.trim().length >= 1 ? (
+              <div
+                id="header-global-search-results"
+                role="region"
+                aria-label="Search results"
+                className="absolute left-0 right-0 top-full z-50 mt-2 max-h-[min(24rem,70vh)] overflow-y-auto rounded-radius-md border border-border bg-surface py-2 shadow-elevation-md dark:bg-[#1a2e26]"
+              >
+                {searchQuery.trim().length < 2 ? (
+                  <p className="px-4 py-3 text-body-sm text-muted">
+                    Type at least 2 characters to search.
+                  </p>
+                ) : searchLoading ? (
+                  <p className="px-4 py-3 text-body-sm text-muted">Searching…</p>
+                ) : searchError ? (
+                  <p className="px-4 py-3 text-body-sm text-destructive" role="alert">
+                    {searchError}
+                  </p>
+                ) : searchResults &&
+                  searchResults.courses.length === 0 &&
+                  searchResults.classes.length === 0 ? (
+                  <p className="px-4 py-3 text-body-sm text-muted">No results found.</p>
+                ) : searchResults ? (
+                  <div className="space-y-4 px-2 pb-1 pt-1">
+                    {searchResults.courses.length > 0 ? (
+                      <div>
+                        <p className="px-2 pb-2 text-caption font-semibold uppercase tracking-wide text-muted">
+                          Courses
+                        </p>
+                        <ul className="space-y-1">
+                          {searchResults.courses.map((c) => (
+                            <li key={c.id}>
+                              <Link
+                                href={`/courses/${c.slug}`}
+                                className="block rounded-radius-sm px-2 py-2 text-left text-body-sm text-foreground transition-colors hover:bg-secondary hover:text-primary"
+                                onClick={() => dispatch(clearGlobalSearch())}
+                              >
+                                <span className="font-medium">{c.title}</span>
+                                {c.shortDescription ? (
+                                  <span className="mt-0.5 line-clamp-2 block text-caption text-muted">
+                                    {c.shortDescription}
+                                  </span>
+                                ) : null}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                    {searchResults.classes.length > 0 ? (
+                      <div>
+                        <p className="px-2 pb-2 text-caption font-semibold uppercase tracking-wide text-muted">
+                          Classes
+                        </p>
+                        <ul className="space-y-1">
+                          {searchResults.classes.map((c) => (
+                            <li key={c.id}>
+                              <Link
+                                href={`/classes/${c.slug}`}
+                                className="block rounded-radius-sm px-2 py-2 text-left text-body-sm text-foreground transition-colors hover:bg-secondary hover:text-primary"
+                                onClick={() => dispatch(clearGlobalSearch())}
+                              >
+                                <span className="font-medium">{c.title}</span>
+                                {c.shortDescription ? (
+                                  <span className="mt-0.5 line-clamp-2 block text-caption text-muted">
+                                    {c.shortDescription}
+                                  </span>
+                                ) : null}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
           </div>
 
           {sessionOk ? <HeaderNotifications sessionOk={sessionOk} /> : null}

@@ -11,3 +11,9 @@ export {
   closeModal,
   setTheme,
 } from "../slices/uiSlice";
+export {
+  setGlobalSearchQuery,
+  setGlobalSearchOpen,
+  clearGlobalSearch,
+  fetchGlobalSearch,
+} from "../slices/globalSearch";
