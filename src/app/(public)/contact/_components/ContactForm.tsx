@@ -45,31 +45,45 @@ export function ContactForm({ action }: ContactFormProps) {
             />
           </div>
         </div>
-
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <label htmlFor="subject" className={labelClass}>
-            Subject
-          </label>
-          <div className="relative">
-            <select
-              id="subject"
-              name="subject"
-              className={`${inputClass} cursor-pointer appearance-none`}
-            >
-              {SUBJECT_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-            <span
-              className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-muted"
-              aria-hidden
-            >
-              <span className="material-icons-outlined text-sm">
-                expand_more
+            <label htmlFor="phone" className={labelClass}>
+              Phone Number
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              placeholder="01712345678"
+              required
+              className={inputClass}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="subject" className={labelClass}>
+              Subject
+            </label>
+            <div className="relative">
+              <select
+                id="subject"
+                name="subject"
+                className={`${inputClass} cursor-pointer appearance-none`}
+              >
+                {SUBJECT_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <span
+                className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-muted"
+                aria-hidden
+              >
+                <span className="material-icons-outlined text-sm">
+                  expand_more
+                </span>
               </span>
-            </span>
+            </div>
           </div>
         </div>
 
