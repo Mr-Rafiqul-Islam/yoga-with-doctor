@@ -259,6 +259,8 @@ export const authOptions: NextAuthOptions = {
           image: (p.profilePicture as string | null) ?? null,
           phone: (p.phone as string) ?? undefined,
           isPremium: (p.isPremium as boolean) ?? undefined,
+          isActive:
+            typeof p.isActive === "boolean" ? p.isActive : undefined,
         };
       }
       return session;

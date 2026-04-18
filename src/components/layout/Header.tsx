@@ -57,6 +57,13 @@ export function Header() {
   const displayUser = sessionOk
     ? (currentUserData?.data ?? user ?? fromSession)
     : null;
+
+  const accountIsActive =
+    currentUserData?.data?.isActive ??
+    user?.isActive ??
+    session?.user?.isActive;
+  /** Green dot when active or status not loaded yet; gray when known inactive. */
+  const showActiveStatusDot = accountIsActive !== false;
   const isRestoringSession =
     authLoading ||
     nextAuthStatus === "loading" ||
@@ -307,7 +314,7 @@ export function Header() {
                 aria-haspopup="true"
                 onClick={() => setProfileOpen((o) => !o)}
                 onBlur={() => setTimeout(() => setProfileOpen(false), 150)}
-                className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none dark:bg-gray-700 dark:border-gray-600"
+                className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none dark:bg-gray-700 dark:border-gray-600"
                 aria-label="Account menu"
               >
                 {displayUser.profilePicture ? (
@@ -324,6 +331,15 @@ export function Header() {
                     {displayUser.name?.charAt(0).toUpperCase() ?? "?"}
                   </span>
                 )}
+                <span
+                  className={
+                    showActiveStatusDot
+                      ? "pointer-events-none absolute bottom-0 right-0 z-10 h-2.5 w-2.5 rounded-full border-2 border-surface bg-emerald-500 shadow-sm ring-1 ring-white dark:ring-gray-900"
+                      : "pointer-events-none absolute bottom-0 right-0 z-10 h-2.5 w-2.5 rounded-full border-2 border-surface bg-gray-400 shadow-sm ring-1 ring-white dark:ring-gray-900"
+                  }
+                  title={showActiveStatusDot ? "Active" : "Inactive"}
+                  aria-hidden
+                />
               </button>
               {profileOpen && (
                 <div

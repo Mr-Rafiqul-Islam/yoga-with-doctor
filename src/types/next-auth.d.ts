@@ -9,6 +9,8 @@ declare module "next-auth" {
       id: string;
       phone?: string;
       isPremium?: boolean;
+      /** Account enabled in core-api; omitted until session is hydrated from /me. */
+      isActive?: boolean;
     };
   }
 
