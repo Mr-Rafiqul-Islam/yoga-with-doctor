@@ -179,6 +179,25 @@ export function DashboardProfileCard() {
           {user?.name}
         </h2>
         <p className="text-body-md text-muted">{user?.role}</p>
+        {user ? (
+          <div className="mt-3 flex flex-col items-center gap-2">
+            <span
+              className={
+                user.isActive
+                  ? "inline-flex rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
+                  : "inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300"
+              }
+            >
+              {user.isActive ? "Active" : "Inactive"}
+            </span>
+            {!user.isActive ? (
+              <p className="max-w-xs text-center text-caption text-muted">
+                Your account is inactive. Please contact support to restore
+                access.
+              </p>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </article>
   );
