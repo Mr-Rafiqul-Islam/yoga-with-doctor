@@ -266,7 +266,7 @@ export function Header() {
                           {searchResults.classes.map((c) => (
                             <li key={c.id}>
                               <Link
-                                href={`/classes/${c.slug}`}
+                                href={`/videos/free/${c.slug}`}
                                 className="block rounded-radius-sm px-2 py-2 text-left text-body-sm text-foreground transition-colors hover:bg-secondary hover:text-primary"
                                 onClick={() => dispatch(clearGlobalSearch())}
                               >
