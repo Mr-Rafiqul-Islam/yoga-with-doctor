@@ -333,23 +333,28 @@ export function Header() {
                 aria-haspopup="true"
                 onClick={() => setProfileOpen((o) => !o)}
                 onBlur={() => setTimeout(() => setProfileOpen(false), 150)}
-                className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none dark:bg-gray-700 dark:border-gray-600"
+                className="relative flex h-10 w-10 items-center justify-center rounded-radius-full border-2 border-border bg-orange-100 text-muted transition-colors hover:border-primary hover:text-foreground focus:outline-none dark:bg-gray-700 dark:border-gray-600"
                 aria-label="Account menu"
               >
-                {displayUser.profilePicture ? (
-                  <Image
-                    src={displayUser.profilePicture}
-                    priority
-                    alt=""
-                    width={40}
-                    height={40}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <span className="text-xl font-semibold text-foreground" aria-hidden>
-                    {displayUser.name?.charAt(0).toUpperCase() ?? "?"}
-                  </span>
-                )}
+                <div className="relative h-full w-full overflow-hidden rounded-radius-full">
+                  {displayUser.profilePicture ? (
+                    <Image
+                      src={displayUser.profilePicture}
+                      priority
+                      alt=""
+                      fill
+                      className="object-cover"
+                      sizes="40px"
+                    />
+                  ) : (
+                    <span
+                      className="flex h-full w-full items-center justify-center text-xl font-semibold text-foreground"
+                      aria-hidden
+                    >
+                      {displayUser.name?.charAt(0).toUpperCase() ?? "?"}
+                    </span>
+                  )}
+                </div>
                 <span
                   className={
                     showActiveStatusDot
