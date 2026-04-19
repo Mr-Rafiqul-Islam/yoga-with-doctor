@@ -21,6 +21,11 @@ import {
 import { getToken, useGetCurrentUserQuery, useLogoutMutation } from "@/slices/auth";
 import { SiteLogo } from "@/components/layout/SiteLogo";
 import { HeaderNotifications } from "@/components/layout/HeaderNotifications";
+import { GlobalSearchResultRow } from "@/components/layout/GlobalSearchResultRow";
+import {
+  getArticleSearchSubtitle,
+  getCourseSearchSubtitle,
+} from "@/lib/globalSearchPreview";
 
 const mainNavItems = [
   { href: "/", label: "Home" },
@@ -221,7 +226,7 @@ export function Header() {
                 id="header-global-search-results"
                 role="region"
                 aria-label="Search results"
-                className="absolute left-0 right-0 top-full z-50 mt-2 max-h-[min(24rem,70vh)] overflow-y-auto rounded-radius-md border border-border bg-surface py-2 shadow-elevation-md dark:bg-[#1a2e26]"
+                className="absolute left-0 top-full z-50 mt-2 w-[min(28rem,calc(100vw-2rem))] min-w-[22rem] max-h-[min(28rem,75vh)] overflow-y-auto rounded-radius-md border border-border bg-surface py-2 shadow-elevation-md dark:bg-[#1a2e26]"
               >
                 {searchQuery.trim().length < 2 ? (
                   <p className="px-4 py-3 text-body-sm text-muted">
@@ -235,7 +240,8 @@ export function Header() {
                   </p>
                 ) : searchResults &&
                   searchResults.courses.length === 0 &&
-                  searchResults.classes.length === 0 ? (
+                  searchResults.classes.length === 0 &&
+                  (searchResults.articles?.length ?? 0) === 0 ? (
                   <p className="px-4 py-3 text-body-sm text-muted">No results found.</p>
                 ) : searchResults ? (
                   <div className="space-y-4 px-2 pb-1 pt-1">
@@ -247,18 +253,14 @@ export function Header() {
                         <ul className="space-y-1">
                           {searchResults.courses.map((c) => (
                             <li key={c.id}>
-                              <Link
+                              <GlobalSearchResultRow
                                 href={`/courses/${c.slug}`}
-                                className="block rounded-radius-sm px-2 py-2 text-left text-body-sm text-foreground transition-colors hover:bg-secondary hover:text-primary"
-                                onClick={() => dispatch(clearGlobalSearch())}
-                              >
-                                <span className="font-medium">{c.title}</span>
-                                {c.shortDescription ? (
-                                  <span className="mt-0.5 line-clamp-2 block text-caption text-muted">
-                                    {c.shortDescription}
-                                  </span>
-                                ) : null}
-                              </Link>
+                                title={c.title}
+                                subtitle={getCourseSearchSubtitle(c)}
+                                imageUrl={c.bannerUrl}
+                                placeholderKind="course"
+                                onNavigate={() => dispatch(clearGlobalSearch())}
+                              />
                             </li>
                           ))}
                         </ul>
@@ -272,18 +274,35 @@ export function Header() {
                         <ul className="space-y-1">
                           {searchResults.classes.map((c) => (
                             <li key={c.id}>
-                              <Link
+                              <GlobalSearchResultRow
                                 href={`/videos/free/${c.slug}`}
-                                className="block rounded-radius-sm px-2 py-2 text-left text-body-sm text-foreground transition-colors hover:bg-secondary hover:text-primary"
-                                onClick={() => dispatch(clearGlobalSearch())}
-                              >
-                                <span className="font-medium">{c.title}</span>
-                                {c.shortDescription ? (
-                                  <span className="mt-0.5 line-clamp-2 block text-caption text-muted">
-                                    {c.shortDescription}
-                                  </span>
-                                ) : null}
-                              </Link>
+                                title={c.title}
+                                subtitle={c.shortDescription?.trim() ?? null}
+                                imageUrl={c.thumbnailUrl ?? c.bannerUrl ?? null}
+                                placeholderKind="class"
+                                onNavigate={() => dispatch(clearGlobalSearch())}
+                              />
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                    {(searchResults.articles?.length ?? 0) > 0 ? (
+                      <div>
+                        <p className="px-2 pb-2 text-caption font-semibold uppercase tracking-wide text-muted">
+                          Articles
+                        </p>
+                        <ul className="space-y-1">
+                          {(searchResults.articles ?? []).map((a) => (
+                            <li key={a.id}>
+                              <GlobalSearchResultRow
+                                href={`/articles/${a.slug}`}
+                                title={a.title}
+                                subtitle={getArticleSearchSubtitle(a)}
+                                imageUrl={a.image}
+                                placeholderKind="article"
+                                onNavigate={() => dispatch(clearGlobalSearch())}
+                              />
                             </li>
                           ))}
                         </ul>
