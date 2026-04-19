@@ -18,6 +18,7 @@ import {
   useArchiveNotificationMutation,
   type ClientNotification,
 } from "@/slices/notifications";
+import { useAppSelector } from "@/stores";
 
 function formatRelativeTime(iso: string): string {
   const date = new Date(iso);
@@ -67,9 +68,11 @@ export function HeaderNotifications({ sessionOk }: HeaderNotificationsProps) {
   const buttonId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+  const userId = useAppSelector((state) => state.auth.user?.id);
+  const hubReady = sessionOk && !!userId;
 
   const { data: unreadData } = useGetUnreadCountQuery(undefined, {
-    skip: !sessionOk,
+    skip: !hubReady,
   });
   const unreadCount = unreadData?.data?.count ?? 0;
 
@@ -85,7 +88,7 @@ export function HeaderNotifications({ sessionOk }: HeaderNotificationsProps) {
     isFetchingNextPage,
   } = useGetNotificationsInfiniteQuery(
     { limit: 20 },
-    { skip: !sessionOk || !open }
+    { skip: !hubReady || !open }
   );
 
   const [markAsRead] = useMarkAsReadMutation();
@@ -145,7 +148,7 @@ export function HeaderNotifications({ sessionOk }: HeaderNotificationsProps) {
     [archiveNotification]
   );
 
-  if (!sessionOk) return null;
+  if (!hubReady) return null;
 
   return (
     <div className="relative flex-shrink-0" ref={containerRef}>
