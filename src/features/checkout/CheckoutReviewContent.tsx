@@ -100,6 +100,15 @@ export function CheckoutReviewContent() {
           ? window.location.origin
           : "";
 
+      // Gateways redirect to these URLs as-is; without course context the review
+      // page has no courseSlug and falls back to DEFAULT_ORDER_ITEM (dummy data).
+      const returnParams = new URLSearchParams();
+      if (courseSlug) returnParams.set("courseSlug", courseSlug);
+      if (course?.id) returnParams.set("courseId", course.id);
+      const returnQuery = returnParams.toString()
+        ? `?${returnParams.toString()}`
+        : "";
+
       const globalCheckout = await startCheckout({
         productId,
         siteRef: "YWD",
@@ -109,9 +118,9 @@ export function CheckoutReviewContent() {
           appId: "ywd-web",
           returnMode: "REDIRECT",
           deepLink: null,
-          successUrl: `${origin}/checkout/success`,
-          failUrl: `${origin}/checkout/failed`,
-          cancelUrl: `${origin}/checkout/review`,
+          successUrl: `${origin}/checkout/success${returnQuery}`,
+          failUrl: `${origin}/checkout/failed${returnQuery}`,
+          cancelUrl: `${origin}/checkout/review${returnQuery}`,
         },
       }).unwrap();
 

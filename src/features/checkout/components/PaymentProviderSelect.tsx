@@ -16,13 +16,13 @@ const OPTIONS: {
     icon: "account_balance",
     iconWrapClass: "bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300",
   },
-  {
-    id: "BKASH",
-    title: "bKash",
-    description: "Pay with your bKash wallet",
-    icon: "smartphone",
-    iconWrapClass: "bg-rose-50 text-[#C2185B] dark:bg-rose-950/40 dark:text-rose-300",
-  },
+  // {
+  //   id: "BKASH",
+  //   title: "bKash",
+  //   description: "Pay with your bKash wallet",
+  //   icon: "smartphone",
+  //   iconWrapClass: "bg-rose-50 text-[#C2185B] dark:bg-rose-950/40 dark:text-rose-300",
+  // },
 ];
 
 export type PaymentProviderSelectProps = {
