@@ -26,6 +26,28 @@ import {
   type PaymentProvider,
 } from "@/slices/payment";
 
+/** RTK Query unwrap() errors expose `data` as the HTTP JSON body. */
+function formatClientPaymentError(error: unknown): string {
+  const fallback = "Failed to initialize payment. Please try again.";
+  if (!error || typeof error !== "object") return fallback;
+  const e = error as Record<string, unknown>;
+  const data = e.data;
+  if (data && typeof data === "object") {
+    const d = data as Record<string, unknown>;
+    if (typeof d.message === "string" && d.message.trim()) return d.message;
+    const inner = d.error;
+    if (inner && typeof inner === "object") {
+      const ie = inner as Record<string, unknown>;
+      if (typeof ie.message === "string" && ie.message.trim()) {
+        return ie.message;
+      }
+    }
+    if (typeof inner === "string" && inner.trim()) return inner;
+  }
+  if (typeof e.message === "string" && e.message.trim()) return e.message;
+  return fallback;
+}
+
 export function CheckoutReviewContent() {
   const searchParams = useSearchParams();
   const courseSlug = searchParams.get("courseSlug") || "";
@@ -124,11 +146,15 @@ export function CheckoutReviewContent() {
         },
       }).unwrap();
 
+      console.log("globalCheckout", globalCheckout);
+
       const newPurchaseId = globalCheckout.data.purchaseId;
       if (!newPurchaseId) {
         setPaymentError("Invalid response from checkout. Please try again.");
         return;
       }
+
+      console.log("newPurchaseId", newPurchaseId);
 
       const amountForInit =
         typeof course?.productData?.price === "number"
@@ -176,8 +202,10 @@ export function CheckoutReviewContent() {
             provider: paymentProvider,
             siteRef: "YWD",
           }).unwrap();
-        } catch {
-          // Non-blocking; backend may still have attempt record
+        } catch (attemptErr: unknown) {
+          console.error("[checkout] startPaymentAttempt failed", attemptErr);
+          setPaymentError(formatClientPaymentError(attemptErr));
+          return;
         }
       }
       const redirectUrl =
@@ -191,10 +219,8 @@ export function CheckoutReviewContent() {
       }
       setPaymentError("Payment gateway URL not received. Please try again.");
     } catch (error: unknown) {
-      const message =
-        (error as { data?: { message?: string } })?.data?.message ||
-        "Failed to initialize payment. Please try again.!";
-      setPaymentError(message);
+      console.error("[checkout] payment flow error", error);
+      setPaymentError(formatClientPaymentError(error));
     }
   };
 

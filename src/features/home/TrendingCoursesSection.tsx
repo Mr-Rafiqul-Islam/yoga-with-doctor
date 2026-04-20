@@ -69,7 +69,9 @@ function mapCourseToCardProps(course: AllTypeCourseItem): CourseCardProps {
 }
 
 export function TrendingCoursesSection() {
-  const { data, isLoading, isFetching } = useGetAllTypeCoursesQuery();
+  const { data, isLoading, isFetching } = useGetAllTypeCoursesQuery({
+    limit: TRENDING_LIMIT,
+  });
   const showSkeleton = isLoading || isFetching;
 
   const cardProps = useMemo(() => {

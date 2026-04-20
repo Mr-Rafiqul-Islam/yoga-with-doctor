@@ -14,8 +14,6 @@ export interface ProfileUser {
   email: string | null;
   profilePicture: string | null;
   address: string | null;
-  city: string | null;
-  PoliceStation: string | null;
   age: number | null;
   gender: string | null;
   goals: Record<string, unknown> | null;
@@ -52,8 +50,6 @@ export interface UpdateProfileRequest {
   profilePicture?: string | null;
   profilePicturePublicId?: string | null;
   address?: string | null;
-  city?: string | null;
-  PoliceStation?: string | null;
   age?: number | string | null;
   gender?: "MALE" | "FEMALE" | null | "";
   goals?: Record<string, unknown> | null;
@@ -118,7 +114,10 @@ export const profileApi = createApi({
     /**
      * PATCH /api/v1/client/profile
      */
-    updateProfile: builder.mutation<UpdateProfileResponse, UpdateProfileRequest>({
+    updateProfile: builder.mutation<
+      UpdateProfileResponse,
+      UpdateProfileRequest
+    >({
       query: (body) => ({
         url: "/api/v1/client/profile",
         method: "PATCH",
@@ -144,7 +143,10 @@ export const profileApi = createApi({
     /**
      * DELETE /api/v1/client/profile/account
      */
-    deleteAccount: builder.mutation<DeleteAccountResponse, DeleteAccountRequest>({
+    deleteAccount: builder.mutation<
+      DeleteAccountResponse,
+      DeleteAccountRequest
+    >({
       query: (body) => ({
         url: "/api/v1/client/profile/account",
         method: "DELETE",
