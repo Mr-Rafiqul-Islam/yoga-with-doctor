@@ -582,13 +582,43 @@ export const coursesApi = createApi({
 
     /**
      * GET /api/v1/client/courses/all-types
-     * Get all courses (free, paid, premium) with product and bundle data
+     * Get all courses (free, paid, premium) with product and bundle data.
+     * Omit params for the unfiltered list (same as legacy GET with no query string).
      */
-    getAllTypeCourses: builder.query<GetAllTypeCoursesResponse, void>({
-      query: () => ({
-        url: `/api/v1/client/courses/all-types`,
-        method: "GET",
-      }),
+    getAllTypeCourses: builder.query<
+      GetAllTypeCoursesResponse,
+      GetCoursesParams | void
+    >({
+      query: (params) => {
+        if (params == null) {
+          return {
+            url: `/api/v1/client/courses/all-types`,
+            method: "GET",
+          };
+        }
+
+        const {
+          page = 1,
+          limit = 10,
+          q,
+          access,
+          sortBy = "createdAt",
+          sortOrder = "desc",
+        } = params;
+
+        const queryParams = new URLSearchParams();
+        queryParams.append("page", page.toString());
+        queryParams.append("limit", limit.toString());
+        if (q) queryParams.append("q", q);
+        if (access) queryParams.append("access", access);
+        queryParams.append("sortBy", sortBy);
+        queryParams.append("sortOrder", sortOrder);
+
+        return {
+          url: `/api/v1/client/courses/all-types?${queryParams.toString()}`,
+          method: "GET",
+        };
+      },
       providesTags: (result) =>
         result
           ? [
