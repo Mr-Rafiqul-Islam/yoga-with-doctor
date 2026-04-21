@@ -49,8 +49,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${playfair.variable} ${inter.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${playfair.variable} ${inter.variable}`}
+      suppressHydrationWarning
+    >
       <head>
+        {/* <!-- Google Tag Manager (noscript) --> */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-T7N497SW"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          ></iframe>
+        </noscript>
+        {/* <!-- End Google Tag Manager (noscript) --> */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -71,6 +86,16 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-screen flex-col font-sans">
+        {/* <!-- Google Tag Manager (noscript) --> */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-T7N497SW"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          ></iframe>
+        </noscript>
+        {/* <!-- End Google Tag Manager (noscript) --> */}
         <AppProviders>
           <QueryProvider>
             {/* <InspectGuard /> */}
