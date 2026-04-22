@@ -21,11 +21,8 @@ import {
 import { getToken, useGetCurrentUserQuery, useLogoutMutation } from "@/slices/auth";
 import { SiteLogo } from "@/components/layout/SiteLogo";
 import { HeaderNotifications } from "@/components/layout/HeaderNotifications";
-import { GlobalSearchResultRow } from "@/components/layout/GlobalSearchResultRow";
-import {
-  getArticleSearchSubtitle,
-  getCourseSearchSubtitle,
-} from "@/lib/globalSearchPreview";
+import { GlobalSearchResultsContent } from "@/components/layout/GlobalSearchResultsContent";
+import { GlobalSearchMobileOverlay } from "@/components/layout/GlobalSearchMobileOverlay";
 
 const mainNavItems = [
   { href: "/", label: "Home" },
@@ -101,12 +98,24 @@ export function Header() {
   useEffect(() => {
     if (!searchOpen) return;
     const onDoc = (e: MouseEvent) => {
+      if (!window.matchMedia("(min-width: 1024px)").matches) return;
       if (!searchWrapRef.current?.contains(e.target as Node)) {
         dispatch(setGlobalSearchOpen(false));
       }
     };
     document.addEventListener("mousedown", onDoc);
     return () => document.removeEventListener("mousedown", onDoc);
+  }, [searchOpen, dispatch]);
+
+  useEffect(() => {
+    if (!searchOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        dispatch(setGlobalSearchOpen(false));
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [searchOpen, dispatch]);
 
   // Sync store from localStorage on mount (so store matches script-applied theme)
@@ -194,7 +203,20 @@ export function Header() {
 
         {/* Right: search + utility icons */}
         <div className="flex flex-1 items-center justify-end gap-4 md:min-w-0">
-          {/* Search — visible on lg */}
+          <button
+            type="button"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-radius-sm text-muted transition-colors hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary lg:hidden"
+            aria-label="Open search"
+            onClick={() => {
+              dispatch(setGlobalSearchOpen(true));
+              dispatch(closeMobileMenu());
+            }}
+          >
+            <span className="material-icons-outlined text-2xl" aria-hidden>
+              search
+            </span>
+          </button>
+          {/* Search — inline on lg+ */}
           <div ref={searchWrapRef} className="relative hidden w-64 lg:block">
             <div className="flex w-full items-center gap-2 rounded-radius-full bg-background px-4 py-2">
               <span className="material-icons-outlined shrink-0 text-lg text-muted" aria-hidden>
@@ -228,88 +250,13 @@ export function Header() {
                 aria-label="Search results"
                 className="absolute left-0 top-full z-50 mt-2 w-[min(28rem,calc(100vw-2rem))] min-w-[22rem] max-h-[min(28rem,75vh)] overflow-y-auto rounded-radius-md border border-border bg-surface py-2 shadow-elevation-md dark:bg-[#1a2e26]"
               >
-                {searchQuery.trim().length < 2 ? (
-                  <p className="px-4 py-3 text-body-sm text-muted">
-                    Type at least 2 characters to search.
-                  </p>
-                ) : searchLoading ? (
-                  <p className="px-4 py-3 text-body-sm text-muted">Searching…</p>
-                ) : searchError ? (
-                  <p className="px-4 py-3 text-body-sm text-destructive" role="alert">
-                    {searchError}
-                  </p>
-                ) : searchResults &&
-                  searchResults.courses.length === 0 &&
-                  searchResults.classes.length === 0 &&
-                  (searchResults.articles?.length ?? 0) === 0 ? (
-                  <p className="px-4 py-3 text-body-sm text-muted">No results found.</p>
-                ) : searchResults ? (
-                  <div className="space-y-4 px-2 pb-1 pt-1">
-                    {searchResults.courses.length > 0 ? (
-                      <div>
-                        <p className="px-2 pb-2 text-caption font-semibold uppercase tracking-wide text-muted">
-                          Courses
-                        </p>
-                        <ul className="space-y-1">
-                          {searchResults.courses.map((c) => (
-                            <li key={c.id}>
-                              <GlobalSearchResultRow
-                                href={`/courses/${c.slug}`}
-                                title={c.title}
-                                subtitle={getCourseSearchSubtitle(c)}
-                                imageUrl={c.bannerUrl}
-                                placeholderKind="course"
-                                onNavigate={() => dispatch(clearGlobalSearch())}
-                              />
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ) : null}
-                    {searchResults.classes.length > 0 ? (
-                      <div>
-                        <p className="px-2 pb-2 text-caption font-semibold uppercase tracking-wide text-muted">
-                          Classes
-                        </p>
-                        <ul className="space-y-1">
-                          {searchResults.classes.map((c) => (
-                            <li key={c.id}>
-                              <GlobalSearchResultRow
-                                href={`/videos/free/${c.slug}`}
-                                title={c.title}
-                                subtitle={c.shortDescription?.trim() ?? null}
-                                imageUrl={c.thumbnailUrl ?? c.bannerUrl ?? null}
-                                placeholderKind="class"
-                                onNavigate={() => dispatch(clearGlobalSearch())}
-                              />
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ) : null}
-                    {(searchResults.articles?.length ?? 0) > 0 ? (
-                      <div>
-                        <p className="px-2 pb-2 text-caption font-semibold uppercase tracking-wide text-muted">
-                          Articles
-                        </p>
-                        <ul className="space-y-1">
-                          {(searchResults.articles ?? []).map((a) => (
-                            <li key={a.id}>
-                              <GlobalSearchResultRow
-                                href={`/articles/${a.slug}`}
-                                title={a.title}
-                                subtitle={getArticleSearchSubtitle(a)}
-                                imageUrl={a.image}
-                                placeholderKind="article"
-                                onNavigate={() => dispatch(clearGlobalSearch())}
-                              />
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ) : null}
-                  </div>
-                ) : null}
+                <GlobalSearchResultsContent
+                  searchQuery={searchQuery}
+                  searchLoading={searchLoading}
+                  searchError={searchError}
+                  searchResults={searchResults}
+                  onResultNavigate={() => dispatch(clearGlobalSearch())}
+                />
               </div>
             ) : null}
           </div>
@@ -507,6 +454,8 @@ export function Header() {
           })}
         </ul>
       </div>
+
+      <GlobalSearchMobileOverlay />
     </header>
   );
 }
