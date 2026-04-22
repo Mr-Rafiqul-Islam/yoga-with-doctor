@@ -1,0 +1,291 @@
+/* PLID funnel — scoped tokens (reference: plid_home_recovery_funnel globals). Fonts: --font-plid-* from next/font on .plid-funnel */
+
+.plid-funnel {
+  /* Maps next/font variables to design-token names used by components / Tailwind */
+  --font-headline: var(--font-plid-anek), "Anek Bangla", ui-sans-serif, sans-serif;
+  --font-body: var(--font-plid-hind), "Hind Siliguri", ui-sans-serif, sans-serif;
+  --font-accent: var(--font-plid-tiro), "Tiro Bangla", ui-serif, serif;
+  --font-anek-bangla: var(--font-plid-anek), "Anek Bangla", ui-sans-serif, sans-serif;
+  --font-hind-siliguri: var(--font-plid-hind), "Hind Siliguri", ui-sans-serif, sans-serif;
+  --font-tiro-bangla: var(--font-plid-tiro), "Tiro Bangla", ui-serif, serif;
+
+  /* YWD primary scale uses --color-primary-rgb for opacity modifiers */
+  --color-primary-rgb: 0 107 88;
+
+  --color-on-background: #091d2e;
+  --color-surface-container-highest: #d1e4fb;
+  --color-on-surface: #091d2e;
+  --color-on-surface-rgb: 9 29 46;
+  --color-surface-bright: #f7f9ff;
+  --color-surface-variant: #d1e4fb;
+  --color-surface-dim: #c9dcf3;
+  --color-surface-container: #e3efff;
+  --color-surface-container-rgb: 227 239 255;
+  --color-inverse-on-surface: #e8f2ff;
+  --color-inverse-primary: #4eddbb;
+  --color-tertiary: #9f402e;
+  --color-secondary-fixed-dim: #ffb4a9;
+  --color-tertiary-container: #fa866f;
+  --color-on-primary-fixed-variant: #005141;
+  --color-on-secondary-fixed-variant: #910807;
+  --color-inverse-surface: #203243;
+  --color-error-container: #ffdad6;
+  --color-tertiary-fixed: #ffdad3;
+  --color-primary-container: #1abc9c;
+  --color-primary-container-rgb: 26 188 156;
+  --color-on-tertiary-fixed-variant: #7f2a1a;
+  --color-on-tertiary-fixed: #3f0400;
+  --color-on-primary: #ffffff;
+  --color-on-primary-rgb: 255 255 255;
+  --color-on-primary-container: #004538;
+  --color-primary-fixed-dim: #4eddbb;
+  --color-on-secondary-container: #610001;
+  --color-on-error-container: #93000a;
+  --color-primary: #006b58;
+  --color-secondary-fixed: #ffdad5;
+  --color-surface-container-high: #d9eaff;
+  --color-surface-container-high-rgb: 217 234 255;
+  --color-tertiary-fixed-dim: #ffb4a5;
+  --color-on-secondary: #ffffff;
+  --color-surface-container-low: #edf4ff;
+  --color-surface-container-low-rgb: 237 244 255;
+  --color-surface: #f7f9ff;
+  --color-surface-rgb: 247 249 255;
+  --color-outline: #6c7a75;
+  --color-on-secondary-fixed: #410000;
+  --color-on-primary-fixed: #002019;
+  --color-surface-tint: #006b58;
+  --color-on-surface-variant: #3c4a45;
+  --color-error: #ba1a1a;
+  --color-on-tertiary-container: #711f10;
+  --color-primary-fixed: #6ff9d6;
+  --color-outline-variant: #bbcac3;
+  --color-outline-variant-rgb: 187 202 195;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-lowest-rgb: 255 255 255;
+  --color-secondary: #b4271d;
+  --color-secondary-rgb: 180 39 29;
+  --color-secondary-container: #fe5c4a;
+  --color-secondary-container-rgb: 254 92 74;
+  --color-background: #f7f9ff;
+  --color-background-rgb: 247 249 255;
+  --color-on-error: #ffffff;
+  --color-on-tertiary: #ffffff;
+
+  --radius-DEFAULT: 0.25rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Copy on white elevated chips (badges/cards); does not follow section dark tokens */
+  --plid-text-on-elevated: #091d2e;
+  --plid-text-on-elevated-rgb: 9 29 46;
+
+  scroll-behavior: smooth;
+  font-family: var(--font-body);
+  color: var(--color-on-surface);
+}
+
+.plid-funnel .plid-text-on-elevated {
+  color: var(--plid-text-on-elevated);
+}
+
+.plid-funnel .plid-text-on-elevated-muted {
+  color: rgb(var(--plid-text-on-elevated-rgb) / 0.62);
+}
+
+.plid-funnel h1,
+.plid-funnel h2,
+.plid-funnel h3 {
+  font-family: var(--font-headline);
+}
+
+/* Keep funnel on reference palette when site uses .dark on html */
+.dark .plid-funnel {
+  --font-headline: var(--font-plid-anek), "Anek Bangla", ui-sans-serif, sans-serif;
+  --font-body: var(--font-plid-hind), "Hind Siliguri", ui-sans-serif, sans-serif;
+  --font-accent: var(--font-plid-tiro), "Tiro Bangla", ui-serif, serif;
+  --font-anek-bangla: var(--font-plid-anek), "Anek Bangla", ui-sans-serif, sans-serif;
+  --font-hind-siliguri: var(--font-plid-hind), "Hind Siliguri", ui-sans-serif, sans-serif;
+  --font-tiro-bangla: var(--font-plid-tiro), "Tiro Bangla", ui-serif, serif;
+
+  --color-primary-rgb: 0 107 88;
+
+  --color-on-background: #091d2e;
+  --color-surface-container-highest: #d1e4fb;
+  --color-on-surface: #091d2e;
+  --color-on-surface-rgb: 9 29 46;
+  --color-surface-bright: #f7f9ff;
+  --color-surface-variant: #d1e4fb;
+  --color-surface-dim: #c9dcf3;
+  --color-surface-container: #e3efff;
+  --color-surface-container-rgb: 227 239 255;
+  --color-inverse-on-surface: #e8f2ff;
+  --color-inverse-primary: #4eddbb;
+  --color-tertiary: #9f402e;
+  --color-secondary-fixed-dim: #ffb4a9;
+  --color-tertiary-container: #fa866f;
+  --color-on-primary-fixed-variant: #005141;
+  --color-on-secondary-fixed-variant: #910807;
+  --color-inverse-surface: #203243;
+  --color-error-container: #ffdad6;
+  --color-tertiary-fixed: #ffdad3;
+  --color-primary-container: #1abc9c;
+  --color-primary-container-rgb: 26 188 156;
+  --color-on-tertiary-fixed-variant: #7f2a1a;
+  --color-on-tertiary-fixed: #3f0400;
+  --color-on-primary: #ffffff;
+  --color-on-primary-rgb: 255 255 255;
+  --color-on-primary-container: #004538;
+  --color-primary-fixed-dim: #4eddbb;
+  --color-on-secondary-container: #610001;
+  --color-on-error-container: #93000a;
+  --color-primary: #006b58;
+  --color-secondary-fixed: #ffdad5;
+  --color-surface-container-high: #d9eaff;
+  --color-surface-container-high-rgb: 217 234 255;
+  --color-tertiary-fixed-dim: #ffb4a5;
+  --color-on-secondary: #ffffff;
+  --color-surface-container-low: #edf4ff;
+  --color-surface-container-low-rgb: 237 244 255;
+  --color-surface: #f7f9ff;
+  --color-surface-rgb: 247 249 255;
+  --color-outline: #6c7a75;
+  --color-on-secondary-fixed: #410000;
+  --color-on-primary-fixed: #002019;
+  --color-surface-tint: #006b58;
+  --color-on-surface-variant: #3c4a45;
+  --color-error: #ba1a1a;
+  --color-on-tertiary-container: #711f10;
+  --color-primary-fixed: #6ff9d6;
+  --color-outline-variant: #bbcac3;
+  --color-outline-variant-rgb: 187 202 195;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-lowest-rgb: 255 255 255;
+  --color-secondary: #b4271d;
+  --color-secondary-rgb: 180 39 29;
+  --color-secondary-container: #fe5c4a;
+  --color-secondary-container-rgb: 254 92 74;
+  --color-background: #f7f9ff;
+  --color-background-rgb: 247 249 255;
+  --color-on-error: #ffffff;
+  --color-on-tertiary: #ffffff;
+}
+
+.plid-funnel .clinical-accent {
+  font-family: var(--font-accent);
+}
+
+.plid-funnel .headline-font {
+  font-family: var(--font-headline);
+}
+
+.plid-funnel .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.plid-funnel .clinical-gradient {
+  background: linear-gradient(135deg, #006b58 0%, #1abc9c 100%);
+}
+
+.plid-funnel .tonal-shift-top {
+  box-shadow: 0 -4px 20px -5px rgba(0, 107, 88, 0.05);
+}
+
+.plid-funnel .medical-glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.plid-funnel .glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Proof slider card hover; overridden in dark section tokens */
+.plid-funnel {
+  --plid-proof-story-hover: #ffffff;
+}
+
+/*
+ * Section variants: Hero / Proof / Benefits.
+ * --light: force reference palette + light background (island on dark site).
+ * --dark: funnel dark UI (always).
+ * --auto: light when html is light; matches --dark when html.dark (fixes dark text on dark body).
+ */
+.plid-funnel-section--light {
+  background-color: var(--color-background);
+  --color-primary-rgb: 0 107 88;
+  --color-on-background: #091d2e;
+  --color-on-surface: #091d2e;
+  --color-on-surface-rgb: 9 29 46;
+  --color-surface: #f7f9ff;
+  --color-surface-rgb: 247 249 255;
+  --color-surface-container: #e3efff;
+  --color-surface-container-rgb: 227 239 255;
+  --color-surface-container-low: #edf4ff;
+  --color-surface-container-low-rgb: 237 244 255;
+  --color-surface-container-high: #d9eaff;
+  --color-surface-container-high-rgb: 217 234 255;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-lowest-rgb: 255 255 255;
+  --color-outline-variant: #bbcac3;
+  --color-outline-variant-rgb: 187 202 195;
+  --color-on-surface-variant: #3c4a45;
+  --color-background: #f7f9ff;
+  --color-background-rgb: 247 249 255;
+  --color-primary: #006b58;
+  --color-on-primary: #ffffff;
+  --color-on-primary-rgb: 255 255 255;
+  --color-primary-container: #1abc9c;
+  --color-primary-container-rgb: 26 188 156;
+  --color-on-primary-container: #004538;
+  --color-secondary: #b4271d;
+  --color-secondary-rgb: 180 39 29;
+  --color-secondary-container: #fe5c4a;
+  --color-secondary-container-rgb: 254 92 74;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-rgb: 255 255 255;
+  --plid-proof-story-hover: #ffffff;
+}
+
+.plid-funnel-section--dark,
+.dark .plid-funnel .plid-funnel-section--auto {
+  background-color: var(--color-background);
+  --plid-proof-story-hover: rgb(45 63 82);
+  --color-primary-rgb: 111 249 214;
+  --color-primary: #6ff9d6;
+  --color-on-primary: #002019;
+  --color-on-primary-rgb: 0 32 25;
+  --color-on-background: #e8f2ff;
+  --color-on-surface: #e8f2ff;
+  --color-on-surface-rgb: 232 242 255;
+  --color-on-surface-variant: #b0c0ce;
+  --color-surface: #101922;
+  --color-surface-rgb: 16 25 34;
+  --color-surface-container: #1a2834;
+  --color-surface-container-rgb: 26 40 52;
+  --color-surface-container-low: #15232e;
+  --color-surface-container-low-rgb: 21 35 46;
+  --color-surface-container-high: #2d3f52;
+  --color-surface-container-high-rgb: 45 63 82;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-lowest-rgb: 255 255 255;
+  --color-outline: #8b9da8;
+  --color-outline-variant: #5c6f7c;
+  --color-outline-variant-rgb: 92 111 124;
+  --color-background: #0c1319;
+  --color-background-rgb: 12 19 25;
+  --color-primary-container: #1e8a72;
+  --color-primary-container-rgb: 30 138 114;
+  --color-on-primary-container: #c4fff0;
+  --color-primary-fixed-dim: #4eddbb;
+  --color-secondary: #ffb4a9;
+  --color-secondary-rgb: 255 180 169;
+  --color-secondary-container: #ff8a7a;
+  --color-secondary-container-rgb: 255 138 122;
+  --color-on-secondary: #561e19;
+  --color-on-secondary-rgb: 86 30 25;
+}

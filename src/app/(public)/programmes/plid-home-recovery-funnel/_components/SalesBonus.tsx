@@ -1,0 +1,51 @@
+import { ScrollReveal } from "./ScrollReveal";
+
+export function SalesBonus() {
+  return (
+    <ScrollReveal className="bg-surface py-24">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="grid items-center gap-12 rounded-3xl bg-surface-container-high p-10 md:grid-cols-2">
+          <div>
+            <h3 className="mb-6 text-3xl font-extrabold">
+              Exclusive Bonuses for Today
+            </h3>
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm">
+                  <span className="material-symbols-outlined text-secondary">
+                    card_membership
+                  </span>
+                </div>
+                <div>
+                  <h4 className="font-bold">Lifetime Support</h4>
+                  <p className="text-sm opacity-70">
+                    আমাদের বিশেষ ফেসবুক সাপোর্ট গ্রুপে সরাসরি প্রশ্নের সুযোগ।
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm">
+                  <span className="material-symbols-outlined text-secondary">
+                    update
+                  </span>
+                </div>
+                <div>
+                  <h4 className="font-bold">Future Updates</h4>
+                  <p className="text-sm opacity-70">
+                    চিকিৎসা বিজ্ঞানের নতুন গবেষণার ভিত্তিতে সকল আপডেট ফ্রি
+                    পাবেন।
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <img
+            className="rounded-2xl shadow-lg"
+            alt=""
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxpSf_pRtcck5Pp4sw4F_gleB-spHGm4RwvK1s34-FM6Puz9oj6GVZtVRp_5wqmYXRU0hN1QeINlewYMfjg3BWP69nVsXHHRxG356qfWLArJ-NqJs169b_7wgDwomiNbJz8IEtOAx5f7vcP52s003hYcW0vD0fWFysmT9Yh-t5WhkIbLftxeMHNaWN2CuVZ-o_5wHfWQYODtGcBKnYmm0VITlI6dfRxQ-nQ-QuebsAj7qBu9vvMzbBRoxh5P3GjCYA35tZ825FkdE"
+          />
+        </div>
+      </div>
+    </ScrollReveal>
+  );
+}
