@@ -50,26 +50,6 @@ export function SalesHero({ variant = "auto" }: SalesHeroProps) {
               </span>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-6 border-t border-outline-variant/30 pt-8">
-            <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-3xl text-primary">
-                medical_services
-              </span>
-              <div>
-                <div className="text-lg font-bold leading-tight text-on-surface">15+ Years</div>
-                <div className="text-xs text-on-surface/60">Clinical Expertise</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-3xl text-primary">
-                home_health
-              </span>
-              <div>
-                <div className="text-lg font-bold leading-tight text-on-surface">No Surgery</div>
-                <div className="text-xs text-on-surface/60">100% Home Based</div>
-              </div>
-            </div>
-          </div>
         </div>
         <div className="relative">
           <div className="absolute left-1/2 top-1/2 -z-10 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-tr from-primary-container/20 to-transparent blur-3xl"></div>
