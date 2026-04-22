@@ -42,7 +42,7 @@ export function SalesBonus() {
           <img
             className="rounded-2xl shadow-lg"
             alt=""
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxpSf_pRtcck5Pp4sw4F_gleB-spHGm4RwvK1s34-FM6Puz9oj6GVZtVRp_5wqmYXRU0hN1QeINlewYMfjg3BWP69nVsXHHRxG356qfWLArJ-NqJs169b_7wgDwomiNbJz8IEtOAx5f7vcP52s003hYcW0vD0fWFysmT9Yh-t5WhkIbLftxeMHNaWN2CuVZ-o_5wHfWQYODtGcBKnYmm0VITlI6dfRxQ-nQ-QuebsAj7qBu9vvMzbBRoxh5P3GjCYA35tZ825FkdE"
+            src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=500&q=80"
           />
         </div>
       </div>

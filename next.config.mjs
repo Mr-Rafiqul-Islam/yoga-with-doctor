@@ -11,6 +11,7 @@ const nextConfig = {
     "web.thesakib.dev",
     "localhost:3000",
     "127.0.0.1:3000",
+    '192.168.68.100'
   ],
   images: {
     remotePatterns: [

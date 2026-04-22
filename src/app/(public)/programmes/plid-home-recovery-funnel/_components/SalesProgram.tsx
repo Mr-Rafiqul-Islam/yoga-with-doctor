@@ -13,7 +13,7 @@ const PROGRAM_PILLARS = [
     num: "01",
     title: "Core Exercises",
     description:
-      "গভীর মাংসপেশিকে শক্তিশালী করার জন্য বিশেষায়িত থেরাপিউটিক ব্যায়াম।",
+      "নির্দিষ্ট থেরাপিউটিক ব্যায়ামের মাধ্যমে পেশি শক্তিশালী করা, মেরুদণ্ডের স্থিতিশীলতা বাড়ানো এবং ধীরে ধীরে ব্যথা কমাতে সাহায্য করা।",
     value: "৳২,৫৯৯ মূল্য",
     accent: "primaryA" as AccentKey,
     imageSrc:
@@ -23,9 +23,9 @@ const PROGRAM_PILLARS = [
   {
     id: "lifestyle",
     num: "02",
-    title: "Lifestyle",
+    title: "Posture Correction",
     description:
-      "অফিস ও বাসার কাজের সময় সঠিক অঙ্গভঙ্গি বা পসচার কারেকশন গাইড।",
+      "বসা, দাঁড়ানো, হাঁটা ও কাজ করার ভুল ভঙ্গি ঠিক করে মেরুদণ্ডের উপর অতিরিক্ত চাপ কমানো এবং ভবিষ্যৎ ব্যথা প্রতিরোধ করা।",
     value: "৳১,৮৯৯ মূল্য",
     accent: "primaryB" as AccentKey,
     imageSrc:
@@ -35,9 +35,9 @@ const PROGRAM_PILLARS = [
   {
     id: "diet",
     num: "03",
-    title: "Spine Diet",
+    title: "Lifestyle Modification",
     description:
-      "হাড়ের ক্ষয় পূরণ ও প্রদাহ কমানোর জন্য প্রয়োজনীয় পুষ্টি নির্দেশিকা।",
+      "দৈনন্দিন অভ্যাস যেমন কাজের ধরন, বিশ্রাম ও চলাফেরা পরিবর্তন করে শরীরকে দীর্ঘমেয়াদে সুস্থ রাখার উপযোগী জীবনধারা তৈরি করা।",
     value: "৳২,১৯৯ মূল্য",
     accent: "primaryA" as AccentKey,
     imageSrc:
@@ -47,13 +47,25 @@ const PROGRAM_PILLARS = [
   {
     id: "pain",
     num: "04",
-    title: "Pain Protocols",
+    title: "Scientific Body Alignment",
     description:
-      "তীব্র ব্যথা ওঠার সাথে সাথেই বাড়িতে তাৎক্ষণিক উপশমের বৈজ্ঞানিক পদ্ধতি।",
+      "শরীরের অ্যালাইনমেন্ট ঠিক রাখতে বিজ্ঞানভিত্তিক পদ্ধতি অনুসরণ করা, যাতে ডিস্ক ও মেরুদণ্ডে অপ্রয়োজনীয় চাপ না পড়ে।",
     value: "৳৩,৪৯৯ মূল্য",
     accent: "primaryB" as AccentKey,
     imageSrc:
       "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=960&q=80",
+    imageAlt: "ব্যথা উপশম ও যত্ন",
+  },
+  {
+    id: "nutrition",
+    num: "05",
+    title: "Proper Nutrition",
+    description:
+      "হাড়, ডিস্ক ও মাংসপেশি পুনর্গঠনে সহায়ক পুষ্টিকর খাবার গ্রহণ, যা শরীরের প্রাকৃতিক রিকভারি প্রসেসকে দ্রুত করে।",
+    value: "৳৩,৪৯৯ মূল্য",
+    accent: "primaryB" as AccentKey,
+    imageSrc:
+      "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=960&q=80",
     imageAlt: "ব্যথা উপশম ও যত্ন",
   },
 ] as const;
@@ -104,11 +116,10 @@ export function SalesProgram() {
             Program pillars
           </p>
           <h3 className="mb-4 text-4xl font-extrabold text-on-surface md:text-5xl">
-            Complete Treatment Architecture
+          ঘরোয়া পদ্ধতিতে PLID মুক্ত হওয়ার পূর্ণাঙ্গ রোডম্যাপ 
           </h3>
           <p className="mx-auto max-w-2xl text-on-surface/65">
-            Four pillars of recovery integrated into one single system—each block
-            built to stack and reinforce the next.
+          একটি একক সিস্টেমের মধ্যে চারটি মূল স্তম্ভকে একত্র করা হয়েছে—যেখানে প্রতিটি ধাপ আগের ধাপকে শক্তিশালী করে এবং ধাপে ধাপে দীর্ঘমেয়াদী সুস্থতার দিকে নিয়ে যায়। 
           </p>
         </div>
 
@@ -152,16 +163,16 @@ export function SalesProgram() {
                       {pillar.num}
                     </span>
                     <span
-                      className={`relative mb-1 text-sm font-bold leading-tight tracking-tight sm:mb-2 sm:text-lg md:text-xl ${ACCENT[pillar.accent]}`}
+                      className={`relative mb-1 text-sm font-bold leading-tight tracking-tight sm:mb-2 sm:text-lg md:text-2xl ${ACCENT[pillar.accent]}`}
                     >
                       {pillar.title}
                     </span>
-                    <p className="relative mb-2 flex-1 text-[11px] leading-snug text-on-surface/70 sm:mb-4 sm:text-xs sm:leading-relaxed md:text-sm">
+                    <p className="relative mb-2 flex-1 text-[11px] leading-snug text-on-surface/70 sm:mb-4 sm:text-xs sm:leading-relaxed md:text-sm lg:text-xl">
                       {pillar.description}
                     </p>
-                    <p className="relative mt-auto text-right text-[11px] font-bold tabular-nums text-primary sm:text-sm md:text-base">
+                    {/* <p className="relative mt-auto text-right text-[11px] font-bold tabular-nums text-primary sm:text-sm md:text-base">
                       {pillar.value}
-                    </p>
+                    </p> */}
                   </div>
                 </div>
               );

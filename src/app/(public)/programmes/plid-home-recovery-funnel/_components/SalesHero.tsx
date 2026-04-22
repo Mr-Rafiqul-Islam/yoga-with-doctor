@@ -76,7 +76,7 @@ export function SalesHero({ variant = "auto" }: SalesHeroProps) {
           <img
             className="relative z-10 h-auto w-full rounded-3xl object-cover shadow-2xl"
             alt="Dr. Shah Alam"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHf6XP9Vohjwl-Jbd8q_VDCV8OqFl96uWLYOoNCpozYVVyJHnWI5f3F74t8w1KcqDhOaP4GJqzdWUXN6Tdu7US3YwU3XHMH4VVo202Dto9YXszSWsYgC8pIjeMZ_0aSUlaw4fG5iwQVVPVNi-sOKxMPkooUs9fcYM9iPt_rFWsqHtKv_h8pvjYY5TZg54XZGGCLqREXSDUPVOGMze1bXyv6egKaCO3GoQS9oKBGPRIH_8pDh5yjzHICopLHoedisCNB2oJgQJ9hDc"
+            src="/Dr. Shah Alam-3.jpeg"
           />
           <div className="absolute -bottom-6 -left-6 z-20 flex items-center gap-4 rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
             <div className="rounded-xl bg-secondary p-3 text-on-primary">

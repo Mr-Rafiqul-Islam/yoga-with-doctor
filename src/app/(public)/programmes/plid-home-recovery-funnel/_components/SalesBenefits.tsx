@@ -13,7 +13,7 @@ export function SalesBenefits({ variant = "auto" }: SalesBenefitsProps) {
           <img
             className="relative z-10 rounded-[2.5rem] shadow-2xl"
             alt=""
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVqVgT_Vhm4633dep-Ezu4B8uIjruCIUplkudjmeaQn_pmSJuhSWBs2rSs8yzI8LXkSgzc1uJsWiAQvwS7Scxa9Cf8o-d_lgloX_FpFr9qS61t1xDe-px3p0PnSz9Lns6OAzJ8S8xxR3o0t8ljv19C3R5eRb62uwhyl7uBsopAhnvzJ_ZhnvfblHzOKSjLe3Uu5kzv1XN67z_N09RRLT4WpNqjQwpByeLpvMYZ23MpPNJsN9VmHT2HAAQMnTe3UaHGoltHAC26Q6o"
+            src="https://images.unsplash.com/photo-1738747725706-99c7ec96a826?w=500&q=80"
           />
           <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-primary-container/20 blur-3xl"></div>
         </div>
@@ -30,9 +30,9 @@ export function SalesBenefits({ variant = "auto" }: SalesBenefitsProps) {
                 <span className="material-symbols-outlined text-xl">done_all</span>
               </div>
               <div>
-                <h4 className="text-lg font-bold text-on-surface">পরিবারের সাথে সময়</h4>
+                <h4 className="text-lg font-bold text-on-surface">পরিবারের সাথে আবার সময় কাটানো</h4>
                 <p className="text-on-surface/60">
-                  ব্যথাহীনভাবে সন্তান বা নাতি-নাতনিদের সাথে খেলার সুযোগ।
+                ব্যথা ছাড়া নিজের সন্তান বা নাতি-নাতনিদের সাথে খেলাধুলা ও স্বাভাবিকভাবে সময় উপভোগ করার সুযোগ ফিরে পাওয়া।
                 </p>
               </div>
             </div>
@@ -41,9 +41,9 @@ export function SalesBenefits({ variant = "auto" }: SalesBenefitsProps) {
                 <span className="material-symbols-outlined text-xl">done_all</span>
               </div>
               <div>
-                <h4 className="text-lg font-bold text-on-surface">মানসিক প্রশান্তি</h4>
+                <h4 className="text-lg font-bold text-on-surface">মানসিক প্রশান্তি ফিরে পাওয়া</h4>
                 <p className="text-on-surface/60">
-                  অপারেশনের ভয় ও ঔষধের পার্শপ্রতিক্রিয়া থেকে চির মুক্তি।
+                অপারেশনের ভয়, দীর্ঘমেয়াদি ঔষধ ও পার্শ্বপ্রতিক্রিয়ার দুশ্চিন্তা থেকে মুক্ত হয়ে স্বস্তির জীবন পাওয়া।
                 </p>
               </div>
             </div>
@@ -52,9 +52,9 @@ export function SalesBenefits({ variant = "auto" }: SalesBenefitsProps) {
                 <span className="material-symbols-outlined text-xl">done_all</span>
               </div>
               <div>
-                <h4 className="text-lg font-bold text-on-surface">আর্থিক সাশ্রয়</h4>
+                <h4 className="text-lg font-bold text-on-surface"> আর্থিক চাপ থেকে মুক্তি</h4>
                 <p className="text-on-surface/60">
-                  লক্ষাধিক টাকার সার্জারি ও আজীবনের টেস্ট খরচ বেঁচে যাওয়া।
+                লক্ষাধিক টাকার সার্জারি খরচ এবং নিয়মিত চিকিৎসা ও টেস্টের ব্যয় এড়িয়ে যাওয়া।
                 </p>
               </div>
             </div>
