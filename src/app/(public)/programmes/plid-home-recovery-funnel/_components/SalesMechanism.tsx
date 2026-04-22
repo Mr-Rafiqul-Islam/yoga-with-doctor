@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ScrollReveal } from "./ScrollReveal";
 
 const MECHANISM_STEPS = [
@@ -37,7 +38,7 @@ const MECHANISM_STEPS = [
 
 const stepCardClass = "group flex h-full min-h-0 flex-col";
 const imageWrapClass =
-  "mt-6 flex aspect-video items-center justify-center overflow-hidden rounded-xl bg-surface-container-high shadow-inner";
+  "relative mt-6 aspect-video w-full overflow-hidden rounded-xl bg-surface-container-high shadow-inner";
 const imageClass =
   "h-full w-full object-cover transition-transform duration-500 ease-out will-change-transform group-hover:scale-105";
 
@@ -70,7 +71,13 @@ export function SalesMechanism() {
               <h4 className="clinical-accent mb-4 text-2xl font-bold italic">{title}</h4>
               <p className="leading-relaxed text-on-surface/70 text-justify">{body}</p>
               <div className={imageWrapClass}>
-                <img className={imageClass} alt={imageAlt} src={imageSrc} />
+                <Image
+                  fill
+                  alt={imageAlt}
+                  className={imageClass}
+                  sizes="(max-width: 1023px) 50vw, 25vw"
+                  src={imageSrc}
+                />
               </div>
             </div>
           ))}

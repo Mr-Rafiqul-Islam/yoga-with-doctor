@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useId, useState, type ReactNode } from "react";
 
 export type CheckoutOrderBumpProps = {
@@ -36,11 +37,11 @@ export function CheckoutOrderBump({
     <div className="rounded-xl border border-amber-300/90 bg-amber-50/95 p-3 shadow-sm sm:p-4">
       <div className="flex flex-col gap-4 sm:grid sm:grid-cols-[minmax(0,7.5rem)_1fr] sm:items-start sm:gap-5">
         <div className="relative mx-auto aspect-square w-full max-w-[140px] shrink-0 overflow-hidden rounded-lg bg-white shadow-inner ring-1 ring-amber-200/80 sm:mx-0 sm:max-w-none sm:aspect-[4/3] sm:w-full">
-          <img
+          <Image
+            fill
             alt={imageAlt}
-            className="h-full w-full object-cover"
-            decoding="async"
-            loading="lazy"
+            className="object-cover"
+            sizes="(max-width: 639px) 140px, 120px"
             src={imageSrc}
           />
         </div>

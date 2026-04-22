@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ScrollReveal } from "./ScrollReveal";
 
 const AUTHORITY_CREDENTIALS = [
@@ -33,9 +34,12 @@ export function SalesAuthority() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex flex-col items-center gap-16 rounded-4xl bg-surface-container-lowest p-8 shadow-xl shadow-primary/5 md:flex-row md:p-16">
           <div className="w-full md:w-2/5">
-            <img
-              className="w-full rounded-2xl shadow-lg"
+            <Image
+              className="h-auto w-full rounded-2xl shadow-lg"
+              width={1066}
+              height={1600}
               alt="Dr. Shah Alam"
+              sizes="(max-width: 767px) 100vw, 40vw"
               src="/Dr. Shah Alam-2.jpeg"
             />
             <div className="clinical-accent mt-8 flex justify-center text-2xl italic text-primary">

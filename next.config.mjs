@@ -35,6 +35,11 @@ const nextConfig = {
         hostname: "drshahalam.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
     ],
   },
 };

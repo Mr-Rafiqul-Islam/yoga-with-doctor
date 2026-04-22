@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ScrollReveal } from "./ScrollReveal";
 
 const ACCENT = {
@@ -138,13 +139,13 @@ export function SalesProgram() {
                     isImageLeft ? "pr-1 sm:pr-2.5 md:pr-4 lg:pr-5" : "pl-1 sm:pl-2.5 md:pl-4 lg:pl-5"
                   }`}
                 >
-                  <div className="relative w-full min-w-0 overflow-hidden rounded-lg sm:rounded-xl bg-white/70 shadow-md shadow-slate-900/5 ring-1 ring-slate-200/80 transition-all duration-500 ease-out group-hover/image:shadow-lg group-hover/image:shadow-primary/20 group-hover/image:ring-primary/35">
+                  <div className="relative h-full min-h-[112px] w-full min-w-0 overflow-hidden rounded-lg sm:min-h-[160px] sm:rounded-xl lg:min-h-[200px] bg-white/70 shadow-md shadow-slate-900/5 ring-1 ring-slate-200/80 transition-all duration-500 ease-out group-hover/image:shadow-lg group-hover/image:shadow-primary/20 group-hover/image:ring-primary/35">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary-container/20 opacity-0 transition-opacity duration-500 group-hover/image:opacity-100" />
-                    <img
+                    <Image
+                      fill
                       alt={pillar.imageAlt}
-                      className="aspect-[4/3] h-full min-h-[112px] w-full object-cover transition duration-700 ease-out will-change-transform group-hover/image:scale-[1.04] sm:min-h-[160px] sm:aspect-auto lg:min-h-[200px]"
-                      decoding="async"
-                      loading="lazy"
+                      className="object-cover transition duration-700 ease-out will-change-transform group-hover/image:scale-[1.04]"
+                      sizes="(max-width: 639px) 45vw, (max-width: 1023px) 40vw, 25vw"
                       src={pillar.imageSrc}
                     />
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-900/15 via-transparent to-transparent opacity-50" />

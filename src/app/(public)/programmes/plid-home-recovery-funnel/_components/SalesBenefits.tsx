@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { funnelSectionClass, type FunnelSectionVariant } from "./funnelSectionVariant";
 import { ScrollReveal } from "./ScrollReveal";
 
@@ -10,11 +11,15 @@ export function SalesBenefits({ variant = "auto" }: SalesBenefitsProps) {
     <ScrollReveal className={`overflow-hidden py-24 ${funnelSectionClass(variant)}`}>
       <div className="mx-auto grid max-w-7xl items-center gap-16 px-6 md:grid-cols-2">
         <div className="relative">
-          <img
-            className="relative z-10 rounded-[2.5rem] shadow-2xl"
-            alt=""
-            src="https://images.unsplash.com/photo-1738747725706-99c7ec96a826?w=500&q=80"
-          />
+          <div className="relative z-10 aspect-[4/5] w-full overflow-hidden rounded-[2.5rem] shadow-2xl">
+            <Image
+              fill
+              alt=""
+              className="object-cover"
+              sizes="(max-width: 767px) 100vw, 50vw"
+              src="https://images.unsplash.com/photo-1738747725706-99c7ec96a826?w=500&q=80"
+            />
+          </div>
           <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-primary-container/20 blur-3xl"></div>
         </div>
         <div>

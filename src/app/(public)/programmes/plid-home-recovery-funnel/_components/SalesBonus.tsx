@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ScrollReveal } from "./ScrollReveal";
 
 export function SalesBonus() {
@@ -39,11 +40,15 @@ export function SalesBonus() {
               </div>
             </div>
           </div>
-          <img
-            className="rounded-2xl shadow-lg"
-            alt=""
-            src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=500&q=80"
-          />
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-lg">
+            <Image
+              fill
+              alt=""
+              className="object-cover"
+              sizes="(max-width: 767px) 100vw, 50vw"
+              src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=500&q=80"
+            />
+          </div>
         </div>
       </div>
     </ScrollReveal>
