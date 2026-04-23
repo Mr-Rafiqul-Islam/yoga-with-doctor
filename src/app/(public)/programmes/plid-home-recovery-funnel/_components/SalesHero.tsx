@@ -28,12 +28,12 @@ export function SalesHero({ variant = "auto" }: SalesHeroProps) {
           </p>
           <div className="mb-12 flex flex-col gap-4 sm:flex-row">
             <a
-              className="rounded-full bg-primary px-10 py-4 text-center text-lg font-bold text-on-primary shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="rounded-full bg-primary lg:px-10 px-4 py-3 lg:py-4 text-center lg:text-lg text-base font-bold text-on-primary shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
               href="#offer"
             >
               Start Healing Today
             </a>
-            <div className="flex items-center gap-3 rounded-full bg-surface-container-lowest px-6 py-4 shadow-sm">
+            <div className="flex items-center gap-3 rounded-full bg-surface-container-lowest lg:px-6 px-4 lg:py-4 py-3 shadow-sm">
               <div className="flex -space-x-2">
                 <Image
                   className="h-8 w-8 rounded-full border-2 border-white object-cover"
