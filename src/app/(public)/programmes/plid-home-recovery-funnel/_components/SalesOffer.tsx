@@ -1,4 +1,4 @@
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 
 export function SalesOffer() {
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 
 export type SalesUrgencyProps = {
   /** Offer / deadline end time (ISO string, timestamp, or Date). */

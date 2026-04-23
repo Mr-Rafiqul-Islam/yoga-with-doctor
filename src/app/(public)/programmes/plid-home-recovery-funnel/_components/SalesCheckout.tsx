@@ -1,4 +1,4 @@
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 import { SalesCheckoutForm } from "./SalesCheckoutForm";
 
 export function SalesCheckout() {

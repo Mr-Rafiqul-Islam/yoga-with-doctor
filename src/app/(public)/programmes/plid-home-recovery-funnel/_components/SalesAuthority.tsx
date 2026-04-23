@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 
 const AUTHORITY_CREDENTIALS = [
   "পেইন মেডিসিন স্পেশাল ট্রেনিং, ইন্ডিয়া",

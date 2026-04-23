@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { funnelSectionClass, type FunnelSectionVariant } from "./funnelSectionVariant";
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 
 type SalesHeroProps = {
   variant?: FunnelSectionVariant;

@@ -1,0 +1,109 @@
+/* PLID treatment by epidural — design tokens (reference: code.html). Scoped to .plid-epidural-landing only. */
+
+.plid-epidural-landing {
+  /* Typography — layout also sets --font-epi-headline / --font-epi-body from next/font */
+  --font-headline: var(--font-epi-headline), "Noto Serif", ui-serif, serif;
+  --font-body: var(--font-epi-body), "Inter", ui-sans-serif, sans-serif;
+  --font-label: var(--font-epi-body), "Inter", ui-sans-serif, sans-serif;
+
+  scroll-behavior: smooth;
+  color: var(--color-on-surface);
+  background-color: var(--color-surface);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Reference M3 palette (code.html) */
+.plid-epidural-landing {
+  --color-surface: #f4fbf3;
+  --color-surface-rgb: 244 251 243;
+  --color-surface-bright: #f4fbf3;
+  --color-surface-dim: #d5dcd4;
+  --color-surface-tint: #006d43;
+  --color-surface-variant: #dde4dd;
+  --color-surface-container: #e9f0e8;
+  --color-surface-container-rgb: 233 240 232;
+  --color-surface-container-low: #eef6ed;
+  --color-surface-container-low-rgb: 238 246 237;
+  --color-surface-container-high: #e3eae2;
+  --color-surface-container-high-rgb: 227 234 226;
+  --color-surface-container-highest: #dde4dd;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-lowest-rgb: 255 255 255;
+
+  --color-background: #f4fbf3;
+  --color-on-background: #161d18;
+  --color-on-background-rgb: 22 29 24;
+
+  --color-on-surface: #161d18;
+  --color-on-surface-rgb: 22 29 24;
+  --color-on-surface-variant: #3d4a41;
+  --color-inverse-on-surface: #ecf3eb;
+  --color-inverse-surface: #2b322d;
+
+  --color-primary: #006d43;
+  --color-primary-rgb: 0 109 67;
+  --color-on-primary: #ffffff;
+  --color-on-primary-rgb: 255 255 255;
+  --color-on-primary-container: #00331d;
+  --color-primary-container: #00a86b;
+  --color-primary-container-rgb: 0 168 107;
+  --color-primary-fixed: #78fbb6;
+  --color-primary-fixed-dim: #59de9b;
+  --color-on-primary-fixed: #002111;
+  --color-on-primary-fixed-variant: #005232;
+  --color-inverse-primary: #59de9b;
+
+  --color-secondary: #556158;
+  --color-secondary-rgb: 85 97 88;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-rgb: 255 255 255;
+  --color-secondary-container: #d9e6da;
+  --color-secondary-container-rgb: 217 230 218;
+  --color-on-secondary-container: #5b675e;
+  --color-secondary-fixed: #d9e6da;
+  --color-secondary-fixed-dim: #bdcabe;
+  --color-on-secondary-fixed: #131e17;
+  --color-on-secondary-fixed-variant: #3e4a41;
+
+  --color-tertiary: #735c00;
+  --color-tertiary-rgb: 115 92 0;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-rgb: 255 255 255;
+  --color-tertiary-container: #cca72f;
+  --color-tertiary-container-rgb: 204 167 47;
+  --color-on-tertiary-container: #4e3d00;
+  --color-tertiary-fixed: #ffe088;
+  --color-tertiary-fixed-dim: #e9c349;
+  --color-on-tertiary-fixed: #241a00;
+  --color-on-tertiary-fixed-variant: #574500;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-outline: #6d7a70;
+  --color-outline-variant: #bccabe;
+  --color-outline-variant-rgb: 188 202 190;
+}
+
+.plid-epidural-landing ::selection {
+  background-color: rgb(var(--color-primary-container-rgb) / 0.35);
+  color: var(--color-on-primary-container);
+}
+
+.plid-epidural-landing h1,
+.plid-epidural-landing h2,
+.plid-epidural-landing h3,
+.plid-epidural-landing h4 {
+  font-family: var(--font-headline);
+}
+
+.plid-epidural-landing .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.plid-epidural-landing .material-symbols-outlined--fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}

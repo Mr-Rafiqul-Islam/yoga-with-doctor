@@ -1,4 +1,4 @@
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 
 const problemCardClass =
   "group rounded-xl border-l-4 border-secondary bg-surface-container-lowest p-8 shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-secondary/10";

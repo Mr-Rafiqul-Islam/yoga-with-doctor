@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 
 const ACCENT = {
   primaryA: "text-primary",

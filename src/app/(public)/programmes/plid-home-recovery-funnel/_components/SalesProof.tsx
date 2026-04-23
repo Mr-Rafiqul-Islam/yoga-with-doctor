@@ -1,5 +1,5 @@
 import { funnelSectionClass, type FunnelSectionVariant } from "./funnelSectionVariant";
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 import { SalesProofSlider } from "./SalesProofSlider";
 
 type SalesProofProps = {
