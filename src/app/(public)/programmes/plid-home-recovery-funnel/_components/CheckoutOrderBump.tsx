@@ -35,8 +35,8 @@ export function CheckoutOrderBump({
 
   return (
     <div className="rounded-xl border border-amber-300/90 bg-amber-50/95 p-3 shadow-sm sm:p-4">
-      <div className="flex flex-col gap-4 sm:grid sm:grid-cols-[minmax(0,7.5rem)_1fr] sm:items-start sm:gap-5">
-        <div className="relative mx-auto aspect-square w-full max-w-[140px] shrink-0 overflow-hidden rounded-lg bg-white shadow-inner ring-1 ring-amber-200/80 sm:mx-0 sm:max-w-none sm:aspect-[4/3] sm:w-full">
+      <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,7.5rem)_1fr] lg:items-start lg:gap-5">
+        <div className="relative mx-auto aspect-square w-full max-w-[100px] shrink-0 overflow-hidden rounded-lg bg-white shadow-inner ring-1 ring-amber-200/80 sm:mx-0 sm:max-w-none sm:aspect-[4/3] sm:w-full">
           <Image
             fill
             alt={imageAlt}
@@ -47,18 +47,18 @@ export function CheckoutOrderBump({
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className="mb-2 flex items-start gap-2 sm:gap-3">
+          <div className="mb-2 flex items-start gap-2 lg:gap-3">
             <span
               aria-hidden
-              className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary shadow-sm"
+              className="mt-0.5 flex lg:h-6 h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary shadow-sm"
             >
-              <span className="material-symbols-outlined text-[14px] leading-none">
+              <span className="material-symbols-outlined lg:text-[14px] text-[12px] leading-none">
                 arrow_forward
               </span>
             </span>
             <input
               checked={checked}
-              className="mt-1.5 h-4 w-4 shrink-0 rounded border-amber-400 text-primary focus:ring-primary"
+              className="mt-1.5 lg:h-4 h-3 w-3 shrink-0 rounded border-amber-400 text-primary focus:ring-primary"
               id={checkboxId}
               name={name}
               type="checkbox"
@@ -66,21 +66,21 @@ export function CheckoutOrderBump({
               onChange={(e) => onCheckedChange(e.target.checked)}
             />
             <label
-              className="min-w-0 flex-1 text-sm font-bold leading-snug text-on-surface sm:text-[15px]"
+              className="min-w-0 flex-1 lg:text-sm text-xs font-bold leading-snug text-on-surface lg:text-[15px]"
               htmlFor={checkboxId}
             >
               {offerLabel}
             </label>
-            <span className="shrink-0 text-sm font-bold tabular-nums text-on-surface sm:text-base">
+            <span className="shrink-0 lg:text-sm text-xs font-bold tabular-nums text-on-surface xl:text-base">
               {price}
             </span>
           </div>
 
-          <h4 className="mb-2 text-base font-bold leading-tight text-secondary sm:text-lg">
+          <h4 className="mb-2 lg:text-base text-sm font-bold leading-tight text-secondary xl:text-lg">
             {headline}
           </h4>
 
-          <p className="text-sm leading-relaxed text-on-surface/70">
+          <p className="lg:text-sm text-xs leading-relaxed text-on-surface/70">
             {shortDescription}{" "}
             <button
               aria-expanded={expanded}
@@ -93,7 +93,7 @@ export function CheckoutOrderBump({
           </p>
 
           {expanded ? (
-            <div className="mt-3 border-t border-amber-200/80 pt-3 text-sm leading-relaxed text-on-surface/75">
+            <div className="mt-3 border-t border-amber-200/80 pt-3 lg:text-sm text-xs leading-relaxed text-on-surface/75">
               {fullDescription}
             </div>
           ) : null}

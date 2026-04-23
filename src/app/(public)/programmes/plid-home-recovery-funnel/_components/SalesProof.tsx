@@ -14,7 +14,7 @@ export function SalesProof({ variant = "auto" }: SalesProofProps) {
           <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-primary">
             Patient Stories
           </h2>
-          <h3 className="text-4xl font-extrabold text-on-surface">ব্যথা মুক্ত জীবনের গল্প</h3>
+          <h3 className="text-3xl lg:text-4xl text-center font-extrabold text-on-surface">ব্যথা মুক্ত জীবনের গল্প</h3>
         </div>
         <SalesProofSlider />
       </div>

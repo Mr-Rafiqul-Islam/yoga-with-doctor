@@ -5,9 +5,9 @@ export function SalesBonus() {
   return (
     <ScrollReveal className="bg-surface py-24">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="grid items-center gap-12 rounded-3xl bg-surface-container-high p-10 md:grid-cols-2">
+        <div className="grid items-center gap-12 rounded-3xl bg-surface-container-high p-6 lg:p-10 md:grid-cols-2">
           <div>
-            <h3 className="mb-6 text-3xl font-extrabold">
+            <h3 className="mb-6 text-2xl lg:text-3xl text-center md:text-left font-extrabold">
               Exclusive Bonuses for Today
             </h3>
             <div className="space-y-6">
@@ -18,8 +18,8 @@ export function SalesBonus() {
                   </span>
                 </div>
                 <div>
-                  <h4 className="font-bold">Lifetime Support</h4>
-                  <p className="text-sm opacity-70">
+                  <h4 className="text-base lg:text-lg font-bold">Lifetime Support</h4>
+                  <p className="text-sm lg:text-base opacity-70">
                     আমাদের বিশেষ ফেসবুক সাপোর্ট গ্রুপে সরাসরি প্রশ্নের সুযোগ।
                   </p>
                 </div>
@@ -31,8 +31,8 @@ export function SalesBonus() {
                   </span>
                 </div>
                 <div>
-                  <h4 className="font-bold">Future Updates</h4>
-                  <p className="text-sm opacity-70">
+                  <h4 className="text-base lg:text-lg font-bold">Future Updates</h4>
+                  <p className="text-sm lg:text-base opacity-70">
                     চিকিৎসা বিজ্ঞানের নতুন গবেষণার ভিত্তিতে সকল আপডেট ফ্রি
                     পাবেন।
                   </p>

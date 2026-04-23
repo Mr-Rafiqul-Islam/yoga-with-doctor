@@ -66,8 +66,8 @@ export function SalesUrgency({ endsAt }: SalesUrgencyProps) {
     <ScrollReveal className="bg-secondary py-12 text-on-primary">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-8 px-6 md:flex-row">
         <div className="text-center md:text-left">
-          <h3 className="text-2xl font-bold">অফারটি শেষ হতে সময় বাকি...</h3>
-          <p className="opacity-80">দ্রুত বুকিং দিন, পরবর্তী ব্যাচ শুরু হওয়ার আগে!</p>
+          <h3 className="md:text-2xl text-xl font-bold">অফারটি শেষ হতে সময় বাকি...</h3>
+          <p className="md:text-base text-sm opacity-80">দ্রুত একসেস নিয়ে নিন , এক্সক্লুসিভ অফার শেষ হওয়ার আগে!</p>
         </div>
         <div className="flex flex-wrap justify-center gap-3 text-center sm:gap-4">
           {segments.map(({ value, label, digits }) => (
@@ -75,10 +75,10 @@ export function SalesUrgency({ endsAt }: SalesUrgencyProps) {
               key={label}
               className="min-w-[88px] rounded-xl bg-white/20 px-4 py-4 backdrop-blur-sm sm:min-w-[100px] sm:px-6"
             >
-              <div className="text-3xl font-bold tabular-nums">
+              <div className="md:text-3xl text-2xl font-bold tabular-nums">
                 {formatBanglaInt(value, digits)}
               </div>
-              <div className="text-[10px] font-bold uppercase tracking-widest opacity-60">
+              <div className="md:text-[10px] text-[8px] font-bold uppercase tracking-widest opacity-60">
                 {label}
               </div>
             </div>

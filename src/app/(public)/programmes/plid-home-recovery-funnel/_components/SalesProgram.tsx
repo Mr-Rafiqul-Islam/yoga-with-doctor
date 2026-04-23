@@ -116,10 +116,10 @@ export function SalesProgram() {
           <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-primary">
             Program pillars
           </p>
-          <h3 className="mb-4 text-4xl font-extrabold text-on-surface md:text-5xl">
+          <h3 className="mb-4 text-3xl md:text-4xl font-extrabold text-on-surface lg:text-5xl">
           ঘরোয়া পদ্ধতিতে PLID মুক্ত হওয়ার পূর্ণাঙ্গ রোডম্যাপ 
           </h3>
-          <p className="mx-auto max-w-2xl text-on-surface/65">
+          <p className="mx-auto max-w-2xl text-sm md:text-base text-on-surface/65">
           একটি একক সিস্টেমের মধ্যে চারটি মূল স্তম্ভকে একত্র করা হয়েছে—যেখানে প্রতিটি ধাপ আগের ধাপকে শক্তিশালী করে এবং ধাপে ধাপে দীর্ঘমেয়াদী সুস্থতার দিকে নিয়ে যায়। 
           </p>
         </div>

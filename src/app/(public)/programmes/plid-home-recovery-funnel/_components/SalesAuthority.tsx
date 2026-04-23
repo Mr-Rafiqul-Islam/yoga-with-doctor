@@ -52,10 +52,10 @@ export function SalesAuthority() {
             </p>
           </div>
           <div className="w-full md:w-3/5">
-            <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-primary-container">
+            <h2 className="mb-4 text-lg text-center md:text-left font-bold uppercase tracking-widest text-primary-container">
               Meet Your Mentor
             </h2>
-            <h3 className="mb-6 text-4xl font-extrabold">
+            <h3 className="mb-6 text-3xl lg:text-4xl text-center md:text-left font-extrabold">
               আপনার ব্যথামুক্ত জীবনের পাশে একজন অভিজ্ঞ গাইড
             </h3>
             <div className="space-y-6 leading-relaxed text-on-surface/80">

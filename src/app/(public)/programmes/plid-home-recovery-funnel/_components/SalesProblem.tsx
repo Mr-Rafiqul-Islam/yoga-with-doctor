@@ -37,10 +37,10 @@ export function SalesProblem() {
         <h2 className="mb-4 text-lg font-bold uppercase tracking-[0.2em] text-secondary">
           The Daily Struggle
         </h2>
-        <h3 className="mb-8 text-4xl font-extrabold md:text-5xl">
+        <h3 className="mb-8 text-3xl font-extrabold md:text-5xl">
         অসহ্য কোমর ব্যথায় কি আপনার প্রতিদিনের জীবন হয়ে উঠছে কষ্টকর?
         </h3>
-        <p className="mb-16 max-w-2xl mx-auto text-lg text-on-surface/70">
+        <p className="mb-16 max-w-2xl mx-auto text-base lg:text-lg text-on-surface/70">
         প্রতিটি পদক্ষেপে যখন ব্যথা মনে করিয়ে দেয় আপনি আগের মতো নেই, তখন জীবনটা আর জীবন থাকে না—শুধু টিকে থাকা হয়ে যায়। 
         </p>
         <div className="grid gap-6 text-left sm:grid-cols-2 sm:gap-8 lg:grid-cols-4">

@@ -6,6 +6,21 @@ type SalesBenefitsProps = {
   variant?: FunnelSectionVariant;
 };
 
+const BENEFITS: { title: string; body: string }[] = [
+  {
+    title: "পরিবারের সাথে আবার সময় কাটানো",
+    body: "ব্যথা ছাড়া নিজের সন্তান বা নাতি-নাতনিদের সাথে খেলাধুলা ও স্বাভাবিকভাবে সময় উপভোগ করার সুযোগ ফিরে পাওয়া।",
+  },
+  {
+    title: "মানসিক প্রশান্তি ফিরে পাওয়া",
+    body: "অপারেশনের ভয়, দীর্ঘমেয়াদি ঔষধ ও পার্শ্বপ্রতিক্রিয়ার দুশ্চিন্তা থেকে মুক্ত হয়ে স্বস্তির জীবন পাওয়া।",
+  },
+  {
+    title: "আর্থিক চাপ থেকে মুক্তি",
+    body: "লক্ষাধিক টাকার সার্জারি খরচ এবং নিয়মিত চিকিৎসা ও টেস্টের ব্যয় এড়িয়ে যাওয়া।",
+  },
+];
+
 export function SalesBenefits({ variant = "auto" }: SalesBenefitsProps) {
   return (
     <ScrollReveal className={`overflow-hidden py-24 ${funnelSectionClass(variant)}`}>
@@ -26,43 +41,21 @@ export function SalesBenefits({ variant = "auto" }: SalesBenefitsProps) {
           <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-primary">
             The Result
           </h2>
-          <h3 className="mb-8 text-4xl font-extrabold text-on-surface">
+          <h3 className="mb-8 text-3xl lg:text-4xl font-extrabold text-on-surface">
             স্বাভাবিক জীবনে ফিরে আসার আনন্দ
           </h3>
           <div className="space-y-6">
-            <div className="flex gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-container text-on-primary-container">
-                <span className="material-symbols-outlined text-xl">done_all</span>
+            {BENEFITS.map((item) => (
+              <div key={item.title} className="flex gap-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-container text-on-primary-container">
+                  <span className="material-symbols-outlined text-xl">done_all</span>
+                </div>
+                <div>
+                  <h4 className="text-base lg:text-lg font-bold text-on-surface">{item.title}</h4>
+                  <p className="text-sm lg:text-base text-on-surface/60">{item.body}</p>
+                </div>
               </div>
-              <div>
-                <h4 className="text-lg font-bold text-on-surface">পরিবারের সাথে আবার সময় কাটানো</h4>
-                <p className="text-on-surface/60">
-                ব্যথা ছাড়া নিজের সন্তান বা নাতি-নাতনিদের সাথে খেলাধুলা ও স্বাভাবিকভাবে সময় উপভোগ করার সুযোগ ফিরে পাওয়া।
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-container text-on-primary-container">
-                <span className="material-symbols-outlined text-xl">done_all</span>
-              </div>
-              <div>
-                <h4 className="text-lg font-bold text-on-surface">মানসিক প্রশান্তি ফিরে পাওয়া</h4>
-                <p className="text-on-surface/60">
-                অপারেশনের ভয়, দীর্ঘমেয়াদি ঔষধ ও পার্শ্বপ্রতিক্রিয়ার দুশ্চিন্তা থেকে মুক্ত হয়ে স্বস্তির জীবন পাওয়া।
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-container text-on-primary-container">
-                <span className="material-symbols-outlined text-xl">done_all</span>
-              </div>
-              <div>
-                <h4 className="text-lg font-bold text-on-surface"> আর্থিক চাপ থেকে মুক্তি</h4>
-                <p className="text-on-surface/60">
-                লক্ষাধিক টাকার সার্জারি খরচ এবং নিয়মিত চিকিৎসা ও টেস্টের ব্যয় এড়িয়ে যাওয়া।
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

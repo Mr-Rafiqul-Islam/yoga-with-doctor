@@ -9,7 +9,7 @@ type SalesHeroProps = {
 export function SalesHero({ variant = "auto" }: SalesHeroProps) {
   return (
     <ScrollReveal
-      className={`relative overflow-hidden pb-20 pt-32 ${funnelSectionClass(variant)}`}
+      className={`relative overflow-hidden pb-20 pt-16 lg:pt-32 ${funnelSectionClass(variant)}`}
     >
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 md:grid-cols-2">
         <div className="z-10">
@@ -19,11 +19,11 @@ export function SalesHero({ variant = "auto" }: SalesHeroProps) {
               Scientific Restoration
             </span>
           </div>
-          <h1 className="mb-6 text-5xl font-extrabold leading-[1.1] text-on-surface lg:text-7xl">
+          <h1 className="mb-6 text-4xl md:text-5xl font-extrabold leading-[1.1] text-on-surface lg:text-7xl">
             বিনা অপারেশনে পিএলআইডি (PLID) মুক্ত জীবনের{" "}
             <span className="text-primary">বৈজ্ঞানিক সমাধান</span>
           </h1>
-          <p className="mb-10 max-w-xl text-xl leading-relaxed text-on-surface/80">
+          <p className="mb-10 max-w-xl text-base lg:text-xl leading-relaxed text-on-surface/80">
             সব চেষ্টা করেও কি PLID-এর ব্যথা কমছে না? হয়তো আপনি এখনো সঠিক পদ্ধতিটা জানেন না। অপারেশন ছাড়াই সুস্থ জীবনে ফিরতে আজই জয়েন করুন আমাদের ফ্রি ওয়েবিনারে।
           </p>
           <div className="mb-12 flex flex-col gap-4 sm:flex-row">
@@ -69,18 +69,18 @@ export function SalesHero({ variant = "auto" }: SalesHeroProps) {
             sizes="(max-width: 767px) 100vw, 50vw"
             src="/Dr. Shah Alam-3.jpeg"
           />
-          <div className="absolute -bottom-6 -left-6 z-20 flex items-center gap-4 rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
-            <div className="rounded-xl bg-secondary p-3 text-on-primary">
+          <div className="absolute -bottom-6 -left-6 z-20 flex items-center gap-4 rounded-2xl bg-surface-container-lowest p-2 xl:p-6 shadow-xl">
+            <div className="rounded-xl bg-secondary p-1.5 xl:p-3 text-on-primary">
               <span
-                className="material-symbols-outlined text-3xl"
+                className="material-symbols-outlined !text-base xl:!text-2xl"
                 style={{ fontVariationSettings: "'FILL' 1" }}
               >
                 emergency
               </span>
             </div>
             <div>
-              <div className="plid-text-on-elevated font-bold">Stop The Pain</div>
-              <div className="plid-text-on-elevated-muted text-xs">Scientific Protocol</div>
+              <div className="plid-text-on-elevated text-sm xl:text-base font-bold">Stop The Pain</div>
+              <div className="plid-text-on-elevated-muted text-xs xl:text-sm">Scientific Protocol</div>
             </div>
           </div>
         </div>

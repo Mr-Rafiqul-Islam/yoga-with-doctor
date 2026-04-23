@@ -47,15 +47,15 @@ export function SalesMechanism() {
     <ScrollReveal className="bg-surface py-24" id="methodology">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-16 flex flex-col items-end justify-between gap-6 md:flex-row">
-          <div>
+          <div className="text-center">
             <h2 className="mb-4 text-lg font-bold uppercase tracking-[0.2em] text-primary">
               The Solution
             </h2>
-            <h3 className="text-4xl font-extrabold md:text-5xl">
+            <h3 className="text-3xl font-extrabold md:text-5xl">
             ঘরে বসে ব্যথামুক্ত জীবন পেতে ফলো করুন এই ৪টি সহজ ধাপ।
        
             </h3>
-            <p className="mb-1 mt-5 max-w-6xl text-on-surface/60">
+            <p className="mb-1 mt-5 max-w-6xl text-sm md:text-base lg:text-lg text-on-surface/60">
             PLID বা কোমর ব্যথার সমাধান শুধু ব্যথা কমানো নয়, বরং এর মূল কারণ সঠিকভাবে বুঝে সমাধান করা। অনেক রোগী ভিন্ন ভিন্ন ডাক্তারের পরামর্শে বিভ্রান্ত হয়ে পড়েন—কেউ অপারেশন, কেউ ইনজেকশন বা অন্য চিকিৎসা সাজেস্ট করেন। এই বিষয়টি মাথায় রেখে আমাদের ৪-স্টেপ প্রোগ্রামটি এমনভাবে ডিজাইন করা হয়েছে, যেখানে আপনি ঘরে বসেই নিজের অবস্থার ভিত্তিতে ধাপে ধাপে গাইডলাইন ফলো করে প্রাথমিক যত্ন নিতে পারবেন। পাশাপাশি সার্জারি, ইনজেকশন, ইয়োগা বা লাইফস্টাইল কারেকশন—আপনার জন্য কোনটি উপযুক্ত হতে পারে, সেটি বোঝার জন্য একটি স্ট্রাকচার্ড গাইডলাইনও পাবেন।
 
             </p>

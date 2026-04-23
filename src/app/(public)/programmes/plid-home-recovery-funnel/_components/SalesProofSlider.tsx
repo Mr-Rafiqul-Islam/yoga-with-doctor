@@ -79,7 +79,7 @@ const STORIES: Story[] = [
 
 function StarRow({ count }: { count: number }) {
   return (
-    <div className="mb-6 flex text-primary-container">
+    <div className="shrink-0 flex text-primary-container">
       {Array.from({ length: count }, (_, i) => (
         <span
           key={i}
@@ -95,10 +95,12 @@ function StarRow({ count }: { count: number }) {
 
 function StoryCard({ story }: { story: Story }) {
   return (
-    <div className="rounded-2xl bg-surface-container-low p-8 transition-colors duration-300 hover:bg-[var(--plid-proof-story-hover)]">
+    <div className="flex h-full min-h-0 min-w-0 flex-col gap-8 rounded-2xl bg-surface-container-low p-8 transition-colors duration-300 hover:bg-[var(--plid-proof-story-hover)]">
       <StarRow count={story.stars} />
-      <p className="mb-8 italic leading-relaxed text-on-surface/70">&quot;{story.quote}&quot;</p>
-      <div className="flex items-center gap-4">
+      <p className="min-h-0 flex-1 italic leading-relaxed text-on-surface/70">
+        &quot;{story.quote}&quot;
+      </p>
+      <div className="flex shrink-0 items-center gap-4">
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-container/20 text-lg font-bold text-primary">
           {story.initials}
         </div>
@@ -206,13 +208,13 @@ export function SalesProofSlider() {
           {slides.map((group, slideIdx) => (
             <div
               key={slideIdx}
-              className="flex shrink-0 flex-col gap-8 md:flex-row"
+              className="flex min-h-0 shrink-0 flex-col gap-8 md:flex-row md:items-stretch"
               style={{ width: slideCount > 0 ? `${100 / slideCount}%` : "100%" }}
             >
               {group.map((story) => (
                 <div
                   key={story.name + story.initials}
-                  className={perView > 1 ? "min-w-0 flex-1" : "w-full"}
+                  className={perView > 1 ? "flex min-h-0 min-w-0 flex-1" : "w-full"}
                 >
                   <StoryCard story={story} />
                 </div>
