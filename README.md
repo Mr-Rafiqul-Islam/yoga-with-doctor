@@ -29,6 +29,10 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Server build and PM2
+
+For `generateStaticParams` and `generateMetadata` on prerendered routes (for example `courses/[slug]`), the server process needs `API_BASE_URL` or `NEXT_PUBLIC_API_BASE_URL` set to a reachable base URL of the ywd API (no trailing slash). The same URL is used at build time and in production. Without it, static params and SEO metadata fetches are skipped or empty.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
