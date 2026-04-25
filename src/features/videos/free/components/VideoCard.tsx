@@ -44,7 +44,6 @@ const focusRingClass =
  */
 export function VideoCard({
   thumbnailUrl,
-  duration,
   category,
   title,
   description,
@@ -116,11 +115,11 @@ export function VideoCard({
         </>
       )}
 
-      {duration ? (
+      {/* {duration ? (
         <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-black/75 px-2 py-1 text-caption font-medium text-white">
           {duration}
         </span>
-      ) : null}
+      ) : null} */}
     </div>
   );
 

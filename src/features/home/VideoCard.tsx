@@ -54,11 +54,6 @@ export function VideoCard({
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : null}
-        {duration ? (
-          <span className="pointer-events-none absolute bottom-2 right-2 rounded bg-black/70 px-2 py-1 text-caption text-white">
-            {duration}
-          </span>
-        ) : null}
       </div>
       <div className="p-4">
         <h3 className="mb-1 line-clamp-1 font-sans text-h2 font-semibold text-foreground">
