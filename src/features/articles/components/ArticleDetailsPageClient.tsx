@@ -23,6 +23,24 @@ const fallbackAuthor: ArticleAuthor = {
   profileLink: "#",
 };
 
+/** Heuristic: API may send rich HTML in `content` or, like courses, in `description`. */
+function bodyHtmlFromArticle(article: {
+  description: string | null;
+  content?: string | null;
+}): string {
+  const fromContent = article.content?.trim() ?? "";
+  if (fromContent) return fromContent;
+
+  const desc = article.description?.trim() ?? "";
+  if (!desc) return "";
+
+  // If the excerpt field actually holds full rich HTML, do not wrap in <p> (invalid nesting breaks layout).
+  const looksLikeHtml = /<\s*[/a-z!]/i.test(desc);
+  if (looksLikeHtml) return desc;
+
+  return desc ? `<p>${desc}</p>` : "";
+}
+
 function mapToArticleDetails(article: {
   id: string;
   title: string;
@@ -50,7 +68,7 @@ function mapToArticleDetails(article: {
     actionLabel: "Read More",
     href: `/articles/${article.slug}`,
     tags: [],
-    detailsContent: article.content || `<p>${article.description || ""}</p>`,
+    detailsContent: bodyHtmlFromArticle(article) || "<p></p>",
   };
 }
 
@@ -75,6 +93,7 @@ export function ArticleDetailsPageClient({ slug }: ArticleDetailsPageClientProps
 
   return (
     <ArticleDetailsView
+      key={slug}
       article={article}
       relatedArticles={relatedArticles}
       articleApiId={apiArticle.id}

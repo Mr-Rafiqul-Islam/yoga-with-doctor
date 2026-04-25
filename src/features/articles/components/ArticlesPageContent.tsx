@@ -19,7 +19,7 @@ import type { FeaturedArticle } from "@/features/articles/data/dummyArticles";
 import type { ArticleDetails } from "@/features/articles/data/dummyArticles";
 
 type ArticlesPageContentProps = {
-  featuredArticle: FeaturedArticle;
+  featuredArticle: FeaturedArticle | null;
   articles: ArticleDetails[];
   pagination?: {
     totalPages: number;
@@ -66,7 +66,7 @@ export function ArticlesPageContent({
         onSortClick={() => setSortPopupOpen(true)}
       />
 
-      <FeaturedArticleSection article={featuredArticle} />
+      {featuredArticle && <FeaturedArticleSection article={featuredArticle} />}
 
       <ArticleGridSection articles={filteredAndSorted} />
 

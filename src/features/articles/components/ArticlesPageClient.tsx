@@ -69,7 +69,7 @@ export function ArticlesPageClient() {
   const featuredArticle =
     apiArticles.length > 0
       ? mapToFeaturedArticle(apiArticles[0])
-      : fallbackFeaturedArticle;
+      : null;
   const articles =
     apiArticles.length > 1
       ? apiArticles.slice(1).map(mapApiArticleToCard)

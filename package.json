@@ -16,6 +16,7 @@
     "@mux/mux-player-react": "^3.11.5",
     "@reduxjs/toolkit": "^2.11.2",
     "@tanstack/react-query": "^5.90.20",
+    "he": "^1.2.0",
     "jspdf": "^4.2.1",
     "motion": "^12.38.0",
     "next": "^16.2.1",
@@ -28,6 +29,8 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.3",
+    "@tailwindcss/typography": "^0.5.19",
+    "@types/he": "^1.2.3",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

@@ -4,8 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ArticleDetails } from "@/features/articles/data/dummyArticles";
 import { generateToc } from "@/lib/generateToc";
+import { normalizeRichtextHtmlForDom } from "@/lib/normalizeApiHtml";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArticleBookmarkButton } from "./ArticleBookmarkButton";
 import { ArticleShareButton } from "./ArticleShareButton";
 
@@ -32,15 +33,19 @@ export function ArticleDetailsView({
     description,
   } = article;
 
-  const [toc, setToc] = useState<{ id: string; text: string }[]>([]);
-  const [content, setContent] = useState(detailsContent);
-  const activeId = useScrollSpy(toc.map((item) => item.id));
+  const normalizedHtml = useMemo(
+    () => normalizeRichtextHtmlForDom(detailsContent),
+    [detailsContent],
+  );
 
+  const [toc, setToc] = useState<{ id: string; text: string }[]>([]);
+  const [content, setContent] = useState(normalizedHtml);
+  const activeId = useScrollSpy(toc.map((item) => item.id));
   useEffect(() => {
-    const { toc, contentWithIds } = generateToc(detailsContent);
-    setToc(toc);
+    const { toc: nextToc, contentWithIds } = generateToc(normalizedHtml);
+    setToc(nextToc);
     setContent(contentWithIds);
-  }, [detailsContent]);
+  }, [normalizedHtml]);
 
   return (
     <main className="relative z-20 mx-auto mb-20 w-full max-w-7xl flex-grow px-4 sm:px-6 lg:px-8">
