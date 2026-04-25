@@ -1,11 +1,5 @@
-"use client";
+import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
-
-import {
-  MuxPlayerLazy,
-  type MuxPlayerLazyRef,
-} from "@/components/media/MuxPlayerLazy";
 
 export type VideoCardProps = {
   thumbnailUrl?: string | null;
@@ -32,63 +26,49 @@ export function formatDuration(seconds: number) {
 
 export function VideoCard({
   thumbnailUrl,
+  duration,
   level,
   title,
   authorName = "Dr. Md Shah Alam",
   slug,
   muxPlaybackId,
 }: VideoCardProps) {
-  const playerRef = useRef<MuxPlayerLazyRef>(null);
-  const [videoDuration, setVideoDuration] = useState<string | number | null>(null);
-  const handleLoadedMetadata = () => {
-    const d = playerRef.current?.duration;
-    if (d) setVideoDuration(formatDuration(d));
-  };
-  const content = (
-    <>
-      <div className="relative h-48">
-        <MuxPlayerLazy
-          ref={playerRef}
-          className="h-full w-full"
-          playbackId={muxPlaybackId}
-          poster={thumbnailUrl ?? undefined}
-          streamType="on-demand"
-          onLoadedMetadata={handleLoadedMetadata}
-          autoPlay={false}
-          playsInline
-          style={{
-            aspectRatio: "auto",
-            height: "100%",
-            width: "100%",
-            "--controls-backdrop-color": "transparent",
-            "--media-object-fit": "cover",
-            "--media-object-position": "center",
-          }}
-        />
-        { videoDuration && <span className="absolute bottom-2 right-2 rounded bg-black/70 px-2 py-1 text-caption text-white">
-          {videoDuration}
-        </span>}
+  const imageSrc =
+    thumbnailUrl ??
+    (muxPlaybackId
+      ? `https://image.mux.com/${muxPlaybackId}/thumbnail.webp?time=0`
+      : null);
+
+  return (
+    <Link
+      href={slug ? `/videos/free/${slug}` : "#"}
+      className="group relative flex flex-col overflow-hidden rounded-radius-md bg-surface shadow-elevation-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+    >
+      <div className="relative h-48 w-full overflow-hidden bg-muted/40">
+        {imageSrc ? (
+          <Image
+            src={imageSrc}
+            alt=""
+            fill
+            className="object-cover object-center"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        ) : null}
+        {duration ? (
+          <span className="pointer-events-none absolute bottom-2 right-2 rounded bg-black/70 px-2 py-1 text-caption text-white">
+            {duration}
+          </span>
+        ) : null}
       </div>
       <div className="p-4">
-        <Link
-          href={slug ? `/videos/free/${slug}` : "#"}
-          className="flex flex-col focus:outline-none rounded-radius-md"
-        >
-          <h3 className="mb-1 line-clamp-1 font-sans text-h2 font-semibold text-foreground">
-            {title}
-          </h3>
-        </Link>
+        <h3 className="mb-1 line-clamp-1 font-sans text-h2 font-semibold text-foreground">
+          {title}
+        </h3>
         <div className="flex items-center justify-between text-body-md text-muted">
           <span className="capitalize">{level}</span>
           <span>{authorName}</span>
         </div>
       </div>
-    </>
-  );
-
-  return (
-    <article className="group relative flex flex-col overflow-hidden rounded-radius-md bg-surface shadow-elevation-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation-md">
-      {content}
-    </article>
+    </Link>
   );
 }

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "postinstall": "node scripts/patch-mux-background-video.mjs",
     "dev": "next dev",
     "build": "next build",
     "analyze": "cross-env ANALYZE=true next build --webpack",
@@ -11,6 +12,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@mux/mux-background-video": "^0.2.3",
     "@mux/mux-player-react": "^3.11.5",
     "@reduxjs/toolkit": "^2.11.2",
     "@tanstack/react-query": "^5.90.20",
