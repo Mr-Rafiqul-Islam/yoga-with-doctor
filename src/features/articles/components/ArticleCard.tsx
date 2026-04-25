@@ -35,7 +35,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
         <div className="relative w-1/3 shrink-0 overflow-hidden">
           <Image
             src={image}
-            alt=""
+            alt={imageAlt}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             sizes="33vw"

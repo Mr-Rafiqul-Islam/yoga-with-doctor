@@ -10,7 +10,7 @@ import {
   OrderTotalCard,
   PaymentMethodBadges,
   PaymentProviderSelect,
-  PromoCodeInput,
+  // PromoCodeInput,
 } from "@/features/checkout/components";
 import {
   CHECKOUT_REVIEW,
@@ -51,7 +51,7 @@ function formatClientPaymentError(error: unknown): string {
 export function CheckoutReviewContent() {
   const searchParams = useSearchParams();
   const courseSlug = searchParams.get("courseSlug") || "";
-  const [promoCode, setPromoCode] = useState("");
+  // const [promoCode, setPromoCode] = useState("");
   const [discountApplied, setDiscountApplied] = useState(
     CHECKOUT_REVIEW.defaultDiscount
   );
@@ -106,9 +106,9 @@ export function CheckoutReviewContent() {
   const subtotal = orderItem.price;
   const tax = Math.round(subtotal * 0 * 100) / 100;
 
-  const handleApplyPromo = () => {
-    setDiscountApplied(0);
-  };
+  // const handleApplyPromo = () => {
+  //   setDiscountApplied(0);
+  // };
   const totalWithDiscount = subtotal + tax - discountApplied;
 
   const course = courseResponse?.data?.course;
@@ -233,11 +233,11 @@ export function CheckoutReviewContent() {
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
           <div className="space-y-8 lg:col-span-7">
             <OrderSummarySection items={[orderItem]} />
-            <PromoCodeInput
+            {/* <PromoCodeInput
               value={promoCode}
               onChange={setPromoCode}
               onApply={handleApplyPromo}
-            />
+            /> */}
           </div>
 
           <div className="space-y-6 lg:col-span-5 lg:sticky lg:top-8">
