@@ -1,9 +1,15 @@
 import { ForgotPasswordForm } from "@/features/auth/components";
+import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/publicPageMetadata";
 
-export const metadata = {
-  title: "Reset Your Password",
-  description: "Request a password reset link for your Yoga With Doctor account",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return publicPageMetadata({
+    title: "Forgot password",
+    description:
+      "Request a secure password reset link for your Yoga With Doctor account.",
+    path: "/auth/forgot-password",
+  });
+}
 
 export default function ForgotPasswordPage() {
   return (

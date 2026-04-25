@@ -8,8 +8,9 @@ import {
   mapToArticleDetails,
   selectRelatedArticleCards,
 } from "@/features/articles/lib/mapApiArticle";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { dynamicPageMetadata } from "@/lib/publicPageMetadata";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -31,10 +32,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             .trim()
             .slice(0, 160)
         : undefined;
-      return {
+      return dynamicPageMetadata({
         title: article.title,
         ...(description && { description }),
-      };
+        path: `/articles/${slug}`,
+      });
     }
   } catch {
     // ignore

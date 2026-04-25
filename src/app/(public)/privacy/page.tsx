@@ -1,10 +1,15 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/publicPageMetadata";
 
-export const metadata = {
-  title: "Privacy Policy - Yoga With Doctor",
-  description:
-    "Understand how Yoga With Doctor protects your data and your rights. Our privacy policy covers data collection, usage, and security.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return publicPageMetadata({
+    title: "Privacy Policy",
+    description:
+      "How Yoga With Doctor collects, uses, and protects your personal data. Transparency and your rights, explained.",
+    path: "/privacy",
+  });
+}
 
 const LAST_UPDATED = "October 24, 2023";
 

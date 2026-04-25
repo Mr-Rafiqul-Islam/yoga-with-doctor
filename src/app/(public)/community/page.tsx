@@ -6,6 +6,17 @@ import {
   TrendingDiscussionsWidget,
   LiveSessionsWidget,
 } from "@/features/community/components";
+import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/publicPageMetadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return publicPageMetadata({
+    title: "Community",
+    description:
+      "Connect with the Yoga With Doctor community — discussions, live sessions, and shared wellness journeys.",
+    path: "/community",
+  });
+}
 
 export default function CommunityPage() {
   return (

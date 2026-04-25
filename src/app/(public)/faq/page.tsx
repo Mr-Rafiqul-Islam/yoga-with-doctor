@@ -1,12 +1,17 @@
 import Link from "next/link";
 import { FaqContent } from "@/features/faq/components";
 import type { FaqSection, FaqTopic } from "@/features/faq/components";
+import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/publicPageMetadata";
 
-export const metadata = {
-  title: "Frequently Asked Questions - Yoga With Doctor",
-  description:
-    "Find answers to common questions about your yoga journey, subscriptions, and wellness plans.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return publicPageMetadata({
+    title: "FAQ",
+    description:
+      "Find answers to common questions about yoga classes, subscriptions, technical support, and your wellness journey.",
+    path: "/faq",
+  });
+}
 
 const topics: FaqTopic[] = [
   { id: "all", label: "All Topics" },

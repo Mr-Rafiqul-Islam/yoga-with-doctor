@@ -1,9 +1,14 @@
 import { ResetPasswordForm } from "@/features/auth/components";
+import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/publicPageMetadata";
 
-export const metadata = {
-  title: "Reset Password",
-  description: "Set a new password for your Yoga With Doctor account",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return publicPageMetadata({
+    title: "Reset password",
+    description: "Set a new password to secure your Yoga With Doctor account.",
+    path: "/auth/reset-password",
+  });
+}
 
 export default function ResetPasswordPage() {
   return (

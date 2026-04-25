@@ -4,12 +4,16 @@ import {
   PremiumUnlockCTA,
 } from "@/features/videos/premium/components";
 import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/publicPageMetadata";
 
-export const metadata: Metadata = {
-  title: "Premium Collection",
-  description:
-    "Unlock all 50+ masterclasses and doctor-led sessions. Get access to the complete medical yoga library.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return publicPageMetadata({
+    title: "Premium Collection",
+    description:
+      "Unlock masterclasses and doctor-led sessions. Full access to the medical yoga and wellness video library.",
+    path: "/videos/premium",
+  });
+}
 
 /**
  * Premium Collection page. Light variant matches free video pages (design tokens);

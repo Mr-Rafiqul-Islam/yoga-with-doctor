@@ -1,11 +1,16 @@
 import { MaintenanceView } from "@/components/ui/MaintenanceView";
 // import { PricingPageContent } from "@/features/pricing";
+import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/publicPageMetadata";
 
-export const metadata = {
-  title: "Premium Pricing Plans",
-  description:
-    "Unlock unlimited access to all courses, premium videos, and meditation guides. Choose the plan that fits your wellness journey.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return publicPageMetadata({
+    title: "Pricing",
+    description:
+      "Unlock unlimited access to courses, premium videos, and guided programs. Choose the plan that fits your wellness journey.",
+    path: "/pricing",
+  });
+}
 
 /**
  * Premium pricing page. Public route (no auth required to view, but checkout requires login).

@@ -1,10 +1,15 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/publicPageMetadata";
 
-export const metadata = {
-  title: "Terms & Conditions - Yoga With Doctor",
-  description:
-    "Terms and Conditions governing your use of Yoga With Doctor. Covers medical disclaimer, accounts, subscriptions, and intellectual property.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return publicPageMetadata({
+    title: "Terms & Conditions",
+    description:
+      "Terms governing use of Yoga With Doctor, including medical disclaimer, accounts, subscriptions, and intellectual property.",
+    path: "/terms",
+  });
+}
 
 const LAST_UPDATED = "October 24, 2023";
 

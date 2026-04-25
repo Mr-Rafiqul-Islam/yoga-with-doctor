@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Anek_Bangla, Hind_Siliguri, Tiro_Bangla } from "next/font/google";
+import { publicPageMetadata } from "@/lib/publicPageMetadata";
 import "./plid-funnel.css";
 
 const anek = Anek_Bangla({
@@ -22,11 +23,14 @@ const tiro = Tiro_Bangla({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "PLID Home Treatment",
-  description:
-    "Scientifically proven home-based system for PLID recovery without surgery.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return publicPageMetadata({
+    title: "PLID Home Treatment",
+    description:
+      "Scientifically proven home-based system for PLID recovery without surgery.",
+    path: "/programmes/plid-home-recovery-funnel",
+  });
+}
 
 export default function PlidHomeRecoveryFunnelLayout({
   children,

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LessonPageClient } from "@/features/courses/components/lesson/LessonPageClient";
+import { dynamicPageMetadata } from "@/lib/publicPageMetadata";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -9,8 +10,12 @@ interface PageProps {
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const { lesson } = await searchParams;
-  const suffix = lesson ? "Lesson" : "Course Lesson";
-  return { title: `${slug} • ${suffix} | Yoga With Doctor` };
+  const label = lesson ? "Lesson" : "Course lesson";
+  return dynamicPageMetadata({
+    title: `${decodeURIComponent(slug)} — ${label}`,
+    description: `Watch this ${label.toLowerCase()} in your course on Yoga With Doctor.`,
+    path: `/courses/${slug}/lesson`,
+  });
 }
 
 export default async function LessonPage({ params, searchParams }: PageProps) {

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { CourseDetailPageClient } from "@/features/courses/components/CourseDetailPageClient";
 import type { Metadata } from "next";
+import { dynamicPageMetadata } from "@/lib/publicPageMetadata";
 
 /** ISR: refetch from your API at most this often (seconds). Must match fetch `next.revalidate` below. */
 export const revalidate = 60;
@@ -32,10 +33,11 @@ export async function generateMetadata({
             .trim()
             .slice(0, 160)
         : undefined;
-      return {
+      return dynamicPageMetadata({
         title: course.title,
         ...(description && { description }),
-      };
+        path: `/courses/${slug}`,
+      });
     }
   } catch {
     // ignore

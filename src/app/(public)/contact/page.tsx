@@ -8,12 +8,17 @@ import {
   ContactSuccessBanner,
   ContactSupportNumbersSection,
 } from "@/app/(public)/contact/_components";
+import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/publicPageMetadata";
 
-export const metadata = {
-  title: "Contact Us - Yoga With Doctor",
-  description:
-    "Get in touch with our clinical specialists. We're here to guide you toward balance and health.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return publicPageMetadata({
+    title: "Contact",
+    description:
+      "Get in touch with Yoga With Doctor. We're here to guide you toward balance, recovery, and health.",
+    path: "/contact",
+  });
+}
 
 function getApiBaseUrl() {
   return (

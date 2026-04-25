@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Serif } from "next/font/google";
+import { publicPageMetadata } from "@/lib/publicPageMetadata";
 import "./plid-epidural-landing.css";
 
 const notoSerif = Noto_Serif({
@@ -14,11 +15,14 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "PLID Home Treatment",
-  description:
-    "Heal your spine naturally: doctor-led yoga system for PLID recovery. Scientifically-backed home protocol by Dr. Shah Alam.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return publicPageMetadata({
+    title: "PLID Epidural Recovery",
+    description:
+      "Heal your spine naturally: doctor-led yoga for PLID recovery. Scientifically-backed home protocol by Dr. Shah Alam.",
+    path: "/programmes/plid-treatment-by-epidural",
+  });
+}
 
 export default function PlidTreatmentByEpiduralLayout({
   children,
