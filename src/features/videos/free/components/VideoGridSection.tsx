@@ -1,6 +1,6 @@
 "use client";
 
-import { FREE_VIDEOS } from "../data/freeVideosData";
+
 import { VideoCard, VideoCardSkeleton, type VideoCardProps } from "./VideoCard";
 
 const SKELETON_COUNT = 6;
@@ -17,7 +17,7 @@ export interface VideoGridSectionProps {
  * Uses default free videos from Figma when no videos prop is passed.
  */
 export function VideoGridSection({
-  videos = FREE_VIDEOS,
+  videos,
   isLoading = false,
 }: VideoGridSectionProps) {
   const items = videos && videos.length > 0 ? videos : Array.from({ length: 6 });

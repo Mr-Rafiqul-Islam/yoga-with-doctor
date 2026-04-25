@@ -1,16 +1,6 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { formatLevelWithHyphenToSpace } from "../utils/formatLevel";
-import { useEffect, useRef, useState } from "react";
-
-import {
-  MuxPlayerLazy,
-  type MuxPlayerLazyRef,
-} from "@/components/media/MuxPlayerLazy";
-import { useLazyGetVideoPlaybackTokenQuery } from "@/slices/videos";
-import { formatDuration } from "@/features/home/VideoCard";
 
 export interface VideoCardProps {
   /** Thumbnail image URL (optional; shows placeholder if missing) */
@@ -33,7 +23,7 @@ export interface VideoCardProps {
   href?: string;
   /** URL slug for details page (e.g. "morning-sunshine-flow"). Used to build href when href not set. */
   slug?: string;
-  /** Mux playback ID for inline preview player (optional). */
+  /** Mux playback ID for thumbnail fallback when thumbnailUrl is missing (optional). */
   muxPlaybackId?: string;
   /** Mux asset ID for playback token (optional). */
   muxAssetId?: string;
@@ -42,13 +32,19 @@ export interface VideoCardProps {
   status?: string;
 }
 
+const wrapperClassName =
+  "flex flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-soft transition-shadow hover:shadow-elevation-sm dark:border-gray-700";
+
+const focusRingClass =
+  "outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
+
 /**
  * Single video card for the Free Wellness Library grid.
- * Semantic: <article>. Thumbnail with play overlay and duration, category, FREE tag, title, description, author.
- * Tailwind only, responsive, accessible.
+ * Thumbnail, duration, category, FREE tag, title, description, author.
  */
 export function VideoCard({
   thumbnailUrl,
+  duration,
   category,
   title,
   description,
@@ -57,101 +53,45 @@ export function VideoCard({
   isFree = true,
   href,
   muxPlaybackId,
-  id,
-  status,
 }: VideoCardProps) {
-  const [playbackId, setPlaybackId] = useState<string | undefined>(undefined);
-  const [playbackToken, setPlaybackToken] = useState<string | null>(null);
-  const [playbackPolicy, setPlaybackPolicy] = useState<string | undefined>(
-    undefined,
-  );
-  const [getPlaybackToken] = useLazyGetVideoPlaybackTokenQuery();
+  const imageSrc =
+    thumbnailUrl ??
+    (muxPlaybackId
+      ? `https://image.mux.com/${muxPlaybackId}/thumbnail.webp?time=0`
+      : null);
 
-  useEffect(() => {
-    // Fetch playback token if video exists and has muxPlaybackId
-    if (id && muxPlaybackId && status === "READY") {
-      getPlaybackToken(id)
-        .unwrap()
-        .then((result) => {
-          if (result.success && result.data) {
-            setPlaybackId(result.data.playbackId);
-            setPlaybackToken(result.data.playbackToken || null);
-            setPlaybackPolicy(result.data.playbackPolicy || undefined);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching playback token:", error);
-          // Fallback to using muxPlaybackId directly
-          setPlaybackId(muxPlaybackId);
-          setPlaybackToken(null);
-        });
-    } else if (muxPlaybackId) {
-      // Fallback: use muxPlaybackId directly if video is not ready or token fetch fails
-      setPlaybackId(muxPlaybackId);
-      setPlaybackToken(null);
-    }
-  }, [id, muxPlaybackId, status, getPlaybackToken]);
-  const playerRef = useRef<MuxPlayerLazyRef>(null);
-  const [videoDuration, setVideoDuration] = useState<string | number | null>(
-    null,
-  );
-  const handleLoadedMetadata = () => {
-    const d = playerRef.current?.duration;
-    if (d) setVideoDuration(formatDuration(d));
-  };
-  const content = (
-    <>
-      {/* Thumbnail with play overlay and duration */}
-      <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted/60">
-        {isFree || playbackPolicy === "public" ? (
-          <MuxPlayerLazy
-            ref={playerRef}
-            className="h-full w-full"
-            playbackId={playbackId}
-            poster={thumbnailUrl ?? undefined}
-            {...(playbackToken ? { tokens: { playback: playbackToken } } : {})}
-            streamType="on-demand"
-            onLoadedMetadata={handleLoadedMetadata}
-            autoPlay={false}
-            muted
-            playsInline
-            style={{
-              aspectRatio: "auto",
-              height: "100%",
-              width: "100%",
-              "--controls-backdrop-color": "transparent",
-              "--media-object-fit": "cover",
-              "--media-object-position": "center",
-            }}
-          />
-        ) : (
-          <>
-            {thumbnailUrl ? (
-              <>
-                <Image
-                  src={thumbnailUrl}
-                  alt=""
-                  fill
-                  className="object-cover blur-[2px] brightness-75"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
-                <div
-                  className="absolute inset-0 flex items-center justify-center backdrop-blur-[2px]"
-                  aria-hidden
-                >
-                  <div className="rounded-full border border-white/20 bg-black/40 p-3 shadow-lg backdrop-blur-sm dark:bg-white/10">
-                    <span
-                      className="material-icons-outlined text-2xl text-white"
-                      aria-hidden
-                    >
-                      lock
-                    </span>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-muted/80">
-                <div className="rounded-full border border-white/20 bg-black/30 p-3 shadow-lg backdrop-blur-sm dark:bg-white/10">
+  const navigableHref = href && isFree ? href : null;
+
+  const thumbnail = (
+    <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-muted/60">
+      {isFree ? (
+        <>
+          {imageSrc ? (
+            <Image
+              src={imageSrc}
+              alt=""
+              fill
+              className="object-cover object-center"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          ) : null}
+        </>
+      ) : (
+        <>
+          {imageSrc ? (
+            <>
+              <Image
+                src={imageSrc}
+                alt=""
+                fill
+                className="object-cover blur-[2px] brightness-75"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              />
+              <div
+                className="absolute inset-0 flex items-center justify-center backdrop-blur-[2px]"
+                aria-hidden
+              >
+                <div className="rounded-full border border-white/20 bg-black/40 p-3 shadow-lg backdrop-blur-sm dark:bg-white/10">
                   <span
                     className="material-icons-outlined text-2xl text-white"
                     aria-hidden
@@ -160,120 +100,122 @@ export function VideoCard({
                   </span>
                 </div>
               </div>
-            )}
-          </>
-        )}
+            </>
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-muted/80">
+              <div className="rounded-full border border-white/20 bg-black/30 p-3 shadow-lg backdrop-blur-sm dark:bg-white/10">
+                <span
+                  className="material-icons-outlined text-2xl text-white"
+                  aria-hidden
+                >
+                  lock
+                </span>
+              </div>
+            </div>
+          )}
+        </>
+      )}
 
-        {/* Duration badge */}
-        {videoDuration && (
-          <span className="absolute bottom-2 right-2 rounded-md bg-black/75 px-2 py-1 text-caption font-medium text-white">
-            {videoDuration}
+      {duration ? (
+        <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-black/75 px-2 py-1 text-caption font-medium text-white">
+          {duration}
+        </span>
+      ) : null}
+    </div>
+  );
+
+  const body = (
+    <div className="flex flex-1 flex-col gap-2 p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        {category ? (
+          <span className="text-caption font-semibold uppercase tracking-wide text-primary">
+            {formatLevelWithHyphenToSpace(category)}
+          </span>
+        ) : (
+          <span className="h-3 w-20 rounded bg-muted/50" aria-hidden />
+        )}
+        {isFree ? (
+          <span className="rounded bg-neutral-800/40 px-2 py-0.5 text-caption font-medium text-white dark:bg-gray-700">
+            FREE
+          </span>
+        ) : (
+          <span className="rounded bg-primary px-2 py-0.5 text-caption font-medium text-white">
+            Premium
           </span>
         )}
       </div>
 
-      <Link
-        href={playbackPolicy === "public" ? (href ?? "") : ""}
-        className="flex flex-1 flex-col gap-2 p-4 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl"
-      >
-        {/* Category + FREE tag row */}
-        <div className="flex flex-wrap items-center gap-2">
-          {category ? (
-            <span className="text-caption font-semibold uppercase tracking-wide text-primary">
-              {formatLevelWithHyphenToSpace(category)}
-            </span>
-          ) : (
-            <span className="h-3 w-20 rounded bg-muted/50" aria-hidden />
-          )}
-          {isFree ? (
-            <span className="rounded bg-neutral-800/40 px-2 py-0.5 text-caption font-medium text-white dark:bg-gray-700">
-              FREE
-            </span>
-          ) : (
-            <span className="rounded bg-primary px-2 py-0.5 text-caption font-medium text-white">
-              Premium
-            </span>
-          )}
+      {title ? (
+        <h3 className="font-semibold leading-snug text-foreground line-clamp-2">
+          {title}
+        </h3>
+      ) : (
+        <div
+          className="h-5 w-full max-w-[85%] rounded bg-muted/50"
+          aria-hidden
+        />
+      )}
+
+      {description ? (
+        <p className="text-body-md text-muted line-clamp-2">{description}</p>
+      ) : (
+        <div className="space-y-1">
+          <div className="h-3 w-full rounded bg-muted/40" aria-hidden />
+          <div className="h-3 w-[85%] rounded bg-muted/40" aria-hidden />
         </div>
+      )}
 
-        {/* Title */}
-        {title ? (
-          <h3 className="font-semibold leading-snug text-foreground line-clamp-2">
-            {title}
-          </h3>
-        ) : (
-          <div
-            className="h-5 w-full max-w-[85%] rounded bg-muted/50"
-            aria-hidden
-          />
-        )}
-
-        {/* Description */}
-        {description ? (
-          <p className="text-body-md text-muted line-clamp-2">{description}</p>
-        ) : (
-          <div className="space-y-1">
-            <div className="h-3 w-full rounded bg-muted/40" aria-hidden />
-            <div className="h-3 w-[85%] rounded bg-muted/40" aria-hidden />
-          </div>
-        )}
-
-        {/* Author */}
-        {authorName && (
-          <div className="mt-auto flex items-center gap-2">
-            {authorAvatarUrl ? (
-              <Image
-                src={authorAvatarUrl}
-                alt=""
-                width={32}
-                height={32}
-                className="h-8 w-8 shrink-0 rounded-full object-cover"
-              />
-            ) : (
-              <div
-                className="h-8 w-8 shrink-0 rounded-full bg-muted/50"
-                aria-hidden
-              />
-            )}
-            {authorName ? (
-              <span className="text-body-md text-muted truncate">
-                {authorName}
-              </span>
-            ) : (
-              <div className="h-4 w-24 rounded bg-muted/40" aria-hidden />
-            )}
-          </div>
-        )}
-      </Link>
-    </>
+      {authorName ? (
+        <div className="mt-auto flex items-center gap-2">
+          {authorAvatarUrl ? (
+            <Image
+              src={authorAvatarUrl}
+              alt=""
+              width={32}
+              height={32}
+              className="h-8 w-8 shrink-0 rounded-full object-cover"
+            />
+          ) : (
+            <div
+              className="h-8 w-8 shrink-0 rounded-full bg-muted/50"
+              aria-hidden
+            />
+          )}
+          <span className="text-body-md text-muted truncate">{authorName}</span>
+        </div>
+      ) : null}
+    </div>
   );
 
-  const wrapperClassName =
-    "flex flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-soft transition-shadow hover:shadow-elevation-sm dark:border-gray-700";
-
-  if (href) {
-    const isInternal = href.startsWith("/");
-    const linkClass =
-      "flex flex-1 flex-col outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xl";
+  if (navigableHref) {
+    const isInternal = navigableHref.startsWith("/");
+    if (isInternal) {
+      return (
+        <Link href={navigableHref} className={`${wrapperClassName} ${focusRingClass}`}>
+          {thumbnail}
+          {body}
+        </Link>
+      );
+    }
     return (
-      <article className={wrapperClassName}>
-        {isInternal ? (
-          <div className={linkClass}>{content}</div>
-        ) : (
-          <a
-            href={href}
-            className={linkClass}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {content}
-          </a>
-        )}
-      </article>
+      <a
+        href={navigableHref}
+        className={`${wrapperClassName} ${focusRingClass}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {thumbnail}
+        {body}
+      </a>
     );
   }
 
-  return <article className={wrapperClassName}>{content}</article>;
+  return (
+    <article className={wrapperClassName}>
+      {thumbnail}
+      {body}
+    </article>
+  );
 }
 
 /**
