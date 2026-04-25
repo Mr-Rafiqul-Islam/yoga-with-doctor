@@ -3,57 +3,10 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { ArticleCard } from "@/features/articles/components/ArticleCard";
-import {
-  featuredArticle as fallbackFeaturedArticle,
-  type ArticleAuthor,
-  type ArticleDetails,
-} from "@/features/articles/data/dummyArticles";
+import { mapApiArticleToCard } from "@/features/articles/lib/mapApiArticle";
 import { useGetArticlesQuery } from "@/slices/articles";
-import { formatTimeAgo } from "@/utils/formatTimeAgo";
 
 const PAGE_SIZE = 4;
-
-const fallbackAuthor: ArticleAuthor = {
-  name: "Dr Md Shah Alam",
-  title: "Orthopedics Specialist, Spine Surgeion, Yoga Instructor",
-  avatarSrc:
-    "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-Hero.jpeg",
-  bioSnippet:
-    "Specializing in the intersection of neuroscience and traditional yogic practices.",
-  fullBio:
-    "Specializing in the intersection of neuroscience and traditional yogic practices.",
-  profileLink: "https://drshahalam.com/",
-};
-
-export function mapApiArticleToCard(article: {
-  title: string;
-  slug: string;
-  description: string | null;
-  category: string | null;
-  image: string | null;
-  authorName: string | null;
-  access: string;
-  createdAt: string;
-}): ArticleDetails {
-  return {
-    slug: article.slug,
-    image: article.image || fallbackFeaturedArticle.image,
-    imageAlt: article.title || "Article cover image",
-    badge: article.access === "PREMIUM" ? "PREMIUM" : "FREE",
-    category: article.category || "General",
-    title: article.title,
-    description: article.description || "",
-    timeAgo: formatTimeAgo(article.createdAt),
-    author: {
-      ...fallbackAuthor,
-      name: article.authorName || fallbackAuthor.name,
-    },
-    actionLabel: "Read More",
-    href: `/articles/${article.slug}`,
-    tags: [],
-    detailsContent: "",
-  };
-}
 
 function ArticleCardSkeleton() {
   return (
