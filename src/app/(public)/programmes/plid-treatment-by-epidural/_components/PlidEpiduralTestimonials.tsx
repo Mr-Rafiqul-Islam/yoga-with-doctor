@@ -30,7 +30,7 @@ const stories = [
 
 function Stars() {
   return (
-    <div className="mb-6 flex text-tertiary">
+    <div className="mb-6 flex text-yellow-300">
       {Array.from({ length: 5 }).map((_, i) => (
         <span className="material-symbols-outlined" key={i} style={fillStar}>
           star
@@ -44,19 +44,19 @@ export function PlidEpiduralTestimonials() {
   return (
     <ScrollReveal className="bg-surface-container-low py-24 md:py-32" id="stories">
       <div className="mx-auto max-w-7xl px-6">
-        <h2 className="mb-16 text-center font-headline text-4xl font-bold">Recovery Stories</h2>
+        <h2 className="mb-16 text-center font-headline text-3xl md:text-4xl font-bold">Recovery Stories</h2>
         <div className="grid gap-8 md:grid-cols-3">
           {stories.map((s) => (
             <div className="relative rounded-xl bg-surface-container-lowest p-8 shadow-sm" key={s.name}>
               <Stars />
-              <p className="mb-8 leading-relaxed italic text-on-surface-variant">&ldquo;{s.quote}&rdquo;</p>
+              <p className="mb-8 md:text-base text-sm leading-relaxed italic text-on-surface-variant">&ldquo;{s.quote}&rdquo;</p>
               <div className="flex items-center gap-4">
                 <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full bg-secondary-fixed">
                   <Image alt="" className="object-cover" fill src={s.src} />
                 </div>
                 <div>
-                  <p className="font-bold">{s.name}</p>
-                  <p className="text-xs text-on-surface-variant">{s.sub}</p>
+                  <p className="md:text-base text-sm font-bold">{s.name}</p>
+                  <p className="md:text-base text-xs text-on-surface-variant">{s.sub}</p>
                 </div>
               </div>
             </div>
