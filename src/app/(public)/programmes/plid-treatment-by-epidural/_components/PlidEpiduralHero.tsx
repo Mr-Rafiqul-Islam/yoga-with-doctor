@@ -7,21 +7,24 @@ export function PlidEpiduralHero() {
     <ScrollReveal className="relative overflow-hidden bg-surface pt-16 pb-24 md:pb-32">
       <div className="mx-auto grid max-w-7xl items-center gap-16 px-6 lg:grid-cols-2">
         <div className="z-10">
-          <span className="mb-6 inline-block rounded-full bg-secondary-fixed px-4 py-1 text-sm font-medium text-on-secondary-fixed-variant">
+          <div className="flex justify-center lg:justify-start">
+
+          <span className="mb-6 inline-block rounded-full bg-secondary-fixed px-4 py-1 text-sm text-center lg:text-left font-medium text-on-secondary-fixed-variant">
             Medical Expertise meets Holistic Flow
           </span>
-          <h1 className="mb-8 font-headline text-5xl font-bold leading-tight tracking-tight text-on-surface md:text-7xl">
+          </div>
+          <h1 className="mb-8 font-headline text-4xl md:text-5xl font-bold leading-tight tracking-tight text-on-surface text-center lg:text-left xl:text-7xl">
             Heal Your Spine Naturally: The{" "}
             <span className="text-primary italic">Doctor-Led</span> Yoga System for PLID Recovery
           </h1>
-          <p className="mb-10 max-w-xl text-xl leading-relaxed text-on-surface-variant">
+          <p className="mb-10 text-center mx-auto lg:mx-0 lg:text-left max-w-xl text-base md:text-xl leading-relaxed text-on-surface-variant">
             Stop managing pain and start reversing the cause. A scientifically-backed, step-by-step home
             protocol designed by Dr. Shah Alam for lasting relief from Prolapsed Lumbar Intervertebral
             Disc.
           </p>
-          <div className="flex flex-col gap-4 sm:flex-row">
+          <div className="flex flex-col gap-4 sm:flex-row justify-center lg:justify-start">
             <a
-              className="flex items-center justify-center gap-2 rounded-xl bg-tertiary-container px-10 py-5 text-lg font-bold text-on-tertiary-container shadow-lg transition-colors hover:bg-tertiary"
+              className="flex items-center justify-center gap-2 rounded-xl bg-tertiary-container px-10 py-5 text-base md:text-lg font-bold text-on-tertiary-container shadow-lg transition-colors hover:bg-tertiary"
               href="#claim"
             >
               Start Healing Today
@@ -73,12 +76,12 @@ export function PlidEpiduralHero() {
               width={800}
             />
           </div>
-          <div className="absolute -bottom-8 -left-8 max-w-xs rounded-lg bg-surface-container-lowest p-6 shadow-xl">
+          <div className="absolute -bottom-8 -left-8 max-w-xs rounded-lg bg-surface-container-lowest lg:p-6 p-4 shadow-xl">
             <div className="mb-2 flex items-center gap-2 text-tertiary">
               <span className="material-symbols-outlined material-symbols-outlined--fill">verified</span>
-              <span className="text-sm font-bold uppercase tracking-wider">Doctor Verified</span>
+              <span className="text-xs lg:text-sm font-bold uppercase tracking-wider">Doctor Verified</span>
             </div>
-            <p className="text-sm italic text-on-surface-variant">
+            <p className="lg:text-sm text-xs italic text-on-surface-variant">
               &ldquo;Surgery should be the last resort. Your body has an incredible capacity to heal
               when guided by science.&rdquo;
             </p>

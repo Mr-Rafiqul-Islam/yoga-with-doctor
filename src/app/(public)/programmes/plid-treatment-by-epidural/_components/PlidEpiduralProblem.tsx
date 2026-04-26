@@ -22,25 +22,25 @@ const items = [
 
 export function PlidEpiduralProblem() {
   return (
-    <ScrollReveal className="bg-surface py-24 md:py-32" id="pain">
+    <ScrollReveal className="bg-surface md:py-24 py-16 lg:py-32" id="pain">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid items-center gap-20 lg:grid-cols-2">
-          <div className="space-y-8">
-            <h2 className="font-headline text-4xl font-bold leading-tight md:text-5xl">
+          <div className="lg:space-y-8 space-y-4">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold leading-tight text-center md:text-left lg:text-5xl">
               The Hidden Cost of <span className="text-error">Living in Pain</span>
             </h2>
-            <p className="text-lg italic leading-relaxed text-on-surface-variant">
+            <p className="text-center mx-auto lg:mx-0 md:text-left text-base md:text-lg italic leading-relaxed text-on-surface-variant">
               &ldquo;It starts with a twinge. Then a tingle down the leg. Before you know it,
               you&apos;re missing out on the moments that matter most.&rdquo;
             </p>
-            <ul className="space-y-6">
+            <ul className="lg:space-y-6 space-y-4">
               {items.map((item) => (
                 <li className="flex items-start gap-4" key={item.title}>
                   <div className="mt-1 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-error-container">
                     <span className="material-symbols-outlined text-on-error-container">{item.icon}</span>
                   </div>
                   <div>
-                    <h4 className="mb-1 text-xl font-bold">{item.title}</h4>
+                    <h4 className="mb-1 text-lg lg:text-xl font-bold">{item.title}</h4>
                     <p className="text-on-surface-variant">{item.body}</p>
                   </div>
                 </li>

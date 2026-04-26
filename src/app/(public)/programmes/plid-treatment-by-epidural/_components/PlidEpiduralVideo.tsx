@@ -4,7 +4,7 @@ import { IMG } from "./epidural-assets";
 
 export function PlidEpiduralVideo() {
   return (
-    <ScrollReveal className="bg-surface-container-low py-24">
+    <ScrollReveal className="bg-surface-container-low md:py-24 py-16">
       <div className="mx-auto max-w-5xl px-6 text-center">
         <h2 className="mb-12 font-headline text-3xl font-bold md:text-4xl">
           Watch: The Science Behind The Healing Flow
