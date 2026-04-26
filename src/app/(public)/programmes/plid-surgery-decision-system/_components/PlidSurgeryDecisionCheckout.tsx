@@ -81,6 +81,14 @@ export function PlidSurgeryDecisionCheckout() {
                   />
                 </div>
                 <div className="space-y-2">
+                  <label className="text-sm font-semibold text-on-surface-variant">Phone Number</label>
+                  <input
+                    className="w-full rounded-2xl border-none bg-surface-container-high p-4 transition-all focus:ring-2 focus:ring-primary/30"
+                    placeholder="+880 1XXX-XXXXXX"
+                    type="tel"
+                  />
+                </div>
+                <div className="space-y-2">
                   <label className="text-sm font-semibold text-on-surface-variant">Email Address</label>
                   <input
                     className="w-full rounded-2xl border-none bg-surface-container-high p-4 transition-all focus:ring-2 focus:ring-primary/30"
@@ -88,12 +96,21 @@ export function PlidSurgeryDecisionCheckout() {
                     type="email"
                   />
                 </div>
+
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-on-surface-variant">Phone Number</label>
+                  <label className="text-sm font-semibold text-on-surface-variant">Address</label>
                   <input
                     className="w-full rounded-2xl border-none bg-surface-container-high p-4 transition-all focus:ring-2 focus:ring-primary/30"
-                    placeholder="+880 1XXX-XXXXXX"
-                    type="tel"
+                    placeholder="123 Main St, Anytown, USA"
+                    type="text"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-on-surface-variant">Physical Condition</label>
+                  <textarea
+                    className="w-full rounded-2xl border-none bg-surface-container-high p-4 transition-all focus:ring-2 focus:ring-primary/30"
+                    placeholder="I have a herniated disc at L5-S1"
+                    rows={3}
                   />
                 </div>
 
