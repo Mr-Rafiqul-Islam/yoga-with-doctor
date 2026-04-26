@@ -12,7 +12,7 @@ export function ArticleGridSection({ articles }: ArticleGridSectionProps) {
   if (articles.length === 0) {
     return (
       <section className="grid grid-cols-1 gap-8 lg:grid-cols-2" aria-label="Article listings">
-        <p className="col-span-full py-12 text-center text-body-md text-muted">
+        <p className="col-span-full py-32 text-center text-body-md text-muted">
           No articles found.
         </p>
       </section>
