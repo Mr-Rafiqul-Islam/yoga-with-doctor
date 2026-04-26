@@ -33,7 +33,7 @@ export function SalesCheckoutForm() {
 
       <div>
         <label className="mb-2 block text-sm font-bold" htmlFor="fullName">
-          আপনার পূর্ণ নাম
+          আপনার পূর্ণ নাম <span className="text-secondary">*</span>
         </label>
         <input
           id="fullName"
@@ -60,7 +60,7 @@ export function SalesCheckoutForm() {
       </div>
       <div>
         <label className="mb-2 block text-sm font-bold" htmlFor="phone">
-          ফোন নম্বর
+          ফোন নম্বর <span className="text-secondary">*</span>
         </label>
         <input
           id="phone"

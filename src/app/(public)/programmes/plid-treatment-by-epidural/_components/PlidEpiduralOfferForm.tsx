@@ -1,9 +1,6 @@
 "use client";
-
-import Image from "next/image";
 import type { FormEvent } from "react";
 import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
-import { IMG } from "./epidural-assets";
 
 export function PlidEpiduralOfferForm() {
   function onSubmit(e: FormEvent<HTMLFormElement>) {

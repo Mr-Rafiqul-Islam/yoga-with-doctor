@@ -79,7 +79,7 @@ const STORIES: Story[] = [
 
 function StarRow({ count }: { count: number }) {
   return (
-    <div className="shrink-0 flex text-primary-container">
+    <div className="shrink-0 flex text-yellow-300">
       {Array.from({ length: count }, (_, i) => (
         <span
           key={i}
