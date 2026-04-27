@@ -2,21 +2,53 @@
 
 import { useMemo, useState } from "react";
 
-import { submitCheckoutForm } from "../actions";
 import { CheckoutOrderBump } from "./CheckoutOrderBump";
+import {
+  useInitializePaymentMutation,
+  useStartCampaignCheckoutMutation,
+  useStartPaymentAttemptMutation,
+  setPaymentContext,
+  type PaymentProvider,
+  type StartPaymentAttemptResponse,
+} from "@/slices/payment";
 
+import { useAppDispatch } from "@/stores/hooks";
+import { useRegisterGuestUserMutation } from "@/slices/auth";
 /** BDT amounts (integer taka) */
 export const CHECKOUT_BASE_PRICE_TAKA = 2999;
 export const CHECKOUT_BUMP_AUDIOBOOK_TAKA = 997;
 export const CHECKOUT_BUMP_VIDEO_TAKA = 1997;
 
+const PLID_CAMPAIGN_ITEM_ID =
+  process.env.NEXT_PUBLIC_PLID_CAMPAIGN_ITEM_ID ?? "";
+
+const DEVICE_ID_STORAGE_KEY = "ywd-device-id";
+
 function formatTaka(amount: number) {
   return `৳${amount.toLocaleString("en-IN")}`;
+}
+
+function getOrCreateDeviceId(): string {
+  if (typeof window === "undefined") return "web";
+  try {
+    const existing = window.localStorage.getItem(DEVICE_ID_STORAGE_KEY);
+    if (existing && existing.trim()) return existing;
+    const created =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    window.localStorage.setItem(DEVICE_ID_STORAGE_KEY, created);
+    return created;
+  } catch {
+    return "web";
+  }
 }
 
 export function SalesCheckoutForm() {
   const [bumpAudiobook, setBumpAudiobook] = useState(false);
   const [bumpVideoCall, setBumpVideoCall] = useState(false);
+  const [paymentProvider] = useState<PaymentProvider>("SSL");
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   const total = useMemo(
     () =>
@@ -26,10 +58,182 @@ export function SalesCheckoutForm() {
     [bumpAudiobook, bumpVideoCall],
   );
 
+  const dispatch = useAppDispatch();
+  const [registerGuestUser, { isLoading: isRegisteringGuestUser }] =
+    useRegisterGuestUserMutation();
+  const [startCampaignCheckout, { isLoading: isStartingCheckout }] =
+    useStartCampaignCheckoutMutation();
+  const [initializePayment, { isLoading: isInitializingPayment }] =
+    useInitializePaymentMutation();
+  const [startPaymentAttempt, { isLoading: isStartingAttempt }] =
+    useStartPaymentAttemptMutation();
+
+  const isProceeding =
+    isRegisteringGuestUser ||
+    isStartingCheckout ||
+    isInitializingPayment ||
+    isStartingAttempt;
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPaymentError(null);
+
+    if (!PLID_CAMPAIGN_ITEM_ID) {
+      setPaymentError(
+        "Campaign is not configured (missing NEXT_PUBLIC_PLID_CAMPAIGN_ITEM_ID).",
+      );
+      return;
+    }
+
+    try {
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      const fullNameRaw = formData.get("fullName");
+      const phoneRaw = formData.get("phone");
+      const emailRaw = formData.get("email");
+
+      const name = typeof fullNameRaw === "string" ? fullNameRaw.trim() : "";
+      const phone = typeof phoneRaw === "string" ? phoneRaw.trim() : "";
+      const email = typeof emailRaw === "string" ? emailRaw.trim() : "";
+
+      if (!name || !phone) {
+        setPaymentError("Name and phone are required.");
+        return;
+      }
+
+      const guest = await registerGuestUser({
+        name,
+        phone,
+        ...(email ? { email } : {}),
+        deviceId: getOrCreateDeviceId(),
+        platform: "web",
+      }).unwrap();
+
+      const guestAny = guest as unknown as {
+        data?: {
+          userId?: unknown;
+          user?: { id?: unknown };
+          userMode?: unknown;
+        };
+      };
+      const guestUserId =
+        guestAny?.data?.userId ??
+        guestAny?.data?.user?.id ??
+        guestAny?.data?.userMode ??
+        null;
+      if (!guestUserId || typeof guestUserId !== "string") {
+        setPaymentError("Failed to create guest user. Please try again.");
+        return;
+      }
+
+      const origin =
+        typeof window !== "undefined" && window.location.origin
+          ? window.location.origin
+          : "";
+
+      const campaignCheckout = await startCampaignCheckout({
+        campaignItemId: PLID_CAMPAIGN_ITEM_ID,
+        selectedChildIds: [],
+        provider: paymentProvider,
+        siteRef: "YWD",
+        projectKey: "YWD",
+        meta: {
+          userId: guestUserId,
+          userMode:
+            (guestAny?.data?.userMode as "GUEST" | "VERIFIED" | undefined) ??
+            "GUEST",
+          platform: "WEB",
+          clientType: "BROWSER",
+          appId: "ywd-web",
+          returnMode: "REDIRECT",
+          deepLink: null,
+          successUrl: `${origin}/checkout/success`,
+          failUrl: `${origin}/checkout/failed`,
+          cancelUrl: `${origin}/checkout/review`,
+        },
+        userId: guestUserId,
+      }).unwrap();
+
+      const newPurchaseId = campaignCheckout.data.purchase.id;
+      if (!newPurchaseId) {
+        setPaymentError("Invalid response from checkout. Please try again.");
+        return;
+      }
+
+      const initPayment = await initializePayment({
+        amount: total,
+        currency: "BDT",
+        metaData: { purchaseId: newPurchaseId, userId: guestUserId },
+        provider: paymentProvider,
+        projectKey: "YWD",
+        siteRef: "YWD",
+      }).unwrap();
+
+      const initData = initPayment?.data as
+        | {
+            transactionId?: string;
+            id?: string;
+            redirectUrl?: string;
+            paymentUrl?: string;
+          }
+        | undefined;
+      const transactionId = initData?.transactionId ?? initData?.id ?? null;
+
+      if (newPurchaseId || transactionId) {
+        dispatch(
+          setPaymentContext({
+            purchaseId: newPurchaseId,
+            transactionId: transactionId ?? undefined,
+          }),
+        );
+      }
+
+      let startAttemptData: StartPaymentAttemptResponse | undefined;
+      if (transactionId) {
+        startAttemptData = await startPaymentAttempt({
+          transactionId,
+          amount: total,
+          currency: "BDT",
+          metaData: { purchaseId: newPurchaseId, userId: guestUserId },
+          provider: paymentProvider,
+          siteRef: "YWD",
+        }).unwrap();
+      }
+
+      const redirectUrl =
+        startAttemptData?.data?.data?.checkoutUrl ??
+        startAttemptData?.data?.data?.gatewayUrl ??
+        null;
+
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
+        return;
+      }
+      setPaymentError("Payment gateway URL not received. Please try again.");
+    } catch (err) {
+      console.error("[plid] payment flow error", err);
+      setPaymentError("Failed to initialize payment. Please try again.");
+    }
+  };
+
   return (
-    <form action={submitCheckoutForm} className="space-y-6">
-      <input name="basePriceTaka" type="hidden" value={CHECKOUT_BASE_PRICE_TAKA} />
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <input
+        name="basePriceTaka"
+        type="hidden"
+        value={CHECKOUT_BASE_PRICE_TAKA}
+      />
       <input name="orderTotalTaka" type="hidden" value={total} />
+
+      {paymentError ? (
+        <div
+          className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/30 dark:text-red-200"
+          role="alert"
+        >
+          <p className="font-medium">Payment error</p>
+          <p className="mt-1">{paymentError}</p>
+        </div>
+      ) : null}
 
       <div>
         <label className="mb-2 block text-sm font-bold" htmlFor="fullName">
@@ -100,17 +304,21 @@ export function SalesCheckoutForm() {
       </div>
 
       <div className="space-y-4 pt-2">
-        <p className="text-sm font-semibold text-on-surface/80">ঐচ্ছিক অ্যাড-অন (আপনার পছন্দ)</p>
+        <p className="text-sm font-semibold text-on-surface/80">
+          ঐচ্ছিক অ্যাড-অন (আপনার পছন্দ)
+        </p>
         <CheckoutOrderBump
           checked={bumpAudiobook}
           fullDescription={
             <div className="space-y-2">
               <p>
-                এই প্যাকেজে আপনি পাবেন <strong>সম্পূর্ণ প্রোগ্রামের অডিও ভার্সন</strong>—যাতে চলার
-                সময় বা বিশ্রামে শুনে অনুশীলন করতে পারেন। সাথে থাকছে{" "}
-                <strong>৫টি এক্সক্লুসিভ ডিজিটাল রিসোর্স</strong>: প্রিন্টেবল চেকলিস্ট, পোসচার
-                রিমাইন্ডার কার্ড, সপ্তাহিক ট্র্যাকিং শিট, দ্রুত ব্যথা উপশম গাইড, এবং বিশেষজ্ঞদের টিপস
-                সহ বোনাস PDF। সব কিছু আপনার ইমেইলে ডেলিভারি—আজই অ্যাক্সেস।
+                এই প্যাকেজে আপনি পাবেন{" "}
+                <strong>সম্পূর্ণ প্রোগ্রামের অডিও ভার্সন</strong>—যাতে চলার সময়
+                বা বিশ্রামে শুনে অনুশীলন করতে পারেন। সাথে থাকছে{" "}
+                <strong>৫টি এক্সক্লুসিভ ডিজিটাল রিসোর্স</strong>: প্রিন্টেবল
+                চেকলিস্ট, পোসচার রিমাইন্ডার কার্ড, সপ্তাহিক ট্র্যাকিং শিট, দ্রুত
+                ব্যথা উপশম গাইড, এবং বিশেষজ্ঞদের টিপস সহ বোনাস PDF। সব কিছু
+                আপনার ইমেইলে ডেলিভারি—আজই অ্যাক্সেস।
               </p>
             </div>
           }
@@ -128,11 +336,12 @@ export function SalesCheckoutForm() {
           fullDescription={
             <div className="space-y-2">
               <p>
-                <strong>৩০ মিনিটের ১-১ ভিডিও সেশন</strong>—আপনার বর্তমান অবস্থা, ব্যথার ধরন ও
-                লাইফস্টাইল শুনে <strong>ব্যক্তিগতভাবে কাস্টম টিপস</strong>। আমাদের ক্লিনিক্যাল টিম
-                আপনার ফর্ম ঠিক করতে সাহায্য করবে এবং পরবর্তী ২ সপ্তাহের জন্য একটি{" "}
-                <strong>সংক্ষিপ্ত অ্যাকশন প্ল্যান</strong> দেবে। স্লট সীমিত; অর্ডারের সাথে যুক্ত করলে
-                অগ্রাধিকার বুকিং।
+                <strong>৩০ মিনিটের ১-১ ভিডিও সেশন</strong>—আপনার বর্তমান অবস্থা,
+                ব্যথার ধরন ও লাইফস্টাইল শুনে{" "}
+                <strong>ব্যক্তিগতভাবে কাস্টম টিপস</strong>। আমাদের ক্লিনিক্যাল
+                টিম আপনার ফর্ম ঠিক করতে সাহায্য করবে এবং পরবর্তী ২ সপ্তাহের জন্য
+                একটি <strong>সংক্ষিপ্ত অ্যাকশন প্ল্যান</strong> দেবে। স্লট
+                সীমিত; অর্ডারের সাথে যুক্ত করলে অগ্রাধিকার বুকিং।
               </p>
             </div>
           }
@@ -176,16 +385,21 @@ export function SalesCheckoutForm() {
           ) : null}
         </ul>
         <div className="mt-4 flex items-baseline justify-between gap-4 border-t border-primary/10 pt-4">
-          <span className="text-lg font-extrabold text-on-surface">সর্বমোট</span>
-          <span className="text-2xl font-extrabold tabular-nums text-primary">{formatTaka(total)}</span>
+          <span className="text-lg font-extrabold text-on-surface">
+            সর্বমোট
+          </span>
+          <span className="text-2xl font-extrabold tabular-nums text-primary">
+            {formatTaka(total)}
+          </span>
         </div>
       </div>
 
       <button
         className="w-full rounded-2xl bg-secondary py-5 text-xl font-bold text-on-primary shadow-lg shadow-secondary/20 transition-transform hover:scale-[1.01]"
         type="submit"
+        disabled={isProceeding}
       >
-        Get Instant Access
+        {isProceeding ? "Processing..." : "Get Instant Access"}
       </button>
     </form>
   );
