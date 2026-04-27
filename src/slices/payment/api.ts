@@ -20,6 +20,8 @@ export interface StartCheckoutRequest {
     successUrl: string;
     failUrl: string;
     cancelUrl: string;
+    userId: string;
+    userMode: string;
   };
 }
 
@@ -29,6 +31,30 @@ export interface StartCheckoutResponse {
   data: {
     purchaseId: string;
     productId: string;
+  };
+}
+
+export interface StartCampaignCheckoutRequest {
+  campaignItemId: string;
+  selectedChildIds?: string[];
+  provider?: PaymentProvider;
+  projectKey?: string;
+  siteRef?: string;
+  meta: StartCheckoutRequest["meta"];
+  /** Required by core API `startCampaignCheckout` controller. */
+  userId: string;
+}
+
+export interface StartCampaignCheckoutResponse {
+  success: boolean;
+  message: string;
+  data: {
+    purchase: {
+      id: string;
+      productId: string;
+      amount?: number;
+      reusedCheckout?: boolean;
+    };
   };
 }
 
@@ -97,6 +123,21 @@ export const paymentApi = createApi({
     }),
 
     /**
+     * POST /api/v1/client/campaigns/start-checkout
+     * Campaign checkout - creates Purchase with PENDING status (requires auth + userId in body)
+     */
+    startCampaignCheckout: builder.mutation<
+      StartCampaignCheckoutResponse,
+      StartCampaignCheckoutRequest
+    >({
+      query: (body) => ({
+        url: "/api/v1/client/campaigns/start-checkout",
+        method: "POST",
+        body,
+      }),
+    }),
+
+    /**
      * POST /api/v1/client/payment/initialize
      * Initialize payment session with external provider (requires auth)
      */
@@ -130,6 +171,7 @@ export const paymentApi = createApi({
 
 export const {
   useStartCheckoutMutation,
+  useStartCampaignCheckoutMutation,
   useInitializePaymentMutation,
   useStartPaymentAttemptMutation,
 } = paymentApi;
