@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import {
   useStartCheckoutMutation,
+  useStartCampaignCheckoutMutation,
   useInitializePaymentMutation,
   useStartPaymentAttemptMutation,
 } from "./api";
@@ -25,7 +26,7 @@ const paymentSlice = createSlice({
         purchaseId?: string;
         transactionId?: string;
         status?: PaymentStatus;
-      }>
+      }>,
     ) {
       const { purchaseId, transactionId, status } = action.payload;
       if (purchaseId !== undefined) {
@@ -55,6 +56,8 @@ export type {
   PaymentProvider,
   StartCheckoutRequest,
   StartCheckoutResponse,
+  StartCampaignCheckoutRequest,
+  StartCampaignCheckoutResponse,
   InitializePaymentRequest,
   InitializePaymentResponse,
   StartPaymentAttemptRequest,
@@ -62,6 +65,7 @@ export type {
 } from "./api";
 export {
   useStartCheckoutMutation,
+  useStartCampaignCheckoutMutation,
   useInitializePaymentMutation,
   useStartPaymentAttemptMutation,
 };
