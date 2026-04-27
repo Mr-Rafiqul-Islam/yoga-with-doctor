@@ -53,10 +53,11 @@ export function CheckoutReviewContent() {
   const courseSlug = searchParams.get("courseSlug") || "";
   // const [promoCode, setPromoCode] = useState("");
   const [discountApplied, setDiscountApplied] = useState(
-    CHECKOUT_REVIEW.defaultDiscount
+    CHECKOUT_REVIEW.defaultDiscount,
   );
   const [paymentError, setPaymentError] = useState<string | null>(null);
-  const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>("SSL");
+  const [paymentProvider, setPaymentProvider] =
+    useState<PaymentProvider>("SSL");
 
   const dispatch = useDispatch();
   const { data: courseResponse } = useGetCourseBySlugQuery(courseSlug, {
@@ -76,7 +77,8 @@ export function CheckoutReviewContent() {
     const course = courseResponse?.data?.course;
     if (!course) return DEFAULT_ORDER_ITEM;
 
-    const sectionCount = course.sections?.length ?? course._count?.sections ?? 0;
+    const sectionCount =
+      course.sections?.length ?? course._count?.sections ?? 0;
     const subtitle = `${course.instructorName ?? "Yoga with Doctor"}${sectionCount > 0 ? ` • ${sectionCount} Modules` : ""}`;
 
     const rawPrice = course.productData?.price;
@@ -157,9 +159,7 @@ export function CheckoutReviewContent() {
       console.log("newPurchaseId", newPurchaseId);
 
       const amountForInit =
-        typeof course?.productData?.price === "number"
-          ? totalWithDiscount
-          : 0;
+        typeof course?.productData?.price === "number" ? totalWithDiscount : 0;
       const initPayment = await initializePayment({
         amount: amountForInit,
         currency: course?.productData?.currency || "BDT",
@@ -184,7 +184,7 @@ export function CheckoutReviewContent() {
           setPaymentContext({
             purchaseId: newPurchaseId,
             transactionId: transactionId ?? undefined,
-          })
+          }),
         );
       }
       let startAttemptData: StartPaymentAttemptResponse | undefined;
@@ -223,7 +223,6 @@ export function CheckoutReviewContent() {
       setPaymentError(formatClientPaymentError(error));
     }
   };
-
 
   return (
     <div className="min-h-screen flex flex-col bg-background transition-colors duration-300">
