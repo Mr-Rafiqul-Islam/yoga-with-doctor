@@ -1,7 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { getGuestSession } from "@/slices/auth";
+import {
+  getGuestSession,
+  persistClientAuthTokens,
+  persistGuestSession,
+} from "@/slices/auth";
+import { establishNextAuthSessionFromStoredTokens } from "@/lib/auth/client";
 import { MdVerifiedUser } from "react-icons/md";
 
 function maskPhone(phone: string): string {
@@ -12,6 +17,30 @@ function maskPhone(phone: string): string {
 }
 
 type Step = "setPassword" | "otp";
+
+function getApiBase(): string {
+  return process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.API_BASE_URL ?? "";
+}
+
+type InitPasswordResponse =
+  | {
+      success: true;
+      message: "OTP_SENT";
+      data: { phone: string };
+    }
+  | { success: false; message?: string; error?: string; data?: unknown };
+
+type GuestVerifyResponse =
+  | {
+      success: true;
+      message: string;
+      data: {
+        user: { id: string; phone: string; name: string };
+        accessToken: string;
+        refreshToken: string;
+      };
+    }
+  | { success: false; message?: string; error?: string; data?: unknown };
 
 export function GuestVerifyDashboardScreen() {
   const guest = getGuestSession();
@@ -25,9 +54,106 @@ export function GuestVerifyDashboardScreen() {
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<Step>("setPassword");
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const canProceedPassword =
     password.length >= 6 && confirmPassword.length >= 6 && password === confirmPassword;
+
+  const canProceedOtp = otp.trim().length >= 4;
+
+  const handleInitPassword = async () => {
+    setError(null);
+    if (!canProceedPassword) {
+      setError("Passwords must match and be at least 6 characters.");
+      return;
+    }
+    if (!phone.trim()) {
+      setError("Please provide a phone number to receive OTP.");
+      return;
+    }
+    const base = getApiBase();
+    if (!base) {
+      setError("API base URL is not configured.");
+      return;
+    }
+    if (!guest?.userId) {
+      setError("Guest session not found. Please restart checkout.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(`${base}/api/v1/client/guest/password/init`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: phone.trim(), password }),
+      });
+      const json = (await res.json()) as InitPasswordResponse;
+      if (!res.ok || !json || json.success !== true) {
+        const msg =
+          (json as { message?: string; error?: string })?.message ??
+          (json as { message?: string; error?: string })?.error ??
+          "Failed to send OTP. Please try again.";
+        setError(msg);
+        return;
+      }
+      // Keep guest marker up-to-date with the phone used for OTP.
+      persistGuestSession(guest.userId, phone.trim());
+      setStep("otp");
+    } catch {
+      setError("Failed to send OTP. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    setError(null);
+    if (!phone.trim()) {
+      setError("Missing phone number.");
+      return;
+    }
+    if (!canProceedOtp) {
+      setError("Please enter the OTP code.");
+      return;
+    }
+    const base = getApiBase();
+    if (!base) {
+      setError("API base URL is not configured.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(`${base}/api/v1/client/guest/verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: phone.trim(), otp: otp.trim() }),
+      });
+      const json = (await res.json()) as GuestVerifyResponse;
+      if (!res.ok || !json || json.success !== true || !json.data?.accessToken) {
+        const msg =
+          (json as { message?: string; error?: string })?.message ??
+          (json as { message?: string; error?: string })?.error ??
+          "OTP verification failed. Please try again.";
+        setError(msg);
+        return;
+      }
+
+      // Persist RTK tokens and then establish a real NextAuth session cookie.
+      persistClientAuthTokens(json.data.accessToken, json.data.refreshToken);
+      const sessionRes = await establishNextAuthSessionFromStoredTokens("/dashboard");
+      if (!sessionRes.ok) {
+        setError(sessionRes.error ?? "Could not start session. Try again.");
+        return;
+      }
+      window.location.assign(`${window.location.origin}/dashboard`);
+    } catch {
+      setError("OTP verification failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section className="min-h-[calc(100vh-80px)] bg-surface-container-low py-10">
@@ -156,21 +282,10 @@ export function GuestVerifyDashboardScreen() {
               <button
                 type="button"
                 className="mt-4 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-on-primary shadow-lg shadow-primary/15 disabled:opacity-60"
-                disabled={!canProceedPassword || step !== "setPassword"}
-                onClick={() => {
-                  setError(null);
-                  if (!canProceedPassword) {
-                    setError("Passwords must match and be at least 6 characters.");
-                    return;
-                  }
-                  if (!phone.trim()) {
-                    setError("Please provide a phone number to receive OTP.");
-                    return;
-                  }
-                  setStep("otp");
-                }}
+                disabled={!canProceedPassword || step !== "setPassword" || isSubmitting}
+                onClick={handleInitPassword}
               >
-                Continue to OTP
+                {isSubmitting ? "Sending OTP..." : "Continue to OTP"}
               </button>
             </div>
 
@@ -213,15 +328,10 @@ export function GuestVerifyDashboardScreen() {
                   <button
                     type="button"
                     className="rounded-xl bg-secondary px-4 py-3 text-sm font-bold text-on-primary dark:text-black shadow-lg shadow-secondary/15 disabled:cursor-not-allowed disabled:opacity-50"
-                    disabled={step !== "otp" || otp.trim().length < 4}
-                    onClick={() => {
-                      // UI-only for now: user will provide API later.
-                      setError(
-                        "OTP verification API not wired yet. Provide API details and I’ll implement.",
-                      );
-                    }}
+                    disabled={step !== "otp" || !canProceedOtp || isSubmitting}
+                    onClick={handleVerifyOtp}
                   >
-                    Verify & unlock dashboard
+                    {isSubmitting ? "Verifying..." : "Verify & unlock dashboard"}
                   </button>
                 </div>
 
