@@ -52,15 +52,17 @@ export function removeToken(): void {
 
 export type GuestSession = {
   userId: string;
+  phone?: string;
   userMode: "GUEST";
   createdAt: number;
 };
 
-export function persistGuestSession(userId: string): void {
+export function persistGuestSession(userId: string, phone?: string): void {
   if (!canUseDOM()) return;
   if (!userId || !userId.trim()) return;
   const payload: GuestSession = {
     userId,
+    ...(phone && phone.trim() ? { phone } : {}),
     userMode: "GUEST",
     createdAt: Date.now(),
   };
@@ -78,6 +80,9 @@ export function getGuestSession(): GuestSession | null {
     return {
       userId: parsed.userId,
       userMode: "GUEST",
+      ...(typeof parsed.phone === "string" && parsed.phone.trim()
+        ? { phone: parsed.phone }
+        : {}),
       createdAt: typeof parsed.createdAt === "number" ? parsed.createdAt : 0,
     };
   } catch {

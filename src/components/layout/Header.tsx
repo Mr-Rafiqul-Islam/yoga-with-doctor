@@ -223,7 +223,8 @@ export function Header() {
                 search
               </span>
               <input
-                type="search"
+                type="text"
+                name="search"
                 placeholder="Search videos, courses..."
                 className="w-full min-w-0 border-none bg-transparent text-body-md text-foreground placeholder:text-muted focus:outline-none focus:ring-0"
                 aria-label="Search videos and courses"

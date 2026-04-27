@@ -174,7 +174,7 @@ export function SalesCheckoutForm({
         setPaymentError("Failed to create guest user. Please try again.");
         return;
       }
-      persistGuestSession(guestUserId);
+      persistGuestSession(guestUserId, phone);
 
       const origin =
         typeof window !== "undefined" && window.location.origin

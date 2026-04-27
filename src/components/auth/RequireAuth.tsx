@@ -18,6 +18,7 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
   const { isLoading, user } = useAppSelector((state) => state.auth);
 
   const isCheckoutRoute = Boolean(pathname && pathname.startsWith("/checkout"));
+  const isDashboardRoute = Boolean(pathname && pathname.startsWith("/dashboard"));
   const shouldFetchIdentity = !user && status !== "loading";
   const { data: meData, isFetching: isFetchingMe } = useGetCurrentUserQuery(
     undefined,
@@ -27,13 +28,16 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
   const guestSession = getGuestSession();
   const allowGuestCheckout =
     isCheckoutRoute && (meUserMode === "GUEST" || guestSession?.userMode === "GUEST");
+  const allowGuestDashboard =
+    isDashboardRoute && guestSession?.userMode === "GUEST";
+  const allowGuestAccess = allowGuestCheckout || allowGuestDashboard;
 
   useEffect(() => {
-    if (status === "unauthenticated" && !allowGuestCheckout) {
+    if (status === "unauthenticated" && !allowGuestAccess) {
       const returnTo = pathname || "/dashboard";
       router.replace(`/auth/login?returnTo=${encodeURIComponent(returnTo)}`);
     }
-  }, [status, pathname, router, allowGuestCheckout]);
+  }, [status, pathname, router, allowGuestAccess]);
 
   if (status === "loading" || isLoading || (shouldFetchIdentity && isFetchingMe)) {
     return (
@@ -41,7 +45,7 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (status === "unauthenticated" && !allowGuestCheckout) {
+  if (status === "unauthenticated" && !allowGuestAccess) {
     return (
       <LoadingScreen className="min-h-[calc(100vh-80px)]" message="Preparing your wellness journey" />
     );
