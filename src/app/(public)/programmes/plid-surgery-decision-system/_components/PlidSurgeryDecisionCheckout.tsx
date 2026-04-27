@@ -19,7 +19,7 @@ export function PlidSurgeryDecisionCheckout() {
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="space-y-10 lg:col-span-7">
             <div>
-              <h2 className="font-headline text-4xl font-bold tracking-tight text-on-surface md:text-5xl">
+              <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight text-on-surface lg:text-5xl">
                 Investment in Your Health
               </h2>
             </div>
@@ -36,10 +36,10 @@ export function PlidSurgeryDecisionCheckout() {
               ))}
 
               <div className="border-t border-outline-variant pt-6">
-                <p className="text-lg text-on-surface-variant line-through md:text-xl">
+                <p className="text-base md:text-lg text-on-surface-variant line-through lg:text-xl">
                   Total Value: $991
                 </p>
-                <p className="mt-2 font-headline text-5xl font-extrabold text-primary md:text-6xl">
+                <p className="mt-2 font-headline text-4xl md:text-5xl font-extrabold text-primary lg:text-6xl">
                   $297
                 </p>
                 <p className="mt-2 text-sm italic text-on-surface-variant">
@@ -49,7 +49,7 @@ export function PlidSurgeryDecisionCheckout() {
             </div>
 
             <div className="space-y-4">
-              <h3 className="font-headline text-2xl font-bold text-on-surface">Frequently Asked Questions</h3>
+              <h3 className="font-headline text-2xl md:text-3xl font-bold text-on-surface">Frequently Asked Questions</h3>
               <div className="divide-y divide-outline-variant rounded-2xl bg-surface-container-lowest px-6">
                 {FAQS.map((q) => (
                   <details key={q} className="py-4">
@@ -57,7 +57,7 @@ export function PlidSurgeryDecisionCheckout() {
                       <span>{q}</span>
                       <span className="material-symbols-outlined text-on-surface-variant">add</span>
                     </summary>
-                    <p className="mt-3 max-w-2xl text-sm leading-relaxed text-on-surface-variant">
+                    <p className="mt-3 max-w-2xl text-sm md:text-base leading-relaxed text-on-surface-variant">
                       We’ll guide you based on your condition and mobility. If you have red-flag symptoms
                       or severe neurological weakness, consult your physician first.
                     </p>
@@ -133,7 +133,7 @@ export function PlidSurgeryDecisionCheckout() {
                 </div>
 
                 <button
-                  className="w-full rounded-2xl bg-primary py-5 text-lg font-extrabold text-on-primary shadow-lg shadow-primary/20 transition-transform hover:scale-[1.01] active:scale-[0.99]"
+                  className="w-full rounded-2xl bg-primary py-5 text-base md:text-lg font-extrabold text-on-primary shadow-lg shadow-primary/20 transition-transform hover:scale-[1.01] active:scale-[0.99]"
                   type="submit"
                 >
                   Complete My Purchase

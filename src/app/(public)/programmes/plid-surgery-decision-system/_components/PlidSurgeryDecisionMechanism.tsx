@@ -35,10 +35,10 @@ export function PlidSurgeryDecisionMechanism() {
         </div>
 
         <div className="space-y-8 lg:col-span-7">
-          <h2 className="font-headline text-4xl font-bold tracking-tight text-on-surface md:text-5xl">
+          <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight text-on-surface lg:text-5xl">
             Why Surgery Isn’t Your Only Option
           </h2>
-          <p className="max-w-2xl text-lg italic leading-relaxed text-on-surface-variant md:text-xl">
+          <p className="max-w-2xl text-base md:text-lg italic leading-relaxed text-on-surface-variant lg:text-xl">
             “The body has an innate capacity to heal a herniated disc if provided the correct
             mechanical environment.”
           </p>
@@ -46,12 +46,12 @@ export function PlidSurgeryDecisionMechanism() {
           <div className="space-y-6">
             {POINTS.map((p) => (
               <div key={p.title} className="flex gap-5">
-                <div className="mt-1 flex h-10 w-10 flex-none items-center justify-center rounded-full bg-primary-fixed text-primary">
+                <div className="mt-1 flex h-8 w-8 md:h-10 md:w-10 flex-none items-center justify-center rounded-full bg-primary-fixed text-primary">
                   <span className="material-symbols-outlined">check_circle</span>
                 </div>
                 <div>
-                  <h3 className="mb-1 text-xl font-bold text-on-surface">{p.title}</h3>
-                  <p className="leading-relaxed text-on-surface-variant">{p.description}</p>
+                  <h3 className="mb-1 text-lg md:text-xl font-bold text-on-surface">{p.title}</h3>
+                  <p className="leading-relaxed text-on-surface-variant text-sm md:text-base">{p.description}</p>
                 </div>
               </div>
             ))}

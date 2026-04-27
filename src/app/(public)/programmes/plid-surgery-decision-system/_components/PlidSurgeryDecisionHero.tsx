@@ -9,20 +9,20 @@ export function PlidSurgeryDecisionHero() {
     <ScrollReveal className="relative overflow-hidden bg-surface pb-20 pt-16 lg:pt-24">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-2 lg:gap-16">
         <div className="z-10">
-          <span className="mb-6 inline-flex items-center gap-2 rounded-full bg-tertiary-fixed px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-on-tertiary-fixed">
+          <span className="mb-6 inline-flex text-center lg:text-left items-center gap-2 rounded-full bg-tertiary-fixed px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-on-tertiary-fixed">
             Medical-grade holistic recovery
           </span>
-          <h1 className="mb-6 font-headline text-5xl font-bold leading-[1.05] tracking-tight text-on-surface md:text-7xl">
+          <h1 className="mb-6 font-headline text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight text-on-surface xl:text-7xl">
             Heal Your Spine <span className="italic text-primary">Naturally</span>
           </h1>
-          <p className="mb-10 max-w-xl text-lg leading-relaxed text-on-surface-variant md:text-xl">
+          <p className="mb-10 max-w-xl text-base md:text-lg leading-relaxed text-on-surface-variant lg:text-xl">
             A physician-designed yoga protocol engineered for PLID and slip disc recovery. Reclaim your
             mobility without the risks of invasive surgery.
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row">
             <a
-              className="inline-flex items-center justify-center rounded-2xl bg-primary px-8 py-4 text-base font-bold text-on-primary shadow-lg shadow-primary/20 transition-transform hover:scale-[1.02] active:scale-[0.98] md:px-10 md:py-5 md:text-lg"
+              className="inline-flex items-center justify-center rounded-2xl bg-primary px-8 py-4 text-base font-bold text-on-primary shadow-lg shadow-primary/20 transition-transform hover:scale-[1.02] active:scale-[0.98] md:px-10 md:py-5 md:text-lg "
               href="#checkout"
             >
               Start Healing Today

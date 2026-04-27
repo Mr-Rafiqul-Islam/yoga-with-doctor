@@ -24,10 +24,10 @@ export function PlidSurgeryDecisionProblem() {
     <ScrollReveal className="bg-surface-container-low py-20 md:py-28" id="pain">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto mb-12 max-w-3xl text-center md:mb-16">
-          <h2 className="mb-4 font-headline text-4xl font-bold tracking-tight text-on-surface md:text-5xl">
+          <h2 className="mb-4 font-headline text-3xl md:text-4xl font-bold tracking-tight text-on-surface lg:text-5xl">
             Trapped by Spinal Pain?
           </h2>
-          <p className="text-base leading-relaxed text-on-surface-variant md:text-lg">
+          <p className="text-base leading-relaxed text-on-surface-variant lg:text-lg">
             Living with a slip disc isn’t just physical pain — it’s the life you’re missing out on.
           </p>
         </div>
@@ -36,13 +36,13 @@ export function PlidSurgeryDecisionProblem() {
           {PAINS.map((p) => (
             <div
               key={p.title}
-              className="rounded-3xl bg-surface-container-lowest p-8 shadow-sm shadow-on-surface/5 md:p-10"
+              className="rounded-3xl bg-surface-container-lowest p-6 md:p-8 shadow-sm shadow-on-surface/5 lg:p-10"
             >
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-error-container/30 text-error">
+              <div className="mb-4 md:mb-5 flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-error-container/30 text-error">
                 <span className="material-symbols-outlined">{p.icon}</span>
               </div>
-              <h3 className="mb-3 font-headline text-2xl font-bold text-on-surface">{p.title}</h3>
-              <p className="leading-relaxed text-on-surface-variant">{p.description}</p>
+              <h3 className="mb-3 font-headline text-xl md:text-2xl font-bold text-on-surface">{p.title}</h3>
+              <p className="leading-relaxed text-on-surface-variant text-sm md:text-base">{p.description}</p>
             </div>
           ))}
         </div>

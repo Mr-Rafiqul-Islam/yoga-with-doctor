@@ -19,10 +19,10 @@ export function PlidSurgeryDecisionAuthority() {
             <span className="text-xs font-bold uppercase tracking-widest">Medical Lead</span>
           </div>
 
-          <h2 className="font-headline text-4xl font-bold tracking-tight text-on-surface md:text-5xl">
+          <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight text-on-surface lg:text-5xl">
             Meet Dr. Shah Alam
           </h2>
-          <p className="text-lg leading-relaxed text-on-surface-variant md:text-xl">
+          <p className="text-base md:text-lg leading-relaxed text-on-surface-variant lg:text-xl">
             With years in musculoskeletal rehabilitation, Dr. Shah Alam has helped thousands of
             patients avoid unnecessary surgery. His methodology blends modern neuro-orthopedics with
             traditional yogic science.
@@ -30,11 +30,11 @@ export function PlidSurgeryDecisionAuthority() {
 
           <div className="grid grid-cols-2 gap-8 pt-2">
             <div>
-              <p className="text-3xl font-extrabold text-primary">5,000+</p>
+              <p className="text-2xl md:text-3xl font-extrabold text-primary">5,000+</p>
               <p className="text-xs uppercase tracking-wider text-on-surface-variant">Patients treated</p>
             </div>
             <div>
-              <p className="text-3xl font-extrabold text-primary">15 yrs</p>
+              <p className="text-2xl md:text-3xl font-extrabold text-primary">15 yrs</p>
               <p className="text-xs uppercase tracking-wider text-on-surface-variant">
                 Clinical experience
               </p>
@@ -47,7 +47,7 @@ export function PlidSurgeryDecisionAuthority() {
             <div className="absolute -inset-4 rounded-3xl bg-primary/10 blur-2xl" />
             <Image
               alt="Doctor portrait"
-              className="relative z-10 h-[520px] w-full rounded-3xl object-cover shadow-2xl md:h-[600px]"
+              className="relative z-10 h-[400px] w-full rounded-3xl object-cover shadow-2xl md:h-[520px] lg:h-[600px]"
               height={1200}
               sizes="(max-width: 1023px) 100vw, 50vw"
               src={DOCTOR_IMAGE}
