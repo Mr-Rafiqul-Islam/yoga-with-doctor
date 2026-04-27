@@ -12,7 +12,9 @@ const ACCESS_TOKEN_KEY = "ywd-access-token";
 const REFRESH_TOKEN_KEY = "ywd-refresh-token";
 
 function canUseDOM(): boolean {
-  return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
+  return (
+    typeof window !== "undefined" && typeof window.localStorage !== "undefined"
+  );
 }
 
 export function getToken(): string | null {
@@ -34,7 +36,7 @@ function saveToken(accessToken: string, refreshToken: string): void {
 /** Align RTK client requests with OAuth session tokens (see SessionTokenSync). */
 export function persistClientAuthTokens(
   accessToken: string,
-  refreshToken: string
+  refreshToken: string,
 ): void {
   saveToken(accessToken, refreshToken);
 }
@@ -52,7 +54,7 @@ const baseUrl =
 const LOGOUT_ACTION_TYPE = "auth/logout" as const;
 
 function buildPrepareHeaders(
-  extra?: (headers: Headers, api: Pick<BaseQueryApi, "getState">) => void
+  extra?: (headers: Headers, api: Pick<BaseQueryApi, "getState">) => void,
 ): (headers: Headers, api: Pick<BaseQueryApi, "getState">) => Headers {
   return (headers, api) => {
     const token = getToken();
@@ -69,7 +71,10 @@ function buildPrepareHeaders(
  * so expired sessions clear auth state consistently.
  */
 export function createReauthBaseQuery(
-  extraPrepareHeaders?: (headers: Headers, api: Pick<BaseQueryApi, "getState">) => void
+  extraPrepareHeaders?: (
+    headers: Headers,
+    api: Pick<BaseQueryApi, "getState">,
+  ) => void,
 ): BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> {
   const innerBaseQuery = fetchBaseQuery({
     baseUrl,
@@ -108,7 +113,7 @@ export function createReauthBaseQuery(
             body: { refreshToken },
           },
           api,
-          extraOptions
+          extraOptions,
         );
 
         if (refreshResult.data) {
@@ -119,7 +124,7 @@ export function createReauthBaseQuery(
           if (refreshData.success && refreshData.data) {
             saveToken(
               refreshData.data.accessToken,
-              refreshData.data.refreshToken
+              refreshData.data.refreshToken,
             );
             result = await innerBaseQuery(args, api, extraOptions);
           } else {
@@ -152,6 +157,7 @@ export interface User {
   name: string;
   phone: string;
   email?: string | null;
+  userMode?: "GUEST" | "VERIFIED";
   isPremium: boolean;
   isActive: boolean;
   profilePicture?: string | null;
@@ -166,7 +172,7 @@ export interface User {
   coverImage?: string | null;
   coverImagePublicId?: string | null;
   gender?: string | null;
-  goals?: string[] | string | null; 
+  goals?: string[] | string | null;
   intensity?: string | null;
   interests?: string[] | string | null;
   username?: string | null;
@@ -184,6 +190,14 @@ export interface RegisterCredentials {
   name?: string;
   phone: string;
   password: string;
+  deviceId: string;
+  platform: "web" | "android" | "ios";
+}
+
+export interface RegisterGuestUserCredentials {
+  name: string;
+  phone: string;
+  email?: string;
   deviceId: string;
   platform: "web" | "android" | "ios";
 }
@@ -370,6 +384,21 @@ export const authApi = createApi({
         }
       },
     }),
+
+    // register guest user
+    registerGuestUser: builder.mutation<
+      { success: boolean; message: string; data?: { phone: string } },
+      RegisterGuestUserCredentials
+    >({
+      query: (credentials) => ({
+        url: "/api/v1/client/register-guest",
+        method: "POST",
+        body: credentials,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+
+    // forgot password
     forgotPassword: builder.mutation<
       { success: boolean; message: string; data?: { phone: string } },
       ForgotPasswordCredentials
@@ -524,7 +553,7 @@ const authSlice = createSlice({
           state.isAuthenticated = true;
           state.isLoading = false;
         }
-      }
+      },
     );
     builder.addMatcher(authApi.endpoints.login.matchRejected, (state) => {
       state.isLoading = false;
@@ -535,7 +564,7 @@ const authSlice = createSlice({
         state.user = action.payload.data;
         state.isAuthenticated = true;
         state.isLoading = false;
-      }
+      },
     );
     builder.addMatcher(
       authApi.endpoints.getCurrentUser.matchRejected,
@@ -543,7 +572,7 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
         state.isLoading = false;
-      }
+      },
     );
     builder.addMatcher(
       authApi.endpoints.verifyRegisterOTP.matchFulfilled,
@@ -563,13 +592,13 @@ const authSlice = createSlice({
         }
         state.isAuthenticated = true;
         state.isLoading = false;
-      }
+      },
     );
     builder.addMatcher(
       authApi.endpoints.verifyRegisterOTP.matchRejected,
       (state) => {
         state.isLoading = false;
-      }
+      },
     );
     builder.addMatcher(
       authApi.endpoints.verifyLoginOTP.matchFulfilled,
@@ -589,13 +618,13 @@ const authSlice = createSlice({
         }
         state.isAuthenticated = true;
         state.isLoading = false;
-      }
+      },
     );
     builder.addMatcher(
       authApi.endpoints.verifyLoginOTP.matchRejected,
       (state) => {
         state.isLoading = false;
-      }
+      },
     );
     builder.addMatcher(authApi.endpoints.logout.matchFulfilled, (state) => {
       state.user = null;
@@ -631,4 +660,6 @@ export const {
   useGetCurrentUserQuery,
   useRequestChangePhoneMutation,
   useVerifyChangePhoneMutation,
+
+  useRegisterGuestUserMutation,
 } = authApi;
