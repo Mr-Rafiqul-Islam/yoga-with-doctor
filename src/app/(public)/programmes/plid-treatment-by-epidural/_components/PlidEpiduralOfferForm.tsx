@@ -108,7 +108,7 @@ export function PlidEpiduralOfferForm() {
                   required
                 />
               </div>
-              <div>
+              {/* <div>
                 <label
                   className="mb-2 block text-sm font-bold text-on-surface-variant"
                   htmlFor="epi-condition"
@@ -141,7 +141,7 @@ export function PlidEpiduralOfferForm() {
                   placeholder="Enter your address"
                   type="text"
                 />
-              </div>
+              </div> */}
               <div className="rounded-lg border-2 border-tertiary-container/40 bg-tertiary-fixed lg:p-6 p-4">
                 <label className="flex cursor-pointer items-start gap-4">
                   <div className="mt-1">

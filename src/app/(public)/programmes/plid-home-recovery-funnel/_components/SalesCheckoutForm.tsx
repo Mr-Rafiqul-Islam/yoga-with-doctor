@@ -218,12 +218,7 @@ export function SalesCheckoutForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <input
-        name="basePriceTaka"
-        type="hidden"
-        value={CHECKOUT_BASE_PRICE_TAKA}
-      />
-      <input name="orderTotalTaka" type="hidden" value={total} />
+      
 
       {paymentError ? (
         <div
@@ -271,12 +266,12 @@ export function SalesCheckoutForm() {
           name="phone"
           autoComplete="tel"
           className="w-full rounded-xl border-none bg-surface-container-low px-6 py-4 transition-all focus:ring-2 focus:ring-primary/20"
-          placeholder="০১৭xxxxxxxx"
+          placeholder="017xxxxxxxx"
           type="tel"
           required
         />
       </div>
-      <div>
+      {/* <div>
         <label className="mb-2 block text-sm font-bold" htmlFor="address">
           সম্পূর্ণ ঠিকানা <span className="text-secondary">*</span>
         </label>
@@ -301,7 +296,7 @@ export function SalesCheckoutForm() {
           placeholder="আপনার ব্যথার বিবরণ সংক্ষেপে লিখুন"
           rows={3}
         />
-      </div>
+      </div> */}
 
       <div className="space-y-4 pt-2">
         <p className="text-sm font-semibold text-on-surface/80">

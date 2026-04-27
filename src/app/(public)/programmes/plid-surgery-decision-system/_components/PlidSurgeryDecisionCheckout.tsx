@@ -97,7 +97,7 @@ export function PlidSurgeryDecisionCheckout() {
                   />
                 </div>
 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <label className="text-sm font-semibold text-on-surface-variant">Address</label>
                   <input
                     className="w-full rounded-2xl border-none bg-surface-container-high p-4 transition-all focus:ring-2 focus:ring-primary/30"
@@ -112,7 +112,7 @@ export function PlidSurgeryDecisionCheckout() {
                     placeholder="I have a herniated disc at L5-S1"
                     rows={3}
                   />
-                </div>
+                </div> */}
 
                 <div className="rounded-2xl border-2 border-dashed border-tertiary-container bg-tertiary-fixed/25 p-5">
                   <label className="flex cursor-pointer items-start gap-4">
