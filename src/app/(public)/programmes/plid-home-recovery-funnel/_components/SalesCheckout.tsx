@@ -1,7 +1,18 @@
 import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 import { SalesCheckoutForm } from "./SalesCheckoutForm";
+import type { CampaignItemSummary } from "@/lib/campaignPublicApi";
 
-export function SalesCheckout() {
+export type SalesCheckoutProps = {
+  campaignItemId: string;
+  basePriceTaka: number;
+  campaignItem: CampaignItemSummary | null;
+};
+
+export function SalesCheckout({
+  campaignItemId,
+  basePriceTaka,
+  campaignItem,
+}: SalesCheckoutProps) {
   return (
     <ScrollReveal className="bg-surface-container-low py-24" id="checkout">
       <div className="mx-auto max-w-7xl px-6">
@@ -28,7 +39,11 @@ export function SalesCheckout() {
             </div>
           </div>
           <div className="rounded-3xl bg-surface-container-lowest p-6 md:p-10 shadow-xl shadow-primary/5">
-            <SalesCheckoutForm />
+            <SalesCheckoutForm
+              basePriceTaka={basePriceTaka}
+              campaignItem={campaignItem}
+              campaignItemId={campaignItemId}
+            />
           </div>
         </div>
       </div>

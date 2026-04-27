@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { useAppSelector } from "@/stores";
-import { useGetCurrentUserQuery } from "@/slices/auth";
+import { getGuestSession, useGetCurrentUserQuery } from "@/slices/auth";
 
 /**
  * Client-side guard for private routes like /dashboard and /checkout.
@@ -24,7 +24,9 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
     { skip: !shouldFetchIdentity },
   );
   const meUserMode = meData?.data?.userMode;
-  const allowGuestCheckout = isCheckoutRoute && meUserMode === "GUEST";
+  const guestSession = getGuestSession();
+  const allowGuestCheckout =
+    isCheckoutRoute && (meUserMode === "GUEST" || guestSession?.userMode === "GUEST");
 
   useEffect(() => {
     if (status === "unauthenticated" && !allowGuestCheckout) {

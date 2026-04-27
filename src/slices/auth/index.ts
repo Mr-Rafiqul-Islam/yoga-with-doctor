@@ -10,6 +10,7 @@ import type {
 // --- Inline token store (localStorage) - same API as mobile tokenStore ---
 const ACCESS_TOKEN_KEY = "ywd-access-token";
 const REFRESH_TOKEN_KEY = "ywd-refresh-token";
+const GUEST_SESSION_KEY = "ywd-guest-session";
 
 function canUseDOM(): boolean {
   return (
@@ -31,6 +32,8 @@ function saveToken(accessToken: string, refreshToken: string): void {
   if (!canUseDOM()) return;
   window.localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
   window.localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  // If we successfully obtained tokens, this is no longer a guest-only session.
+  clearGuestSession();
 }
 
 /** Align RTK client requests with OAuth session tokens (see SessionTokenSync). */
@@ -45,6 +48,46 @@ export function removeToken(): void {
   if (!canUseDOM()) return;
   window.localStorage.removeItem(ACCESS_TOKEN_KEY);
   window.localStorage.removeItem(REFRESH_TOKEN_KEY);
+}
+
+export type GuestSession = {
+  userId: string;
+  userMode: "GUEST";
+  createdAt: number;
+};
+
+export function persistGuestSession(userId: string): void {
+  if (!canUseDOM()) return;
+  if (!userId || !userId.trim()) return;
+  const payload: GuestSession = {
+    userId,
+    userMode: "GUEST",
+    createdAt: Date.now(),
+  };
+  window.localStorage.setItem(GUEST_SESSION_KEY, JSON.stringify(payload));
+}
+
+export function getGuestSession(): GuestSession | null {
+  if (!canUseDOM()) return null;
+  const raw = window.localStorage.getItem(GUEST_SESSION_KEY);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as Partial<GuestSession> | null;
+    if (!parsed || parsed.userMode !== "GUEST") return null;
+    if (typeof parsed.userId !== "string" || !parsed.userId.trim()) return null;
+    return {
+      userId: parsed.userId,
+      userMode: "GUEST",
+      createdAt: typeof parsed.createdAt === "number" ? parsed.createdAt : 0,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function clearGuestSession(): void {
+  if (!canUseDOM()) return;
+  window.localStorage.removeItem(GUEST_SESSION_KEY);
 }
 
 // --- Base URL ---
@@ -452,9 +495,11 @@ export const authApi = createApi({
         try {
           await queryFulfilled;
           removeToken();
+          clearGuestSession();
           dispatch({ type: "auth/logout" });
         } catch {
           removeToken();
+          clearGuestSession();
           dispatch({ type: "auth/logout" });
         }
       },

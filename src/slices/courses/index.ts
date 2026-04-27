@@ -234,6 +234,17 @@ export interface GetCoursesParams {
   sortOrder?: "asc" | "desc";
 }
 
+export interface GetCampaignItemsParams {
+  /**
+   * Server supports boolean-like query values; these are forwarded as strings.
+   * Example: { isActive: true } -> ?isActive=true
+   */
+  isActive?: boolean;
+  isPublished?: boolean;
+  isMainItem?: boolean;
+  isFeatured?: boolean;
+}
+
 export interface CheckoutRequest {
   productId: string;
 }
@@ -307,6 +318,56 @@ export interface GetAllTypeCoursesResponse {
   data: {
     courses: AllTypeCourseItem[];
     total: number;
+  };
+}
+
+export interface CampaignCourseRef {
+  id: string;
+  slug: string;
+  title: string;
+}
+
+export interface CampaignItemChild {
+  id: string;
+  courseId?: string | null;
+  course?: CampaignCourseRef | null;
+}
+
+/**
+ * Client-facing shape: kept intentionally permissive since campaign item fields
+ * can differ across campaigns. Add fields as UI needs them.
+ */
+export interface CampaignItem {
+  id: string;
+  slug: string;
+  title?: string | null;
+  description?: string | null;
+  isActive?: boolean;
+  isPublished?: boolean;
+  isMainItem?: boolean;
+  isFeatured?: boolean;
+  productId?: string | null;
+  courseId?: string | null;
+  course?: CampaignCourseRef | null;
+  children?: CampaignItemChild[];
+  createdAt?: string;
+  updatedAt?: string;
+  [key: string]: unknown;
+}
+
+export interface GetCampaignItemsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    campaignItems: CampaignItem[];
+  };
+}
+
+export interface GetCampaignItemBySlugResponse {
+  success: boolean;
+  message: string;
+  data: {
+    campaignItem: CampaignItem;
   };
 }
 
@@ -534,6 +595,8 @@ export const coursesApi = createApi({
     "Purchase",
     "CourseReviews",
     "MyCourseReview",
+    "CampaignItems",
+    "CampaignItem",
   ],
   endpoints: (builder) => ({
     // ========================================================================
@@ -629,6 +692,65 @@ export const coursesApi = createApi({
               { type: "Courses", id: "LIST" },
             ]
           : [{ type: "Courses", id: "LIST" }],
+    }),
+
+    // ========================================================================
+    // CAMPAIGN ITEM ENDPOINTS
+    // ========================================================================
+
+    /**
+     * GET /api/v1/client/campaign-items
+     * List campaign items with optional filters.
+     */
+    getCampaignItems: builder.query<
+      GetCampaignItemsResponse,
+      GetCampaignItemsParams | void
+    >({
+      query: (params) => {
+        if (!params) {
+          return { url: `/api/v1/client/campaign-items`, method: "GET" };
+        }
+
+        const queryParams = new URLSearchParams();
+        if (params.isActive !== undefined)
+          queryParams.append("isActive", String(params.isActive));
+        if (params.isPublished !== undefined)
+          queryParams.append("isPublished", String(params.isPublished));
+        if (params.isMainItem !== undefined)
+          queryParams.append("isMainItem", String(params.isMainItem));
+        if (params.isFeatured !== undefined)
+          queryParams.append("isFeatured", String(params.isFeatured));
+
+        const qs = queryParams.toString();
+        return {
+          url: `/api/v1/client/campaign-items${qs ? `?${qs}` : ""}`,
+          method: "GET",
+        };
+      },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.campaignItems.map(({ id }) => ({
+                type: "CampaignItems" as const,
+                id,
+              })),
+              { type: "CampaignItems", id: "LIST" },
+            ]
+          : [{ type: "CampaignItems", id: "LIST" }],
+    }),
+
+    /**
+     * GET /api/v1/client/campaign-items/:slug
+     * Resolves campaign slug or course slug and returns main item (+ children).
+     */
+    getCampaignItemBySlug: builder.query<GetCampaignItemBySlugResponse, string>({
+      query: (slug) => ({
+        url: `/api/v1/client/campaign-items/${slug}`,
+        method: "GET",
+      }),
+      providesTags: (_result, _error, slug) => [
+        { type: "CampaignItem", id: slug },
+      ],
     }),
 
     /**
@@ -930,6 +1052,8 @@ export const {
   // Course queries
   useGetCoursesQuery,
   useGetAllTypeCoursesQuery,
+  useGetCampaignItemsQuery,
+  useGetCampaignItemBySlugQuery,
   useGetCourseBySlugQuery,
   useGetCourseContentQuery,
   useGetCourseProgressQuery,

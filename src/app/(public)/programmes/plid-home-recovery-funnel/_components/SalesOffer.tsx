@@ -1,6 +1,20 @@
 import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 
-export function SalesOffer() {
+export type SalesOfferProps = {
+  /** BDT integer (taka) */
+  basePriceTaka: number;
+  /** Optional "was" price (BDT) */
+  originalPriceTaka?: number;
+};
+
+function formatBanglaNumber(amount: number): string {
+  return amount.toLocaleString("bn-BD");
+}
+
+export function SalesOffer({
+  basePriceTaka,
+  originalPriceTaka = 10000,
+}: SalesOfferProps) {
   return (
     <ScrollReveal className="bg-primary py-24 text-on-primary" id="offer">
       <div className="mx-auto max-w-4xl px-6 text-center">
@@ -34,10 +48,11 @@ export function SalesOffer() {
           </div>
           <div className="mb-10 flex flex-col items-center gap-2">
             <span className="md:text-2xl text-xl font-bold italic text-on-surface/40 line-through">
-              ৳ ১০,০০০
+              ৳ {formatBanglaNumber(originalPriceTaka)}
             </span>
             <div className="flex items-start gap-1 md:text-6xl text-4xl font-extrabold text-primary">
-              <span className="mt-2 text-3xl font-bold">৳</span> ২,৯৯৯
+              <span className="mt-2 text-3xl font-bold">৳</span>{" "}
+              {formatBanglaNumber(basePriceTaka)}
             </div>
             <p className="md:text-base text-sm font-medium text-on-surface/60">আজকের জন্য বিশেষ ডিসকাউন্ট</p>
           </div>

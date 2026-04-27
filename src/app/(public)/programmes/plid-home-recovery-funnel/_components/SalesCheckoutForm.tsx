@@ -13,19 +13,22 @@ import {
 } from "@/slices/payment";
 
 import { useAppDispatch } from "@/stores/hooks";
-import { useRegisterGuestUserMutation } from "@/slices/auth";
-/** BDT amounts (integer taka) */
-export const CHECKOUT_BASE_PRICE_TAKA = 2999;
-export const CHECKOUT_BUMP_AUDIOBOOK_TAKA = 997;
-export const CHECKOUT_BUMP_VIDEO_TAKA = 1997;
-
-const PLID_CAMPAIGN_ITEM_ID =
-  process.env.NEXT_PUBLIC_PLID_CAMPAIGN_ITEM_ID ?? "";
+import { persistGuestSession, useRegisterGuestUserMutation } from "@/slices/auth";
+import type { CampaignItemSummary } from "@/lib/campaignPublicApi";
 
 const DEVICE_ID_STORAGE_KEY = "ywd-device-id";
 
 function formatTaka(amount: number) {
   return `৳${amount.toLocaleString("en-IN")}`;
+}
+
+function toNumber(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string") {
+    const n = Number(value);
+    if (Number.isFinite(n)) return n;
+  }
+  return null;
 }
 
 function getOrCreateDeviceId(): string {
@@ -44,18 +47,66 @@ function getOrCreateDeviceId(): string {
   }
 }
 
-export function SalesCheckoutForm() {
-  const [bumpAudiobook, setBumpAudiobook] = useState(false);
-  const [bumpVideoCall, setBumpVideoCall] = useState(false);
+export type SalesCheckoutFormProps = {
+  campaignItemId: string;
+  /** BDT integer (taka) */
+  basePriceTaka: number;
+  campaignItem: CampaignItemSummary | null;
+};
+
+export function SalesCheckoutForm({
+  campaignItemId,
+  basePriceTaka,
+  campaignItem,
+}: SalesCheckoutFormProps) {
   const [paymentProvider] = useState<PaymentProvider>("SSL");
   const [paymentError, setPaymentError] = useState<string | null>(null);
 
+  const children = useMemo(
+    () => (Array.isArray(campaignItem?.children) ? campaignItem!.children! : []),
+    [campaignItem],
+  );
+
+  const initialSelectedChildIds = useMemo(() => {
+    const ids: string[] = [];
+    for (const c of children) {
+      const id = c?.id ? String(c.id) : "";
+      if (!id) continue;
+      if (c?.isRequired || c?.isDefaultSelected) ids.push(id);
+    }
+    return ids;
+  }, [children]);
+
+  const [selectedChildIds, setSelectedChildIds] = useState<string[]>(
+    () => initialSelectedChildIds,
+  );
+
+  const selectedChildSet = useMemo(
+    () => new Set(selectedChildIds),
+    [selectedChildIds],
+  );
+
+  const selectedChildrenTotal = useMemo(() => {
+    let sum = 0;
+    for (const c of children) {
+      const id = c?.id ? String(c.id) : "";
+      if (!id || !selectedChildSet.has(id)) continue;
+      const price = toNumber(c?.price);
+      if (typeof price === "number" && Number.isFinite(price) && price > 0) {
+        sum += Math.round(price);
+      }
+    }
+    return sum;
+  }, [children, selectedChildSet]);
+
+  const currency = useMemo(() => {
+    const c = campaignItem?.product?.currency;
+    return typeof c === "string" && c.trim() ? c : "BDT";
+  }, [campaignItem]);
+
   const total = useMemo(
-    () =>
-      CHECKOUT_BASE_PRICE_TAKA +
-      (bumpAudiobook ? CHECKOUT_BUMP_AUDIOBOOK_TAKA : 0) +
-      (bumpVideoCall ? CHECKOUT_BUMP_VIDEO_TAKA : 0),
-    [bumpAudiobook, bumpVideoCall],
+    () => basePriceTaka + selectedChildrenTotal,
+    [basePriceTaka, selectedChildrenTotal],
   );
 
   const dispatch = useAppDispatch();
@@ -78,10 +129,8 @@ export function SalesCheckoutForm() {
     e.preventDefault();
     setPaymentError(null);
 
-    if (!PLID_CAMPAIGN_ITEM_ID) {
-      setPaymentError(
-        "Campaign is not configured (missing NEXT_PUBLIC_PLID_CAMPAIGN_ITEM_ID).",
-      );
+    if (!campaignItemId) {
+      setPaymentError("Campaign is not configured. Please try again later.");
       return;
     }
 
@@ -125,15 +174,21 @@ export function SalesCheckoutForm() {
         setPaymentError("Failed to create guest user. Please try again.");
         return;
       }
+      persistGuestSession(guestUserId);
 
       const origin =
         typeof window !== "undefined" && window.location.origin
           ? window.location.origin
           : "";
 
+      const finalSelectedChildIds = children
+        .map((c) => (c?.id ? String(c.id) : ""))
+        .filter(Boolean)
+        .filter((id) => selectedChildSet.has(id));
+
       const campaignCheckout = await startCampaignCheckout({
-        campaignItemId: PLID_CAMPAIGN_ITEM_ID,
-        selectedChildIds: [],
+        campaignItemId,
+        selectedChildIds: finalSelectedChildIds,
         provider: paymentProvider,
         siteRef: "YWD",
         projectKey: "YWD",
@@ -161,9 +216,15 @@ export function SalesCheckoutForm() {
       }
 
       const initPayment = await initializePayment({
+        userId: guestUserId,
         amount: total,
-        currency: "BDT",
-        metaData: { purchaseId: newPurchaseId, userId: guestUserId },
+        currency,
+        metaData: {
+          purchaseId: newPurchaseId,
+          userId: guestUserId,
+          campaignItemId,
+          selectedChildIds: finalSelectedChildIds,
+        },
         provider: paymentProvider,
         projectKey: "YWD",
         siteRef: "YWD",
@@ -192,9 +253,15 @@ export function SalesCheckoutForm() {
       if (transactionId) {
         startAttemptData = await startPaymentAttempt({
           transactionId,
+          userId: guestUserId,
           amount: total,
-          currency: "BDT",
-          metaData: { purchaseId: newPurchaseId, userId: guestUserId },
+          currency,
+          metaData: {
+            purchaseId: newPurchaseId,
+            userId: guestUserId,
+            campaignItemId,
+            selectedChildIds: finalSelectedChildIds,
+          },
           provider: paymentProvider,
           siteRef: "YWD",
         }).unwrap();
@@ -302,53 +369,84 @@ export function SalesCheckoutForm() {
         <p className="text-sm font-semibold text-on-surface/80">
           ঐচ্ছিক অ্যাড-অন (আপনার পছন্দ)
         </p>
-        <CheckoutOrderBump
-          checked={bumpAudiobook}
-          fullDescription={
-            <div className="space-y-2">
-              <p>
-                এই প্যাকেজে আপনি পাবেন{" "}
-                <strong>সম্পূর্ণ প্রোগ্রামের অডিও ভার্সন</strong>—যাতে চলার সময়
-                বা বিশ্রামে শুনে অনুশীলন করতে পারেন। সাথে থাকছে{" "}
-                <strong>৫টি এক্সক্লুসিভ ডিজিটাল রিসোর্স</strong>: প্রিন্টেবল
-                চেকলিস্ট, পোসচার রিমাইন্ডার কার্ড, সপ্তাহিক ট্র্যাকিং শিট, দ্রুত
-                ব্যথা উপশম গাইড, এবং বিশেষজ্ঞদের টিপস সহ বোনাস PDF। সব কিছু
-                আপনার ইমেইলে ডেলিভারি—আজই অ্যাক্সেস।
-              </p>
-            </div>
-          }
-          headline="অডিও গাইড + ৫টি এক্সক্লুসিভ ডিজিটাল বোনাস প্যাকেজ!"
-          imageAlt="অডিও ও ডিজিটাল বোনাস ম্যাটেরিয়াল"
-          imageSrc="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&q=80"
-          name="orderBumpAudiobook"
-          offerLabel="বিশেষ এককালীন অফার:"
-          onCheckedChange={setBumpAudiobook}
-          price="৳৯৯৭"
-          shortDescription="প্রোগ্রামের অডিও সংস্করণ ও ৫টি প্রিমিয়াম ডিজিটাল টুল—দৈনিক রুটিন আরও সহজ করতে।"
-        />
-        <CheckoutOrderBump
-          checked={bumpVideoCall}
-          fullDescription={
-            <div className="space-y-2">
-              <p>
-                <strong>৩০ মিনিটের ১-১ ভিডিও সেশন</strong>—আপনার বর্তমান অবস্থা,
-                ব্যথার ধরন ও লাইফস্টাইল শুনে{" "}
-                <strong>ব্যক্তিগতভাবে কাস্টম টিপস</strong>। আমাদের ক্লিনিক্যাল
-                টিম আপনার ফর্ম ঠিক করতে সাহায্য করবে এবং পরবর্তী ২ সপ্তাহের জন্য
-                একটি <strong>সংক্ষিপ্ত অ্যাকশন প্ল্যান</strong> দেবে। স্লট
-                সীমিত; অর্ডারের সাথে যুক্ত করলে অগ্রাধিকার বুকিং।
-              </p>
-            </div>
-          }
-          headline="এক্সক্লুসিভ আপগ্রেড: ১-১ ভিডিও কল—ব্যক্তিগত থেরাপি রিভিউ ও পরামর্শ"
-          imageAlt="ভিডিও কলে ব্যক্তিগত পরামর্শ"
-          imageSrc="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80"
-          name="orderBumpVideoCall"
-          offerLabel="এক্সক্লুসিভ আপগ্রেড:"
-          onCheckedChange={setBumpVideoCall}
-          price="৳১,৯৯৭"
-          shortDescription="৩০ মিনিটের ডেডিকেটেড ভিডিও কল—আপনার ধাপগুলো নিয়ে সরাসরি গাইড ও ফলো-আপ প্ল্যান।"
-        />
+        {children.length ? (
+          <div className="space-y-4">
+            {children.map((c) => {
+              const id = c?.id ? String(c.id) : "";
+              if (!id) return null;
+              const title =
+                (c?.course?.title as string | undefined) ??
+                (c?.title as string | undefined) ??
+                "Add-on";
+              const price = toNumber(c?.price);
+              const compareAt = toNumber(c?.compareAtPrice);
+              const checked = selectedChildSet.has(id);
+              const isRequired = Boolean(c?.isRequired);
+              const imageSrc =
+                (typeof c?.course?.bannerUrl === "string" &&
+                  c.course.bannerUrl) ||
+                "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&q=80";
+
+              const offerLabel = isRequired ? "Required:" : "Special add-on:";
+              const priceLabel =
+                typeof price === "number" && price > 0
+                  ? formatTaka(Math.round(price))
+                  : "—";
+
+              return (
+                <CheckoutOrderBump
+                  key={id}
+                  checked={checked}
+                  fullDescription={
+                    <div className="space-y-2">
+                      <p className="font-medium text-on-surface/80">{title}</p>
+                      {typeof compareAt === "number" && compareAt > 0 ? (
+                        <p className="text-on-surface/70">
+                          Regular:{" "}
+                          <span className="line-through">
+                            {formatTaka(Math.round(compareAt))}
+                          </span>
+                        </p>
+                      ) : null}
+                      <p className="text-on-surface/70">
+                        Add this to your checkout to unlock instantly.
+                      </p>
+                    </div>
+                  }
+                  headline={title}
+                  imageAlt={title}
+                  imageSrc={imageSrc}
+                  name={`orderBump-${id}`}
+                  offerLabel={offerLabel}
+                  onCheckedChange={(next) => {
+                    if (isRequired) return;
+                    setSelectedChildIds((prev) => {
+                      const set = new Set(prev);
+                      if (next) set.add(id);
+                      else set.delete(id);
+                      return Array.from(set);
+                    });
+                  }}
+                  price={priceLabel}
+                  shortDescription={
+                    typeof compareAt === "number" &&
+                    compareAt > 0 &&
+                    typeof price === "number" &&
+                    price > 0
+                      ? `Save ${formatTaka(
+                          Math.max(0, Math.round(compareAt) - Math.round(price)),
+                        )} today.`
+                      : "One-time add-on."
+                  }
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-outline-variant/30 bg-surface-container-low p-4 text-sm text-on-surface/70">
+            No add-ons available for this campaign.
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl border border-primary/15 bg-surface-container-low px-5 py-4 shadow-inner">
@@ -359,25 +457,33 @@ export function SalesCheckoutForm() {
           <li className="flex justify-between gap-4">
             <span>মূল প্রোগ্রাম</span>
             <span className="tabular-nums font-medium text-on-surface">
-              {formatTaka(CHECKOUT_BASE_PRICE_TAKA)}
+              {formatTaka(basePriceTaka)}
             </span>
           </li>
-          {bumpAudiobook ? (
-            <li className="flex justify-between gap-4">
-              <span>অডিও + ডিজিটাল বোনাস</span>
-              <span className="tabular-nums font-medium text-on-surface">
-                +{formatTaka(CHECKOUT_BUMP_AUDIOBOOK_TAKA)}
-              </span>
-            </li>
-          ) : null}
-          {bumpVideoCall ? (
-            <li className="flex justify-between gap-4">
-              <span>১-১ ভিডিও কল আপগ্রেড</span>
-              <span className="tabular-nums font-medium text-on-surface">
-                +{formatTaka(CHECKOUT_BUMP_VIDEO_TAKA)}
-              </span>
-            </li>
-          ) : null}
+          {children
+            .filter((c) => c?.id && selectedChildSet.has(String(c.id)))
+            .map((c) => {
+              const id = String(c.id);
+              const title =
+                (c?.course?.title as string | undefined) ??
+                (c?.title as string | undefined) ??
+                "Add-on";
+              const price = toNumber(c?.price);
+              if (
+                typeof price !== "number" ||
+                !Number.isFinite(price) ||
+                price <= 0
+              )
+                return null;
+              return (
+                <li key={id} className="flex justify-between gap-4">
+                  <span>{title}</span>
+                  <span className="tabular-nums font-medium text-on-surface">
+                    +{formatTaka(Math.round(price))}
+                  </span>
+                </li>
+              );
+            })}
         </ul>
         <div className="mt-4 flex items-baseline justify-between gap-4 border-t border-primary/10 pt-4">
           <span className="text-lg font-extrabold text-on-surface">
