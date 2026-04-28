@@ -1,0 +1,99 @@
+/* Yoga For Migraine workshop — scoped tokens & micro-interactions.
+   This intentionally does NOT touch :root to avoid conflicting with site theme. */
+
+.workshop-yoga-migraine {
+  --font-headline: var(--font-workshop-headline), "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-workshop-body), "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
+
+  /* Reference palette (from code.html) */
+  --color-surface: #f4fbf3;
+  --color-surface-rgb: 244 251 243;
+  --color-surface-container: #e9f0e8;
+  --color-surface-container-rgb: 233 240 232;
+  --color-surface-container-low: #eef6ed;
+  --color-surface-container-low-rgb: 238 246 237;
+  --color-surface-container-high: #e3eae2;
+  --color-surface-container-high-rgb: 227 234 226;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-lowest-rgb: 255 255 255;
+  --color-surface-variant: #dde4dd;
+  --color-surface-dim: #d5dcd4;
+  --color-surface-bright: #f4fbf3;
+
+  --color-background: #f4fbf3;
+  --color-background-rgb: 244 251 243;
+
+  --color-on-surface: #161d18;
+  --color-on-surface-rgb: 22 29 24;
+  --color-on-background: #161d18;
+  --color-on-background-rgb: 22 29 24;
+  --color-on-surface-variant: #3d4a41;
+
+  --color-primary: #006d43;
+  --color-primary-rgb: 0 109 67;
+  --color-on-primary: #ffffff;
+  --color-on-primary-rgb: 255 255 255;
+  --color-primary-container: #00a86b;
+  --color-primary-container-rgb: 0 168 107;
+  --color-on-primary-container: #00331d;
+
+  --color-secondary: #526069;
+  --color-secondary-rgb: 82 96 105;
+  --color-secondary-container: #d3e2ed;
+  --color-secondary-container-rgb: 211 226 237;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-rgb: 255 255 255;
+  --color-on-secondary-container: #56656e;
+
+  --color-outline: #6d7a70;
+  --color-outline-variant: #bccabe;
+  --color-outline-variant-rgb: 188 202 190;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* Tailwind already uses --color-text-primary/secondary for base foreground/muted */
+  --color-text-primary: var(--color-on-surface);
+  --color-text-secondary: rgb(var(--color-on-surface-rgb) / 0.68);
+  --color-border: rgb(var(--color-outline-variant-rgb) / 0.75);
+
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+.workshop-yoga-migraine h1,
+.workshop-yoga-migraine h2,
+.workshop-yoga-migraine h3,
+.workshop-yoga-migraine h4 {
+  font-family: var(--font-headline);
+}
+
+.workshop-yoga-migraine ::selection {
+  background-color: rgb(var(--color-primary-container-rgb) / 0.35);
+  color: var(--color-on-primary-container);
+}
+
+.workshop-yoga-migraine .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-migraine .material-symbols-outlined--fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-migraine .hero-gradient {
+  background: linear-gradient(135deg, #f4fbf3 0%, #eef6ed 100%);
+}
+
+.workshop-yoga-migraine .bento-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.workshop-yoga-migraine .bento-card:hover {
+  transform: translateY(-4px);
+}
+
