@@ -1,0 +1,93 @@
+/* Yoga For Weight Loss workshop — scoped tokens & micro-interactions.
+   Intentionally does NOT touch :root to avoid conflicts with site theme. */
+
+.workshop-yoga-weight-loss {
+  --font-headline: var(--font-workshop-headline), "Lexend", ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-workshop-body), "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
+
+  /* Reference palette (from code.html) */
+  --color-surface: #f8f9fa;
+  --color-surface-rgb: 248 249 250;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container: #edeeef;
+  --color-surface-container-low: #f3f4f5;
+  --color-surface-container-high: #e7e8e9;
+  --color-surface-container-highest: #e1e3e4;
+  --color-surface-variant: #e1e3e4;
+
+  --color-background: #f8f9fa;
+  --color-background-rgb: 248 249 250;
+
+  --color-on-surface: #191c1d;
+  --color-on-background: #191c1d;
+  --color-on-surface-variant: #3d4a3e;
+
+  --color-primary: #006d37;
+  --color-primary-rgb: 0 109 55;
+  --color-on-primary: #ffffff;
+  --color-primary-fixed: #6bfe9c;
+  --color-primary-fixed-dim: #4ae183;
+  --color-on-primary-fixed: #00210c;
+  --color-on-primary-fixed-variant: #005228;
+  --color-primary-container: #2ecc71;
+  --color-on-primary-container: #005027;
+
+  --color-secondary: #944a00;
+  --color-secondary-container: #fc8f34;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-fixed: #301400;
+  --color-on-secondary-container: #663100;
+
+  --color-tertiary: #4e6073;
+
+  --color-outline: #6c7b6d;
+  --color-outline-variant: #bbcbbb;
+  --color-outline-variant-rgb: 187 203 187;
+
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+.workshop-yoga-weight-loss h1,
+.workshop-yoga-weight-loss h2,
+.workshop-yoga-weight-loss h3,
+.workshop-yoga-weight-loss h4 {
+  font-family: var(--font-headline);
+}
+
+.workshop-yoga-weight-loss ::selection {
+  background-color: rgb(var(--color-primary-rgb) / 0.15);
+  color: var(--color-on-background);
+}
+
+.workshop-yoga-weight-loss .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-weight-loss .material-symbols-outlined--fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-weight-loss .premium-shadow {
+  box-shadow: 0 4px 20px rgb(46 204 113 / 0.05);
+}
+
+.workshop-yoga-weight-loss .glass-card {
+  backdrop-filter: blur(12px);
+  background: rgb(255 255 255 / 0.8);
+}
+
+.workshop-yoga-weight-loss .hero-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+}
+
+.workshop-yoga-weight-loss .lift-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.workshop-yoga-weight-loss .lift-hover:hover {
+  transform: translateY(-8px);
+}
+
