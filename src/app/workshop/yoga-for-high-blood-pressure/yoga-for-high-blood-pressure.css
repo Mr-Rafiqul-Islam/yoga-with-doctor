@@ -1,0 +1,104 @@
+/* Yoga For High Blood Pressure — scoped tokens (reference code.html). Does not touch :root. */
+
+.workshop-yoga-hbp {
+  --font-headline: var(--font-serif), "Playfair Display", ui-serif, Georgia, serif;
+  --font-body: var(--font-workshop-body), "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
+
+  --color-background: #f6fafa;
+  --color-surface: #f6fafa;
+  --color-surface-bright: #f6fafa;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f1f4f4;
+  --color-surface-container: #ebefee;
+  --color-surface-container-high: #e5e9e8;
+  --color-surface-container-highest: #dfe3e3;
+  --color-surface-variant: #dfe3e3;
+  --color-surface-dim: #d7dbda;
+
+  --color-on-background: #181c1d;
+  --color-on-surface: #181c1d;
+  --color-on-surface-rgb: 24 28 29;
+  --color-on-surface-variant: #3e4949;
+
+  --color-primary: #005f62;
+  --color-primary-rgb: 0 95 98;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #007a7e;
+  --color-primary-container-rgb: 0 122 126;
+  --color-on-primary-container: #bdfcff;
+  --color-primary-fixed: #97f1f5;
+  --color-primary-fixed-dim: #7ad5d9;
+  --color-on-primary-fixed: #002021;
+  --color-on-primary-fixed-variant: #004f52;
+
+  --color-secondary: #556158;
+  --color-secondary-rgb: 85 97 88;
+  --color-secondary-container: #d9e6da;
+  --color-secondary-container-rgb: 217 230 218;
+  --color-secondary-fixed: #d9e6da;
+  --color-secondary-fixed-dim: #bdcabe;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #5b675e;
+  --color-on-secondary-fixed: #131e17;
+  --color-on-secondary-fixed-variant: #3e4a41;
+
+  --color-tertiary: #82451c;
+  --color-tertiary-rgb: 130 69 28;
+  --color-tertiary-container: #a05c32;
+  --color-tertiary-container-rgb: 160 92 50;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #ffede5;
+  --color-tertiary-fixed: #ffdbc9;
+  --color-tertiary-fixed-dim: #ffb68d;
+  --color-on-tertiary-fixed: #331200;
+  --color-on-tertiary-fixed-variant: #71370f;
+
+  --color-error: #ba1a1a;
+  --color-error-rgb: 186 26 26;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+
+  --color-outline: #6e7979;
+  --color-outline-variant: #bdc9c9;
+  --color-outline-variant-rgb: 189 201 201;
+
+  --color-border-card: #f0fdfa;
+
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+.workshop-yoga-hbp h1,
+.workshop-yoga-hbp h2,
+.workshop-yoga-hbp h3,
+.workshop-yoga-hbp h4 {
+  font-family: var(--font-headline);
+}
+
+.workshop-yoga-hbp ::selection {
+  background-color: var(--color-primary-fixed);
+  color: var(--color-on-primary-fixed);
+}
+
+.workshop-yoga-hbp .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-hbp .material-symbols-outlined--fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-hbp .hbp-shadow-soft {
+  box-shadow: 0 10px 40px rgba(0, 122, 126, 0.08);
+}
+
+.workshop-yoga-hbp .hbp-breath-guider {
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, #007a7e 0%, transparent 70%);
+  filter: blur(15px);
+  opacity: 0.4;
+}
