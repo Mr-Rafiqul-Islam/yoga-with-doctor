@@ -32,8 +32,7 @@ const mainNavItems = [
   { href: "/articles", label: "Articles" },
 ] as const;
 
-export function Header() {
-  const pathname = usePathname();
+function HeaderInner({ pathname }: { pathname: string }) {
   const dispatch = useAppDispatch();
   const { status: nextAuthStatus, data: session } = useSession();
   const mobileMenuOpen = useAppSelector((state) => state.ui.mobileMenuOpen);
@@ -459,4 +458,10 @@ export function Header() {
       <GlobalSearchMobileOverlay />
     </header>
   );
+}
+
+export function Header() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/workshop")) return null;
+  return <HeaderInner pathname={pathname} />;
 }
