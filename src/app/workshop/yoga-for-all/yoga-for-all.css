@@ -1,0 +1,109 @@
+/* Yoga For All workshop — scoped tokens & micro-interactions.
+   Intentionally does NOT touch :root to avoid conflicts with site theme. */
+
+.workshop-yoga-for-all {
+  --font-headline: var(--font-workshop-headline), "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-workshop-body), "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
+
+  /* Reference palette (from provided code.html) */
+  --color-surface: #f4fbf3;
+  --color-surface-rgb: 244 251 243;
+  --color-surface-container: #e9f0e8;
+  --color-surface-container-rgb: 233 240 232;
+  --color-surface-container-low: #eef6ed;
+  --color-surface-container-low-rgb: 238 246 237;
+  --color-surface-container-high: #e3eae2;
+  --color-surface-container-high-rgb: 227 234 226;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-lowest-rgb: 255 255 255;
+  --color-surface-variant: #dde4dd;
+  --color-surface-dim: #d5dcd4;
+  --color-surface-bright: #f4fbf3;
+
+  --color-background: #f4fbf3;
+  --color-background-rgb: 244 251 243;
+
+  --color-on-surface: #161d18;
+  --color-on-surface-rgb: 22 29 24;
+  --color-on-background: #161d18;
+  --color-on-background-rgb: 22 29 24;
+  --color-on-surface-variant: #3d4a41;
+
+  --color-primary: #006d43;
+  --color-primary-rgb: 0 109 67;
+  --color-on-primary: #ffffff;
+  --color-on-primary-rgb: 255 255 255;
+  --color-primary-container: #00a86b;
+  --color-primary-container-rgb: 0 168 107;
+  --color-on-primary-container: #00331d;
+  --color-primary-fixed: #78fbb6;
+  --color-primary-fixed-dim: #59de9b;
+  --color-on-primary-fixed: #002111;
+
+  --color-secondary: #526069;
+  --color-secondary-rgb: 82 96 105;
+  --color-secondary-container: #d3e2ed;
+  --color-secondary-container-rgb: 211 226 237;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-rgb: 255 255 255;
+  --color-on-secondary-container: #56656e;
+
+  --color-tertiary: #a5393e;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #e86c6e;
+  --color-tertiary-container-rgb: 232 108 110;
+  --color-on-tertiary-container: #5e0211;
+
+  --color-outline: #6d7a70;
+  --color-outline-variant: #bccabe;
+  --color-outline-variant-rgb: 188 202 190;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+
+  /* Tailwind base uses these for some defaults */
+  --color-text-primary: var(--color-on-surface);
+  --color-text-secondary: rgb(var(--color-on-surface-rgb) / 0.68);
+  --color-border: rgb(var(--color-outline-variant-rgb) / 0.75);
+
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+.workshop-yoga-for-all h1,
+.workshop-yoga-for-all h2,
+.workshop-yoga-for-all h3,
+.workshop-yoga-for-all h4 {
+  font-family: var(--font-headline);
+}
+
+.workshop-yoga-for-all ::selection {
+  background-color: rgb(var(--color-primary-container-rgb) / 0.35);
+  color: var(--color-on-primary-container);
+}
+
+.workshop-yoga-for-all .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-for-all .material-symbols-outlined--fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-for-all .glass-card {
+  backdrop-filter: blur(12px);
+  background: rgb(255 255 255 / 0.7);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  box-shadow: 0 24px 50px -24px rgb(0 0 0 / 0.18);
+}
+
+.workshop-yoga-for-all .lift-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.workshop-yoga-for-all .lift-hover:hover {
+  transform: translateY(-4px);
+}
+
