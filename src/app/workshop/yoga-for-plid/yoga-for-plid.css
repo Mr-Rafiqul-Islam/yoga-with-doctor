@@ -1,0 +1,100 @@
+/* Yoga For PLID workshop — scoped tokens & micro-interactions.
+   Intentionally does NOT touch :root to avoid conflicts with site theme. */
+
+.workshop-yoga-plid {
+  --font-headline: var(--font-workshop-headline), "Manrope", ui-sans-serif, system-ui,
+    sans-serif;
+  --font-body: var(--font-workshop-body), "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
+
+  /* Reference palette (from code.html) */
+  --color-background: #f4fbf3;
+  --color-background-rgb: 244 251 243;
+  --color-surface: #f4fbf3;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #eef6ed;
+  --color-surface-container: #e9f0e8;
+  --color-surface-container-high: #e3eae2;
+  --color-surface-container-highest: #dde4dd;
+  --color-surface-variant: #dde4dd;
+
+  --color-on-background: #161d18;
+  --color-on-surface: #161d18;
+  --color-on-surface-rgb: 22 29 24;
+  --color-on-surface-variant: #3d4a41;
+
+  --color-primary: #006d43;
+  --color-primary-rgb: 0 109 67;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #00a86b;
+  --color-primary-container-rgb: 0 168 107;
+  --color-on-primary-container: #00331d;
+  --color-primary-fixed: #78fbb6;
+  --color-primary-fixed-dim: #59de9b;
+  --color-on-primary-fixed: #002111;
+  --color-on-primary-fixed-variant: #005232;
+
+  --color-secondary: #526069;
+  --color-secondary-container: #d3e2ed;
+  --color-secondary-container-rgb: 211 226 237;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #56656e;
+
+  --color-tertiary: #a5393e;
+  --color-tertiary-container: #e86c6e;
+  --color-tertiary-container-rgb: 232 108 110;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #5e0211;
+
+  --color-outline: #6d7a70;
+  --color-outline-variant: #bccabe;
+  --color-outline-variant-rgb: 188 202 190;
+
+  /* Convenience tokens */
+  --color-text-primary: var(--color-on-surface);
+  --color-text-secondary: rgb(var(--color-on-surface-rgb) / 0.68);
+  --color-border: rgb(var(--color-outline-variant-rgb) / 0.75);
+
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+.workshop-yoga-plid h1,
+.workshop-yoga-plid h2,
+.workshop-yoga-plid h3,
+.workshop-yoga-plid h4 {
+  font-family: var(--font-headline);
+}
+
+.workshop-yoga-plid ::selection {
+  background-color: rgb(var(--color-primary-container-rgb) / 0.35);
+  color: var(--color-on-primary-container);
+}
+
+.workshop-yoga-plid .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-plid .material-symbols-outlined--fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-plid .premium-shadow {
+  box-shadow: 0 4px 20px rgb(0 168 107 / 0.05);
+}
+
+.workshop-yoga-plid .glass-card {
+  background: rgb(255 255 255 / 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgb(var(--color-primary-rgb) / 0.1);
+}
+
+.workshop-yoga-plid .lift-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.workshop-yoga-plid .lift-hover:hover {
+  transform: translateY(-8px);
+}
+
