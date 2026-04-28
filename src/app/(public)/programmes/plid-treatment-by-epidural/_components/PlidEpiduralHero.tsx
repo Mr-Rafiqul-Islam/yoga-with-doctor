@@ -24,7 +24,7 @@ export function PlidEpiduralHero() {
           </p>
           <div className="flex flex-col gap-4 sm:flex-row justify-center lg:justify-start">
             <a
-              className="flex items-center justify-center gap-2 rounded-xl bg-tertiary-container px-10 py-5 text-base md:text-lg font-bold text-on-tertiary-container shadow-lg transition-colors hover:bg-tertiary"
+              className="flex items-center justify-center gap-2 rounded-xl bg-tertiary-container px-10 py-5 text-base md:text-lg font-bold text-on-tertiary-container shadow-lg transition-colors hover:bg-tertiary-container/80"
               href="#claim"
             >
               Start Healing Today
