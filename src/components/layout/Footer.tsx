@@ -4,6 +4,7 @@ import { SiteLogo } from "@/components/layout/SiteLogo";
 import { FaFacebook, FaLinkedin, FaWhatsapp, FaYoutube } from "react-icons/fa";
 import { MdPhoneInTalk } from "react-icons/md";
 import { AiFillTikTok } from "react-icons/ai";
+import { usePathname } from "next/navigation";
 
 const platformLinks = [
   { href: "/courses", label: "Browse Courses", target:"_self"},
@@ -56,7 +57,7 @@ const socialLinks = [
   },
 ] as const;
 
-export function Footer() {
+function FooterInner() {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -198,4 +199,10 @@ export function Footer() {
       </div>
     </footer>
   );
+}
+
+export function Footer() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/programmes")) return null;
+  return <FooterInner />;
 }
