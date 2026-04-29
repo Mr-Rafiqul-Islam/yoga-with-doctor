@@ -1,0 +1,91 @@
+.workshop-yoga-frozen-shoulder {
+  --font-headline: var(--font-frozen-shoulder-display), "Times New Roman", serif;
+  --font-body: var(--font-frozen-shoulder-body), "Inter", ui-sans-serif, system-ui,
+    sans-serif;
+  font-family: var(--font-body);
+
+  --color-background: #f6fafa;
+  --color-surface: #f6fafa;
+  --color-surface-bright: #f6fafa;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f1f4f4;
+  --color-surface-container: #ebefee;
+  --color-surface-container-high: #e5e9e8;
+  --color-surface-container-highest: #dfe3e3;
+  --color-surface-variant: #dfe3e3;
+
+  --color-on-background: #181c1d;
+  --color-on-surface: #181c1d;
+  --color-on-surface-variant: #3e4949;
+  --color-on-surface-rgb: 24 28 29;
+
+  --color-primary: #00696d;
+  --color-primary-rgb: 0 105 109;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #007a7e;
+  --color-primary-container-rgb: 0 122 126;
+  --color-on-primary-container: #bdfcff;
+
+  --color-secondary: #556158;
+  --color-secondary-container: #d9e6da;
+  --color-secondary-container-rgb: 217 230 218;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #3e4a41;
+
+  --color-tertiary: #82451c;
+  --color-tertiary-container: #a05c32;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #ffede5;
+
+  --color-outline: #6e7979;
+  --color-outline-variant: #bdc9c9;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+
+  --color-border: rgb(189 201 201 / 0.8);
+
+  background: var(--color-background);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+.workshop-yoga-frozen-shoulder h1,
+.workshop-yoga-frozen-shoulder h2,
+.workshop-yoga-frozen-shoulder h3,
+.workshop-yoga-frozen-shoulder h4 {
+  font-family: var(--font-headline);
+}
+
+.workshop-yoga-frozen-shoulder .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-frozen-shoulder .material-symbols-outlined--fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-frozen-shoulder .hero-shadow {
+  box-shadow: 0 16px 40px rgb(var(--color-primary-container-rgb) / 0.14);
+}
+
+.workshop-yoga-frozen-shoulder .cta-shadow {
+  box-shadow: 0 8px 24px rgb(160 92 50 / 0.35);
+}
+
+.workshop-yoga-frozen-shoulder .breath-guider {
+  animation: workshop-frozen-shoulder-breathe 8s ease-in-out infinite;
+}
+
+@keyframes workshop-frozen-shoulder-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+    filter: blur(20px);
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.6;
+    filter: blur(40px);
+  }
+}
