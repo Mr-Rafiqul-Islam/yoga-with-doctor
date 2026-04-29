@@ -1,3 +1,4 @@
+import { Plid30DaysHealingSectionCta } from "./Plid30DaysHealingSectionCta";
 import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 
 const problemCardClass =
@@ -7,41 +8,39 @@ const PROBLEM_CARDS = [
   {
     id: "chronic-pain",
     icon: "error_outline",
-    title: "দীর্ঘস্থায়ী যন্ত্রণা",
-    body: "বসা বা হাঁটা চলাফেরায় অসহ্য ব্যথা যা আপনার কাজ ও জীবনকে ব্যাহত করে।",
+    title: "কোমরের ব্যথা কি ধীরে ধীরে আপনাকে অসহায় করে দিচ্ছে?",
+    body: "সুয়ে থাকা, বসা, দাঁড়ানো বা হাঁটার সময় কোমরে টান, চাপ বা ব্যথা অনুভব করা এখন আপনার জন্য স্বাভাবিক হয়ে গেছে। অনেক সময় এই ব্যথা পা পর্যন্ত ছড়িয়ে পড়ে, যা sciatic nerve-এর উপর চাপের ইঙ্গিত দেয়। এটি শুধু একটি সাধারণ ব্যথা নয় বরং আপনার spine-এর উপর দীর্ঘদিন ধরে অতিরিক্ত চাপ পড়ার ফল।",
   },
   {
     id: "physical-limitation",
     icon: "disabled_by_default",
-    title: "শারীরিক সীমাবদ্ধতা",
-    body: "পরিবারের সাথে সময় কাটানো বা পছন্দের কাজে যোগ দিতে না পারার মানসিক চাপ।",
+    title: "আগের মতো সহজ জীবন যাপন কঠিন হয়ে যাচ্ছে?",
+    body: "যেসব কাজ আপনি আগে সহজে করতেন বসা, ওঠা, ঝুঁকে কিছু তোলা এখন সেগুলো করতে গেলে অস্বস্তি বা ভয় লাগে। শরীর ধীরে ধীরে শক্ত হয়ে যাচ্ছে, মুভমেন্ট কমে যাচ্ছে, এবং আপনি অজান্তেই নিজের স্বাভাবিক জীবনযাপন সীমিত করে ফেলছেন।",
   },
   {
     id: "medication-dependence",
     icon: "medication",
-    title: "ব্যথানাশকের ওপর নির্ভরশীলতা",
-    body: "সাময়িক উপশমের জন্য ঔষধ খেয়ে লিভার ও কিডনির মারাত্মক ক্ষতির ঝুঁকি।",
+    title: "ব্যথা কমানোর জন্য ওষুধের উপর নির্ভর হয়ে পড়ছেন?",
+    body: "সাময়িক স্বস্তির জন্য পেইন কিলার নেওয়ার পর কিছু সময় ভালো লাগলেও, মূল সমস্যাটি থেকে যায়। ফলে কিছুদিন পর আবার একই ব্যথা ফিরে আসে। দীর্ঘদিন এভাবে চলতে থাকলে শরীরের অন্যান্য অঙ্গের উপরও এর সাইডইফেক্ট প্রভাব পড়তে পারে।",
   },
   {
     id: "daily-struggle",
     icon: "today",
-    title: "দৈনন্দিন জীবনের সংগ্রাম",
-    body: "ঘুম থেকে ওঠা, কাজে যাওয়া, বাড়ির ছোটখাটো কাজ—প্রতিটি মুহূর্তে ব্যথা মনে করিয়ে দেয় আপনি স্বাভাবিক জীবন থেকে কতটা দূরে সরে গেছেন।",
+    title: "প্রতিদিনের কাজগুলো কি সংগ্রামে পরিণত হয়েছে?",
+    body: "ঘুম থেকে ওঠা, কাজে বসা, হাঁটা বা পরিবারের সাথে সময় কাটানো এই সাধারণ কাজগুলোতেও এখন ব্যথা আপনাকে বারবার থামিয়ে দিচ্ছে। ধীরে ধীরে আপনি আগের স্বাভাবিক জীবন থেকে দূরে সরে যাচ্ছেন এবং প্রতিটি দিন যেন একটি চ্যালেঞ্জ হয়ে দাঁড়াচ্ছে।",
   },
 ] as const;
 
 export function Plid30DaysHealingProblem() {
   return (
+    <>
     <ScrollReveal className="bg-surface-container-low py-24" id="pain">
       <div className="mx-auto max-w-7xl px-6 text-center">
-        <h2 className="mb-4 text-lg font-bold uppercase tracking-[0.2em] text-secondary">
-          The Daily Struggle
-        </h2>
-        <h3 className="mb-8 text-3xl font-extrabold md:text-5xl">
-        অসহ্য কোমর ব্যথায় কি আপনার প্রতিদিনের জীবন হয়ে উঠছে কষ্টকর?
+        <h3 className="mb-8 text-2xl md:text-3xl lg:text-4xl font-extrabold">
+        এই লক্ষণগুলো কি ধীরে ধীরে আপনার স্বাভাবিক জীবনকে সীমাবদ্ধ করে দিচ্ছে?
         </h3>
         <p className="mb-16 max-w-2xl mx-auto text-base lg:text-lg text-on-surface/70">
-        প্রতিটি পদক্ষেপে যখন ব্যথা মনে করিয়ে দেয় আপনি আগের মতো নেই, তখন জীবনটা আর জীবন থাকে না—শুধু টিকে থাকা হয়ে যায়। 
+        প্রতিদিন কাজে যখন কোমরে ব্যথা অনুভব করেন, পায়ের ঝিঁঝিঁ, অবশ, ব্যথা, জ্বালাপোড়া নিয়ে আপনার জীবন হয়ে উঠছে কষ্টকর। সঠিক চিকিৎসা, গাইডলাইন ও যত্ন না নিলে এই সমস্যা ধীরে ধীরে আপনার দৈনন্দিন জীবনকে কঠিন করে তুলবে।
         </p>
         <div className="grid gap-6 text-left sm:grid-cols-2 sm:gap-8 lg:grid-cols-4">
           {PROBLEM_CARDS.map(({ id, icon, title, body }) => (
@@ -57,6 +56,8 @@ export function Plid30DaysHealingProblem() {
           ))}
         </div>
       </div>
+    <Plid30DaysHealingSectionCta  />
     </ScrollReveal>
+    </>
   );
 }

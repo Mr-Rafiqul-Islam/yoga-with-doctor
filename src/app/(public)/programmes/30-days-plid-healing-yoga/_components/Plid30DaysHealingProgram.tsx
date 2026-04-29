@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Plid30DaysHealingSectionCta } from "./Plid30DaysHealingSectionCta";
 import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 
 const ACCENT = {
@@ -12,57 +13,57 @@ const PROGRAM_PILLARS = [
   {
     id: "core",
     num: "01",
-    title: "Core Exercises",
+    title: "প্রথমে ব্যথার কারণ বুঝে নিরাপদ যাত্রা শুরু",
     description:
-      "নির্দিষ্ট থেরাপিউটিক ব্যায়ামের মাধ্যমে পেশি শক্তিশালী করা, মেরুদণ্ডের স্থিতিশীলতা বাড়ানো এবং ধীরে ধীরে ব্যথা কমাতে সাহায্য করা।",
+      "প্রথম ধাপে আপনার PLID সমস্যার ধরন, ব্যথার প্যাটার্ন, কোন movement করলে ব্যথা বাড়ে বা কমে—এসব সহজভাবে বোঝানো হবে। এরপর শরীরকে চাপ না দিয়ে কীভাবে নিরাপদভাবে yoga ও movement শুরু করবেন, সেই ভিত্তি তৈরি করা হবে।",
     value: "৳২,৫৯৯ মূল্য",
     accent: "primaryA" as AccentKey,
     imageSrc:
-      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=960&q=80",
+      "/yoga-2.JPG",
     imageAlt: "থেরাপিউটিক কোর এক্সারসাইজ",
   },
   {
     id: "lifestyle",
     num: "02",
-    title: "Posture Correction",
+    title: "ব্যথা কমানোর জন্য Yoga",
     description:
-      "বসা, দাঁড়ানো, হাঁটা ও কাজ করার ভুল ভঙ্গি ঠিক করে মেরুদণ্ডের উপর অতিরিক্ত চাপ কমানো এবং ভবিষ্যৎ ব্যথা প্রতিরোধ করা।",
+      "এই ধাপে কোমর, hip, hamstring ও spine-এর আশেপাশের stiffness কমানোর জন্য সহজ ও নিরাপদ therapeutic yoga movement করানো হবে। উদ্দেশ্য হলো ব্যথা বাড়ানো নয়—বরং ধীরে ধীরে শরীরকে relax, mobile এবং healing-friendly করা।",
     value: "৳১,৮৯৯ মূল্য",
     accent: "primaryB" as AccentKey,
     imageSrc:
-      "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=960&q=80",
+      "/yoga-1.JPG",
     imageAlt: "সঠিক বসা ও দৈনন্দিন ভঙ্গি",
   },
   {
     id: "diet",
     num: "03",
-    title: "Lifestyle Modification",
+    title: "Core Strength ও Spine Support তৈরি",
     description:
-      "দৈনন্দিন অভ্যাস যেমন কাজের ধরন, বিশ্রাম ও চলাফেরা পরিবর্তন করে শরীরকে দীর্ঘমেয়াদে সুস্থ রাখার উপযোগী জীবনধারা তৈরি করা।",
+      "PLID রোগীদের জন্য শুধু stretching যথেষ্ট নয়; কোমরকে support করার জন্য core, glute ও back-supporting muscle ধীরে ধীরে active করতে হয়। এই ধাপে এমন ব্যায়াম শেখানো হবে, যা spine-এর ওপর চাপ কমাতে এবং শরীরের stability বাড়াতে সাহায্য করবে।",
     value: "৳২,১৯৯ মূল্য",
     accent: "primaryA" as AccentKey,
     imageSrc:
-      "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=960&q=80",
+      "https://images.unsplash.com/photo-1772122028898-1640a4dd2d7f?w=960&q=80",
     imageAlt: "সুস্থ খাবার ও পুষ্টি",
   },
   {
     id: "pain",
     num: "04",
-    title: "Scientific Body Alignment",
+    title: "Posture, বসা-উঠা ও দৈনন্দিন অভ্যাস সংশোধন",
     description:
-      "শরীরের অ্যালাইনমেন্ট ঠিক রাখতে বিজ্ঞানভিত্তিক পদ্ধতি অনুসরণ করা, যাতে ডিস্ক ও মেরুদণ্ডে অপ্রয়োজনীয় চাপ না পড়ে।",
+      "অনেক সময় ভুলভাবে বসা, হঠাৎ ঝুঁকে কাজ করা, ভুলভাবে ঘুমানো বা দীর্ঘক্ষণ একই ভঙ্গিতে থাকা ব্যথাকে বারবার ফিরিয়ে আনে। এই ধাপে শেখানো হবে কীভাবে বসবেন, উঠবেন, হাঁটবেন, ঘুমাবেন এবং দৈনন্দিন কাজ করবেন—যাতে আপনার lifestyle নিজেই recovery-কে support করে।",
     value: "৳৩,৪৯৯ মূল্য",
     accent: "primaryB" as AccentKey,
     imageSrc:
-      "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=960&q=80",
+      "https://images.unsplash.com/photo-1624716346716-303904799c92?w=960&q=80",
     imageAlt: "ব্যথা উপশম ও যত্ন",
   },
   {
     id: "nutrition",
     num: "05",
-    title: "Proper Nutrition",
+    title: "খাবার, ওজন নিয়ন্ত্রণ ও Long-Term Recovery Plan",
     description:
-      "হাড়, ডিস্ক ও মাংসপেশি পুনর্গঠনে সহায়ক পুষ্টিকর খাবার গ্রহণ, যা শরীরের প্রাকৃতিক রিকভারি প্রসেসকে দ্রুত করে।",
+      "শেষ ধাপে আলোচনা হবে কোন ধরনের খাবার inflammation কমাতে সাহায্য করে, শরীরের ওজন কীভাবে disc-এর চাপের সাথে সম্পর্কিত, এবং ৩০ দিন শেষে কীভাবে নিজের জন্য একটি sustainable routine চালিয়ে যাবেন। লক্ষ্য হলো শুধু সাময়িক আরাম নয়—দীর্ঘমেয়াদে সুস্থ থাকা।",
     value: "৳৩,৪৯৯ মূল্য",
     accent: "primaryB" as AccentKey,
     imageSrc:
@@ -101,6 +102,7 @@ function ZigZagSpine({ className }: { className?: string }) {
 
 export function Plid30DaysHealingProgram() {
   return (
+    <>
     <ScrollReveal className="relative overflow-hidden bg-surface-container-low py-24">
       <div
         aria-hidden
@@ -113,14 +115,11 @@ export function Plid30DaysHealingProgram() {
       />
       <div className="relative mx-auto max-w-7xl px-3 sm:px-6">
         <div className="mb-12 text-center md:mb-14">
-          <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-primary">
-            Program pillars
-          </p>
-          <h3 className="mb-4 text-3xl md:text-4xl font-extrabold text-on-surface lg:text-5xl">
-          ঘরোয়া পদ্ধতিতে PLID মুক্ত হওয়ার পূর্ণাঙ্গ রোডম্যাপ 
+          <h3 className="mb-4 text-2xl md:text-3xl lg:text-4xl font-extrabold text-on-surface">
+          ৩০ দিনে ধাপে ধাপে PLID থেকে স্বাভাবিক জীবনে ফেরার সম্পূর্ণ রোডম্যাপ 
           </h3>
           <p className="mx-auto max-w-2xl text-sm md:text-base text-on-surface/65">
-          একটি একক সিস্টেমের মধ্যে চারটি মূল স্তম্ভকে একত্র করা হয়েছে—যেখানে প্রতিটি ধাপ আগের ধাপকে শক্তিশালী করে এবং ধাপে ধাপে দীর্ঘমেয়াদী সুস্থতার দিকে নিয়ে যায়। 
+          এই প্রোগ্রামে শুধু ব্যায়াম করানো হবে না- আপনি পাবেন PLID নিরাময় এর পূর্ণ গাইডলাইন ও PLID নিরাময়ের জন্য ইয়োগা। কোমর ব্যথার কারন বোঝা, নিরাপদ মুভমেন্ট শেখা, দেহভঙ্গি ঠিক করা, খাবার ও লাইফস্টাইল সংশোধন, এবং দীর্ঘমেয়াদে নিজেকে কীভাবে ভালো রাখবেন সবকিছু ধাপে ধাপে শেখানো হবে। 
           </p>
         </div>
 
@@ -168,7 +167,7 @@ export function Plid30DaysHealingProgram() {
                     >
                       {pillar.title}
                     </span>
-                    <p className="relative mb-2 flex-1 text-[11px] leading-snug text-on-surface/70 sm:mb-4 sm:text-xs sm:leading-relaxed md:text-sm lg:text-xl">
+                    <p className="relative mb-2 flex-1 text-[11px] leading-snug text-on-surface/70 sm:mb-4 sm:text-xs sm:leading-relaxed md:text-sm lg:text-base">
                       {pillar.description}
                     </p>
                     {/* <p className="relative mt-auto text-right text-[11px] font-bold tabular-nums text-primary sm:text-sm md:text-base">
@@ -207,6 +206,8 @@ export function Plid30DaysHealingProgram() {
           </ul>
         </div>
       </div>
+    <Plid30DaysHealingSectionCta />
     </ScrollReveal>
+    </>
   );
 }

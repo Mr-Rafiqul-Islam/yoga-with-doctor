@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Plid30DaysHealingSectionCta } from "./Plid30DaysHealingSectionCta";
 import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 
 const AUTHORITY_CREDENTIALS = [
@@ -30,9 +31,10 @@ const EXPERTISE = [
 
 export function Plid30DaysHealingAuthority() {
   return (
+    <>
     <ScrollReveal className="bg-surface-container-high py-24" id="drshah">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="flex flex-col items-center gap-16 rounded-4xl bg-surface-container-lowest p-8 shadow-xl shadow-primary/5 md:flex-row md:p-16">
+        <div className="flex flex-col items-center gap-16 rounded-4xl bg-surface-container-lowest p-6 shadow-xl shadow-primary/5 md:flex-row md:p-16">
           <div className="w-full md:w-2/5">
             <Image
               className="h-auto w-full rounded-2xl shadow-lg"
@@ -53,10 +55,10 @@ export function Plid30DaysHealingAuthority() {
           </div>
           <div className="w-full md:w-3/5">
             <h2 className="mb-4 text-lg text-center md:text-left font-bold uppercase tracking-widest text-primary-container">
-              Meet Your Mentor
+            Meet Your Doctor and Yoga Instructor
             </h2>
-            <h3 className="mb-6 text-3xl lg:text-4xl text-center md:text-left font-extrabold">
-              আপনার ব্যথামুক্ত জীবনের পাশে একজন অভিজ্ঞ গাইড
+            <h3 className="mb-6 text-2xl md:text-3xl lg:text-4xl text-center md:text-left font-extrabold">
+            আপনার PLID মুক্ত জীবনের পথে অভিজ্ঞ গাইড
             </h3>
             <div className="space-y-6 leading-relaxed text-on-surface/80">
               <div>
@@ -70,7 +72,7 @@ export function Plid30DaysHealingAuthority() {
                       className="rounded-xl border border-outline-variant/20 bg-surface-container-low/50 px-4 py-3"
                     >
                       <p className="font-bold text-on-surface">{item.title}</p>
-                      <p className="mt-1 text-sm leading-snug text-on-surface/75">
+                      <p className="mt-1 text-sm font-accent leading-snug text-on-surface/75">
                         {item.desc}
                       </p>
                     </li>
@@ -101,6 +103,8 @@ export function Plid30DaysHealingAuthority() {
           </div>
         </div>
       </div>
+    <Plid30DaysHealingSectionCta />
     </ScrollReveal>
+    </>
   );
 }

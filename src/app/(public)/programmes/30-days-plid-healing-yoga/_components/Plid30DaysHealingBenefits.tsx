@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { funnelSectionClass, type FunnelSectionVariant } from "./funnelSectionVariant";
+import { Plid30DaysHealingSectionCta } from "./Plid30DaysHealingSectionCta";
 import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
 
 type Plid30DaysHealingBenefitsProps = {
@@ -8,21 +9,22 @@ type Plid30DaysHealingBenefitsProps = {
 
 const BENEFITS: { title: string; body: string }[] = [
   {
-    title: "পরিবারের সাথে আবার সময় কাটানো",
-    body: "ব্যথা ছাড়া নিজের সন্তান বা নাতি-নাতনিদের সাথে খেলাধুলা ও স্বাভাবিকভাবে সময় উপভোগ করার সুযোগ ফিরে পাওয়া।",
+    title: "পরিবারের সাথে সময় কাটানোর স্বস্তি ফিরে পাবেন।",
+    body: "দীর্ঘদিনের ব্যথার কারণে যেসব মুহূর্ত আপনি এড়িয়ে যেতেন- এখন সেগুলোতে আবার অংশ নিতে পারবেন। সন্তানদের সাথে খেলা, পরিবারের সাথে বসে গল্প করা- এসব ছোট ছোট আনন্দগুলো আবার স্বাভাবিকভাবে ফিরে আসবে।",
   },
   {
-    title: "মানসিক প্রশান্তি ফিরে পাওয়া",
-    body: "অপারেশনের ভয়, দীর্ঘমেয়াদি ঔষধ ও পার্শ্বপ্রতিক্রিয়ার দুশ্চিন্তা থেকে মুক্ত হয়ে স্বস্তির জীবন পাওয়া।",
+    title: "মনের ভেতরের চিন্তা, দ্বিধা ও অস্থিরতা ধীরে ধীরে কমে যাবে।",
+    body: "ক্রমাগত কোমর ব্যথা শুধু শরীর না, মনকেও প্রভাবিত করে। যখন ব্যথা কমতে শুরু করে, তখন স্বাভাবিকভাবেই মানসিক স্বস্তি ফিরে আসে, ঘুম ভালো হয়, এবং নিজের উপর আত্মবিশ্বাস আবার তৈরি হয়।",
   },
   {
-    title: "আর্থিক চাপ থেকে মুক্তি",
-    body: "লক্ষাধিক টাকার সার্জারি খরচ এবং নিয়মিত চিকিৎসা ও টেস্টের ব্যয় এড়িয়ে যাওয়া।",
+    title: "অপ্রয়োজনীয় চিকিৎসা ও খরচে থেকে মুক্তি পাবেন।",
+    body: "বারবার ডাক্তার দেখানো, পরীক্ষা করা বা ওষুধের উপর নির্ভরশীলতা- এসব ধীরে ধীরে কমে আসবে। আপনি বুঝতে পারবেন কীভাবে নিজের শরীরকে ঠিকভাবে ম্যানেজ করতে হয়, ফলে অপ্রয়োজনীয় খরচ ও দুশ্চিন্তা দুটোই কমে যায়।",
   },
 ];
 
 export function Plid30DaysHealingBenefits({ variant = "auto" }: Plid30DaysHealingBenefitsProps) {
   return (
+    <>
     <ScrollReveal className={`overflow-hidden py-24 ${funnelSectionClass(variant)}`}>
       <div className="mx-auto grid max-w-7xl items-center gap-16 px-6 md:grid-cols-2">
         <div className="relative">
@@ -38,11 +40,8 @@ export function Plid30DaysHealingBenefits({ variant = "auto" }: Plid30DaysHealin
           <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-primary-container/20 blur-3xl"></div>
         </div>
         <div>
-          <h2 className="mb-4 text-lg font-bold uppercase tracking-widest text-primary">
-            The Result
-          </h2>
-          <h3 className="mb-8 text-3xl lg:text-4xl font-extrabold text-on-surface">
-            স্বাভাবিক জীবনে ফিরে আসার আনন্দ
+          <h3 className="mb-8 text-2xl md:text-3xl lg:text-4xl font-extrabold text-on-surface">
+          PLID থেকে মুক্ত হয়ে আবার নিজের স্বাভাবিক জীবনে ফিরে যাওয়ার অনুভূতি- এটাই আপনার ধাঁরাও সম্ভব
           </h3>
           <div className="space-y-6">
             {BENEFITS.map((item) => (
@@ -59,6 +58,8 @@ export function Plid30DaysHealingBenefits({ variant = "auto" }: Plid30DaysHealin
           </div>
         </div>
       </div>
+    <Plid30DaysHealingSectionCta />
     </ScrollReveal>
+    </>
   );
 }

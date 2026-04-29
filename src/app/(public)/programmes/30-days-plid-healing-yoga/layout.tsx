@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Anek_Bangla, Hind_Siliguri, Tiro_Bangla } from "next/font/google";
 import { publicPageMetadata } from "@/lib/publicPageMetadata";
+import { Plid30DaysHealingUrgency } from "./_components/Plid30DaysHealingUrgency";
+import { PLID_30_DAYS_HEALING_OFFER_ENDS_AT } from "./offerDeadline";
 import "../plid-home-recovery-funnel/plid-funnel.css";
 
 const anek = Anek_Bangla({
@@ -45,8 +47,9 @@ export default function ThirtyDaysPlidHealingYogaLayout({
         rel="stylesheet"
       />
       <div
-        className={`plid-funnel font-body min-h-0 antialiased selection:bg-primary-container selection:text-on-primary-container ${anek.variable} ${hind.variable} ${tiro.variable}`}
+        className={`plid-funnel font-body min-h-0 antialiased selection:bg-primary-container selection:text-on-primary-container pt-[calc(3.5rem+env(safe-area-inset-top,0px))] ${anek.variable} ${hind.variable} ${tiro.variable}`}
       >
+        <Plid30DaysHealingUrgency endsAt={PLID_30_DAYS_HEALING_OFFER_ENDS_AT} />
         {children}
       </div>
     </>
