@@ -49,6 +49,23 @@ export function YogaForHeartCareRegistration() {
               <div className="space-y-2">
                 <label
                   className="text-xs font-semibold uppercase tracking-[0.05em] text-[var(--color-on-surface-variant)]"
+                  htmlFor="heart-care-phone"
+                >
+                  Phone Number (WhatsApp)
+                </label>
+                <input
+                  id="heart-care-phone"
+                  readOnly
+                  type="tel"
+                  placeholder="01XXXXXXXXX"
+                  className="w-full rounded-lg border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)] px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-[var(--color-primary)]"
+                  autoComplete="tel"
+                  pattern="[+]?[0-9\s\-\(\)]+"
+                />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <label
+                  className="text-xs font-semibold uppercase tracking-[0.05em] text-[var(--color-on-surface-variant)]"
                   htmlFor="heart-care-email"
                 >
                   Email Address
