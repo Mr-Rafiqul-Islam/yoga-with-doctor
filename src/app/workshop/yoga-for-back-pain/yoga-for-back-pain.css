@@ -1,0 +1,75 @@
+.workshop-yoga-back-pain {
+  --font-headline: var(--font-workshop-headline), "Inter", ui-sans-serif, system-ui,
+    sans-serif;
+  --font-body: var(--font-workshop-body), "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
+
+  --color-background: #f9f9ff;
+  --color-surface: #f9f9ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f3fb;
+  --color-surface-container: #ecedf6;
+  --color-surface-container-high: #e7e8f0;
+  --color-surface-container-highest: #e1e2ea;
+  --color-surface-variant: #e1e2ea;
+
+  --color-on-background: #191c21;
+  --color-on-surface: #191c21;
+  --color-on-surface-rgb: 25 28 33;
+  --color-on-surface-variant: #424752;
+
+  --color-primary: #00478d;
+  --color-primary-rgb: 0 71 141;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #005eb8;
+  --color-primary-container-rgb: 0 94 184;
+  --color-on-primary-container: #c8daff;
+  --color-primary-fixed-dim: #a9c7ff;
+
+  --color-secondary: #006d3d;
+  --color-secondary-container: #97f3b5;
+  --color-secondary-container-rgb: 151 243 181;
+  --color-on-secondary-container: #047240;
+
+  --color-tertiary: #7c3000;
+  --color-tertiary-container: #a24100;
+  --color-on-tertiary-container: #ffd0bb;
+
+  --color-outline: #727783;
+  --color-outline-variant: #c2c6d4;
+  --color-outline-variant-rgb: 194 198 212;
+
+  --color-error: #ba1a1a;
+  --color-action-orange: #ff6d00;
+
+  --color-text-primary: var(--color-on-surface);
+  --color-text-secondary: rgb(var(--color-on-surface-rgb) / 0.68);
+  --color-border: rgb(var(--color-outline-variant-rgb) / 0.8);
+
+  background: var(--color-background);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+.workshop-yoga-back-pain h1,
+.workshop-yoga-back-pain h2,
+.workshop-yoga-back-pain h3,
+.workshop-yoga-back-pain h4 {
+  font-family: var(--font-headline);
+}
+
+.workshop-yoga-back-pain .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-back-pain .material-symbols-outlined--fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-back-pain .vsl-shadow {
+  box-shadow: 0 20px 40px -10px rgb(var(--color-primary-rgb) / 0.15);
+}
+
+.workshop-yoga-back-pain .orange-cta-glow {
+  box-shadow: 0 4px 14px rgb(255 109 0 / 0.39);
+}
