@@ -1,0 +1,85 @@
+/* Yoga For Stress & Wellbeing — scoped tokens from reference code.html. Does not touch :root. */
+
+.workshop-yoga-wellbeing {
+  --font-headline: var(--font-wellbeing-headline), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-wellbeing-body), "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
+
+  --color-primary: #335f87;
+  --color-primary-rgb: 51 95 135;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #4e78a1;
+  --color-primary-fixed: #cfe5ff;
+  --color-primary-fixed-dim: #a0caf8;
+  --color-on-primary-fixed: #001d34;
+  --color-on-primary-fixed-variant: #1a4a70;
+
+  --color-background: #f9f9fd;
+  --color-surface: #f9f9fd;
+  --color-surface-dim: #d9dadd;
+  --color-surface-bright: #f9f9fd;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f3f7;
+  --color-surface-container: #ededf1;
+  --color-surface-container-high: #e8e8eb;
+
+  --color-on-background: #1a1c1e;
+  --color-on-surface: #1a1c1e;
+  --color-on-surface-variant: #42474e;
+
+  --color-secondary: #64568b;
+  --color-secondary-container: #d4c3ff;
+  --color-on-secondary-container: #5b4e82;
+
+  --color-tertiary: #286565;
+  --color-tertiary-fixed: #b1eded;
+  --color-on-tertiary-fixed-variant: #094f50;
+
+  --color-outline: #72777f;
+  --color-outline-variant: #c2c7cf;
+
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-border-card: rgb(239 246 255 / 0.5); /* subtle blue tint like blue-50/50 */
+  --color-registration-accent: rgb(51 95 135 / 0.05); /* corner blob */
+
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+.workshop-yoga-wellbeing h1,
+.workshop-yoga-wellbeing h2,
+.workshop-yoga-wellbeing h3,
+.workshop-yoga-wellbeing h4 {
+  font-family: var(--font-headline);
+}
+
+.workshop-yoga-wellbeing ::selection {
+  background-color: var(--color-primary-fixed);
+  color: var(--color-on-primary-fixed);
+}
+
+.workshop-yoga-wellbeing .material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+}
+
+.workshop-yoga-wellbeing .wellbeing-symbol--fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-wellbeing .wellbeing-glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.workshop-yoga-wellbeing .wellbeing-ambient-shadow {
+  box-shadow: 0 20px 40px -10px rgb(51 95 135 / 0.08);
+}
