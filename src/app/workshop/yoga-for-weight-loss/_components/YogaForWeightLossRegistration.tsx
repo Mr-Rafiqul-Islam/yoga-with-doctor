@@ -95,7 +95,8 @@ export function YogaForWeightLossRegistration() {
                       </span>
                     </div>
                     <p className="mb-2 text-sm text-[var(--color-on-secondary-container)] opacity-80">
-                      Get Sarah's daily blueprint, meal guide, and morning routines. Normally $97,
+                      Get Sarah&apos;s daily blueprint, meal guide, and morning routines. Normally
+                      $97,
                       yours today for <span className="font-bold">$19</span>.
                     </p>
                   </label>

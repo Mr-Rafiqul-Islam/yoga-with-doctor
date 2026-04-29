@@ -33,7 +33,7 @@ export function YogaForPlidCurriculum() {
       <div className="mx-auto max-w-[1280px]">
         <div className="mb-16 text-center">
           <h2 className="mb-4 text-3xl font-semibold tracking-tight md:text-4xl">
-            What You'll Learn in the 90-Min Workshop
+            What You&apos;ll Learn in the 90-Min Workshop
           </h2>
           <p className="text-[var(--color-on-surface-variant)]">
             A comprehensive roadmap to a pain-free life.

@@ -25,6 +25,7 @@ const MECHANISM_STEPS = [
     body: "অনেক সময় ভুলভাবে বসা, দাঁড়ানো, ঘুমানো বা কাজ করার অভ্যাসই PLID  সমস্যাকে বাড়িয়ে দেয়। আপনাকে lifestyle correction শেখানো হবে পরিপূর্ণ ভাবে যাতে করে আপনার প্রতিদিনের কাজগুলোই healing process-কে support করে, ক্ষতি না করে।",
     imageSrc:
       "/movement.jpg",
+    imageAlt: "দৈনন্দিন অভ্যাসগুলোই ব্যথা ফিরিয়ে আনে।",
   },
   {
     id: "sustainability",
