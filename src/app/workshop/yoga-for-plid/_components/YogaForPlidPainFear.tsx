@@ -29,8 +29,8 @@ export function YogaForPlidPainFear() {
           Is Your Back Pain Controlling Your Life?
         </h2>
         <p className="text-lg text-[var(--color-on-surface-variant)]">
-          Living with PLID isn't just about the physical ache—it's the constant fear of what comes
-          next.
+          Living with PLID isn&apos;t just about the physical ache—it&apos;s the constant fear of what
+          comes next.
         </p>
       </div>
 

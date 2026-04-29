@@ -13,7 +13,7 @@ export function YogaForPlidFinalCta() {
 
       <div className="relative z-10 mx-auto max-w-2xl space-y-8">
         <h2 className="text-4xl font-bold leading-tight tracking-tight md:text-5xl">
-          Don't Wait Until Surgery Is Your Only Option.
+          Don&apos;t Wait Until Surgery Is Your Only Option.
         </h2>
         <p className="text-lg opacity-90">
           Start your recovery journey today for free. Join the next workshop before spots fill up.

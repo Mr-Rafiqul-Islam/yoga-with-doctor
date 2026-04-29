@@ -58,7 +58,8 @@ export function YogaForWeightLossSolution() {
               The Metabolic Flow Solution
             </h2>
             <p className="mb-6 text-lg leading-relaxed text-[var(--color-on-surface-variant)]">
-              YogaFlow isn't just about flexibility. It's a scientifically designed method that
+              YogaFlow isn&apos;t just about flexibility. It&apos;s a scientifically designed method
+              that
               combines <span className="font-bold">Dynamic Breathwork</span> with{" "}
               <span className="font-bold">Muscle-Toning Asanas</span>.
             </p>
