@@ -25,8 +25,8 @@ export function YogaForWeightLossAgitation() {
             </p>
             <div className="rounded-xl border border-white/10 bg-white/10 p-6">
               <p className="font-semibold italic opacity-90">
-                &quot;I was working out 6 days a week and eating only salads, but the scale wouldn't
-                move. I didn't realize my body was in survival mode.&quot;
+                &quot;I was working out 6 days a week and eating only salads, but the scale
+                wouldn&apos;t move. I didn&apos;t realize my body was in survival mode.&quot;
               </p>
             </div>
           </div>

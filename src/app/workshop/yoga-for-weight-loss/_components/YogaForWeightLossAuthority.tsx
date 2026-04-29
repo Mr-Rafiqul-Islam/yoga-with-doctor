@@ -28,7 +28,7 @@ export function YogaForWeightLossAuthority() {
         <p className="mb-10 text-lg italic leading-relaxed text-[var(--color-on-surface-variant)]">
           &quot;I spent 10 years struggling with weight fluctuations and chronic fatigue until I
           discovered the power of Metabolic Yoga. My mission is to help 1 million women reclaim their
-          health without the 'no pain, no gain' mentality.&quot;
+          health without the &apos;no pain, no gain&apos; mentality.&quot;
         </p>
 
         <div className="flex flex-wrap justify-center gap-8">

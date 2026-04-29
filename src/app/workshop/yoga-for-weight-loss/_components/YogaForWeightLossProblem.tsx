@@ -33,8 +33,8 @@ export function YogaForWeightLossProblem() {
             Exhausted from the struggle?
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-[var(--color-on-surface-variant)]">
-            Traditional fitness can feel like an uphill battle. If you're facing these, you're not
-            alone.
+            Traditional fitness can feel like an uphill battle. If you&apos;re facing these,
+            you&apos;re not alone.
           </p>
         </div>
 
