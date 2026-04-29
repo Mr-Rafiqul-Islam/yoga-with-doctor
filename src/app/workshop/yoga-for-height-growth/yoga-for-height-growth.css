@@ -1,0 +1,91 @@
+/* Yoga For Height Growth — scoped tokens only for this route. */
+
+.workshop-yoga-height-growth {
+  --font-headline: var(--font-height-growth-display), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-height-growth-body), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-label: var(--font-height-growth-label), "Lexend", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
+
+  --color-surface-dim: #dadadc;
+  --color-secondary: #0061a4;
+  --color-on-tertiary-container: #4d2b00;
+  --color-on-tertiary-fixed-variant: #693c00;
+  --color-tertiary-fixed: #ffdcbe;
+  --color-on-primary-fixed: #002204;
+  --color-on-tertiary-fixed: #2c1600;
+  --color-on-primary-container: #003c0b;
+  --color-primary-fixed: #94f990;
+  --color-outline: #6f7a6b;
+  --color-on-secondary-fixed-variant: #00497d;
+  --color-inverse-on-surface: #f0f0f3;
+  --color-surface-container-high: #e8e8ea;
+  --color-tertiary: #8b5000;
+  --color-on-background: #1a1c1e;
+  --color-on-secondary-container: #00355c;
+  --color-secondary-container: #33a0fd;
+  --color-surface-container-highest: #e2e2e5;
+  --color-outline-variant: #becab9;
+  --color-background: #f9f9fc;
+  --color-inverse-surface: #2f3133;
+  --color-primary: #006e1c;
+  --color-tertiary-fixed-dim: #ffb870;
+  --color-on-primary: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-secondary: #ffffff;
+  --color-secondary-fixed-dim: #9ecaff;
+  --color-primary-fixed-dim: #78dc77;
+  --color-surface-container-low: #f3f3f6;
+  --color-inverse-primary: #78dc77;
+  --color-surface-tint: #006e1c;
+  --color-primary-container: #4caf50;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-tertiary: #ffffff;
+  --color-on-surface-variant: #3f4a3c;
+  --color-error: #ba1a1a;
+  --color-surface-variant: #e2e2e5;
+  --color-on-secondary-fixed: #001d36;
+  --color-surface-container: #eeeef0;
+  --color-on-error: #ffffff;
+  --color-surface-bright: #f9f9fc;
+  --color-tertiary-container: #e18500;
+  --color-on-error-container: #93000a;
+  --color-surface: #f9f9fc;
+  --color-on-surface: #1a1c1e;
+  --color-secondary-fixed: #d1e4ff;
+  --color-on-primary-fixed-variant: #005313;
+
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+.workshop-yoga-height-growth h1,
+.workshop-yoga-height-growth h2,
+.workshop-yoga-height-growth h3,
+.workshop-yoga-height-growth h4 {
+  font-family: var(--font-headline);
+}
+
+.workshop-yoga-height-growth .font-label {
+  font-family: var(--font-label);
+}
+
+.workshop-yoga-height-growth ::selection {
+  background-color: rgb(76 175 80 / 0.35);
+  color: var(--color-on-primary-container);
+}
+
+.workshop-yoga-height-growth .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-height-growth .material-symbols-outlined--fill {
+  font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 24;
+}
+
+.workshop-yoga-height-growth .glass-card {
+  background: rgb(255 255 255 / 0.7);
+  border: 1px solid rgb(226 226 229 / 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
