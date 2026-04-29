@@ -1,0 +1,89 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { ScrollReveal } from "@/app/(public)/programmes/_shared/ScrollReveal";
+
+export type Plid30DaysHealingUrgencyProps = {
+  /** Offer / deadline end time (ISO string, timestamp, or Date). */
+  endsAt: string | number | Date;
+};
+
+function parseEndMs(endsAt: string | number | Date): number {
+  if (typeof endsAt === "number") {
+    return endsAt;
+  }
+  const t = new Date(endsAt).getTime();
+  return Number.isFinite(t) ? t : NaN;
+}
+
+function formatBanglaInt(n: number, minDigits = 2): string {
+  return Math.max(0, Math.floor(n)).toLocaleString("bn-BD", {
+    minimumIntegerDigits: minDigits,
+    maximumFractionDigits: 0,
+    useGrouping: false,
+  });
+}
+
+function getRemaining(endMs: number) {
+  const diff = Math.max(0, endMs - Date.now());
+  const totalSec = Math.floor(diff / 1000);
+  const days = Math.floor(totalSec / 86400);
+  const hours = Math.floor((totalSec % 86400) / 3600);
+  const minutes = Math.floor((totalSec % 3600) / 60);
+  const seconds = totalSec % 60;
+  return { days, hours, minutes, seconds };
+}
+
+const EMPTY = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
+export function Plid30DaysHealingUrgency({ endsAt }: Plid30DaysHealingUrgencyProps) {
+  const endMs = parseEndMs(endsAt);
+  const [remaining, setRemaining] = useState(EMPTY);
+
+  useEffect(() => {
+    if (!Number.isFinite(endMs)) {
+      setRemaining(EMPTY);
+      return;
+    }
+
+    const tick = () => setRemaining(getRemaining(endMs));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [endMs]);
+
+  const { days, hours, minutes, seconds } = remaining;
+
+  const segments = [
+    { value: days, label: "Days", digits: 2 },
+    { value: hours, label: "Hours", digits: 2 },
+    { value: minutes, label: "Minutes", digits: 2 },
+    { value: seconds, label: "Seconds", digits: 2 },
+  ] as const;
+
+  return (
+    <ScrollReveal className="bg-secondary py-12 text-on-primary">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-8 px-6 md:flex-row">
+        <div className="text-center md:text-left">
+          <h3 className="md:text-2xl text-xl font-bold">অফারটি শেষ হতে সময় বাকি...</h3>
+          <p className="md:text-base text-sm opacity-80">দ্রুত একসেস নিয়ে নিন , এক্সক্লুসিভ অফার শেষ হওয়ার আগে!</p>
+        </div>
+        <div className="flex flex-wrap justify-center gap-3 text-center sm:gap-4">
+          {segments.map(({ value, label, digits }) => (
+            <div
+              key={label}
+              className="min-w-[88px] rounded-xl bg-white/20 px-4 py-4 backdrop-blur-sm sm:min-w-[100px] sm:px-6"
+            >
+              <div className="md:text-3xl text-2xl font-bold tabular-nums">
+                {formatBanglaInt(value, digits)}
+              </div>
+              <div className="md:text-[10px] text-[8px] font-bold uppercase tracking-widest opacity-60">
+                {label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </ScrollReveal>
+  );
+}
