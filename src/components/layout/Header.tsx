@@ -462,6 +462,6 @@ function HeaderInner({ pathname }: { pathname: string }) {
 
 export function Header() {
   const pathname = usePathname();
-  if (pathname.startsWith("/workshop")) return null;
+  if (pathname.startsWith("/workshop") || pathname.startsWith("/programmes")) return null;
   return <HeaderInner pathname={pathname} />;
 }
