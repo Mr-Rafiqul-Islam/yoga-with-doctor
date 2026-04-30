@@ -88,12 +88,13 @@ export function SalesCheckoutForm({
 }: SalesCheckoutFormProps) {
   const [paymentProvider] = useState<PaymentProvider>("SSL");
   const [paymentError, setPaymentError] = useState<string | null>(null);
-
+  console.log("campaignItem", campaignItem);
   const children = useMemo(
-    () => (Array.isArray(campaignItem?.children) ? campaignItem!.children! : []),
+    () =>
+      Array.isArray(campaignItem?.children) ? campaignItem!.children! : [],
     [campaignItem],
   );
-
+  console.log("children", children);
   const initialSelectedChildIds = useMemo(() => {
     const ids: string[] = [];
     for (const c of children) {
@@ -103,16 +104,16 @@ export function SalesCheckoutForm({
     }
     return ids;
   }, [children]);
-
+  console.log("initialSelectedChildIds", initialSelectedChildIds);
   const [selectedChildIds, setSelectedChildIds] = useState<string[]>(
     () => initialSelectedChildIds,
   );
-
+  console.log("selectedChildIds", selectedChildIds);
   const selectedChildSet = useMemo(
     () => new Set(selectedChildIds),
     [selectedChildIds],
   );
-
+  console.log("selectedChildSet", selectedChildSet);
   const selectedChildrenTotal = useMemo(() => {
     let sum = 0;
     for (const c of children) {
@@ -125,17 +126,17 @@ export function SalesCheckoutForm({
     }
     return sum;
   }, [children, selectedChildSet]);
-
+  console.log("selectedChildrenTotal", selectedChildrenTotal);
   const currency = useMemo(() => {
     const c = campaignItem?.product?.currency;
     return typeof c === "string" && c.trim() ? c : "BDT";
   }, [campaignItem]);
-
+  console.log("currency", currency);
   const total = useMemo(
     () => basePriceTaka + selectedChildrenTotal,
     [basePriceTaka, selectedChildrenTotal],
   );
-
+  console.log("total", total);
   const dispatch = useAppDispatch();
   const [registerGuestUser, { isLoading: isRegisteringGuestUser }] =
     useRegisterGuestUserMutation();
@@ -151,35 +152,38 @@ export function SalesCheckoutForm({
     isStartingCheckout ||
     isInitializingPayment ||
     isStartingAttempt;
-
+  console.log("isProceeding", isProceeding);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPaymentError(null);
-
+    console.log("handleSubmit");
     if (!campaignItemId) {
       setPaymentError("Campaign is not configured. Please try again later.");
       return;
     }
-
+    console.log("campaignItemId", campaignItemId);
     try {
       const form = e.currentTarget;
       const formData = new FormData(form);
       const fullNameRaw = formData.get("fullName");
       const phoneRaw = formData.get("phone");
       const emailRaw = formData.get("email");
-
+      console.log("formData", formData);
       const name = typeof fullNameRaw === "string" ? fullNameRaw.trim() : "";
       const phone = typeof phoneRaw === "string" ? phoneRaw.trim() : "";
       const email = typeof emailRaw === "string" ? emailRaw.trim() : "";
-
+      console.log("name", name);
+      console.log("phone", phone);
+      console.log("email", email);
       if (!name || !phone) {
         setPaymentError("Name and phone are required.");
         return;
       }
-
+      console.log("name and phone are required");
       let checkoutUserId: string | undefined;
       let checkoutUserMode: "GUEST" | "VERIFIED" = "GUEST";
-
+      console.log("checkoutUserId", checkoutUserId);
+      console.log("checkoutUserMode", checkoutUserMode);
       if (getToken()) {
         try {
           const meResult = await dispatch(
@@ -196,7 +200,7 @@ export function SalesCheckoutForm({
           // Stale token or network error — continue with register-guest
         }
       }
-
+      console.log("checkoutUserId", checkoutUserId);
       if (!checkoutUserId) {
         const guest = await registerGuestUser({
           name,
@@ -206,7 +210,7 @@ export function SalesCheckoutForm({
           platform: "web",
         }).unwrap();
         console.log("guest", guest);
-
+        console.log("guest.success", guest.success);
         if (!guest.success) {
           setPaymentError(
             guest.message?.trim() ||
@@ -214,34 +218,46 @@ export function SalesCheckoutForm({
           );
           return;
         }
-
+        console.log("guest.data", guest.data);
         const uid = extractRegisterGuestUserId(guest.data);
         if (!uid) {
           setPaymentError("Failed to create guest user. Please try again.");
           return;
         }
         checkoutUserId = uid;
-        checkoutUserMode = normalizeCheckoutUserMode(guest.data?.userMode, "VERIFIED");
-
+        const hasGuestAccess = Boolean(guest.data?.accessToken?.trim());
+        const hasGuestRefresh = Boolean(guest.data?.refreshToken?.trim());
+        const registerGuestModeFallback: "GUEST" | "VERIFIED" =
+          hasGuestAccess && hasGuestRefresh ? "VERIFIED" : "GUEST";
+        checkoutUserMode = normalizeCheckoutUserMode(
+          guest.data?.userMode,
+          registerGuestModeFallback,
+        );
+        console.log("checkoutUserMode", checkoutUserMode);
         if (checkoutUserMode === "GUEST") {
           persistGuestSession(checkoutUserId, phone);
         } else {
           const d = guest.data;
           if (!d?.accessToken?.trim() || !d?.refreshToken?.trim()) {
-            setPaymentError("Could not get existing user. Please try again or login.");
+            setPaymentError(
+              "Could not get existing user. Please try again or login.",
+            );
             return;
           }
           if (d?.accessToken?.trim() && d?.refreshToken?.trim()) {
             persistClientAuthTokens(d?.accessToken, d?.refreshToken);
-            const sessionRes = await establishNextAuthSessionFromStoredTokensForGuest();
+            const sessionRes =
+              await establishNextAuthSessionFromStoredTokensForGuest();
             if (!sessionRes.ok) {
-              setPaymentError(sessionRes.error ?? "Could not start session. Try again.");
+              setPaymentError(
+                sessionRes.error ?? "Could not start session. Try again.",
+              );
               return;
             }
           }
         }
       }
-
+      console.log("checkoutUserId", checkoutUserId);
       if (!checkoutUserId) {
         setPaymentError("Could not determine your account. Please try again.");
         return;
@@ -277,13 +293,13 @@ export function SalesCheckoutForm({
         },
         userId: checkoutUserId,
       }).unwrap();
-
+      console.log("campaignCheckout", campaignCheckout);
       const newPurchaseId = campaignCheckout.data.purchase.id;
       if (!newPurchaseId) {
         setPaymentError("Invalid response from checkout. Please try again.");
         return;
       }
-
+      console.log("newPurchaseId", newPurchaseId);
       const initPayment = await initializePayment({
         userId: checkoutUserId,
         amount: total,
@@ -298,7 +314,7 @@ export function SalesCheckoutForm({
         projectKey: "YWD",
         siteRef: "YWD",
       }).unwrap();
-
+      console.log("initPayment", initPayment);
       const initData = initPayment?.data as
         | {
             transactionId?: string;
@@ -308,7 +324,7 @@ export function SalesCheckoutForm({
           }
         | undefined;
       const transactionId = initData?.transactionId ?? initData?.id ?? null;
-
+      console.log("transactionId", transactionId);
       if (newPurchaseId || transactionId) {
         dispatch(
           setPaymentContext({
@@ -317,8 +333,8 @@ export function SalesCheckoutForm({
           }),
         );
       }
-
       let startAttemptData: StartPaymentAttemptResponse | undefined;
+      console.log("startAttemptData", startAttemptData);
       if (transactionId) {
         startAttemptData = await startPaymentAttempt({
           transactionId,
@@ -335,14 +351,13 @@ export function SalesCheckoutForm({
           siteRef: "YWD",
         }).unwrap();
       }
-
+      console.log("startAttemptData", startAttemptData);
       const redirectUrl =
         startAttemptData?.data?.data?.checkoutUrl ??
         startAttemptData?.data?.data?.gatewayUrl ??
         null;
-
+      console.log("redirectUrl", redirectUrl);
       if (redirectUrl) {
-        
         window.location.href = redirectUrl;
         return;
       }
@@ -355,8 +370,6 @@ export function SalesCheckoutForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      
-
       {paymentError ? (
         <div
           className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/30 dark:text-red-200"
@@ -478,7 +491,10 @@ export function SalesCheckoutForm({
                     typeof price === "number" &&
                     price > 0
                       ? `Save ${formatTaka(
-                          Math.max(0, Math.round(compareAt) - Math.round(price)),
+                          Math.max(
+                            0,
+                            Math.round(compareAt) - Math.round(price),
+                          ),
                         )} today.`
                       : "One-time add-on."
                   }

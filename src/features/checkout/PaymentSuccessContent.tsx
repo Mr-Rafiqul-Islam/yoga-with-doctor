@@ -49,7 +49,11 @@ function formatPurchaseDate(iso: string | null): string {
   if (!iso) return "—";
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "—";
-  return d.toLocaleDateString("en-BD", { month: "short", day: "numeric", year: "numeric" });
+  return d.toLocaleDateString("en-BD", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 function productTypeLabel(type: PurchaseProductType): string {
@@ -67,24 +71,27 @@ function receiptSubtitle(purchase: PurchaseRecord): string {
  * Protected route (via checkout layout).
  */
 export function PaymentSuccessContent() {
+  console.log("PaymentSuccessContent");
   const searchParams = useSearchParams();
+  console.log("searchParams", searchParams);
   const transactionId = searchParams.get("transactionId")?.trim() ?? "";
   const [isGuestCheckout, setIsGuestCheckout] = useState(false);
-
+  console.log("isGuestCheckout", isGuestCheckout);
   useLayoutEffect(() => {
     setIsGuestCheckout(Boolean(getGuestSession()));
   }, []);
-
+  console.log("isGuestCheckout", isGuestCheckout);
   const { data: profileRes, isLoading: profileLoading } = useGetProfileQuery();
   const profileUser = profileRes?.data?.user;
-
-  const { data: purchaseRes, isLoading, isError } = useGetPurchaseByTransactionQuery(
-    transactionId,
-    { skip: !transactionId },
-  );
-
+  console.log("profileUser", profileUser);
+  const {
+    data: purchaseRes,
+    isLoading,
+    isError,
+  } = useGetPurchaseByTransactionQuery(transactionId, { skip: !transactionId });
+  console.log("purchaseRes", purchaseRes);
   const purchase: PurchaseRecord | undefined = purchaseRes?.data;
-
+  console.log("purchase", purchase);
   const handleDownloadInvoice = useCallback(async () => {
     if (!purchase || !profileUser) return;
     await downloadPurchaseInvoicePdf(
@@ -92,12 +99,14 @@ export function PaymentSuccessContent() {
       profileUserToInvoiceCustomer(profileUser),
     );
   }, [purchase, profileUser]);
-
+  console.log("handleDownloadInvoice", handleDownloadInvoice);
   const shell = (children: ReactNode) => (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-background transition-colors duration-300">
       <PaymentSuccessBackground />
       <main className="relative z-10 flex flex-1 items-center justify-center p-6">
-        <div className="flex w-full max-w-2xl flex-col items-center">{children}</div>
+        <div className="flex w-full max-w-2xl flex-col items-center">
+          {children}
+        </div>
       </main>
     </div>
   );
@@ -110,8 +119,8 @@ export function PaymentSuccessContent() {
           Missing payment reference
         </h1>
         <p className="mb-8 max-w-md text-center text-muted">
-          No transaction id was found in the link. If you completed a payment, check your email or
-          billing history.
+          No transaction id was found in the link. If you completed a payment,
+          check your email or billing history.
         </p>
         <Link
           href="/dashboard"
@@ -154,12 +163,15 @@ export function PaymentSuccessContent() {
               Thank you!
             </h1>
             <p className="text-base leading-relaxed text-muted">
-              Your payment was successful. We couldn&apos;t show your order summary on this page yet. You can still <strong>access your course</strong> after you
-              open your <strong>dashboard</strong> and <strong>verify your account</strong>.
+              Your payment was successful. We couldn&apos;t show your order
+              summary on this page yet. You can still{" "}
+              <strong>access your course</strong> after you open your{" "}
+              <strong>dashboard</strong> and{" "}
+              <strong>verify your account</strong>.
             </p>
             <p className="text-sm leading-relaxed text-muted">
-              For your <strong>payment receipt</strong>, check <strong>Billing</strong> on your
-              dashboard.
+              For your <strong>payment receipt</strong>, check{" "}
+              <strong>Billing</strong> on your dashboard.
             </p>
           </div>
           <div className="flex w-full flex-col items-center gap-4 sm:w-auto">
@@ -168,7 +180,6 @@ export function PaymentSuccessContent() {
               className="group flex w-full items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-center font-medium text-white shadow-lg transition-all duration-300 hover:bg-primary-dark hover:shadow-primary/30 active:scale-95 sm:w-80 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-nowrap"
             >
               Go to dashboard &amp; verify account
-              
             </Link>
             <Link
               href="/dashboard/billing"
@@ -190,8 +201,8 @@ export function PaymentSuccessContent() {
           Could not load receipt
         </h1>
         <p className="mb-8 max-w-md text-center text-muted">
-          We could not find an order for this transaction. If you were charged, your purchase may
-          still appear in billing shortly.
+          We could not find an order for this transaction. If you were charged,
+          your purchase may still appear in billing shortly.
         </p>
         <div className="flex flex-col gap-4 sm:flex-row">
           <Link
@@ -216,28 +227,36 @@ export function PaymentSuccessContent() {
     : purchase.transactionId?.trim()
       ? purchase.transactionId
       : transactionId;
+  console.log("transactionLabel", transactionLabel);
   const productTitle = purchase.product.title?.trim() || "Purchase";
+  console.log("productTitle", productTitle);
   const headingProductTitle =
     purchase.product.type === "COURSE_ONE_TIME"
       ? purchase.product.course?.title?.trim() || productTitle
       : productTitle;
-  const purchaseDate = formatPurchaseDate(purchase.paidAt ?? purchase.createdAt);
+  console.log("headingProductTitle", headingProductTitle);
+  const purchaseDate = formatPurchaseDate(
+    purchase.paidAt ?? purchase.createdAt,
+  );
+  console.log("purchaseDate", purchaseDate);
   const totalFormatted = formatMoney(purchase.amount, purchase.currency);
+  console.log("totalFormatted", totalFormatted);
   const courseSlug = purchase.product.course?.slug;
+  console.log("courseSlug", courseSlug);
   const invoiceReady = purchase.status === "PAID";
-  const invoiceDisabled =
-    !invoiceReady || profileLoading || !profileUser;
-  const invoiceDisabledReason =
-    !invoiceReady
-      ? "Invoice is available once payment is confirmed."
-      : profileLoading
-        ? "Loading your profile…"
-        : !profileUser
-          ? isGuestCheckout
-            ? "Verify your account on the dashboard to download your receipt."
-            : "Could not load profile for billing details."
-          : undefined;
-
+  console.log("invoiceReady", invoiceReady);
+  const invoiceDisabled = !invoiceReady || profileLoading || !profileUser;
+  console.log("invoiceDisabled", invoiceDisabled);
+  const invoiceDisabledReason = !invoiceReady
+    ? "Invoice is available once payment is confirmed."
+    : profileLoading
+      ? "Loading your profile…"
+      : !profileUser
+        ? isGuestCheckout
+          ? "Verify your account on the dashboard to download your receipt."
+          : "Could not load profile for billing details."
+        : undefined;
+  console.log("invoiceDisabledReason", invoiceDisabledReason);
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-background transition-colors duration-300">
       <PaymentSuccessBackground />
@@ -251,21 +270,23 @@ export function PaymentSuccessContent() {
                 Thank you!
               </h1>
               <p className="text-base leading-relaxed text-muted">
-                Your payment was successful. To <strong>access your course</strong>, go to your{" "}
-                <strong>dashboard</strong> and <strong>verify your account</strong>—that unlocks
-                your lessons and full access.
+                Your payment was successful. To{" "}
+                <strong>access your course</strong>, go to your{" "}
+                <strong>dashboard</strong> and{" "}
+                <strong>verify your account</strong>—that unlocks your lessons
+                and full access.
               </p>
               <p className="text-sm leading-relaxed text-muted">
-                Your <strong>payment receipt</strong>: use the button below once payment is confirmed
-                and your profile is ready, or open <strong>Billing</strong> on your dashboard after
-                you verify.
+                Your <strong>payment receipt</strong>: use the button below once
+                payment is confirmed and your profile is ready, or open{" "}
+                <strong>Billing</strong> on your dashboard after you verify.
               </p>
             </div>
           ) : null}
           {purchase.status === "PENDING" ? (
             <p className="mb-6 max-w-md rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100">
-              We are confirming your payment. This usually takes a few seconds. You can stay on this
-              page or check billing if amounts look wrong.
+              We are confirming your payment. This usually takes a few seconds.
+              You can stay on this page or check billing if amounts look wrong.
             </p>
           ) : null}
           {!isGuestCheckout ? (
