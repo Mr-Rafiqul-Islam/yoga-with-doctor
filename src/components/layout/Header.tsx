@@ -221,13 +221,15 @@ function HeaderInner({ pathname }: { pathname: string }) {
               <span className="material-icons-outlined shrink-0 text-lg text-muted" aria-hidden>
                 search
               </span>
+              <form autoComplete="off">
               <input
                 type="text"
                 name="search"
                 placeholder="Search videos, courses..."
                 className="w-full min-w-0 border-none bg-transparent text-body-md text-foreground placeholder:text-muted focus:outline-none focus:ring-0"
                 aria-label="Search videos and courses"
-                autoComplete="off"
+                autoComplete="search"
+                inputMode="search"
                 value={searchQuery}
                 onChange={(e) => {
                   const v = e.target.value;
@@ -242,6 +244,7 @@ function HeaderInner({ pathname }: { pathname: string }) {
                   }
                 }}
               />
+              </form>
             </div>
             {searchOpen && searchQuery.trim().length >= 1 ? (
               <div
