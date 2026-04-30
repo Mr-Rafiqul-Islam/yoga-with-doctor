@@ -10,6 +10,7 @@ export type PaymentProvider = "SSL" | "BKASH";
 
 export interface StartCheckoutRequest {
   productId: string;
+  provider?: PaymentProvider;
   siteRef: string;
   meta: {
     platform: "WEB";
@@ -24,9 +25,9 @@ export interface StartCheckoutRequest {
      * Some clients (guest/campaign) send these. Standard checkout does not require them.
      * Kept optional for compatibility across checkout flows.
      */
-    userId?: string;
     userMode?: string;
   };
+  userId?: string | null;
 }
 
 export interface StartCheckoutResponse {
@@ -46,7 +47,7 @@ export interface StartCampaignCheckoutRequest {
   siteRef?: string;
   meta: StartCheckoutRequest["meta"];
   /** Required by core API `startCampaignCheckout` controller. */
-  userId: string;
+  userId: string | null;
 }
 
 export interface StartCampaignCheckoutResponse {
@@ -64,7 +65,7 @@ export interface StartCampaignCheckoutResponse {
 
 export interface InitializePaymentRequest {
   /** Required by core API initialize controller. */
-  userId?: string;
+  userId?: string | null;
   amount: number;
   currency: string;
   metaData: Record<string, unknown>;
@@ -82,7 +83,7 @@ export interface InitializePaymentResponse {
 export interface StartPaymentAttemptRequest {
   transactionId: string;
   /** Required by core API payment attempt controller. */
-  userId?: string;
+  userId?: string | null;
   amount: number;
   currency: string;
   metaData: Record<string, unknown>;
