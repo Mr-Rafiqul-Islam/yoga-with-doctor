@@ -1,13 +1,13 @@
 /** Remote image URLs — duplicate of epidural reference; edit for regular yoga programme. */
 export const IMG = {
   heroDoctor:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuA02XO2OQ8u9KJ8ADcy74xeQHZKhX35tKSsJDk_4uVuLfPY7u8hreJEx--WMX1sDzorTgM7I0UXIcypnuiA4QK3tgOXlN7nxTI5muY4MIWKywFI2YydhlHvxDdVEBzu4ECNT8hfII6TX0Kugxt8L-VrRkfe70TWC0h4Gt95rlXo19jWU-ESw7i1s5j4wtdjx_Gdmp813TBbQYJ8Wc9p9w1uS0ZQJFHLP4ZoWeo5n1TDdc_uqZM6WrhOQzexicpx_JBVmUsX4qcclGI",
+    "/Dr. Shah Alam-2.jpeg",
   avatar1:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuDDrkw4un47c_YwYWeRW6ERfh_Ckxts8xhBJWdIcTLyJUBNBQnMyHUNfv-81RwgnRblQCohjSlr0hJ_P8gkRqtlcHEbApeVfVFU4_xg8aHyjsfwBta7JZEh9axrUBwz5R75Qo0wPt3_6-aBDObXRH5LvnfHnIoY80tQ-BTE2lgIWxhukj9-ZL-mq9ueydBRjfZwjdeVU00cuHErQs1jEt3SyxSpn92LumV2gWjz-QGgNjwe_jd-JI5wKM_PpCRf5Nie3FjzJuKUfyY",
+    "/clients.jpg",
   avatar2:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuD1jD2ZsOZR8hGsFYf2I05KnxTKc3weS7-brBdvtSfRPTAJ881TDhbkAOkq43dsH7thqAUU2KfLZ0jimIklVX9S_fNo62ZIISN0nBogQitjQnC5Kh-Y5E05kGAYcezFf9Svxh1duF75JbVs6sLoz3nsm3M1jWIT6BHTTziE3x8lpdW563zVQu4AJTb-p1u5kBzV9UDOFFwyN3w71PvUy8PFmxPtH-3m9LDVdgv2XWzjFiaAmiuKY9KBIKlnN_M8aLo_zXIdz5Skjhc",
+    "/clients-3.jpg",
   avatar3:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuCtT9xhFgMZ8kr1i_DV-vM7WyrTivdS8Ic3utILuQDlMMctNRKqETE41JeCLjZrq8M76onBXPivu53efyu4puXA97gbpmsppX0ea1bFCNcCCn7ABi1DblRYtftapuXauXYrB32Tt45p7w9v-GoNmgtk7Vaz7Ri4Q6RulFNu45MqmtCnI553fdolR4HLULd2Cn6E1BEC6U9Al-mE3eurl14bMfdfo3LZlyUkeHWYsIm6lV0U8n0m0BCn5Dt0_4rb_3SbhFdA9gwFQCc",
+    "/clients-2.jpg",
   videoStudio:
     "https://lh3.googleusercontent.com/aida-public/AB6AXuAWp_rCSn-XwlWAgpb7t8o3auLS3y4Qaw8WYbzzx2zaHAqK5LDcYuZca41UUOPM60nRskw7Z6ICHMKTNxd1xzOZuF3_kQ7q_Z3O7nOJPFDKdx0OnXF6Y2CyJ8icm8MiP0jcKpro8_bOya8rTgTMMy9xFuUr3VWE1zzSUH1bktU8kVKNPjWCVCcZw2_OTxWNMYtaJ2-KZconO_vNNilUfe2QX9iyTAVze4rIKl1fJuizjVAVxx31O1VhdS2QuSJjIZmeJxnrFbeFoIk",
   problem1:
@@ -23,11 +23,11 @@ export const IMG = {
   programDiet:
     "https://lh3.googleusercontent.com/aida-public/AB6AXuB77NLbOvTToeiYoGdxIlos8-pT2f2K9pvlKZwDpywpkXj2qn6G1lSOdpWEvJ4n0XAkplKlRSwsUz1fkFdcpx806T8Uv5pjiYrPCnigImre_aLmyN9baGSf7cAhgLFbJf3IiULXmxWIf7hzOCe1MNlwzVkZ2kTvGCiiW54Tvu6D-sZNRx-Yf71w2GyclqH1nUR2X_EZjOfXL9aplqru_A8iYDhXr2CQ61iy4n4B1jnHFu96alWoTHlEUcTNLktf4ka4S0LISBTnvD0",
   story1:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuB0tBZ-jEA5EqP6npw_85qwG2i_mj-V-4c6GHgyP3b1IYkBe0SW-10ODUvugFdfHkd6_jzmQE9_BA-c9cadmEjI10yRYEOwd35b3TUGZjYEK5VjPSijtzXURjc6F65koYg8Yqyz2HpQLt_YaBhKVCIkZfvUBv7NDSogm65XDWOg2pwX4tpRGgDtIZEJG1hX9cP8KUKPGo1oDv4phZFsBo6TVSbUUlV0i03RkZdIOwyMolm7p1wOYsvCYjAtIPZ8GKMxchhmwVd5uSU",
+    "/clients-2.jpg",
   story2:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuAuD9xnlTE75BCb-0CqnN2lsLk67j_Tbm8Lp0x9btcdiYspZCIy097WFMQOdYf6EgVETjQQwQ8vp9lfj9uwQC4fhSO88T0REYDVss6Mmy3nY_eJvvb9STHKez28HILQk1aCx_7tyArV7QzlPJlSszO0kmu8cEicuiAng_5JAPIU4doPwKdimQyLC_5r7FVgNMYYehxF7Pwx80IQHtiiyUzNsWMoOXEcUZdkhaBYneHQ0OF3nOlLfeCU6Z1a_Uc9UeVEakzcVFhPyTM",
+    "/clients.jpg",
   story3:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuDCk6Fnxr5IsDavKyCQ3EXdHRApodXAZ6PcmjHyqff-HTgtefM5jcl4_fRJVkiFGO3v2hZdke2e4pmxcCVPRrtuHY93eon8Q-QWBlMwZiDLDWBLJV1i4IryyZwGRbwZRqkrPUcz1HxmQAyLTp22YWa5xe7-gfTxa9fiAFCG1OloSq9Mi4ds1NyAVd1bOVARZFrPCpHbZZAuGWTZFdvpb6w_X8Aqu021Hd_4Bad2jXGq7MTa-ysl70oGKmTL6rYmGyu0eVpY9C5qeMo",
+    "/clients-3.jpg",
   payVisa:
     "https://lh3.googleusercontent.com/aida-public/AB6AXuAkfvhA63zBdzhulhV5JzQ6Up_ohVVLNZN9zRq0Jua_UqCrzMldSqCYqZrfDdfILsvxHRZUAXLAC9WHyrkgVJWpJE8N21ZQ5FShK6QXe_NwJ8_9AsJae5jfbTNHWSLQ1D0bT4x3xAK9Wd5Hdf230BVMfvgNXffktuNolYEZanvDvRkdCuUbAMZVmEaUNrkfdZKAmvANtNwm_jk9kEJ_sEdBszTt9ySSYLczNszrWBPsolyKZrStbT-DfpdO2sTDokLC06VGAsWm9AU",
   payLock:

@@ -52,7 +52,7 @@ export function Plid30DaysHealingHero({
                     height={32}
                     alt=""
                     sizes="32px"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm5bq_YNvyf1SKqnljft780uTWQpQSGwyZQpfD-npkByia1UFGD6bUCUW6qKQ32xnzrpcKBntOx_ckJRLz31mGKkmPNOvg4bwf39YqkuAgRYiganeGcbgXOeXBnLa01n60P5oKkAgjVuBDDHqulJwRXy2unFG93HwLzlH-gUk3P0AFvlT_xD4Elm4uqCVjMR1EOumYUWuLdQl-pKIatSVl8ipUflOtwyfg1PD3bB0YclizjJD45gmULdORgCaFFsa50jlAyMIvomc"
+                    src="/clients.jpg"
                   />
                   <Image
                     className="h-8 w-8 rounded-full border-2 border-white object-cover"
@@ -60,7 +60,7 @@ export function Plid30DaysHealingHero({
                     height={32}
                     alt=""
                     sizes="32px"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5gl_CUXKqNwnEp6OUXgOk24_WFUVmXsUyi8KgluCapFFUHVZXSIh9AUxTjjPaE4WDoAQT9xg_mdi_DVwY4aL2rpM5NemHqGitRMjJ8WQDO-IK5r2R2pk--eCbYUEg0GbssOavZrkqAdM0b29wcFn8WS3ZBhJM2y8mEP0UiAAu5Iqlspk3U2pnv7PMOgiqKAtS0l5iPglv5x-IVyaOcwYDqUEpqCUbV77zIOhWowaRtGgg_bIjyFP6Pw4ehWsfIoXZl48Sif4Z4ww"
+                    src="/clients-3.jpg"
                   />
                 </div>
                 <span className="plid-text-on-elevated text-sm font-medium">
@@ -87,7 +87,7 @@ export function Plid30DaysHealingHero({
               >
                 Start My Healing Journey
               </a>
-              <div className="flex items-center gap-3 rounded-full bg-surface-container-lowest lg:px-6 px-4 lg:py-4 py-3 shadow-sm">
+              <div className="flex items-center justify-center  gap-3 rounded-full bg-surface-container-lowest lg:px-6 px-4 lg:py-4 py-3 shadow-sm">
                 <div className="flex -space-x-2">
                   <Image
                     className="h-8 w-8 rounded-full border-2 border-white object-cover"
@@ -95,7 +95,7 @@ export function Plid30DaysHealingHero({
                     height={32}
                     alt=""
                     sizes="32px"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm5bq_YNvyf1SKqnljft780uTWQpQSGwyZQpfD-npkByia1UFGD6bUCUW6qKQ32xnzrpcKBntOx_ckJRLz31mGKkmPNOvg4bwf39YqkuAgRYiganeGcbgXOeXBnLa01n60P5oKkAgjVuBDDHqulJwRXy2unFG93HwLzlH-gUk3P0AFvlT_xD4Elm4uqCVjMR1EOumYUWuLdQl-pKIatSVl8ipUflOtwyfg1PD3bB0YclizjJD45gmULdORgCaFFsa50jlAyMIvomc"
+                    src="/clients.jpg"
                   />
                   <Image
                     className="h-8 w-8 rounded-full border-2 border-white object-cover"
@@ -103,7 +103,7 @@ export function Plid30DaysHealingHero({
                     height={32}
                     alt=""
                     sizes="32px"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5gl_CUXKqNwnEp6OUXgOk24_WFUVmXsUyi8KgluCapFFUHVZXSIh9AUxTjjPaE4WDoAQT9xg_mdi_DVwY4aL2rpM5NemHqGitRMjJ8WQDO-IK5r2R2pk--eCbYUEg0GbssOavZrkqAdM0b29wcFn8WS3ZBhJM2y8mEP0UiAAu5Iqlspk3U2pnv7PMOgiqKAtS0l5iPglv5x-IVyaOcwYDqUEpqCUbV77zIOhWowaRtGgg_bIjyFP6Pw4ehWsfIoXZl48Sif4Z4ww"
+                    src="/clients-3.jpg"
                   />
                 </div>
                 <span className="plid-text-on-elevated text-sm font-medium">

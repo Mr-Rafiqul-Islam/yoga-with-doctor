@@ -8,21 +8,21 @@ const stories = [
   {
     quote:
       "I was scheduled for surgery in 3 weeks. I started Dr. Shah's protocol as a last-ditch effort. By week 2, my sciatica was 80% gone. Surgery cancelled.",
-    name: "Robert M.",
+    name: "Abdul Haq",
     sub: "Recovered in 6 Weeks",
     src: IMG.story1,
   },
   {
     quote:
       "The medical explanation made me trust it. It's not just 'stretching', it's intentional movement that actually works. I can play with my grandkids again.",
-    name: "Sarah T.",
+    name: "Mizanur Rahman",
     sub: "Chronic PLID Sufferer",
     src: IMG.story2,
   },
   {
     quote:
       "The SOS protocol is a lifesaver. I used to be bedridden for days after a flare-up. Now I can manage it in 20 minutes and keep moving.",
-    name: "James L.",
+    name: "Ronjit Sorkar",
     sub: "Active Lifestyle Restored",
     src: IMG.story3,
   },
