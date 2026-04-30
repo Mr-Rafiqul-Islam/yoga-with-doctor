@@ -13,6 +13,7 @@ export interface StartCheckoutRequest {
   provider?: PaymentProvider;
   siteRef: string;
   meta: {
+    userId?: string | null;
     platform: "WEB";
     clientType: "BROWSER";
     appId: "ywd-web";
