@@ -13,9 +13,9 @@ import { useAppSelector } from "@/stores";
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { status } = useSession();
-  const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
+  const { isLoading } = useAppSelector((state) => state.auth);
 
-  const loggedIn = status === "authenticated" || isAuthenticated;
+  const loggedIn = status === "authenticated";
 
   useEffect(() => {
     if (status !== "loading" && !isLoading && loggedIn) {
