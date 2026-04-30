@@ -13,8 +13,16 @@ import {
 } from "@/slices/payment";
 
 import { useAppDispatch } from "@/stores/hooks";
-import { persistGuestSession, useRegisterGuestUserMutation } from "@/slices/auth";
+import {
+  authApi,
+  getToken,
+  persistClientAuthTokens,
+  persistGuestSession,
+  useRegisterGuestUserMutation,
+  type RegisterGuestUserResponse,
+} from "@/slices/auth";
 import type { CampaignItemSummary } from "@/lib/campaignPublicApi";
+import { establishNextAuthSessionFromStoredTokensForGuest } from "@/lib/auth/client";
 
 const DEVICE_ID_STORAGE_KEY = "ywd-device-id";
 
@@ -45,6 +53,25 @@ function getOrCreateDeviceId(): string {
   } catch {
     return "web";
   }
+}
+
+function normalizeCheckoutUserMode(
+  raw: unknown,
+  fallback: "GUEST" | "VERIFIED",
+): "GUEST" | "VERIFIED" {
+  if (raw === "VERIFIED") return "VERIFIED";
+  if (raw === "GUEST") return "GUEST";
+  return fallback;
+}
+
+function extractRegisterGuestUserId(
+  data: RegisterGuestUserResponse["data"],
+): string | null {
+  const fromUser = data?.user?.id;
+  const fromRoot = data?.userId;
+  if (typeof fromUser === "string" && fromUser.trim()) return fromUser.trim();
+  if (typeof fromRoot === "string" && fromRoot.trim()) return fromRoot.trim();
+  return null;
 }
 
 export type SalesCheckoutFormProps = {
@@ -150,31 +177,75 @@ export function SalesCheckoutForm({
         return;
       }
 
-      const guest = await registerGuestUser({
-        name,
-        phone,
-        ...(email ? { email } : {}),
-        deviceId: getOrCreateDeviceId(),
-        platform: "web",
-      }).unwrap();
+      let checkoutUserId: string | undefined;
+      let checkoutUserMode: "GUEST" | "VERIFIED" = "GUEST";
 
-      const guestAny = guest as unknown as {
-        data?: {
-          userId?: unknown;
-          user?: { id?: unknown };
-          userMode?: unknown;
-        };
-      };
-      const guestUserId =
-        guestAny?.data?.userId ??
-        guestAny?.data?.user?.id ??
-        guestAny?.data?.userMode ??
-        null;
-      if (!guestUserId || typeof guestUserId !== "string") {
-        setPaymentError("Failed to create guest user. Please try again.");
+      if (getToken()) {
+        try {
+          const meResult = await dispatch(
+            authApi.endpoints.getCurrentUser.initiate(undefined, {
+              forceRefetch: true,
+            }),
+          ).unwrap();
+          if (meResult?.success && meResult.data?.id) {
+            checkoutUserId = meResult.data.id;
+            checkoutUserMode =
+              meResult.data.userMode === "GUEST" ? "GUEST" : "VERIFIED";
+          }
+        } catch {
+          // Stale token or network error — continue with register-guest
+        }
+      }
+
+      if (!checkoutUserId) {
+        const guest = await registerGuestUser({
+          name,
+          phone,
+          ...(email ? { email } : {}),
+          deviceId: getOrCreateDeviceId(),
+          platform: "web",
+        }).unwrap();
+        console.log("guest", guest);
+
+        if (!guest.success) {
+          setPaymentError(
+            guest.message?.trim() ||
+              "Could not get response from Register User. Please try again.",
+          );
+          return;
+        }
+
+        const uid = extractRegisterGuestUserId(guest.data);
+        if (!uid) {
+          setPaymentError("Failed to create guest user. Please try again.");
+          return;
+        }
+        checkoutUserId = uid;
+        checkoutUserMode = normalizeCheckoutUserMode(guest.data?.userMode, "VERIFIED");
+
+        if (checkoutUserMode === "GUEST") {
+          persistGuestSession(checkoutUserId, phone);
+        } else {
+          const d = guest.data;
+          if (!d?.accessToken?.trim() || !d?.refreshToken?.trim()) {
+            setPaymentError("Could not get existing user. Please try again or login.");
+            return;
+          }
+          if (d?.accessToken?.trim() && d?.refreshToken?.trim()) {
+            persistClientAuthTokens(d?.accessToken, d?.refreshToken);
+            const sessionRes = await establishNextAuthSessionFromStoredTokensForGuest();
+            if (!sessionRes.ok) {
+              setPaymentError(sessionRes.error ?? "Could not start session. Try again.");
+              return;
+            }
+          }
+        }
+      }
+
+      if (!checkoutUserId) {
+        setPaymentError("Could not determine your account. Please try again.");
         return;
       }
-      persistGuestSession(guestUserId, phone);
 
       const origin =
         typeof window !== "undefined" && window.location.origin
@@ -193,10 +264,8 @@ export function SalesCheckoutForm({
         siteRef: "YWD",
         projectKey: "YWD",
         meta: {
-          userId: guestUserId,
-          userMode:
-            (guestAny?.data?.userMode as "GUEST" | "VERIFIED" | undefined) ??
-            "GUEST",
+          userId: checkoutUserId,
+          userMode: checkoutUserMode,
           platform: "WEB",
           clientType: "BROWSER",
           appId: "ywd-web",
@@ -206,7 +275,7 @@ export function SalesCheckoutForm({
           failUrl: `${origin}/checkout/failed`,
           cancelUrl: `${origin}/checkout/review`,
         },
-        userId: guestUserId,
+        userId: checkoutUserId,
       }).unwrap();
 
       const newPurchaseId = campaignCheckout.data.purchase.id;
@@ -216,12 +285,12 @@ export function SalesCheckoutForm({
       }
 
       const initPayment = await initializePayment({
-        userId: guestUserId,
+        userId: checkoutUserId,
         amount: total,
         currency,
         metaData: {
           purchaseId: newPurchaseId,
-          userId: guestUserId,
+          userId: checkoutUserId,
           campaignItemId,
           selectedChildIds: finalSelectedChildIds,
         },
@@ -253,12 +322,12 @@ export function SalesCheckoutForm({
       if (transactionId) {
         startAttemptData = await startPaymentAttempt({
           transactionId,
-          userId: guestUserId,
+          userId: checkoutUserId,
           amount: total,
           currency,
           metaData: {
             purchaseId: newPurchaseId,
-            userId: guestUserId,
+            userId: checkoutUserId,
             campaignItemId,
             selectedChildIds: finalSelectedChildIds,
           },
@@ -273,6 +342,7 @@ export function SalesCheckoutForm({
         null;
 
       if (redirectUrl) {
+        
         window.location.href = redirectUrl;
         return;
       }
@@ -338,32 +408,6 @@ export function SalesCheckoutForm({
           required
         />
       </div>
-      {/* <div>
-        <label className="mb-2 block text-sm font-bold" htmlFor="address">
-          সম্পূর্ণ ঠিকানা <span className="text-secondary">*</span>
-        </label>
-        <textarea
-          id="address"
-          name="address"
-          autoComplete="street-address"
-          className="w-full rounded-xl border-none bg-surface-container-low px-6 py-4 transition-all focus:ring-2 focus:ring-primary/20"
-          placeholder="বাড়ি নং, রোড, থানা, জেলা"
-          rows={3}
-          required
-        />
-      </div>
-      <div>
-        <label className="mb-2 block text-sm font-bold" htmlFor="condition">
-          আপনার শারীরিক অবস্থা
-        </label>
-        <textarea
-          id="condition"
-          name="condition"
-          className="w-full rounded-xl border-none bg-surface-container-low px-6 py-4 transition-all focus:ring-2 focus:ring-primary/20"
-          placeholder="আপনার ব্যথার বিবরণ সংক্ষেপে লিখুন"
-          rows={3}
-        />
-      </div> */}
 
       <div className="space-y-4 pt-2">
         <p className="text-sm font-semibold text-on-surface/80">

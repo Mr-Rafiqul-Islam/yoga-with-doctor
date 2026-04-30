@@ -84,7 +84,7 @@ const OFFER_ROWS: OfferRow[] = [
 
 export function Plid30DaysHealingOffer({
   basePriceTaka,
-  originalPriceTaka = 25000,
+  originalPriceTaka = 25500,
 }: Plid30DaysHealingOfferProps) {
   return (
     <>
