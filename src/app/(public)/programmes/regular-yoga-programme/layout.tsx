@@ -40,6 +40,10 @@ export default function RegularYogaProgrammeLayout({
         className={`plid-epidural-landing min-h-0 font-body text-on-surface antialiased selection:bg-primary-container/30 selection:text-on-primary-container ${notoSerif.variable} ${inter.variable}`}
       >
         {children}
+        {/* simple footer */}
+        <div className="text-center text-sm text-on-primary py-4 bg-primary">
+          <p>© {new Date().getFullYear()} Yoga With Doctor. All rights reserved.</p>
+        </div>
       </div>
     </>
   );

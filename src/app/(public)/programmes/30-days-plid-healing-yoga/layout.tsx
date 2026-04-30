@@ -51,6 +51,10 @@ export default function ThirtyDaysPlidHealingYogaLayout({
       >
         <Plid30DaysHealingUrgency endsAt={PLID_30_DAYS_HEALING_OFFER_ENDS_AT} />
         {children}
+        {/* simple footer */}
+        <div className="text-center text-sm text-on-primary py-4 bg-primary">
+          <p>© {new Date().getFullYear()} Yoga With Doctor. All rights reserved.</p>
+        </div>
       </div>
     </>
   );
