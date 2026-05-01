@@ -63,9 +63,12 @@ export function CheckoutReviewContent() {
     useState<PaymentProvider>("SSL");
 
   const dispatch = useDispatch();
-  const { data: courseResponse } = useGetCourseBySlugQuery(courseSlug, {
-    skip: !courseSlug,
-  });
+  const { data: courseResponse } = useGetCourseBySlugQuery(
+    { slug: courseSlug, userId: user?.id ?? null },
+    {
+      skip: !courseSlug,
+    },
+  );
   const [startCheckout, { isLoading: isStartingCheckout }] =
     useStartCheckoutMutation();
   const [initializePayment, { isLoading: isInitializingPayment }] =

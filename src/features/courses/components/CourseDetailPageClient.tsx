@@ -1,18 +1,26 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import { Breadcrumbs, CourseDetailContent } from "@/features/courses/components";
+import {
+  Breadcrumbs,
+  CourseDetailContent,
+} from "@/features/courses/components";
 import { useGetCourseBySlugQuery } from "@/slices/courses";
 import { mapCourseToCourseDetailData } from "@/lib/mapCourseToDetail";
+import { useAppSelector } from "@/stores";
 
 export interface CourseDetailPageClientProps {
   slug: string;
 }
 
 export function CourseDetailPageClient({ slug }: CourseDetailPageClientProps) {
-  const { data, isLoading, isError } = useGetCourseBySlugQuery(slug, {
-    skip: !slug,
-  });
+  const userId = useAppSelector((s) => s.auth.user?.id ?? null);
+  const { data, isLoading, isError } = useGetCourseBySlugQuery(
+    { slug, userId },
+    {
+      skip: !slug,
+    },
+  );
 
   if (!slug) notFound();
 
