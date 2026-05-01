@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useMemo, useState } from "react";
@@ -64,10 +65,8 @@ export function CheckoutReviewContent() {
 
   const dispatch = useDispatch();
   const { data: courseResponse } = useGetCourseBySlugQuery(
-    { slug: courseSlug, userId: user?.id ?? null },
-    {
-      skip: !courseSlug,
-    },
+    courseSlug as string,
+    { skip: !courseSlug },
   );
   const [startCheckout, { isLoading: isStartingCheckout }] =
     useStartCheckoutMutation();

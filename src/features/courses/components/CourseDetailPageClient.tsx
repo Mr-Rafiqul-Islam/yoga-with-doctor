@@ -7,20 +7,15 @@ import {
 } from "@/features/courses/components";
 import { useGetCourseBySlugQuery } from "@/slices/courses";
 import { mapCourseToCourseDetailData } from "@/lib/mapCourseToDetail";
-import { useAppSelector } from "@/stores";
 
 export interface CourseDetailPageClientProps {
   slug: string;
 }
 
 export function CourseDetailPageClient({ slug }: CourseDetailPageClientProps) {
-  const userId = useAppSelector((s) => s.auth.user?.id ?? null);
-  const { data, isLoading, isError } = useGetCourseBySlugQuery(
-    { slug, userId },
-    {
-      skip: !slug,
-    },
-  );
+  const { data, isLoading, isError } = useGetCourseBySlugQuery(slug as string, {
+    skip: !slug,
+  });
 
   if (!slug) notFound();
 

@@ -759,13 +759,12 @@ export const coursesApi = createApi({
      * POST /api/v1/client/courses/:slug
      * Get course by slug with structure (applies lock rules). POST so userId can be sent in the body.
      */
-    getCourseBySlug: builder.query<CourseResponse, GetCourseBySlugArg>({
-      query: ({ slug, userId }) => ({
+    getCourseBySlug: builder.query<CourseResponse, string>({
+      query: (slug: string) => ({
         url: `/api/v1/client/courses/${slug}`,
-        method: "POST",
-        body: userId != null && userId !== "" ? { userId } : {},
+        method: "GET",
       }),
-      providesTags: (_result, _error, { slug }) => [{ type: "Course", id: slug }],
+      providesTags: (_result, _error, slug) => [{ type: "Course", id: slug }],
     }),
 
     /**
