@@ -1,7 +1,10 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import { Breadcrumbs, CourseDetailContent } from "@/features/courses/components";
+import {
+  Breadcrumbs,
+  CourseDetailContent,
+} from "@/features/courses/components";
 import { useGetCourseBySlugQuery } from "@/slices/courses";
 import { mapCourseToCourseDetailData } from "@/lib/mapCourseToDetail";
 
@@ -10,7 +13,7 @@ export interface CourseDetailPageClientProps {
 }
 
 export function CourseDetailPageClient({ slug }: CourseDetailPageClientProps) {
-  const { data, isLoading, isError } = useGetCourseBySlugQuery(slug, {
+  const { data, isLoading, isError } = useGetCourseBySlugQuery(slug as string, {
     skip: !slug,
   });
 

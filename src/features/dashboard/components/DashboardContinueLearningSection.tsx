@@ -36,28 +36,29 @@ function catalogAccess(
 export function DashboardContinueLearningSection() {
   const [fetchEnrollments, { data, isFetching, isLoading, isError }] =
     useLazyGetMyEnrollmentsQuery();
+  console.log("DashboardContinueLearningSection");
 
   useEffect(() => {
     // Fetch only course enrollments for the current user
     fetchEnrollments({ type: "course", page: 1, limit: 20 });
   }, [fetchEnrollments]);
-
+  console.log("data", data);
   const courses: ContinueLearningCourse[] = useMemo(() => {
     if (!data?.data) return [];
-
+    console.log("data.data", data.data);
     return data.data
       .filter((enrollment) => enrollment.course)
       .map((enrollment) => {
         const course = enrollment.course as EnrolledCourse;
-
+        console.log("course", course);
         const bannerImage =
           course.bannerImage ??
           course.bannerUrl ??
           "/images/placeholders/course-banner.jpg";
-
+        console.log("bannerImage", bannerImage);
         const slug = course.slug ?? undefined;
         const access = catalogAccess(course.access);
-
+        console.log("access", access);
         const mapped: ContinueLearningCourse = {
           title: course.title,
           bannerImage,
@@ -118,7 +119,8 @@ export function DashboardContinueLearningSection() {
       {!isLoadingState && !isError && courses.length === 0 && (
         <p className="text-sm text-muted">
           You haven&apos;t enrolled in any courses yet. Start your first course
-          to see it here. To enroll, please click the play icon in the first lesson of your Purchased OR FREE course.
+          to see it here. To enroll, please click the play icon in the first
+          lesson of your Purchased OR FREE course.
         </p>
       )}
 

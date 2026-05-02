@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   CheckoutReviewNav,
@@ -25,6 +26,7 @@ import {
   StartPaymentAttemptResponse,
   type PaymentProvider,
 } from "@/slices/payment";
+import { RootState } from "@/stores";
 
 /** RTK Query unwrap() errors expose `data` as the HTTP JSON body. */
 function formatClientPaymentError(error: unknown): string {
@@ -49,6 +51,8 @@ function formatClientPaymentError(error: unknown): string {
 }
 
 export function CheckoutReviewContent() {
+  const user = useSelector((state: RootState) => state.auth.user);
+  console.log("user", user);
   const searchParams = useSearchParams();
   const courseSlug = searchParams.get("courseSlug") || "";
   // const [promoCode, setPromoCode] = useState("");
@@ -60,9 +64,10 @@ export function CheckoutReviewContent() {
     useState<PaymentProvider>("SSL");
 
   const dispatch = useDispatch();
-  const { data: courseResponse } = useGetCourseBySlugQuery(courseSlug, {
-    skip: !courseSlug,
-  });
+  const { data: courseResponse } = useGetCourseBySlugQuery(
+    courseSlug as string,
+    { skip: !courseSlug },
+  );
   const [startCheckout, { isLoading: isStartingCheckout }] =
     useStartCheckoutMutation();
   const [initializePayment, { isLoading: isInitializingPayment }] =
@@ -146,6 +151,7 @@ export function CheckoutReviewContent() {
           failUrl: `${origin}/checkout/failed${returnQuery}`,
           cancelUrl: `${origin}/checkout/review${returnQuery}`,
         },
+        userId: user?.id ?? null,
       }).unwrap();
 
       console.log("globalCheckout", globalCheckout);
@@ -167,6 +173,7 @@ export function CheckoutReviewContent() {
         provider: paymentProvider,
         projectKey: "YWD",
         siteRef: "YWD",
+        userId: user?.id ?? null,
       }).unwrap();
 
       const initData = initPayment?.data as
@@ -196,6 +203,7 @@ export function CheckoutReviewContent() {
         try {
           startAttemptData = await startPaymentAttempt({
             transactionId,
+            userId: user?.id ?? null,
             amount: amountForAttempt,
             currency: course?.productData?.currency || "BDT",
             metaData: { purchaseId: newPurchaseId },

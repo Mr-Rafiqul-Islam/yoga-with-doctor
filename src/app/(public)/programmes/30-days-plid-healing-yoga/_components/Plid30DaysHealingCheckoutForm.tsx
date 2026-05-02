@@ -88,6 +88,7 @@ export function Plid30DaysHealingCheckoutForm({
 }: Plid30DaysHealingCheckoutFormProps) {
   const [paymentProvider] = useState<PaymentProvider>("SSL");
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
   const children = useMemo(
     () => (Array.isArray(campaignItem?.children) ? campaignItem!.children! : []),
@@ -155,6 +156,7 @@ export function Plid30DaysHealingCheckoutForm({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPaymentError(null);
+    setPhoneError(null);
 
     if (!campaignItemId) {
       setPaymentError("Campaign is not configured. Please try again later.");
@@ -174,6 +176,12 @@ export function Plid30DaysHealingCheckoutForm({
 
       if (!name || !phone) {
         setPaymentError("Name and phone are required.");
+        return;
+      }
+
+      const phoneRegex = /^01[3-9]\d{8}$/;
+      if (!phoneRegex.test(phone)) {
+        setPhoneError("ফোন নম্বর অবশ্যই 01 দিয়ে শুরু হতে হবে এবং মোট ১১ সংখ্যার হতে হবে।");
         return;
       }
 
@@ -401,11 +409,33 @@ export function Plid30DaysHealingCheckoutForm({
           id="phone"
           name="phone"
           autoComplete="tel"
-          className="w-full rounded-xl border-none bg-surface-container-low px-6 py-4 transition-all focus:ring-2 focus:ring-primary/20"
+          className={`w-full rounded-xl border-none bg-surface-container-low px-6 py-4 transition-all focus:ring-2 ${phoneError ? "ring-2 ring-red-400 focus:ring-red-400" : "focus:ring-primary/20"}`}
           placeholder="017xxxxxxxx"
           type="tel"
           required
+          onChange={(e) => {
+            const value = e.target.value.trim();
+            if (!value) {
+              setPhoneError(null);
+              return;
+            }
+            const phoneRegex = /^01[3-9]\d{8}$/;
+            if (value.startsWith("+")) {
+              setPhoneError("+88 দিয়ে শুরু না করে সরাসরি 01 দিয়ে লিখুন। যেমন: 017xxxxxxxx");
+            } else if (!value.startsWith("01")) {
+              setPhoneError("ফোন নম্বর অবশ্যই 01 দিয়ে শুরু হতে হবে। যেমন: 017xxxxxxxx");
+            } else if (value.length === 11 && !phoneRegex.test(value)) {
+              setPhoneError("সঠিক বাংলাদেশি ফোন নম্বর দিন। যেমন: 017xxxxxxxx");
+            } else if (value.length > 11) {
+              setPhoneError("ফোন নম্বর ১১ সংখ্যার বেশি হওয়া উচিত নয়।");
+            } else {
+              setPhoneError(null);
+            }
+          }}
         />
+        {phoneError ? (
+          <p className="mt-2 text-xs text-red-500">{phoneError}</p>
+        ) : null}
       </div>
 
       <div className="space-y-4 pt-2">
