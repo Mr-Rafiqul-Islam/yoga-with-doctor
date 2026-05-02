@@ -1,0 +1,125 @@
+/* Yoga for weight loss — scoped to `.yfwl-landing` (reference colour tokens). */
+
+.yfwl-landing {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+
+  --yfwl-on-primary-fixed-variant: #004f52;
+  --yfwl-on-error: #ffffff;
+  --yfwl-inverse-surface: #2d3131;
+  --yfwl-surface-container: #ebefee;
+  --yfwl-on-secondary-fixed-variant: #3e4a41;
+  --yfwl-secondary-fixed: #d9e6da;
+  --yfwl-on-tertiary-fixed: #331200;
+  --yfwl-background: #f6fafa;
+  --yfwl-primary: #005f62;
+  --yfwl-tertiary: #82451c;
+  --yfwl-surface-tint: #00696d;
+  --yfwl-on-tertiary-container: #ffede5;
+  --yfwl-on-primary-container-token: #bdfcff;
+  --yfwl-surface-variant: #dfe3e3;
+  --yfwl-outline-variant: #bdc9c9;
+  --yfwl-outline: #6e7979;
+  --yfwl-error-container: #ffdad6;
+  --yfwl-secondary-container: #d9e6da;
+  --yfwl-inverse-primary: #7ad5d9;
+  --yfwl-inverse-on-surface: #eef1f1;
+  --yfwl-surface-container-highest: #dfe3e3;
+  --yfwl-on-surface-variant: #3e4949;
+  --yfwl-on-secondary-fixed: #131e17;
+  --yfwl-on-background: #181c1d;
+  --yfwl-on-surface: #181c1d;
+  --yfwl-surface-dim: #d7dbda;
+  --yfwl-on-secondary-container: #5b675e;
+  --yfwl-primary-container: #007a7e;
+  --yfwl-surface-bright: #f6fafa;
+  --yfwl-primary-fixed-dim: #7ad5d9;
+  --yfwl-error: #ba1a1a;
+  --yfwl-secondary-fixed-dim: #bdcabe;
+  --yfwl-surface-container-low: #f1f4f4;
+  --yfwl-surface-container-high: #e5e9e8;
+  --yfwl-on-tertiary-fixed-variant: #71370f;
+  --yfwl-secondary-color: #556158;
+  --yfwl-on-primary: #ffffff;
+  --yfwl-surface: #f6fafa;
+  --yfwl-tertiary-fixed: #ffdbc9;
+  --yfwl-primary-fixed: #97f1f5;
+  --yfwl-on-error-container: #93000a;
+  --yfwl-tertiary-container: #a05c32;
+  --yfwl-on-tertiary: #ffffff;
+  --yfwl-on-primary-fixed: #002021;
+  --yfwl-brand-orange: #ff6d00;
+}
+
+.yfwl-landing.material-symbols-outlined,
+.yfwl-landing .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.yfwl-landing .yfwl-icon-fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.yfwl-landing .yfwl-breath-guider {
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(0, 122, 126, 0.4) 0%, rgba(0, 122, 126, 0) 70%);
+  filter: blur(8px);
+  border-radius: 50%;
+}
+
+.yfwl-landing .yfwl-text-label-caps {
+  font-family: var(--yfwl-font-body), "Inter", ui-sans-serif, sans-serif;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.yfwl-landing .yfwl-text-h3 {
+  font-family: var(--yfwl-font-heading), "Playfair Display", ui-serif, serif;
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.yfwl-landing .yfwl-text-h2 {
+  font-family: var(--yfwl-font-heading), "Playfair Display", ui-serif, serif;
+  font-size: 32px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .yfwl-landing .yfwl-text-h2 {
+    font-size: 26px;
+  }
+}
+
+.yfwl-landing .yfwl-text-h1 {
+  font-family: var(--yfwl-font-heading), "Playfair Display", ui-serif, serif;
+  font-size: 48px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+@media (max-width: 767px) {
+  .yfwl-landing .yfwl-text-h1 {
+    font-size: 36px;
+  }
+}
+
+.yfwl-landing .yfwl-text-body-lg {
+  font-family: var(--yfwl-font-body), "Inter", ui-sans-serif, sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.yfwl-landing .yfwl-text-body-md {
+  font-family: var(--yfwl-font-body), "Inter", ui-sans-serif, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
