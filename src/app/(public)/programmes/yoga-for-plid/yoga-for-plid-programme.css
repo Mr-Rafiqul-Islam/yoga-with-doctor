@@ -1,0 +1,134 @@
+/* Yoga for PLID — scoped to `.yfplid-landing`; tokens from reference funnel (isolates site primary). */
+
+.yfplid-landing {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+
+  --yfplid-on-primary-fixed-variant: #004f52;
+  --yfplid-on-error: #ffffff;
+  --yfplid-inverse-surface: #2d3131;
+  --yfplid-surface-container: #ebefee;
+  --yfplid-on-secondary-fixed-variant: #3e4a41;
+  --yfplid-secondary-fixed: #d9e6da;
+  --yfplid-on-tertiary-fixed: #331200;
+  --yfplid-background: #f6fafa;
+  --yfplid-primary: #005f62;
+  --yfplid-tertiary: #82451c;
+  --yfplid-surface-tint: #00696d;
+  --yfplid-on-tertiary-container: #ffede5;
+  --yfplid-on-primary-container: #bdfcff;
+  --yfplid-surface-variant: #dfe3e3;
+  --yfplid-outline-variant: #bdc9c9;
+  --yfplid-outline: #6e7979;
+  --yfplid-error-container: #ffdad6;
+  --yfplid-secondary-container: #d9e6da;
+  --yfplid-inverse-primary: #7ad5d9;
+  --yfplid-inverse-on-surface: #eef1f1;
+  --yfplid-surface-container-highest: #dfe3e3;
+  --yfplid-on-surface-variant: #3e4949;
+  --yfplid-on-secondary-fixed: #131e17;
+  --yfplid-on-background: #181c1d;
+  --yfplid-on-surface: #181c1d;
+  --yfplid-surface-dim: #d7dbda;
+  --yfplid-on-secondary-container: #5b675e;
+  --yfplid-primary-container: #007a7e;
+  --yfplid-surface-bright: #f6fafa;
+  --yfplid-primary-fixed-dim: #7ad5d9;
+  --yfplid-error: #ba1a1a;
+  --yfplid-secondary-fixed-dim: #bdcabe;
+  --yfplid-surface-container-low: #f1f4f4;
+  --yfplid-surface-container-high: #e5e9e8;
+  --yfplid-on-tertiary-fixed-variant: #71370f;
+  --yfplid-secondary: #556158;
+  --yfplid-on-primary: #ffffff;
+  --yfplid-surface: #f6fafa;
+  --yfplid-tertiary-fixed: #ffdbc9;
+  --yfplid-primary-fixed: #97f1f5;
+  --yfplid-on-error-container: #93000a;
+  --yfplid-tertiary-container: #a05c32;
+  --yfplid-on-tertiary: #ffffff;
+  --yfplid-on-primary-fixed: #002021;
+}
+
+.yfplid-landing.material-symbols-outlined,
+.yfplid-landing .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.yfplid-landing .yfplid-text-label-caps {
+  font-family: var(--yfplid-font-body), "Inter", ui-sans-serif, sans-serif;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.yfplid-landing .yfplid-text-h3 {
+  font-family: var(--yfplid-font-heading), "Playfair Display", ui-serif, serif;
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.yfplid-landing .yfplid-text-h2 {
+  font-family: var(--yfplid-font-heading), "Playfair Display", ui-serif, serif;
+  font-size: 32px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .yfplid-landing .yfplid-text-h2 {
+    font-size: 26px;
+  }
+}
+
+.yfplid-landing .yfplid-text-h1 {
+  font-family: var(--yfplid-font-heading), "Playfair Display", ui-serif, serif;
+  font-size: 48px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+@media (max-width: 767px) {
+  .yfplid-landing .yfplid-text-h1 {
+    font-size: 36px;
+  }
+}
+
+.yfplid-landing .yfplid-text-body-lg {
+  font-family: var(--yfplid-font-body), "Inter", ui-sans-serif, sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.yfplid-landing .yfplid-text-body-md {
+  font-family: var(--yfplid-font-body), "Inter", ui-sans-serif, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.yfplid-landing .yfplid-shadow-soft {
+  box-shadow:
+    0 20px 25px -5px rgba(0, 95, 98, 0.05),
+    0 10px 10px -5px rgba(0, 95, 98, 0.02);
+}
+
+@keyframes yfplid-breath-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.3;
+  }
+}
+
+.yfplid-landing .yfplid-breath-pulse {
+  animation: yfplid-breath-pulse 4s ease-in-out infinite;
+}
