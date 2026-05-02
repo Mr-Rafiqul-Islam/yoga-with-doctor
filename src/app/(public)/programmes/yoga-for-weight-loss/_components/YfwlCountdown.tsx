@@ -22,7 +22,7 @@ type YfwlCountdownProps =
   | { variant: "inline"; className?: string };
 
 export function YfwlCountdown(props: YfwlCountdownProps) {
-  const [parts, setParts] = useState(() => getParts(Date.now()));
+  const [parts, setParts] = useState({ hours: 0, mins: 0, secs: 0 });
 
   useEffect(() => {
     const tick = () => setParts(getParts(Date.now()));
