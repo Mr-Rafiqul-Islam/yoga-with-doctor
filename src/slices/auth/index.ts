@@ -250,6 +250,21 @@ export interface RegisterGuestUserCredentials {
   platform: "web" | "android" | "ios";
 }
 
+export interface RegisterGuestUserResponseData {
+  phone?: string;
+  userId?: string;
+  user?: { id: string };
+  userMode?: "GUEST" | "VERIFIED";
+  accessToken?: string;
+  refreshToken?: string;
+}
+
+export interface RegisterGuestUserResponse {
+  success: boolean;
+  message: string;
+  data?: RegisterGuestUserResponseData;
+}
+
 export interface AuthResponse {
   success: boolean;
   message: string;
@@ -435,7 +450,7 @@ export const authApi = createApi({
 
     // register guest user
     registerGuestUser: builder.mutation<
-      { success: boolean; message: string; data?: { phone: string } },
+      RegisterGuestUserResponse,
       RegisterGuestUserCredentials
     >({
       query: (credentials) => ({
@@ -444,6 +459,20 @@ export const authApi = createApi({
         body: credentials,
       }),
       invalidatesTags: ["Auth"],
+      async onQueryStarted(_credentials, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (
+            data.success &&
+            data.data?.accessToken &&
+            data.data?.refreshToken
+          ) {
+            saveToken(data.data.accessToken, data.data.refreshToken);
+          }
+        } catch {
+          // Error handling in component
+        }
+      },
     }),
 
     // forgot password

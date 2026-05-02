@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { notFound, useRouter } from "next/navigation";
 import { Breadcrumbs } from "@/features/courses/components";
 import {
@@ -65,7 +65,7 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
   const [addEnrollmentByItemId] = useAddEnrollmentByItemIdMutation();
   const [updateLessonProgress] = useUpdateLessonProgressMutation();
 
-  const { data, isLoading, isFetching, isError } = useGetCourseContentQuery(slug, {
+  const { data, isLoading, isFetching, isError, error } = useGetCourseContentQuery(slug, {
     skip: !slug,
   });
 
@@ -285,6 +285,21 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
     [slug, updateLessonProgress]
   );
 
+  useEffect(() => {
+    if (!slug || isLoading || isFetching || (!isError && resolved)) return;
+
+    const status =
+      error && typeof error === "object" && "status" in error
+        ? (error as { status?: unknown }).status
+        : null;
+    const destination =
+      status === 403
+        ? `/checkout/review?courseSlug=${encodeURIComponent(slug)}`
+        : `/courses/${slug}`;
+
+    router.replace(destination);
+  }, [slug, isLoading, isFetching, isError, error, resolved, router]);
+
   if (!slug) notFound();
 
   if (isLoading || isFetching) {
@@ -304,7 +319,6 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
   }
 
   if (isError || !resolved) {
-    router.replace(`/courses/${slug}`);
     return null;
   }
 

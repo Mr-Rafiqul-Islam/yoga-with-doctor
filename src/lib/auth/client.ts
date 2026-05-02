@@ -46,7 +46,38 @@ export async function establishNextAuthSessionFromStoredTokens(
   }
   return { ok: true };
 }
-
+export async function establishNextAuthSessionFromStoredTokensForGuest(
+  
+): Promise<{
+  ok: boolean;
+  error?: string;
+}> {
+  const accessToken = getToken();
+  const refreshToken = getRefreshToken();
+  if (!accessToken || !refreshToken) {
+    return { ok: false, error: "Missing tokens" };
+  }
+  const res = await signIn("credentials", {
+    accessToken,
+    refreshToken,
+    redirect: false,
+  });
+  if (!res?.ok || res.error) {
+    return {
+      ok: false,
+      error: res?.error ?? "Sign in failed",
+    };
+  }
+  const session = await getSession();
+  if (!session?.user?.id) {
+    return {
+      ok: false,
+      error:
+        "Session cookie not set. Set NEXTAUTH_SECRET and NEXTAUTH_URL (must match this origin, e.g. http://localhost:3000).",
+    };
+  }
+  return { ok: true };
+}
 /** Password login via NextAuth only (server calls your API). */
 export async function signInWithPassword(params: {
   phone: string;

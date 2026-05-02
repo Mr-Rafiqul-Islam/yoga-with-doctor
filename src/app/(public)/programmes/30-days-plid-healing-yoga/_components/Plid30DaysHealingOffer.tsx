@@ -29,14 +29,14 @@ const OFFER_ROWS: OfferRow[] = [
   {
     id: "yoga-program",
     kind: "line",
-    label: "30 Days Live Yoga Program",
-    price: "৳ ১০,০০০",
+    label: "30 Days PLID Yoga",
+    price: "৳ ২৪,০০০",
   },
   {
     id: "diet-pdf",
     kind: "line",
     label: "PLID Diet & Food Plan (PDF)",
-    price: "৳ ১০০০",
+    price: "৳ ১,০০০",
   },
   {
     id: "movement-guide",
@@ -48,13 +48,13 @@ const OFFER_ROWS: OfferRow[] = [
     id: "live-qa",
     kind: "line",
     label: "২টি Live Q&A Session (Personal Guide)",
-    price: "৳ ৫০০০",
+    price: "৳ ৫,০০০",
   },
   {
     id: "guideline",
     kind: "line",
     label: "PLID নিরাময় গাইডলাইন",
-    price: "৳ ২০০০",
+    price: "৳ ২,০০০",
   },
   {
     id: "bonus-6day",
@@ -84,7 +84,7 @@ const OFFER_ROWS: OfferRow[] = [
 
 export function Plid30DaysHealingOffer({
   basePriceTaka,
-  originalPriceTaka = 25000,
+  originalPriceTaka = 33500,
 }: Plid30DaysHealingOfferProps) {
   return (
     <>

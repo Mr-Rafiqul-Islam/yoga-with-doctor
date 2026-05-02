@@ -10,6 +10,7 @@ const nextConfig = {
     "web.yogawithdoctor.com",
     "web.thesakib.dev",
     "localhost:3000",
+    "web.trucarehealingcentre.com",
     "127.0.0.1:3000",
     '192.168.68.100'
   ],

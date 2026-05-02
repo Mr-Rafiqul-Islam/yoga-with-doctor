@@ -19,17 +19,23 @@ import {
 /** Deadline for the urgency countdown (ISO string or change to `new Date(...)`). */
 const OFFER_ENDS_AT = "2026-05-03T23:59:59+06:00";
 
+console.log("OFFER_ENDS_AT", OFFER_ENDS_AT);
 const CAMPAIGN_SLUG = "plid-home-recovery-funnel";
-const FALLBACK_CAMPAIGN_ID = "plid-home-recovery-funnel";
+console.log("CAMPAIGN_SLUG", CAMPAIGN_SLUG);
 const FALLBACK_PRICE_TAKA = 2999;
+console.log("FALLBACK_PRICE_TAKA", FALLBACK_PRICE_TAKA);
+const FALLBACK_CAMPAIGN_ID = "plid-home-recovery-funnel";
+console.log("FALLBACK_CAMPAIGN_ID", FALLBACK_CAMPAIGN_ID);
 
 export default async function PlidHomeRecoveryFunnelPage() {
   const campaignItem = await fetchCampaignItemBySlug(CAMPAIGN_SLUG);
+  console.log("campaignItem", campaignItem);
   const campaignItemId =
     (campaignItem?.id && String(campaignItem.id)) || FALLBACK_CAMPAIGN_ID;
+  console.log("campaignItemId", campaignItemId);
   const basePriceTaka =
     resolvePriceTakaFromCampaignItem(campaignItem) ?? FALLBACK_PRICE_TAKA;
-
+  console.log("basePriceTaka", basePriceTaka);
   return (
     <>
       {/* Hero / Proof / Benefits: variant "auto" = light on light site, dark UI when html.dark; use "light" | "dark" to force */}

@@ -1,9 +1,8 @@
-import { AuthGuard } from "@/components/auth";
-
+import { AuthLayoutConditional } from "./AuthLayoutConditional";
 export default function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <AuthGuard>{children}</AuthGuard>;
+  return <AuthLayoutConditional>{children}</AuthLayoutConditional>;
 }

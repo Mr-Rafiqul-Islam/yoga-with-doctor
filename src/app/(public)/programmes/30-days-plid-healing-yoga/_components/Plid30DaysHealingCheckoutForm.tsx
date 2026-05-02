@@ -13,8 +13,16 @@ import {
 } from "@/slices/payment";
 
 import { useAppDispatch } from "@/stores/hooks";
-import { persistGuestSession, useRegisterGuestUserMutation } from "@/slices/auth";
+import {
+  authApi,
+  getToken,
+  persistClientAuthTokens,
+  persistGuestSession,
+  useRegisterGuestUserMutation,
+  type RegisterGuestUserResponse,
+} from "@/slices/auth";
 import type { CampaignItemSummary } from "@/lib/campaignPublicApi";
+import { establishNextAuthSessionFromStoredTokensForGuest } from "@/lib/auth/client";
 
 const DEVICE_ID_STORAGE_KEY = "ywd-device-id";
 
@@ -47,6 +55,25 @@ function getOrCreateDeviceId(): string {
   }
 }
 
+function normalizeCheckoutUserMode(
+  raw: unknown,
+  fallback: "GUEST" | "VERIFIED",
+): "GUEST" | "VERIFIED" {
+  if (raw === "VERIFIED") return "VERIFIED";
+  if (raw === "GUEST") return "GUEST";
+  return fallback;
+}
+
+function extractRegisterGuestUserId(
+  data: RegisterGuestUserResponse["data"],
+): string | null {
+  const fromUser = data?.user?.id;
+  const fromRoot = data?.userId;
+  if (typeof fromUser === "string" && fromUser.trim()) return fromUser.trim();
+  if (typeof fromRoot === "string" && fromRoot.trim()) return fromRoot.trim();
+  return null;
+}
+
 export type Plid30DaysHealingCheckoutFormProps = {
   campaignItemId: string;
   /** BDT integer (taka) */
@@ -61,6 +88,7 @@ export function Plid30DaysHealingCheckoutForm({
 }: Plid30DaysHealingCheckoutFormProps) {
   const [paymentProvider] = useState<PaymentProvider>("SSL");
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
   const children = useMemo(
     () => (Array.isArray(campaignItem?.children) ? campaignItem!.children! : []),
@@ -128,6 +156,7 @@ export function Plid30DaysHealingCheckoutForm({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPaymentError(null);
+    setPhoneError(null);
 
     if (!campaignItemId) {
       setPaymentError("Campaign is not configured. Please try again later.");
@@ -150,31 +179,80 @@ export function Plid30DaysHealingCheckoutForm({
         return;
       }
 
-      const guest = await registerGuestUser({
-        name,
-        phone,
-        ...(email ? { email } : {}),
-        deviceId: getOrCreateDeviceId(),
-        platform: "web",
-      }).unwrap();
-
-      const guestAny = guest as unknown as {
-        data?: {
-          userId?: unknown;
-          user?: { id?: unknown };
-          userMode?: unknown;
-        };
-      };
-      const guestUserId =
-        guestAny?.data?.userId ??
-        guestAny?.data?.user?.id ??
-        guestAny?.data?.userMode ??
-        null;
-      if (!guestUserId || typeof guestUserId !== "string") {
-        setPaymentError("Failed to create guest user. Please try again.");
+      const phoneRegex = /^01[3-9]\d{8}$/;
+      if (!phoneRegex.test(phone)) {
+        setPhoneError("ফোন নম্বর অবশ্যই 01 দিয়ে শুরু হতে হবে এবং মোট ১১ সংখ্যার হতে হবে।");
         return;
       }
-      persistGuestSession(guestUserId, phone);
+
+      let checkoutUserId: string | undefined;
+      let checkoutUserMode: "GUEST" | "VERIFIED" = "GUEST";
+
+      if (getToken()) {
+        try {
+          const meResult = await dispatch(
+            authApi.endpoints.getCurrentUser.initiate(undefined, {
+              forceRefetch: true,
+            }),
+          ).unwrap();
+          if (meResult?.success && meResult.data?.id) {
+            checkoutUserId = meResult.data.id;
+            checkoutUserMode =
+              meResult.data.userMode === "GUEST" ? "GUEST" : "VERIFIED";
+          }
+        } catch {
+          // Stale token or network error — continue with register-guest
+        }
+      }
+
+      if (!checkoutUserId) {
+        const guest = await registerGuestUser({
+          name,
+          phone,
+          ...(email ? { email } : {}),
+          deviceId: getOrCreateDeviceId(),
+          platform: "web",
+        }).unwrap();
+
+        if (!guest.success) {
+          setPaymentError(
+            guest.message?.trim() ||
+              "Could not start Create user. Please try again.",
+          );
+          return;
+        }
+
+        const uid = extractRegisterGuestUserId(guest.data);
+        if (!uid) {
+          setPaymentError("Failed to create guest user. Please try again.");
+          return;
+        }
+        checkoutUserId = uid;
+        checkoutUserMode = normalizeCheckoutUserMode(guest.data?.userMode, "GUEST");
+
+        if (checkoutUserMode === "GUEST") {
+          persistGuestSession(checkoutUserId, phone);
+        } else {
+          const d = guest.data;
+          if (!d?.accessToken?.trim() || !d?.refreshToken?.trim()) {
+            setPaymentError("Could not get existing user. Please try again or login.");
+            return;
+          }
+          if (d?.accessToken?.trim() && d?.refreshToken?.trim()) {
+            persistClientAuthTokens(d?.accessToken, d?.refreshToken);
+            const sessionRes = await establishNextAuthSessionFromStoredTokensForGuest();
+            if (!sessionRes.ok) {
+              setPaymentError(sessionRes.error ?? "Could not start session. Try again.");
+              return;
+            }
+          }
+        }
+      }
+
+      if (!checkoutUserId) {
+        setPaymentError("Could not determine your account. Please try again.");
+        return;
+      }
 
       const origin =
         typeof window !== "undefined" && window.location.origin
@@ -193,10 +271,8 @@ export function Plid30DaysHealingCheckoutForm({
         siteRef: "YWD",
         projectKey: "YWD",
         meta: {
-          userId: guestUserId,
-          userMode:
-            (guestAny?.data?.userMode as "GUEST" | "VERIFIED" | undefined) ??
-            "GUEST",
+          userId: checkoutUserId,
+          userMode: checkoutUserMode,
           platform: "WEB",
           clientType: "BROWSER",
           appId: "ywd-web",
@@ -206,7 +282,7 @@ export function Plid30DaysHealingCheckoutForm({
           failUrl: `${origin}/checkout/failed`,
           cancelUrl: `${origin}/checkout/review`,
         },
-        userId: guestUserId,
+        userId: checkoutUserId,
       }).unwrap();
 
       const newPurchaseId = campaignCheckout.data.purchase.id;
@@ -216,12 +292,12 @@ export function Plid30DaysHealingCheckoutForm({
       }
 
       const initPayment = await initializePayment({
-        userId: guestUserId,
+        userId: checkoutUserId,
         amount: total,
         currency,
         metaData: {
           purchaseId: newPurchaseId,
-          userId: guestUserId,
+          userId: checkoutUserId,
           campaignItemId,
           selectedChildIds: finalSelectedChildIds,
         },
@@ -253,12 +329,12 @@ export function Plid30DaysHealingCheckoutForm({
       if (transactionId) {
         startAttemptData = await startPaymentAttempt({
           transactionId,
-          userId: guestUserId,
+          userId: checkoutUserId,
           amount: total,
           currency,
           metaData: {
             purchaseId: newPurchaseId,
-            userId: guestUserId,
+            userId: checkoutUserId,
             campaignItemId,
             selectedChildIds: finalSelectedChildIds,
           },
@@ -273,6 +349,7 @@ export function Plid30DaysHealingCheckoutForm({
         null;
 
       if (redirectUrl) {
+        
         window.location.href = redirectUrl;
         return;
       }
@@ -332,11 +409,33 @@ export function Plid30DaysHealingCheckoutForm({
           id="phone"
           name="phone"
           autoComplete="tel"
-          className="w-full rounded-xl border-none bg-surface-container-low px-6 py-4 transition-all focus:ring-2 focus:ring-primary/20"
+          className={`w-full rounded-xl border-none bg-surface-container-low px-6 py-4 transition-all focus:ring-2 ${phoneError ? "ring-2 ring-red-400 focus:ring-red-400" : "focus:ring-primary/20"}`}
           placeholder="017xxxxxxxx"
           type="tel"
           required
+          onChange={(e) => {
+            const value = e.target.value.trim();
+            if (!value) {
+              setPhoneError(null);
+              return;
+            }
+            const phoneRegex = /^01[3-9]\d{8}$/;
+            if (value.startsWith("+")) {
+              setPhoneError("+88 দিয়ে শুরু না করে সরাসরি 01 দিয়ে লিখুন। যেমন: 017xxxxxxxx");
+            } else if (!value.startsWith("01")) {
+              setPhoneError("ফোন নম্বর অবশ্যই 01 দিয়ে শুরু হতে হবে। যেমন: 017xxxxxxxx");
+            } else if (value.length === 11 && !phoneRegex.test(value)) {
+              setPhoneError("সঠিক বাংলাদেশি ফোন নম্বর দিন। যেমন: 017xxxxxxxx");
+            } else if (value.length > 11) {
+              setPhoneError("ফোন নম্বর ১১ সংখ্যার বেশি হওয়া উচিত নয়।");
+            } else {
+              setPhoneError(null);
+            }
+          }}
         />
+        {phoneError ? (
+          <p className="mt-2 text-xs text-red-500">{phoneError}</p>
+        ) : null}
       </div>
 
       <div className="space-y-4 pt-2">

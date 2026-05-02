@@ -13,8 +13,16 @@ import {
 } from "@/slices/payment";
 
 import { useAppDispatch } from "@/stores/hooks";
-import { persistGuestSession, useRegisterGuestUserMutation } from "@/slices/auth";
+import {
+  authApi,
+  getToken,
+  persistClientAuthTokens,
+  persistGuestSession,
+  useRegisterGuestUserMutation,
+  type RegisterGuestUserResponse,
+} from "@/slices/auth";
 import type { CampaignItemSummary } from "@/lib/campaignPublicApi";
+import { establishNextAuthSessionFromStoredTokensForGuest } from "@/lib/auth/client";
 
 const DEVICE_ID_STORAGE_KEY = "ywd-device-id";
 
@@ -47,6 +55,25 @@ function getOrCreateDeviceId(): string {
   }
 }
 
+function normalizeCheckoutUserMode(
+  raw: unknown,
+  fallback: "GUEST" | "VERIFIED",
+): "GUEST" | "VERIFIED" {
+  if (raw === "VERIFIED") return "VERIFIED";
+  if (raw === "GUEST") return "GUEST";
+  return fallback;
+}
+
+function extractRegisterGuestUserId(
+  data: RegisterGuestUserResponse["data"],
+): string | null {
+  const fromUser = data?.user?.id;
+  const fromRoot = data?.userId;
+  if (typeof fromUser === "string" && fromUser.trim()) return fromUser.trim();
+  if (typeof fromRoot === "string" && fromRoot.trim()) return fromRoot.trim();
+  return null;
+}
+
 export type SalesCheckoutFormProps = {
   campaignItemId: string;
   /** BDT integer (taka) */
@@ -61,12 +88,13 @@ export function SalesCheckoutForm({
 }: SalesCheckoutFormProps) {
   const [paymentProvider] = useState<PaymentProvider>("SSL");
   const [paymentError, setPaymentError] = useState<string | null>(null);
-
+  console.log("campaignItem", campaignItem);
   const children = useMemo(
-    () => (Array.isArray(campaignItem?.children) ? campaignItem!.children! : []),
+    () =>
+      Array.isArray(campaignItem?.children) ? campaignItem!.children! : [],
     [campaignItem],
   );
-
+  console.log("children", children);
   const initialSelectedChildIds = useMemo(() => {
     const ids: string[] = [];
     for (const c of children) {
@@ -76,16 +104,16 @@ export function SalesCheckoutForm({
     }
     return ids;
   }, [children]);
-
+  console.log("initialSelectedChildIds", initialSelectedChildIds);
   const [selectedChildIds, setSelectedChildIds] = useState<string[]>(
     () => initialSelectedChildIds,
   );
-
+  console.log("selectedChildIds", selectedChildIds);
   const selectedChildSet = useMemo(
     () => new Set(selectedChildIds),
     [selectedChildIds],
   );
-
+  console.log("selectedChildSet", selectedChildSet);
   const selectedChildrenTotal = useMemo(() => {
     let sum = 0;
     for (const c of children) {
@@ -98,17 +126,17 @@ export function SalesCheckoutForm({
     }
     return sum;
   }, [children, selectedChildSet]);
-
+  console.log("selectedChildrenTotal", selectedChildrenTotal);
   const currency = useMemo(() => {
     const c = campaignItem?.product?.currency;
     return typeof c === "string" && c.trim() ? c : "BDT";
   }, [campaignItem]);
-
+  console.log("currency", currency);
   const total = useMemo(
     () => basePriceTaka + selectedChildrenTotal,
     [basePriceTaka, selectedChildrenTotal],
   );
-
+  console.log("total", total);
   const dispatch = useAppDispatch();
   const [registerGuestUser, { isLoading: isRegisteringGuestUser }] =
     useRegisterGuestUserMutation();
@@ -124,57 +152,116 @@ export function SalesCheckoutForm({
     isStartingCheckout ||
     isInitializingPayment ||
     isStartingAttempt;
-
+  console.log("isProceeding", isProceeding);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPaymentError(null);
-
+    console.log("handleSubmit");
     if (!campaignItemId) {
       setPaymentError("Campaign is not configured. Please try again later.");
       return;
     }
-
+    console.log("campaignItemId", campaignItemId);
     try {
       const form = e.currentTarget;
       const formData = new FormData(form);
       const fullNameRaw = formData.get("fullName");
       const phoneRaw = formData.get("phone");
       const emailRaw = formData.get("email");
-
+      console.log("formData", formData);
       const name = typeof fullNameRaw === "string" ? fullNameRaw.trim() : "";
       const phone = typeof phoneRaw === "string" ? phoneRaw.trim() : "";
       const email = typeof emailRaw === "string" ? emailRaw.trim() : "";
-
+      console.log("name", name);
+      console.log("phone", phone);
+      console.log("email", email);
       if (!name || !phone) {
         setPaymentError("Name and phone are required.");
         return;
       }
-
-      const guest = await registerGuestUser({
-        name,
-        phone,
-        ...(email ? { email } : {}),
-        deviceId: getOrCreateDeviceId(),
-        platform: "web",
-      }).unwrap();
-
-      const guestAny = guest as unknown as {
-        data?: {
-          userId?: unknown;
-          user?: { id?: unknown };
-          userMode?: unknown;
-        };
-      };
-      const guestUserId =
-        guestAny?.data?.userId ??
-        guestAny?.data?.user?.id ??
-        guestAny?.data?.userMode ??
-        null;
-      if (!guestUserId || typeof guestUserId !== "string") {
-        setPaymentError("Failed to create guest user. Please try again.");
+      console.log("name and phone are required");
+      let checkoutUserId: string | undefined;
+      let checkoutUserMode: "GUEST" | "VERIFIED" = "GUEST";
+      console.log("checkoutUserId", checkoutUserId);
+      console.log("checkoutUserMode", checkoutUserMode);
+      if (getToken()) {
+        try {
+          const meResult = await dispatch(
+            authApi.endpoints.getCurrentUser.initiate(undefined, {
+              forceRefetch: true,
+            }),
+          ).unwrap();
+          if (meResult?.success && meResult.data?.id) {
+            checkoutUserId = meResult.data.id;
+            checkoutUserMode =
+              meResult.data.userMode === "GUEST" ? "GUEST" : "VERIFIED";
+          }
+        } catch {
+          // Stale token or network error — continue with register-guest
+        }
+      }
+      console.log("checkoutUserId", checkoutUserId);
+      if (!checkoutUserId) {
+        const guest = await registerGuestUser({
+          name,
+          phone,
+          ...(email ? { email } : {}),
+          deviceId: getOrCreateDeviceId(),
+          platform: "web",
+        }).unwrap();
+        console.log("guest", guest);
+        console.log("guest.success", guest.success);
+        if (!guest.success) {
+          setPaymentError(
+            guest.message?.trim() ||
+              "Could not get response from Register User. Please try again.",
+          );
+          return;
+        }
+        console.log("guest.data", guest.data);
+        const uid = extractRegisterGuestUserId(guest.data);
+        if (!uid) {
+          setPaymentError("Failed to create guest user. Please try again.");
+          return;
+        }
+        checkoutUserId = uid;
+        const hasGuestAccess = Boolean(guest.data?.accessToken?.trim());
+        const hasGuestRefresh = Boolean(guest.data?.refreshToken?.trim());
+        const registerGuestModeFallback: "GUEST" | "VERIFIED" =
+          hasGuestAccess && hasGuestRefresh ? "VERIFIED" : "GUEST";
+        checkoutUserMode = normalizeCheckoutUserMode(
+          guest.data?.userMode,
+          registerGuestModeFallback,
+        );
+        console.log("checkoutUserMode", checkoutUserMode);
+        if (checkoutUserMode === "GUEST") {
+          persistGuestSession(checkoutUserId, phone);
+        } else {
+          const d = guest.data;
+          if (!d?.accessToken?.trim() || !d?.refreshToken?.trim()) {
+            setPaymentError(
+              "Could not get existing user. Please try again or login.",
+            );
+            return;
+          }
+          if (d?.accessToken?.trim() && d?.refreshToken?.trim()) {
+            persistClientAuthTokens(d?.accessToken, d?.refreshToken);
+            const sessionRes =
+              await establishNextAuthSessionFromStoredTokensForGuest();
+            if (!sessionRes.ok) {
+              setPaymentError(
+                sessionRes.error ?? "Could not start session. Try again.",
+              );
+              return;
+            }
+          }
+        }
+      }
+      console.log("checkoutUserId", checkoutUserId);
+      if (!checkoutUserId) {
+        setPaymentError("Could not determine your account. Please try again.");
         return;
       }
-      persistGuestSession(guestUserId, phone);
 
       const origin =
         typeof window !== "undefined" && window.location.origin
@@ -193,10 +280,8 @@ export function SalesCheckoutForm({
         siteRef: "YWD",
         projectKey: "YWD",
         meta: {
-          userId: guestUserId,
-          userMode:
-            (guestAny?.data?.userMode as "GUEST" | "VERIFIED" | undefined) ??
-            "GUEST",
+          userId: checkoutUserId,
+          userMode: checkoutUserMode,
           platform: "WEB",
           clientType: "BROWSER",
           appId: "ywd-web",
@@ -206,22 +291,22 @@ export function SalesCheckoutForm({
           failUrl: `${origin}/checkout/failed`,
           cancelUrl: `${origin}/checkout/review`,
         },
-        userId: guestUserId,
+        userId: checkoutUserId,
       }).unwrap();
-
+      console.log("campaignCheckout", campaignCheckout);
       const newPurchaseId = campaignCheckout.data.purchase.id;
       if (!newPurchaseId) {
         setPaymentError("Invalid response from checkout. Please try again.");
         return;
       }
-
+      console.log("newPurchaseId", newPurchaseId);
       const initPayment = await initializePayment({
-        userId: guestUserId,
+        userId: checkoutUserId,
         amount: total,
         currency,
         metaData: {
           purchaseId: newPurchaseId,
-          userId: guestUserId,
+          userId: checkoutUserId,
           campaignItemId,
           selectedChildIds: finalSelectedChildIds,
         },
@@ -229,7 +314,7 @@ export function SalesCheckoutForm({
         projectKey: "YWD",
         siteRef: "YWD",
       }).unwrap();
-
+      console.log("initPayment", initPayment);
       const initData = initPayment?.data as
         | {
             transactionId?: string;
@@ -239,7 +324,7 @@ export function SalesCheckoutForm({
           }
         | undefined;
       const transactionId = initData?.transactionId ?? initData?.id ?? null;
-
+      console.log("transactionId", transactionId);
       if (newPurchaseId || transactionId) {
         dispatch(
           setPaymentContext({
@@ -248,17 +333,17 @@ export function SalesCheckoutForm({
           }),
         );
       }
-
       let startAttemptData: StartPaymentAttemptResponse | undefined;
+      console.log("startAttemptData", startAttemptData);
       if (transactionId) {
         startAttemptData = await startPaymentAttempt({
           transactionId,
-          userId: guestUserId,
+          userId: checkoutUserId,
           amount: total,
           currency,
           metaData: {
             purchaseId: newPurchaseId,
-            userId: guestUserId,
+            userId: checkoutUserId,
             campaignItemId,
             selectedChildIds: finalSelectedChildIds,
           },
@@ -266,12 +351,12 @@ export function SalesCheckoutForm({
           siteRef: "YWD",
         }).unwrap();
       }
-
+      console.log("startAttemptData", startAttemptData);
       const redirectUrl =
         startAttemptData?.data?.data?.checkoutUrl ??
         startAttemptData?.data?.data?.gatewayUrl ??
         null;
-
+      console.log("redirectUrl", redirectUrl);
       if (redirectUrl) {
         window.location.href = redirectUrl;
         return;
@@ -285,8 +370,6 @@ export function SalesCheckoutForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      
-
       {paymentError ? (
         <div
           className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/30 dark:text-red-200"
@@ -338,32 +421,6 @@ export function SalesCheckoutForm({
           required
         />
       </div>
-      {/* <div>
-        <label className="mb-2 block text-sm font-bold" htmlFor="address">
-          সম্পূর্ণ ঠিকানা <span className="text-secondary">*</span>
-        </label>
-        <textarea
-          id="address"
-          name="address"
-          autoComplete="street-address"
-          className="w-full rounded-xl border-none bg-surface-container-low px-6 py-4 transition-all focus:ring-2 focus:ring-primary/20"
-          placeholder="বাড়ি নং, রোড, থানা, জেলা"
-          rows={3}
-          required
-        />
-      </div>
-      <div>
-        <label className="mb-2 block text-sm font-bold" htmlFor="condition">
-          আপনার শারীরিক অবস্থা
-        </label>
-        <textarea
-          id="condition"
-          name="condition"
-          className="w-full rounded-xl border-none bg-surface-container-low px-6 py-4 transition-all focus:ring-2 focus:ring-primary/20"
-          placeholder="আপনার ব্যথার বিবরণ সংক্ষেপে লিখুন"
-          rows={3}
-        />
-      </div> */}
 
       <div className="space-y-4 pt-2">
         <p className="text-sm font-semibold text-on-surface/80">
@@ -434,7 +491,10 @@ export function SalesCheckoutForm({
                     typeof price === "number" &&
                     price > 0
                       ? `Save ${formatTaka(
-                          Math.max(0, Math.round(compareAt) - Math.round(price)),
+                          Math.max(
+                            0,
+                            Math.round(compareAt) - Math.round(price),
+                          ),
                         )} today.`
                       : "One-time add-on."
                   }

@@ -205,13 +205,7 @@ export interface Purchase {
   userId: string;
   productId: string;
   provider: "BKASH" | "SSL";
-  status:
-    | "PENDING"
-    | "PAID"
-    | "FAILED"
-    | "REFUNDED"
-    | "CANCELED"
-    | "ON_HOLD";
+  status: "PENDING" | "PAID" | "FAILED" | "REFUNDED" | "CANCELED" | "ON_HOLD";
   amount: number;
   currency: string;
   providerPaymentId: string | null;
@@ -379,6 +373,12 @@ export interface CourseResponse {
   };
 }
 
+/** Optional userId is sent in the POST body for access / unlock rules on course detail. */
+export interface GetCourseBySlugArg {
+  slug: string;
+  userId?: string | null;
+}
+
 export interface CourseContentResponse {
   success: boolean;
   message: string;
@@ -474,7 +474,7 @@ export interface UpdateLessonProgressResponse {
 
 function lessonStatusBeforeUpdate(
   cached: GetCourseProgressResponse | undefined,
-  lessonId: string
+  lessonId: string,
 ): string | undefined {
   const sections = cached?.data?.sections;
   if (!sections) return undefined;
@@ -488,7 +488,7 @@ function lessonStatusBeforeUpdate(
 function patchCourseProgressCache(
   draft: GetCourseProgressResponse,
   lessonProgress: LessonProgressUpdatePayload,
-  courseProgress: CourseProgressSummary
+  courseProgress: CourseProgressSummary,
 ) {
   if (!draft.data) return;
   const core = draft.data;
@@ -743,22 +743,24 @@ export const coursesApi = createApi({
      * GET /api/v1/client/campaign-items/:slug
      * Resolves campaign slug or course slug and returns main item (+ children).
      */
-    getCampaignItemBySlug: builder.query<GetCampaignItemBySlugResponse, string>({
-      query: (slug) => ({
-        url: `/api/v1/client/campaign-items/${slug}`,
-        method: "GET",
-      }),
-      providesTags: (_result, _error, slug) => [
-        { type: "CampaignItem", id: slug },
-      ],
-    }),
+    getCampaignItemBySlug: builder.query<GetCampaignItemBySlugResponse, string>(
+      {
+        query: (slug) => ({
+          url: `/api/v1/client/campaign-items/${slug}`,
+          method: "GET",
+        }),
+        providesTags: (_result, _error, slug) => [
+          { type: "CampaignItem", id: slug },
+        ],
+      },
+    ),
 
     /**
-     * GET /api/v1/client/courses/:slug
-     * Get course by slug with structure (applies lock rules)
+     * POST /api/v1/client/courses/:slug
+     * Get course by slug with structure (applies lock rules). POST so userId can be sent in the body.
      */
     getCourseBySlug: builder.query<CourseResponse, string>({
-      query: (slug) => ({
+      query: (slug: string) => ({
         url: `/api/v1/client/courses/${slug}`,
         method: "GET",
       }),
@@ -813,12 +815,11 @@ export const coursesApi = createApi({
           const payload = res.data;
           if (!payload.success || !payload.data) return;
           const { lessonProgress, courseProgress } = payload.data;
-          const progressEntry = coursesApi.endpoints.getCourseProgress.select(slug)(
-            getState()
-          );
+          const progressEntry =
+            coursesApi.endpoints.getCourseProgress.select(slug)(getState());
           const priorLessonStatus = lessonStatusBeforeUpdate(
             progressEntry?.data,
-            lessonProgress.lessonId
+            lessonProgress.lessonId,
           );
           if (progressEntry?.data) {
             dispatch(
@@ -826,15 +827,19 @@ export const coursesApi = createApi({
                 "getCourseProgress",
                 slug,
                 (draft) => {
-                  patchCourseProgressCache(draft, lessonProgress, courseProgress);
-                }
-              )
+                  patchCourseProgressCache(
+                    draft,
+                    lessonProgress,
+                    courseProgress,
+                  );
+                },
+              ),
             );
           } else {
             dispatch(
               coursesApi.endpoints.getCourseProgress.initiate(slug, {
                 forceRefetch: true,
-              })
+              }),
             );
           }
           const newlyCompleted =
@@ -844,12 +849,12 @@ export const coursesApi = createApi({
             dispatch(
               coursesApi.util.invalidateTags([
                 { type: "CourseContent", id: slug },
-              ])
+              ]),
             );
             dispatch(
               coursesApi.endpoints.getCourseProgress.initiate(slug, {
                 forceRefetch: true,
-              })
+              }),
             );
           }
         } catch {
@@ -952,7 +957,10 @@ export const coursesApi = createApi({
      * POST /api/v1/payments/ssl/init
      * Initialize SSL payment session (requires auth)
      */
-    initSslPayment: builder.mutation<InitSslPaymentResponse, InitSslPaymentRequest>({
+    initSslPayment: builder.mutation<
+      InitSslPaymentResponse,
+      InitSslPaymentRequest
+    >({
       query: (body) => ({
         url: `/api/v1/payments/ssl/init`,
         method: "POST",
@@ -1087,4 +1095,3 @@ export const {
   useGetMyCourseReviewQuery,
   useUpsertCourseReviewMutation,
 } = coursesApi;
-
