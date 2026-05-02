@@ -1,0 +1,126 @@
+/* Yoga for Frozen Shoulder — scoped to .yffs-sales-programme (reference workshops/yoga-for-frozen-shoulder-programme/code.html) */
+
+.yffs-sales-programme {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+
+  --yffs-surface-container-low: #eff4ff;
+  --yffs-surface-container-high: #dce9ff;
+  --yffs-secondary: #006d37;
+  --yffs-on-primary-container: #c8daff;
+  --yffs-on-error-container: #93000a;
+  --yffs-primary-container: #005eb8;
+  --yffs-outline: #727783;
+  --yffs-surface-container-lowest: #ffffff;
+  --yffs-surface-variant: #d5e3fc;
+  --yffs-on-error: #ffffff;
+  --yffs-tertiary-fixed-dim: #c4c7c9;
+  --yffs-inverse-on-surface: #eaf1ff;
+  --yffs-surface-container-highest: #d5e3fc;
+  --yffs-inverse-primary: #a9c7ff;
+  --yffs-on-tertiary-fixed: #191c1e;
+  --yffs-on-primary-fixed-variant: #00468c;
+  --yffs-tertiary: #45484a;
+  --yffs-secondary-container: #6bfe9c;
+  --yffs-tertiary-fixed: #e0e3e5;
+  --yffs-inverse-surface: #233144;
+  --yffs-primary-fixed-dim: #a9c7ff;
+  --yffs-primary-fixed: #d6e3ff;
+  --yffs-outline-variant: #c2c6d4;
+  --yffs-surface-bright: #f8f9ff;
+  --yffs-on-primary-fixed: #001b3d;
+  --yffs-surface-container: #e6eeff;
+  --yffs-surface-tint: #005db6;
+  --yffs-primary: #00478d;
+  --yffs-on-tertiary: #ffffff;
+  --yffs-error-container: #ffdad6;
+  --yffs-on-surface-variant: #424752;
+  --yffs-on-background: #0d1c2e;
+  --yffs-on-surface: #0d1c2e;
+  --yffs-on-secondary-container: #00743a;
+  --yffs-on-secondary: #ffffff;
+  --yffs-tertiary-container: #5d6062;
+  --yffs-on-secondary-fixed-variant: #005228;
+  --yffs-secondary-fixed: #6bfe9c;
+  --yffs-surface: #f8f9ff;
+  --yffs-surface-dim: #ccdbf3;
+  --yffs-on-primary: #ffffff;
+  --yffs-on-secondary-fixed: #00210c;
+  --yffs-background: #f8f9ff;
+  --yffs-secondary-fixed-dim: #4ae183;
+  --yffs-error: #ba1a1a;
+  --yffs-on-tertiary-container: #d8dadc;
+  --yffs-on-tertiary-fixed-variant: #444749;
+
+  --font-yffs-headline-stack: var(--font-yffs-headline), "Newsreader", ui-serif, Georgia, serif;
+  --font-yffs-body-stack: var(--font-yffs-body), "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  font-family: var(--font-yffs-body-stack);
+  background-color: var(--yffs-background);
+  color: var(--yffs-on-surface);
+}
+
+.yffs-sales-programme .material-symbols-outlined,
+.yffs-sales-programme.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.yffs-sales-programme .yffs-icon-fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.yffs-sales-programme h1,
+.yffs-sales-programme h2,
+.yffs-sales-programme h3,
+.yffs-sales-programme h4 {
+  font-family: var(--font-yffs-headline-stack);
+}
+
+.yffs-sales-programme .yffs-headline-display {
+  font-family: var(--font-yffs-headline-stack);
+  font-size: 48px;
+  line-height: 1.1;
+  font-weight: 600;
+}
+
+.yffs-sales-programme .yffs-headline-lg {
+  font-family: var(--font-yffs-headline-stack);
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+.yffs-sales-programme .yffs-headline-md {
+  font-family: var(--font-yffs-headline-stack);
+  font-size: 24px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.yffs-sales-programme .yffs-body-lg {
+  font-family: var(--font-yffs-body-stack);
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.yffs-sales-programme .yffs-body-md {
+  font-family: var(--font-yffs-body-stack);
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.yffs-sales-programme .yffs-label-caps {
+  font-family: var(--font-yffs-body-stack);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .yffs-sales-programme .yffs-headline-display {
+    font-size: 36px;
+  }
+}

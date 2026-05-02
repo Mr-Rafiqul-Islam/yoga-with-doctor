@@ -29,6 +29,8 @@ export type ProgrammeOfferCountdownProps = {
   labelClassName?: string;
   /** Number block class (blocks variant) */
   numberClassName?: string;
+  /** Colon between blocks (blocks variant); default light for dark backgrounds */
+  separatorClassName?: string;
 };
 
 export function ProgrammeOfferCountdown({
@@ -37,6 +39,7 @@ export function ProgrammeOfferCountdown({
   variant = "inline",
   labelClassName,
   numberClassName,
+  separatorClassName,
 }: ProgrammeOfferCountdownProps) {
   /** `null` until mount so SSR + first client paint match (no `Date.now()` in initial state). */
   const [parts, setParts] = useState<TimeParts | null>(null);
@@ -55,7 +58,10 @@ export function ProgrammeOfferCountdown({
     const numCls = numberClassName ?? "text-4xl font-bold tabular-nums";
     const labelCls = labelClassName ?? "text-xs uppercase opacity-70";
     const colon = (
-      <div className="pt-1 text-4xl font-bold text-white" aria-hidden>
+      <div
+        className={separatorClassName ?? "pt-1 text-4xl font-bold text-white"}
+        aria-hidden
+      >
         :
       </div>
     );
