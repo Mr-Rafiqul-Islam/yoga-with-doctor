@@ -1,0 +1,146 @@
+/* Yoga for All — scoped to `.yfa-landing`; tokens match reference code.html M3 palette. */
+
+.yfa-landing {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+
+  --yfa-on-secondary-fixed: #131e17;
+  --yfa-primary-fixed-dim: #7ad5d9;
+  --yfa-surface-container: #ebefee;
+  --yfa-primary: #005f62;
+  --yfa-on-tertiary: #ffffff;
+  --yfa-surface-container-low: #f1f4f4;
+  --yfa-on-primary-fixed: #002021;
+  --yfa-error-container: #ffdad6;
+  --yfa-outline: #6e7979;
+  --yfa-on-secondary: #ffffff;
+  --yfa-background: #f6fafa;
+  --yfa-error: #ba1a1a;
+  --yfa-outline-variant: #bdc9c9;
+  --yfa-on-error-container: #93000a;
+  --yfa-secondary-container: #d9e6da;
+  --yfa-primary-fixed: #97f1f5;
+  --yfa-on-primary-fixed-variant: #004f52;
+  --yfa-surface-bright: #f6fafa;
+  --yfa-inverse-on-surface: #eef1f1;
+  --yfa-tertiary-fixed: #ffdbc9;
+  --yfa-secondary-fixed: #d9e6da;
+  --yfa-secondary: #556158;
+  --yfa-on-primary: #ffffff;
+  --yfa-tertiary-container: #a05c32;
+  --yfa-surface-dim: #d7dbda;
+  --yfa-on-tertiary-fixed: #331200;
+  --yfa-on-secondary-fixed-variant: #3e4a41;
+  --yfa-tertiary: #82451c;
+  --yfa-secondary-fixed-dim: #bdcabe;
+  --yfa-primary-container: #007a7e;
+  --yfa-on-tertiary-fixed-variant: #71370f;
+  --yfa-on-error: #ffffff;
+  --yfa-on-tertiary-container: #ffede5;
+  --yfa-surface-variant: #dfe3e3;
+  --yfa-surface: #f6fafa;
+  --yfa-tertiary-fixed-dim: #ffb68d;
+  --yfa-on-surface: #181c1d;
+  --yfa-on-background: #181c1d;
+  --yfa-surface-container-high: #e5e9e8;
+  --yfa-on-surface-variant: #3e4949;
+  --yfa-inverse-primary: #7ad5d9;
+  --yfa-surface-tint: #00696d;
+  --yfa-surface-container-lowest: #ffffff;
+  --yfa-inverse-surface: #2d3131;
+  --yfa-on-primary-container: #bdfcff;
+  --yfa-surface-container-highest: #dfe3e3;
+  --yfa-on-secondary-container: #5b675e;
+  --yfa-offer-bar: #ba1a1a;
+}
+
+.yfa-landing.material-symbols-outlined,
+.yfa-landing .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.yfa-landing .yfa-icon-fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+@keyframes yfa-breath-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+    filter: blur(40px);
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.6;
+    filter: blur(60px);
+  }
+}
+
+.yfa-landing .yfa-breath-outer {
+  animation: yfa-breath-pulse 8s ease-in-out infinite;
+}
+
+.yfa-landing .yfa-text-label-caps {
+  font-family: var(--yfa-font-body), "Inter", ui-sans-serif, sans-serif;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.yfa-landing .yfa-text-h3 {
+  font-family: var(--yfa-font-heading), "Playfair Display", ui-serif, serif;
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.yfa-landing .yfa-text-h2 {
+  font-family: var(--yfa-font-heading), "Playfair Display", ui-serif, serif;
+  font-size: 32px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .yfa-landing .yfa-text-h2 {
+    font-size: 26px;
+  }
+}
+
+.yfa-landing .yfa-text-h1 {
+  font-family: var(--yfa-font-heading), "Playfair Display", ui-serif, serif;
+  font-size: 48px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+@media (max-width: 767px) {
+  .yfa-landing .yfa-text-h1 {
+    font-size: 36px;
+  }
+}
+
+.yfa-landing .yfa-text-body-lg {
+  font-family: var(--yfa-font-body), "Inter", ui-sans-serif, sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.yfa-landing .yfa-text-body-md {
+  font-family: var(--yfa-font-body), "Inter", ui-sans-serif, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.yfa-landing .yfa-faq-summary::-webkit-details-marker {
+  display: none;
+}
+
+.yfa-landing .yfa-faq-summary {
+  list-style: none;
+}
