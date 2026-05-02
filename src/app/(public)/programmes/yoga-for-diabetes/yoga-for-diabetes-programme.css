@@ -1,0 +1,126 @@
+/* Yoga for diabetes — scoped to `.yfd-landing`; tokens from reference funnel (isolates site primary). */
+
+.yfd-landing {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+
+  --yfd-secondary-fixed: #6bfe9c;
+  --yfd-error: #ba1a1a;
+  --yfd-secondary-fixed-dim: #4ae183;
+  --yfd-on-error: #ffffff;
+  --yfd-surface-container-lowest: #ffffff;
+  --yfd-surface-container-high: #dee8ff;
+  --yfd-surface-container: #e7eeff;
+  --yfd-primary: #00478d;
+  --yfd-background: #f9f9ff;
+  --yfd-primary-fixed-dim: #a9c7ff;
+  --yfd-on-secondary: #ffffff;
+  --yfd-on-primary-container: #c8daff;
+  --yfd-outline: #727783;
+  --yfd-primary-container: #005eb8;
+  --yfd-surface-container-highest: #d8e3fa;
+  --yfd-inverse-surface: #263142;
+  --yfd-surface-tint: #005db6;
+  --yfd-inverse-on-surface: #ebf1ff;
+  --yfd-on-tertiary-fixed: #171c1f;
+  --yfd-on-primary: #ffffff;
+  --yfd-tertiary-fixed: #dfe3e7;
+  --yfd-surface-dim: #cfdaf1;
+  --yfd-outline-variant: #c2c6d4;
+  --yfd-on-surface: #111c2c;
+  --yfd-on-error-container: #93000a;
+  --yfd-surface: #f9f9ff;
+  --yfd-tertiary-fixed-dim: #c3c7cb;
+  --yfd-surface-container-low: #f0f3ff;
+  --yfd-error-container: #ffdad6;
+  --yfd-on-secondary-fixed: #00210c;
+  --yfd-on-secondary-fixed-variant: #005228;
+  --yfd-on-background: #111c2c;
+  --yfd-inverse-primary: #a9c7ff;
+  --yfd-on-secondary-container: #00743a;
+  --yfd-primary-fixed: #d6e3ff;
+  --yfd-tertiary-container: #5b6063;
+  --yfd-on-primary-fixed: #001b3d;
+  --yfd-on-tertiary-container: #d6dade;
+  --yfd-tertiary: #43484c;
+  --yfd-secondary-container: #6bfe9c;
+  --yfd-on-primary-fixed-variant: #00468c;
+  --yfd-secondary: #006d37;
+  --yfd-on-tertiary: #ffffff;
+  --yfd-surface-variant: #d8e3fa;
+  --yfd-on-surface-variant: #424752;
+  --yfd-offer-bar: #ba1a1a;
+}
+
+.yfd-landing.material-symbols-outlined,
+.yfd-landing .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.yfd-landing .yfd-icon-fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.yfd-landing .yfd-shadow-soft {
+  box-shadow: 0 10px 40px -10px rgba(0, 71, 141, 0.08);
+}
+
+.yfd-landing .yfd-text-gradient-primary {
+  background: linear-gradient(135deg, #00478d 0%, #005eb8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.yfd-landing .yfd-text-label-sm {
+  font-family: var(--yfd-font-body), "Inter", ui-sans-serif, sans-serif;
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+
+.yfd-landing .yfd-text-body-md {
+  font-family: var(--yfd-font-body), "Inter", ui-sans-serif, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.yfd-landing .yfd-text-body-lg {
+  font-family: var(--yfd-font-body), "Inter", ui-sans-serif, sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.yfd-landing .yfd-text-headline-md {
+  font-family: var(--yfd-font-heading), "Newsreader", ui-serif, serif;
+  font-size: 24px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.yfd-landing .yfd-text-headline-lg {
+  font-family: var(--yfd-font-heading), "Newsreader", ui-serif, serif;
+  font-size: 32px;
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+.yfd-landing .yfd-text-headline-xl {
+  font-family: var(--yfd-font-heading), "Newsreader", ui-serif, serif;
+  font-size: 40px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .yfd-landing .yfd-text-headline-lg {
+    font-size: 28px;
+  }
+
+  .yfd-landing .yfd-text-headline-xl {
+    font-size: 32px;
+  }
+}

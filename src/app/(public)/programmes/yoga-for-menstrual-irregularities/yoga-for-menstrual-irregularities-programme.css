@@ -1,0 +1,137 @@
+/* Yoga for Menstrual Irregularities — scoped to .yfmi-sales-programme (reference workshops/yoga-for-menstrual-irregularities-programme/code.html) */
+
+.yfmi-sales-programme {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+
+  --yfmi-on-background: #1e192b;
+  --yfmi-on-surface-variant: #484553;
+  --yfmi-primary-fixed-dim: #c8bfff;
+  --yfmi-on-primary-container: #290090;
+  --yfmi-surface-container-low: #f8f1ff;
+  --yfmi-secondary-container: #fec1d6;
+  --yfmi-outline: #787585;
+  --yfmi-inverse-on-surface: #f6eeff;
+  --yfmi-inverse-surface: #332d40;
+  --yfmi-on-secondary: #ffffff;
+  --yfmi-on-tertiary-container: #00340e;
+  --yfmi-tertiary-fixed-dim: #90d792;
+  --yfmi-on-primary-fixed-variant: #452eac;
+  --yfmi-tertiary-fixed: #abf4ac;
+  --yfmi-primary-container: #9381ff;
+  --yfmi-secondary-fixed: #ffd9e4;
+  --yfmi-error: #ba1a1a;
+  --yfmi-secondary: #805062;
+  --yfmi-surface-container: #f3eaff;
+  --yfmi-on-secondary-fixed: #330f1f;
+  --yfmi-background: #fdf7ff;
+  --yfmi-surface-container-highest: #e8def8;
+  --yfmi-on-error: #ffffff;
+  --yfmi-surface-dim: #dfd6ef;
+  --yfmi-outline-variant: #c9c4d5;
+  --yfmi-tertiary: #286b33;
+  --yfmi-on-tertiary-fixed-variant: #07521d;
+  --yfmi-secondary-fixed-dim: #f2b6cb;
+  --yfmi-surface-variant: #e8def8;
+  --yfmi-tertiary-container: #5ea263;
+  --yfmi-on-tertiary-fixed: #002107;
+  --yfmi-on-tertiary: #ffffff;
+  --yfmi-surface-tint: #5d4ac5;
+  --yfmi-inverse-primary: #c8bfff;
+  --yfmi-on-error-container: #93000a;
+  --yfmi-on-primary-fixed: #1a0064;
+  --yfmi-error-container: #ffdad6;
+  --yfmi-surface: #fdf7ff;
+  --yfmi-primary-fixed: #e5deff;
+  --yfmi-surface-container-high: #eee4fd;
+  --yfmi-on-secondary-fixed-variant: #65394b;
+  --yfmi-primary: #5d4ac5;
+  --yfmi-on-primary: #ffffff;
+  --yfmi-on-secondary-container: #7b4c5e;
+  --yfmi-surface-bright: #fdf7ff;
+  --yfmi-surface-container-lowest: #ffffff;
+  --yfmi-on-surface: #1e192b;
+
+  --font-yfmi-headline-stack: var(--font-yfmi-headline), "Newsreader", ui-serif, Georgia, serif;
+  --font-yfmi-body-stack: var(--font-yfmi-body), "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  font-family: var(--font-yfmi-body-stack);
+  background-color: var(--yfmi-background);
+  color: var(--yfmi-on-surface);
+}
+
+.yfmi-sales-programme .material-symbols-outlined,
+.yfmi-sales-programme.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.yfmi-sales-programme .yfmi-icon-fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.yfmi-sales-programme .yfmi-shadow-card {
+  box-shadow: 0 8px 30px rgb(147 129 255 / 0.04);
+}
+
+.yfmi-sales-programme .yfmi-selection {
+  background-color: var(--yfmi-primary-fixed-dim);
+}
+
+/* Typography — reference fontSize tokens */
+.yfmi-sales-programme h1,
+.yfmi-sales-programme h2,
+.yfmi-sales-programme h3,
+.yfmi-sales-programme h4 {
+  font-family: var(--font-yfmi-headline-stack);
+}
+
+.yfmi-sales-programme .yfmi-headline-xl {
+  font-family: var(--font-yfmi-headline-stack);
+  font-size: 48px;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+.yfmi-sales-programme .yfmi-headline-lg {
+  font-family: var(--font-yfmi-headline-stack);
+  font-size: 32px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.yfmi-sales-programme .yfmi-headline-md {
+  font-family: var(--font-yfmi-headline-stack);
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.yfmi-sales-programme .yfmi-body-lg {
+  font-family: var(--font-yfmi-body-stack);
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.yfmi-sales-programme .yfmi-body-md {
+  font-family: var(--font-yfmi-body-stack);
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.yfmi-sales-programme .yfmi-label-sm {
+  font-family: var(--font-yfmi-body-stack);
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.yfmi-sales-programme .yfmi-label-md {
+  font-family: var(--font-yfmi-body-stack);
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
