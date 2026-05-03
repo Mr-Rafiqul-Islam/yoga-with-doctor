@@ -14,6 +14,7 @@ import {
 } from "@/features/courses/components/lesson";
 import type { LessonProgressUiStatus } from "@/features/courses/data/lessonPageData";
 import {
+  useCheckCourseAccessQuery,
   useGetCourseContentQuery,
   useGetCourseProgressQuery,
   useUpdateLessonProgressMutation,
@@ -65,12 +66,20 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
   const [addEnrollmentByItemId] = useAddEnrollmentByItemIdMutation();
   const [updateLessonProgress] = useUpdateLessonProgressMutation();
 
-  const { data, isLoading, isFetching, isError, error } = useGetCourseContentQuery(slug, {
+  const {data: hasAccess} = useCheckCourseAccessQuery(slug, {
     skip: !slug,
   });
 
+  if (hasAccess?.data?.hasAccess !== true) {
+    return router.replace(`/courses/${slug}`);
+  }
+
+  const { data, isLoading, isFetching, isError, error } = useGetCourseContentQuery(slug, {
+    skip: !slug || hasAccess?.data?.hasAccess !== true,
+  });
+
   const { data: progressRes, isError: progressQueryError } = useGetCourseProgressQuery(slug, {
-    skip: !slug,
+    skip: !slug || hasAccess?.data?.hasAccess !== true,
   });
 
   const progressPayload = progressRes?.data;
@@ -294,7 +303,7 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
         : null;
     const destination =
       status === 403
-        ? `/courses/${slug}}`
+        ? `/courses/${slug}`
         : `/courses/${slug}`;
 
     router.replace(destination);
