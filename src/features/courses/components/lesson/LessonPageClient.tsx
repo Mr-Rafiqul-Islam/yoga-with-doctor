@@ -294,7 +294,7 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
         : null;
     const destination =
       status === 403
-        ? `/checkout/review?courseSlug=${encodeURIComponent(slug)}`
+        ? `/courses/${slug}}`
         : `/courses/${slug}`;
 
     router.replace(destination);
