@@ -71,7 +71,8 @@ export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
   });
 
   if (hasAccess?.data?.hasAccess !== true) {
-    return router.replace(`/courses/${slug}`);
+    router.replace(`/courses/${slug}`);
+    return null;
   }
 
   const { data, isLoading, isFetching, isError, error } = useGetCourseContentQuery(slug, {
