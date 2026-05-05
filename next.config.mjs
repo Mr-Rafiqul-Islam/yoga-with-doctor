@@ -8,11 +8,11 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig = {
   allowedDevOrigins: [
     "web.yogawithdoctor.com",
-    "web.thesakib.dev",
+    "website.thesakib.dev",
     "localhost:3000",
     "web.trucarehealingcentre.com",
     "127.0.0.1:3000",
-    '192.168.68.100'
+    "192.168.68.100",
   ],
   images: {
     remotePatterns: [
