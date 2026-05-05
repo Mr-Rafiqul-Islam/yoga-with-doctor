@@ -71,27 +71,20 @@ function receiptSubtitle(purchase: PurchaseRecord): string {
  * Protected route (via checkout layout).
  */
 export function PaymentSuccessContent() {
-  console.log("PaymentSuccessContent");
   const searchParams = useSearchParams();
-  console.log("searchParams", searchParams);
   const transactionId = searchParams.get("transactionId")?.trim() ?? "";
   const [isGuestCheckout, setIsGuestCheckout] = useState(false);
-  console.log("isGuestCheckout", isGuestCheckout);
   useLayoutEffect(() => {
     setIsGuestCheckout(Boolean(getGuestSession()));
   }, []);
-  console.log("isGuestCheckout", isGuestCheckout);
   const { data: profileRes, isLoading: profileLoading } = useGetProfileQuery();
   const profileUser = profileRes?.data?.user;
-  console.log("profileUser", profileUser);
   const {
     data: purchaseRes,
     isLoading,
     isError,
   } = useGetPurchaseByTransactionQuery(transactionId, { skip: !transactionId });
-  console.log("purchaseRes", purchaseRes);
   const purchase: PurchaseRecord | undefined = purchaseRes?.data;
-  console.log("purchase", purchase);
   const handleDownloadInvoice = useCallback(async () => {
     if (!purchase || !profileUser) return;
     await downloadPurchaseInvoicePdf(
@@ -99,7 +92,6 @@ export function PaymentSuccessContent() {
       profileUserToInvoiceCustomer(profileUser),
     );
   }, [purchase, profileUser]);
-  console.log("handleDownloadInvoice", handleDownloadInvoice);
   const shell = (children: ReactNode) => (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-background transition-colors duration-300">
       <PaymentSuccessBackground />
@@ -227,26 +219,18 @@ export function PaymentSuccessContent() {
     : purchase.transactionId?.trim()
       ? purchase.transactionId
       : transactionId;
-  console.log("transactionLabel", transactionLabel);
   const productTitle = purchase.product.title?.trim() || "Purchase";
-  console.log("productTitle", productTitle);
   const headingProductTitle =
     purchase.product.type === "COURSE_ONE_TIME"
       ? purchase.product.course?.title?.trim() || productTitle
       : productTitle;
-  console.log("headingProductTitle", headingProductTitle);
   const purchaseDate = formatPurchaseDate(
     purchase.paidAt ?? purchase.createdAt,
   );
-  console.log("purchaseDate", purchaseDate);
   const totalFormatted = formatMoney(purchase.amount, purchase.currency);
-  console.log("totalFormatted", totalFormatted);
   const courseSlug = purchase.product.course?.slug;
-  console.log("courseSlug", courseSlug);
   const invoiceReady = purchase.status === "PAID";
-  console.log("invoiceReady", invoiceReady);
   const invoiceDisabled = !invoiceReady || profileLoading || !profileUser;
-  console.log("invoiceDisabled", invoiceDisabled);
   const invoiceDisabledReason = !invoiceReady
     ? "Invoice is available once payment is confirmed."
     : profileLoading
@@ -256,7 +240,6 @@ export function PaymentSuccessContent() {
           ? "Verify your account on the dashboard to download your receipt."
           : "Could not load profile for billing details."
         : undefined;
-  console.log("invoiceDisabledReason", invoiceDisabledReason);
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-background transition-colors duration-300">
       <PaymentSuccessBackground />
