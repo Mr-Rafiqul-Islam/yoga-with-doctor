@@ -33,7 +33,7 @@ export function DashboardContinueLearningCard({
       className={`group flex h-full flex-col rounded-2xl border border-border bg-surface shadow-elevation-sm transition-shadow hover:shadow-elevation-md ${layoutClass}`}
     >
       <Link
-        href={course.slug ? `/courses/${course.slug}/lesson` : "/courses"}
+        href={course.slug ? `/courses/${course.slug}/lesson?courseId=${course.courseId}` : "/courses"}
         className="flex h-full min-h-0 flex-1 flex-col"
       >
         <div className="relative aspect-video overflow-hidden rounded-t-2xl">

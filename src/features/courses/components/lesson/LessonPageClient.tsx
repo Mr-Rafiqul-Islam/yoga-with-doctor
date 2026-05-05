@@ -31,7 +31,7 @@ import { formatDuration } from "@/features/home/VideoCard";
 import { useAddEnrollmentByItemIdMutation } from "@/slices/enrollment";
 
 function buildLessonProgressMap(
-  sections: { lessons: CourseProgressLessonRow[] }[] | undefined
+  sections: { lessons: CourseProgressLessonRow[] }[] | undefined,
 ): Map<string, CourseProgressLessonRow> {
   const m = new Map<string, CourseProgressLessonRow>();
   if (!sections) return m;
@@ -43,7 +43,9 @@ function buildLessonProgressMap(
   return m;
 }
 
-function deriveProgressStatus(row: CourseProgressLessonRow | undefined): LessonProgressUiStatus {
+function deriveProgressStatus(
+  row: CourseProgressLessonRow | undefined,
+): LessonProgressUiStatus {
   if (!row) return "not_started";
   if (row.status === "COMPLETED") return "completed";
   if (
@@ -62,7 +64,11 @@ export interface LessonPageClientProps {
   courseId?: string;
 }
 
-export function LessonPageClient({ slug, lessonId, courseId }: LessonPageClientProps) {
+export function LessonPageClient({
+  slug,
+  lessonId,
+  courseId,
+}: LessonPageClientProps) {
   const router = useRouter();
   const [hasAutoEnrolled, setHasAutoEnrolled] = useState(false);
   const [addEnrollmentByItemId] = useAddEnrollmentByItemIdMutation();
@@ -70,27 +76,42 @@ export function LessonPageClient({ slug, lessonId, courseId }: LessonPageClientP
 
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
-  const { data: hasAccess } = useCheckCourseAccessQuery(courseId ?? "", {
+  const {
+    data: accessRes,
+    isLoading: isAccessLoading,
+    isFetching: isAccessFetching,
+  } = useCheckCourseAccessQuery(courseId ?? "", {
     skip: !courseId || !isAuthenticated,
   });
 
-  if (hasAccess?.data?.hasAccess !== true) {
-    router.replace(`/courses/${slug}`);
-    return null;
-  }
+  const hasAccess = accessRes?.data?.hasAccess === true;
+  const accessResolved = !isAccessLoading && !isAccessFetching;
+  const shouldFetchCourseData =
+    Boolean(slug) && Boolean(courseId) && isAuthenticated && hasAccess;
 
-  const { data, isLoading, isFetching, isError, error } = useGetCourseContentQuery(slug, {
-    skip: !slug || hasAccess?.data?.hasAccess !== true,
-  });
+  // Always call these hooks, gate network with skip
+  const { data, isLoading, isFetching, isError, error } =
+    useGetCourseContentQuery(slug, {
+      skip: !shouldFetchCourseData,
+    });
 
-  const { data: progressRes, isError: progressQueryError } = useGetCourseProgressQuery(slug, {
-    skip: !slug || hasAccess?.data?.hasAccess !== true,
-  });
+  const { data: progressRes, isError: progressQueryError } =
+    useGetCourseProgressQuery(slug, {
+      skip: !shouldFetchCourseData,
+    });
+
+  // Redirect as side effect (not during render)
+  useEffect(() => {
+    if (!slug || !isAuthenticated || !accessResolved) return;
+    if (accessRes?.data?.hasAccess === false) {
+      router.replace(`/courses/${slug}`);
+    }
+  }, [slug, isAuthenticated, accessResolved, accessRes, router]);
 
   const progressPayload = progressRes?.data;
   const lessonProgressById = useMemo(
     () => buildLessonProgressMap(progressPayload?.sections),
-    [progressPayload?.sections]
+    [progressPayload?.sections],
   );
 
   const hasProgress = Boolean(progressPayload) && !progressQueryError;
@@ -125,21 +146,27 @@ export function LessonPageClient({ slug, lessonId, courseId }: LessonPageClientP
         lesson,
         moduleTitle: section.title,
         moduleId: section.id,
-      }))
+      })),
     );
 
-    const lessonExists = lessonId ? flat.some((x) => x.lesson.id === lessonId) : false;
+    const lessonExists = lessonId
+      ? flat.some((x) => x.lesson.id === lessonId)
+      : false;
     const firstUnlockedId =
-      flat.find((x) => !(x.lesson.locked ?? false))?.lesson.id ?? flat[0]?.lesson.id ?? null;
+      flat.find((x) => !(x.lesson.locked ?? false))?.lesson.id ??
+      flat[0]?.lesson.id ??
+      null;
 
     const currentId = (lessonExists ? lessonId : firstUnlockedId) ?? null;
-    const currentIdx = currentId ? flat.findIndex((x) => x.lesson.id === currentId) : -1;
+    const currentIdx = currentId
+      ? flat.findIndex((x) => x.lesson.id === currentId)
+      : -1;
     const current = currentIdx >= 0 ? flat[currentIdx] : null;
 
     const totalLessons = flat.length;
     const totalSeconds = flat.reduce(
       (sum, x) => sum + (lessonDurationSeconds(x.lesson) ?? 0),
-      0
+      0,
     );
 
     const progressPercent =
@@ -173,7 +200,9 @@ export function LessonPageClient({ slug, lessonId, courseId }: LessonPageClientP
     let lessonIndex = 0;
     if (currentId) {
       for (let i = 0; i < sections.length; i++) {
-        const idx = (sections[i].lessons ?? []).findIndex((l) => l.id === currentId);
+        const idx = (sections[i].lessons ?? []).findIndex(
+          (l) => l.id === currentId,
+        );
         if (idx >= 0) {
           moduleIndex = i + 1;
           lessonIndex = idx + 1;
@@ -193,17 +222,23 @@ export function LessonPageClient({ slug, lessonId, courseId }: LessonPageClientP
         }
       : null;
 
-    const currentLessonDescription = current?.lesson.description?.trim() || null;
+    const currentLessonDescription =
+      current?.lesson.description?.trim() || null;
 
-    const currentRow = current ? lessonProgressById.get(current.lesson.id) : undefined;
-    const currentLessonLocked = currentRow?.isLocked ?? current?.lesson.locked ?? false;
+    const currentRow = current
+      ? lessonProgressById.get(current.lesson.id)
+      : undefined;
+    const currentLessonLocked =
+      currentRow?.isLocked ?? current?.lesson.locked ?? false;
 
     const currentVideo = current?.lesson?.video ?? null;
     const currentMuxPlaybackId = currentVideo?.muxPlaybackId ?? undefined;
     const currentVideoId = currentVideo?.id ?? undefined;
     const currentVideoStatus = currentVideo?.status ?? undefined;
 
-    const apiNext = hasProgress ? progressPayload?.progress?.nextLessonId : undefined;
+    const apiNext = hasProgress
+      ? progressPayload?.progress?.nextLessonId
+      : undefined;
 
     const currentCurriculumIdx = currentLesson
       ? curriculum.findIndex((l) => l.id === currentLesson.id)
@@ -222,7 +257,9 @@ export function LessonPageClient({ slug, lessonId, courseId }: LessonPageClientP
     const apiNextIdx =
       apiNext != null ? curriculum.findIndex((l) => l.id === apiNext) : -1;
     const apiNextRow = apiNextIdx >= 0 ? curriculum[apiNextIdx] : undefined;
-    const apiNextInCourse = Boolean(apiNext && flat.some((x) => x.lesson.id === apiNext));
+    const apiNextInCourse = Boolean(
+      apiNext && flat.some((x) => x.lesson.id === apiNext),
+    );
     const apiNextIsForward =
       currentCurriculumIdx < 0 ||
       (apiNextIdx >= 0 && apiNextIdx > currentCurriculumIdx);
@@ -251,13 +288,7 @@ export function LessonPageClient({ slug, lessonId, courseId }: LessonPageClientP
       currentLessonLocked,
       continueLessonId,
     };
-  }, [
-    data,
-    lessonId,
-    hasProgress,
-    progressPayload,
-    lessonProgressById,
-  ]);
+  }, [data, lessonId, hasProgress, progressPayload, lessonProgressById]);
 
   const lessonUrl = (id: string) => `/courses/${slug}/lesson?lesson=${id}`;
 
@@ -281,7 +312,7 @@ export function LessonPageClient({ slug, lessonId, courseId }: LessonPageClientP
         body: { lessonId: lessonIdForProgress, event: "START" },
       }).catch(() => {});
     },
-    [slug, updateLessonProgress]
+    [slug, updateLessonProgress],
   );
 
   const onLessonWatchDelta = useCallback(
@@ -296,7 +327,7 @@ export function LessonPageClient({ slug, lessonId, courseId }: LessonPageClientP
         },
       }).catch(() => {});
     },
-    [slug, updateLessonProgress]
+    [slug, updateLessonProgress],
   );
 
   useEffect(() => {
@@ -307,9 +338,7 @@ export function LessonPageClient({ slug, lessonId, courseId }: LessonPageClientP
         ? (error as { status?: unknown }).status
         : null;
     const destination =
-      status === 403
-        ? `/courses/${slug}`
-        : `/courses/${slug}`;
+      status === 403 ? `/courses/${slug}` : `/courses/${slug}`;
 
     router.replace(destination);
   }, [slug, isLoading, isFetching, isError, error, resolved, router]);
@@ -352,7 +381,7 @@ export function LessonPageClient({ slug, lessonId, courseId }: LessonPageClientP
   } = resolved;
 
   const progressReportingEnabled = Boolean(
-    currentLesson && !currentLessonLocked && slug
+    currentLesson && !currentLessonLocked && slug,
   );
 
   return (
@@ -362,7 +391,9 @@ export function LessonPageClient({ slug, lessonId, courseId }: LessonPageClientP
           { label: "Home", href: "/", icon: "home" },
           { label: "Courses", href: "/courses" },
           { label: detailData.title, href: `/courses/${slug}` },
-          ...(currentLesson ? [{ label: currentLesson.title, href: null }] : []),
+          ...(currentLesson
+            ? [{ label: currentLesson.title, href: null }]
+            : []),
         ]}
       />
 
