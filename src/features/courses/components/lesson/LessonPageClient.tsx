@@ -21,6 +21,7 @@ import {
   type Course,
   type CourseProgressLessonRow,
 } from "@/slices/courses";
+import { useAppSelector } from "@/stores";
 import { mapCourseToCourseDetailData } from "@/lib/mapCourseToDetail";
 import {
   formatHumanMediaDuration,
@@ -58,16 +59,19 @@ function deriveProgressStatus(row: CourseProgressLessonRow | undefined): LessonP
 export interface LessonPageClientProps {
   slug: string;
   lessonId?: string;
+  courseId?: string;
 }
 
-export function LessonPageClient({ slug, lessonId }: LessonPageClientProps) {
+export function LessonPageClient({ slug, lessonId, courseId }: LessonPageClientProps) {
   const router = useRouter();
   const [hasAutoEnrolled, setHasAutoEnrolled] = useState(false);
   const [addEnrollmentByItemId] = useAddEnrollmentByItemIdMutation();
   const [updateLessonProgress] = useUpdateLessonProgressMutation();
 
-  const {data: hasAccess} = useCheckCourseAccessQuery(slug, {
-    skip: !slug,
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+
+  const { data: hasAccess } = useCheckCourseAccessQuery(courseId ?? "", {
+    skip: !courseId || !isAuthenticated,
   });
 
   if (hasAccess?.data?.hasAccess !== true) {

@@ -62,10 +62,13 @@ export function CourseCatalogCardCta({
   // }
 
   if (effectiveEnrolled && slug) {
+    const lessonHref = courseId
+      ? `/courses/${slug}/lesson?courseId=${courseId}`
+      : `/courses/${slug}/lesson`;
     return (
       <button
         type="button"
-        onClick={(e) => handleClick(e, () => router.push(`/courses/${slug}/lesson`))}
+        onClick={(e) => handleClick(e, () => router.push(lessonHref))}
         className={className}
       >
         Get started
