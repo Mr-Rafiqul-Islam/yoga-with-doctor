@@ -9,6 +9,8 @@ import { CourseCatalogCardCta } from "./CourseCatalogCardCta";
 import type { CourseDetailData, CourseLesson } from "../data/courseDetailData";
 import { formatHumanMediaDuration } from "@/lib/formatMediaDuration";
 import { CourseReviewSection } from "@/features/reviews/components/CourseReviewSection";
+import { useCheckCourseAccessQuery } from "@/slices/courses";
+import { useAppSelector } from "@/stores";
 
 const TABS = ["About Course", "Curriculum", "Reviews"] as const;
 
@@ -27,6 +29,25 @@ export interface CourseDetailContentProps {
 export function CourseDetailContent({ course }: CourseDetailContentProps) {
   const [activeTab, setActiveTab] = useState<(typeof TABS)[0]>("About Course");
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { unlockedCourseIds } = useAppSelector((state) => state.entitlements);
+  const {
+    data: accessData,
+    isLoading: accessLoading,
+    isFetching: accessFetching,
+  } = useCheckCourseAccessQuery(course.courseId ?? "", {
+    skip: !course.courseId || !isAuthenticated,
+  });
+  const hasAccessFromApi = accessData?.data?.hasAccess ?? false;
+  const isUnlocked =
+    !!course.courseId && unlockedCourseIds.includes(course.courseId);
+  const userOwnsCourse =
+    isAuthenticated && (hasAccessFromApi || isUnlocked);
+  const accessCheckPending =
+    Boolean(course.courseId) &&
+    isAuthenticated &&
+    (accessLoading || accessFetching);
+
   const previewLesson = useMemo(() => {
     const allLessons = course.curriculum.flatMap((m) => m.lessons);
     return allLessons.find(
@@ -218,15 +239,30 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
             id="sidebar-enroll"
             className="rounded-2xl border border-border bg-surface p-6 shadow-soft dark:border-gray-800 dark:bg-surface"
           >
-            <div className="mb-6 flex items-end gap-3">
-              <span className="text-3xl font-bold text-foreground dark:text-white">
-                {course.price}
-              </span>
-              <span className="mb-1 text-lg text-muted line-through">{course.originalPrice}</span>
-              <span className="mb-1.5 rounded bg-secondary px-2 py-1 text-xs font-bold text-primary dark:bg-sage-dark dark:text-primary-on-dark">
-                -{course.discountPercent}%
-              </span>
-            </div>
+            {accessCheckPending ? (
+              <div
+                className="mb-6 h-10 max-w-[200px] animate-pulse rounded-lg bg-muted/60 dark:bg-gray-800/60"
+                aria-hidden
+              />
+            ) : userOwnsCourse ? (
+              <div className="mb-6">
+                <span className="text-sm font-semibold uppercase tracking-wide text-primary dark:text-primary-on-dark">
+                  Owned
+                </span>
+              </div>
+            ) : (
+              <div className="mb-6 flex items-end gap-3">
+                <span className="text-3xl font-bold text-foreground dark:text-white">
+                  {course.price}
+                </span>
+                <span className="mb-1 text-lg text-muted line-through">
+                  {course.originalPrice}
+                </span>
+                <span className="mb-1.5 rounded bg-secondary px-2 py-1 text-xs font-bold text-primary dark:bg-sage-dark dark:text-primary-on-dark">
+                  -{course.discountPercent}%
+                </span>
+              </div>
+            )}
             <div className="mb-6 [&>button]:w-full [&>button]:py-3.5">
               <CourseCatalogCardCta
                 courseId={course.courseId}
