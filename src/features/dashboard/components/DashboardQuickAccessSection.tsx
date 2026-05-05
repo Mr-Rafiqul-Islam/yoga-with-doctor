@@ -16,11 +16,8 @@ type DashboardQuickAccessSectionProps = {
 export function DashboardQuickAccessSection({
   items,
 }: DashboardQuickAccessSectionProps) {
-  console.log("DashboardQuickAccessSection");
   const userId = useAppSelector((s) => s.auth.user?.id ?? null);
-  console.log("userId", userId);
   const [savedCount, setSavedCount] = useState<number>(0);
-  console.log("savedCount", savedCount);
   const refreshSavedCount = useCallback(() => {
     if (!userId) {
       setSavedCount(0);
@@ -28,18 +25,15 @@ export function DashboardQuickAccessSection({
     }
     setSavedCount(savedArticlesFromStorage(userId).length);
   }, [userId]);
-  console.log("refreshSavedCount", refreshSavedCount);
   useEffect(() => {
     refreshSavedCount();
   }, [refreshSavedCount]);
-  console.log("useEffect", useEffect);
   useEffect(() => {
     const handler = () => refreshSavedCount();
     window.addEventListener(SAVED_ARTICLES_CHANGED_EVENT, handler);
     return () =>
       window.removeEventListener(SAVED_ARTICLES_CHANGED_EVENT, handler);
   }, [refreshSavedCount]);
-  console.log("useEffect", useEffect);
   const computedItems = useMemo(() => {
     return items.map((item) => {
       const isSavedArticlesTile =
@@ -59,7 +53,6 @@ export function DashboardQuickAccessSection({
           };
     });
   }, [items, savedCount, userId]);
-  console.log("computedItems", computedItems);
   return (
     <section>
       <h2 className="mb-6 font-display text-2xl font-bold text-foreground">

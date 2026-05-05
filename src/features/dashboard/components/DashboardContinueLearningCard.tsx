@@ -25,16 +25,19 @@ export function DashboardContinueLearningCard({
     typeof apiPercent === "number" ? apiPercent : course.progress,
   );
 
+  /** Carousel: fixed width so titles/progress never widen one card vs another (flex + min-w only allowed growth). */
   const layoutClass =
-    layout === "grid" ? "w-full min-w-0 shrink" : "min-w-[320px] shrink-0";
+    layout === "grid"
+      ? "w-full min-w-0 shrink"
+      : "w-[320px] min-w-[320px] max-w-[320px] shrink-0";
 
   return (
     <article
-      className={`group flex h-full flex-col rounded-2xl border border-border bg-surface shadow-elevation-sm transition-shadow hover:shadow-elevation-md ${layoutClass}`}
+      className={`group flex h-full min-w-0 flex-col rounded-2xl border border-border bg-surface shadow-elevation-sm transition-shadow hover:shadow-elevation-md ${layoutClass}`}
     >
       <Link
-        href={course.slug ? `/courses/${course.slug}/lesson` : "/courses"}
-        className="flex h-full min-h-0 flex-1 flex-col"
+        href={course.slug ? `/courses/${course.slug}/lesson?courseId=${course.courseId}` : "/courses"}
+        className="flex h-full min-h-0 min-w-0 flex-1 flex-col"
       >
         <div className="relative aspect-video overflow-hidden rounded-t-2xl">
           {course.bannerImage && (
@@ -73,8 +76,8 @@ export function DashboardContinueLearningCard({
             </span>
           )}
         </div>
-        <div className="flex flex-1 flex-col p-5">
-          <h3 className="mb-2 line-clamp-2 min-h-[2lh] font-display text-lg font-bold leading-snug text-foreground group-hover:text-primary">
+        <div className="flex min-w-0 flex-1 flex-col p-5">
+          <h3 className="mb-2 min-h-[2lh] line-clamp-2 font-display text-lg font-bold leading-snug text-foreground group-hover:text-primary">
             {course.title}
           </h3>
           <p className="mb-4 text-body-md text-muted">
