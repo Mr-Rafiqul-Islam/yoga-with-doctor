@@ -27,15 +27,14 @@ import {
 
 const CAMPAIGN_SLUG = "30-days-plid-healing-yoga";
 
-const FALLBACK_CAMPAIGN_ID = "30-days-plid-healing-yoga";
+// const FALLBACK_CAMPAIGN_ID = "30-days-plid-healing-yoga";
 
 const FALLBACK_PRICE_TAKA = 4990;
 
 export default async function ThirtyDaysPlidHealingYogaPage() {
   const campaignItem = await fetchCampaignItemBySlug(CAMPAIGN_SLUG);
 
-  const campaignItemId =
-    (campaignItem?.id && String(campaignItem.id)) || FALLBACK_CAMPAIGN_ID;
+  const campaignItemId = campaignItem?.id ?? "";
 
   const basePriceTaka =
     resolvePriceTakaFromCampaignItem(campaignItem) ?? FALLBACK_PRICE_TAKA;
