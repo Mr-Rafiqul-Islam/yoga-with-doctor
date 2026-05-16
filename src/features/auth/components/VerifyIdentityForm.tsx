@@ -9,6 +9,8 @@ import { getDeviceId } from "@/utils/deviceId";
 type VerifyIdentityFormProps = {
   phone?: string;
   email?: string;
+  /** Login OTP only: backend `OTP_REQUIRED.data.phone` (OTP is always sent to phone). */
+  otpRecipientPhone?: string;
   onBack?: () => void;
   isFromRegister?: boolean;
   onComplete?: () => void;
@@ -18,6 +20,8 @@ type VerifyIdentityFormProps = {
 
 export function VerifyIdentityForm({
   phone,
+  email,
+  otpRecipientPhone,
   onBack,
   isFromRegister = false,
   onComplete,
@@ -73,7 +77,9 @@ export function VerifyIdentityForm({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fullCode = code.join("");
-    if (fullCode.length !== 6 || !phone) return;
+    if (fullCode.length !== 6) return;
+    if (isFromRegister && !phone) return;
+    if (!isFromRegister && !phone && !email) return;
     setError(null);
     const deviceId = await getDeviceId();
     const platform = "web" as const;
@@ -81,7 +87,7 @@ export function VerifyIdentityForm({
     try {
       if (isFromRegister) {
         await verifyRegisterOTP({
-          phone,
+          phone: phone as string,
           otp: fullCode,
           deviceId,
           platform,
@@ -90,7 +96,8 @@ export function VerifyIdentityForm({
         setIsVerifyingLogin(true);
         try {
           const res = await signInWithLoginOtp({
-            phone,
+            ...(phone ? { phone } : {}),
+            ...(email ? { email } : {}),
             otp: fullCode,
             deviceId,
             platform,
@@ -121,9 +128,16 @@ export function VerifyIdentityForm({
         );
       }
     } catch (err: unknown) {
+      const data = (
+        err as {
+          data?: { error?: string; message?: string };
+          error?: string;
+        }
+      )?.data;
       const message =
-        (err as { data?: { message?: string }; error?: string })?.data?.message ||
-        (err as { error?: string })?.error ||
+        (typeof data?.error === "string" ? data.error : undefined) ??
+        (typeof data?.message === "string" ? data.message : undefined) ??
+        (err as { error?: string })?.error ??
         "Unable to verify code. Please try again.";
       setError(message);
     }
@@ -134,6 +148,9 @@ export function VerifyIdentityForm({
     setCode(["", "", "", "", "", ""]);
     inputRefs.current[0]?.focus();
   };
+
+  const otpShownPhoneLabel =
+    isFromRegister ? phone : otpRecipientPhone ?? phone;
 
   return (
     <div className="mx-auto w-full max-w-md">
@@ -152,10 +169,14 @@ export function VerifyIdentityForm({
 
         <p className="mb-8 text-center text-sm leading-relaxed text-muted">
           We&apos;ve sent a 6-digit code to{" "}
-          {phone ? (
-            <span className="font-medium text-foreground">{phone}</span>
+          {otpShownPhoneLabel ? (
+            <span className="font-medium text-foreground">
+              {otpShownPhoneLabel}
+            </span>
           ) : (
-            "your registered phone number"
+            <span className="font-medium text-foreground">
+              your registered phone number
+            </span>
           )}{" "}
           to ensure your health data remains secure.
         </p>

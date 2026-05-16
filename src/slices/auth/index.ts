@@ -227,12 +227,22 @@ export interface User {
   website?: string | null;
 }
 
-export interface LoginCredentials {
-  phone: string;
+/** POST /login: exactly one of `phone` or `email`. */
+export type LoginCredentials =
+  | ({
+      phone: string;
+      email?: never;
+    } & LoginCredentialsBase)
+  | ({
+      email: string;
+      phone?: never;
+    } & LoginCredentialsBase);
+
+type LoginCredentialsBase = {
   password: string;
   deviceId: string;
   platform: "web" | "android" | "ios";
-}
+};
 
 export interface RegisterCredentials {
   name?: string;
@@ -293,6 +303,7 @@ export interface LoginOTPRequiredResponse {
   success: boolean;
   message: "OTP_REQUIRED";
   data: {
+    /** Where the OTP was sent (always SMS to this number; may be masked). */
     phone: string;
   };
 }
@@ -328,12 +339,22 @@ export interface VerifyRegisterOTPCredentials {
   platform: "web" | "android" | "ios";
 }
 
-export interface VerifyLoginOTPCredentials {
-  phone: string;
+/** POST /login/verify: exactly one of `phone` or `email`. */
+export type VerifyLoginOTPCredentials =
+  | ({
+      phone: string;
+      email?: never;
+    } & VerifyLoginOTPBase)
+  | ({
+      email: string;
+      phone?: never;
+    } & VerifyLoginOTPBase);
+
+type VerifyLoginOTPBase = {
   otp: string;
   deviceId: string;
   platform: "web" | "android" | "ios";
-}
+};
 
 export interface ForgotPasswordCredentials {
   phone: string;
