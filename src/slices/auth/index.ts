@@ -247,6 +247,7 @@ type LoginCredentialsBase = {
 export interface RegisterCredentials {
   name?: string;
   phone: string;
+  email?: string;
   password: string;
   deviceId: string;
   platform: "web" | "android" | "ios";
