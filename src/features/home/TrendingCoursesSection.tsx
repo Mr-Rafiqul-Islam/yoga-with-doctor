@@ -10,7 +10,7 @@ import {
 import { pickPrimaryCategory } from "@/lib/pickPrimaryCategory";
 
 const FALLBACK_INSTRUCTOR_AVATAR =
-  "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-About.jpeg";
+  "/Dr. Shah Alam-2.jpeg";
 const FALLBACK_PRICE = "$29.00";
 const TRENDING_LIMIT = 2;
 

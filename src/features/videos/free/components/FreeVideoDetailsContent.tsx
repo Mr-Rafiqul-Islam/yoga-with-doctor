@@ -230,7 +230,7 @@ export function FreeVideoDetailsContent({
               </div>
             </div>
             <Link
-              href="https://drshahalam.com/"
+              href="https://doctorshahalam.com/"
               target="_blank"
               type="button"
               // onClick={() => setFollowed((v) => !v)}
@@ -274,7 +274,7 @@ export function FreeVideoDetailsContent({
                 {details.shortDescription}
               </p>
               <article
-                className="prose prose-sm prose-invert max-w-none"
+                className="prose prose-sm dark:prose-invert prose-headings:font-display prose-headings:font-bold prose-h2:text-foreground prose-p:text-muted prose-p:leading-relaxed prose-strong:text-primary max-w-none"
                 dangerouslySetInnerHTML={{ __html: details.description }}
               />
             </div>

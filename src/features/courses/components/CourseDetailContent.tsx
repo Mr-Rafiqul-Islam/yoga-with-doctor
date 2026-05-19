@@ -181,7 +181,7 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
         {/* Tab content: About (What you will learn) */}
         {activeTab === "About Course" && (
           <div className="space-y-4">
-          <article className="prose prose-sm prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: course.description }} />
+          <article className="prose prose-sm dark:prose-invert prose-headings:font-display prose-headings:font-bold prose-h2:text-foreground prose-p:text-muted prose-p:leading-relaxed prose-strong:text-primary max-w-none" dangerouslySetInnerHTML={{ __html: course.description }} />
           <div className="rounded-2xl border border-border bg-surface p-6 shadow-soft dark:border-gray-800 dark:bg-surface">
             <h3 className="font-display text-xl font-bold text-foreground dark:text-white mb-6">
               What you will learn
