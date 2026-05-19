@@ -117,7 +117,7 @@ export function FreeVideoDetailsContent({
       {/* Video player */}
       <div
         id="play"
-        className="relative w-full overflow-hidden rounded-2xl bg-gray-900 shadow-xl aspect-video md:aspect-video group cursor-pointer"
+        className="relative w-full overflow-hidden rounded-2xl bg-gray-900 shadow-xl aspect-video group cursor-pointer"
       >
         {playbackId ? (
           <MuxPlayerLazy

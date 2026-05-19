@@ -43,7 +43,7 @@ export function VideoCard({
       href={slug ? `/videos/free/${slug}` : "#"}
       className="group relative flex flex-col overflow-hidden rounded-radius-md bg-surface shadow-elevation-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
     >
-      <div className="relative h-48 w-full overflow-hidden bg-muted/40">
+      <div className="relative aspect-video w-full overflow-hidden bg-muted/40">
         {imageSrc ? (
           <Image
             src={imageSrc}
