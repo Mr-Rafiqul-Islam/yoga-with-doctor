@@ -28,6 +28,7 @@ export type ArticleDetails = {
   category: string;
   timeAgo?: string;
   title: string;
+  subTitle?: string;
   description: string;
   author: ArticleAuthor;
   actionLabel?: string;

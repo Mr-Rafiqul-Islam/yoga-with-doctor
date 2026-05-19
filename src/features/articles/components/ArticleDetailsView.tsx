@@ -30,7 +30,7 @@ export function ArticleDetailsView({
     author,
     tags = [],
     detailsContent,
-    description,
+    subTitle
   } = article;
 
   const normalizedHtml = useMemo(
@@ -87,29 +87,9 @@ export function ArticleDetailsView({
           <h1 className="mb-8 font-display text-2xl font-bold leading-tight text-foreground md:text-4xl lg:text-6xl dark:text-white">
             {title}
           </h1>
-          <div className="flex flex-col items-center justify-center gap-6 border-t border-border pt-8 md:flex-row">
-            <div className="flex items-center gap-4 text-left">
-              <Image
-                src={author.avatarSrc}
-                alt=""
-                width={56}
-                height={56}
-                className="rounded-full object-cover ring-4 ring-gray-100 dark:ring-gray-800"
-              />
-              <div>
-                <p className="text-body-lg font-bold text-foreground dark:text-white">
-                  {author.name}
-                </p>
-                <p className="text-caption uppercase tracking-wide text-muted">
-                  {author.title}
-                </p>
-              </div>
-            </div>
-            <div className="hidden h-10 w-px bg-border md:block" />
-            <p className="max-w-xs text-center text-body-md text-muted md:text-left">
-              {author.bioSnippet}
-            </p>
-          </div>
+          <h3 className="text-xl font-medium uppercase tracking-wide text-primary mb-4">
+           {subTitle} 
+          </h3>
         </div>
       </div>
 
@@ -162,9 +142,9 @@ export function ArticleDetailsView({
         </aside>
 
         <div className="lg:col-span-8 lg:col-start-4">
-          <p className="lead mb-8 text-body-lg leading-relaxed text-muted">
+          {/* <p className="lead mb-8 text-body-lg leading-relaxed text-muted">
             {description}
-          </p>
+          </p> */}
           <article
             className="prose prose-lg max-w-none lg:col-span-8 lg:col-start-4 dark:prose-invert prose-headings:font-display prose-headings:font-bold prose-h2:text-foreground prose-p:text-muted prose-p:leading-relaxed prose-strong:text-primary"
             dangerouslySetInnerHTML={{ __html: content }}
@@ -205,10 +185,10 @@ export function ArticleDetailsView({
               {author.name}
             </h3>
             <p className="text-body-md font-medium uppercase tracking-wide text-primary mb-4">
-              Medical Doctor & Yoga Therapist
+              {author.title}
             </p>
-            <p className="mb-6 leading-relaxed text-muted">{author.fullBio}</p>
-            <Link
+            <p className="leading-relaxed text-muted">{author.bioSnippet}</p>
+            {/* <Link
               href={author.profileLink}
               className="inline-flex items-center font-semibold text-primary transition-colors hover:text-primary-dark group"
             >
@@ -216,7 +196,7 @@ export function ArticleDetailsView({
               <span className="material-icons-outlined ml-1 text-lg transition-transform group-hover:translate-x-1">
                 arrow_forward
               </span>
-            </Link>
+            </Link> */}
           </div>
         </div>
       </section>
