@@ -141,6 +141,6 @@ export async function signInWithRegisterOtp(params: {
     platform: params.platform ?? "web",
     flow: "register",
     redirect: false,
-    callbackUrl: origin ? `${origin}/auth/login` : undefined,
+    callbackUrl: origin ? `${origin}/dashboard` : undefined,
   });
 }
