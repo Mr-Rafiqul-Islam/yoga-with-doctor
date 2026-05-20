@@ -34,6 +34,7 @@ export function mapToArticleDetails(article: {
   image: string | null;
   authorName: string | null;
   access: string;
+  subTitle: string | null;
 }): ArticleDetails {
   return {
     slug: article.slug,
@@ -43,6 +44,7 @@ export function mapToArticleDetails(article: {
     readTime: "5 min read",
     category: article.category || "General",
     title: article.title,
+    subTitle: article.subTitle || "",
     description: article.description || "",
     author: {
       ...DEFAULT_AUTHOR_FOR_MAP,

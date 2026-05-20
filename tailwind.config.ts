@@ -13,6 +13,12 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-sans)", "Inter", "sans-serif"],
+        "anek-bangla": [
+          "var(--font-anek-bangla)",
+          "Anek Bangla",
+          "ui-sans-serif",
+          "sans-serif",
+        ],
         display: ["var(--font-serif)", "Playfair Display", "serif"],
         serif: ["var(--font-serif)", "Playfair Display", "serif"],
         body: ["var(--font-body)", "ui-sans-serif", "sans-serif"],

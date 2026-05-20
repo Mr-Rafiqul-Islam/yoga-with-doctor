@@ -35,17 +35,23 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
       const result = await register({
         name: fullName,
         phone,
+        email,
         password,
         deviceId: await getDeviceId(),
         platform: "web",
       }).unwrap();
 
-      if (result.success && result.message === "OTP_SENT" && onRegisterSuccess) {
+      if (
+        result.success &&
+        result.message === "OTP_SENT" &&
+        onRegisterSuccess
+      ) {
         onRegisterSuccess(email, phone);
       }
     } catch (err: unknown) {
       const message =
-        (err as { data?: { message?: string }; error?: string })?.data?.message ||
+        (err as { data?: { message?: string }; error?: string })?.data
+          ?.message ||
         (err as { error?: string })?.error ||
         "Unable to create account. Please try again.";
       setError(message);
@@ -94,6 +100,8 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
           <input
             id="email"
             type="email"
+            name="email"
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="name@example.com"
@@ -114,6 +122,8 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
           <input
             id="phone"
             type="tel"
+            name="phone"
+            autoComplete="tel"
             value={phone}
             onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
             placeholder="01712345678"
@@ -135,6 +145,7 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
           <div className="relative">
             <input
               id="password"
+              name="password"
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -145,6 +156,7 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
                   : "border-border focus:border-primary focus:ring-primary dark:border-gray-700"
               }`}
               required
+              autoComplete="new-password"
               aria-required="true"
               aria-label="Password"
               aria-invalid={password ? !isPasswordValid : undefined}
@@ -168,7 +180,9 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
         <button
           type="submit"
           className="mt-4 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-primary font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={isLoading || !isPasswordValid || !fullName || !email || !phone}
+          disabled={
+            isLoading || !isPasswordValid || !fullName || !email || !phone
+          }
         >
           <span>{isLoading ? "Creating..." : "Create Account"}</span>
         </button>
@@ -183,17 +197,24 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
       <div className="mt-6 flex items-center justify-center gap-6 text-xs">
         <div className="flex items-center gap-2 text-muted">
           <span className="material-icons-outlined text-base">lock</span>
-          <span className="font-medium uppercase tracking-wide">HIPAA COMPLIANT</span>
+          <span className="font-medium uppercase tracking-wide">
+            HIPAA COMPLIANT
+          </span>
         </div>
         <div className="flex items-center gap-2 text-muted">
           <span className="material-icons-outlined text-base">shield</span>
-          <span className="font-medium uppercase tracking-wide">DATA PRIVACY SECURE</span>
+          <span className="font-medium uppercase tracking-wide">
+            DATA PRIVACY SECURE
+          </span>
         </div>
       </div>
 
       <p className="mt-10 text-center text-sm text-muted dark:text-gray-400">
         Already have an account?{" "}
-        <Link href="/auth/login" className="ml-1 font-bold text-primary hover:underline">
+        <Link
+          href="/auth/login"
+          className="ml-1 font-bold text-primary hover:underline"
+        >
           Log In
         </Link>
       </p>

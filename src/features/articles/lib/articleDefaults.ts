@@ -7,12 +7,12 @@ export const FALLBACK_ARTICLE_IMAGE = DEFAULT_IMG;
 
 /** Author used when mapping API articles to cards / details. */
 export const DEFAULT_AUTHOR_FOR_MAP: ArticleAuthor = {
-  name: "Dr Md Shah Alam",
-  title: "Orthopedics Specialist, Spine Surgeion, Yoga Instructor",
+  name: "Dr. Shah Alam",
+  title: "Orthopedics Specialist, Spine Surgeion & Yoga Instructor.",
   avatarSrc:
-    "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-Hero.jpeg",
+    "/Dr. Shah Alam-2.jpeg",
   bioSnippet:
-    "Specializing in the intersection of neuroscience and traditional yogic practices.",
+    "MBBS • D.Ortho (BSMMU)\n Orthopedic & Spine Surgeon.\n Life Member- Bangladesh Orthopedic Society.\n Yoga Instructor. \n Certified Life Member- Indian Yoga Association",
   fullBio:
     "Specializing in the intersection of neuroscience and traditional yogic practices.",
   profileLink: "https://drshahalam.com/",

@@ -62,7 +62,6 @@ export default async function ArticleDetailsPage({ params }: Props) {
   if (!apiArticle) {
     notFound();
   }
-
   const article = mapToArticleDetails(apiArticle);
   const relatedArticles = selectRelatedArticleCards(
     apiArticle.slug,

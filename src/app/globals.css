@@ -44,6 +44,10 @@ html {
 
 @layer base {
   :root {
+    /* Anek Bangla — loaded via next/font on <html> (--font-anek-bangla) */
+    --font-article-title: var(--font-anek-bangla), "Anek Bangla", ui-sans-serif,
+      sans-serif;
+
     /* Brand & UI (hex for direct use) */
     --color-primary: #00a86b;
     --color-primary-rgb: 0 168 106;
