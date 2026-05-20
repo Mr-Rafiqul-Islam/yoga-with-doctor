@@ -45,7 +45,7 @@ export function FreeVideoDetailsContent({
 
   useEffect(() => {
     // Fetch playback token if video exists and has muxPlaybackId
-    if (video.id && video.muxPlaybackId && video.status === "READY") {
+    if (video.id && video.muxPlaybackId && video.status === "READY" && isAuthenticated) {
       getPlaybackToken(video.id)
         .unwrap()
         .then((result) => {
@@ -117,7 +117,7 @@ export function FreeVideoDetailsContent({
       {/* Video player */}
       <div
         id="play"
-        className="relative w-full overflow-hidden rounded-2xl bg-gray-900 shadow-xl aspect-video md:aspect-[21/9] group cursor-pointer"
+        className="relative w-full overflow-hidden rounded-2xl bg-gray-900 shadow-xl aspect-video group cursor-pointer"
       >
         {playbackId ? (
           <MuxPlayerLazy

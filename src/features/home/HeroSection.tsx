@@ -1,24 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const HERO_IMAGE_URL =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuC8cuPVOyIENRJwhjB_sRZT1xIxdtZYlZTahw-wo7c9V0yrlXLIKFtXXtQlPUQctZGSKcHJmtZQnBzbOYTUDMOp_691EGJuWtzoMFQPi7IdVM-I21agWiPA1e65vyOw6CLKPlIQPTGEarHfiJ-ebywseIplHNa8gQN1reTcf7pXBHLlPuqj_ql1R7cCQ6xONcSf7E3miFC2F_i0BFcd00PfVdg7VnxHbdHR2opNOv9O6VyNtWHtqRYYK0odCfebeOusO6PHt5r80Q";
+const HERO_IMAGE_URL ="/banner1.jpg";
+  // "https://lh3.googleusercontent.com/aida-public/AB6AXuC8cuPVOyIENRJwhjB_sRZT1xIxdtZYlZTahw-wo7c9V0yrlXLIKFtXXtQlPUQctZGSKcHJmtZQnBzbOYTUDMOp_691EGJuWtzoMFQPi7IdVM-I21agWiPA1e65vyOw6CLKPlIQPTGEarHfiJ-ebywseIplHNa8gQN1reTcf7pXBHLlPuqj_ql1R7cCQ6xONcSf7E3miFC2F_i0BFcd00PfVdg7VnxHbdHR2opNOv9O6VyNtWHtqRYYK0odCfebeOusO6PHt5r80Q";
 
 /** Central hero copy and links — swap values here or from CMS/env without touching markup. */
 export const HERO_SECTION = {
   ariaLabel: "Hero",
-  badge: "New Clinical Series Available",
-  headlineLine: "Find Your Path to",
-  subHeadlineLine: "Clinical Zen",
+  badge: "Modern Science. Ancient Wisdom. Real Healing.",
+  headlineLine: "Building a Healthier Future Through Yoga &",
+  subHeadlineLine: "Medical Science",
   description:
-    "Evidence-based yoga therapy designed by medical professionals. Enhance your recovery, improve mobility, and find mental clarity through scientifically backed sessions.",
+    "Yoga With Doctor combines modern medical science, therapeutic yoga, lifestyle correction, and natural healing principles to help people prevent disease, recover naturally, and live healthier lives.",
   primaryCta: {
     href: "/courses",
-    label: "Start Your Journey",
+    label: "Start Your Healing Journey",
   },
   secondaryCta: {
     href: "#",
-    label: "Watch Intro",
+    label: "Watch Our Story",
     icon: "play_circle" as const,
   },
   image: {
@@ -110,7 +110,7 @@ export function HeroSection() {
               priority
             />
             <div
-              className="absolute inset-0 bg-gradient-to-r from-surface via-surface/20 to-transparent"
+              className="absolute inset-0 bg-gradient-to-r from-[#ffffff] via-surface/10 to-transparent"
               aria-hidden
             />
           </div>
