@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -16,8 +16,21 @@ import { ClassReviewSection } from "@/features/reviews/components/ClassReviewSec
 import { useAppDispatch, useAppSelector } from "@/stores";
 import { useAddEnrollmentByItemIdMutation } from "@/slices/enrollment";
 import { classApi } from "@/slices/classes";
+import {
+  getFreeVideoLeadGateStatus,
+  markFreeVideoLeadGatePassed,
+} from "@/lib/freeVideoLeadGate";
+import { FreeVideoLeadModal } from "./FreeVideoLeadModal";
 
 const TAB_IDS = ["overview", "equipment", "reviews"] as const;
+
+function getPosterUrl(video: VideoCardProps): string | null {
+  if (video.thumbnailUrl) return video.thumbnailUrl;
+  if (video.muxPlaybackId) {
+    return `https://image.mux.com/${video.muxPlaybackId}/thumbnail.webp?time=0`;
+  }
+  return null;
+}
 
 export interface FreeVideoDetailsContentProps {
   video: VideoCardProps;
@@ -33,6 +46,13 @@ export function FreeVideoDetailsContent({
   const [addEnrollmentByItemId] = useAddEnrollmentByItemIdMutation();
   const enrollRequestRef = useRef(false);
 
+  const [leadGatePassed, setLeadGatePassed] = useState(isAuthenticated);
+  const [showLeadModal, setShowLeadModal] = useState(false);
+  const [shouldAutoPlay, setShouldAutoPlay] = useState(false);
+
+  const canPlay = isAuthenticated || leadGatePassed;
+  const posterUrl = getPosterUrl(video);
+
   const [activeTab, setActiveTab] =
     useState<(typeof TAB_IDS)[number]>("overview");
   // const [followed, setFollowed] = useState(false);
@@ -42,6 +62,16 @@ export function FreeVideoDetailsContent({
   //   undefined,
   // );
   const [getPlaybackToken] = useLazyGetVideoPlaybackTokenQuery();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setLeadGatePassed(true);
+      return;
+    }
+    getFreeVideoLeadGateStatus().then((status) =>
+      setLeadGatePassed(status.passed),
+    );
+  }, [isAuthenticated]);
 
   useEffect(() => {
     // Fetch playback token if video exists and has muxPlaybackId
@@ -66,7 +96,13 @@ export function FreeVideoDetailsContent({
       setPlaybackId(video.muxPlaybackId);
       setPlaybackToken(null);
     }
-  }, [video.id, video.muxPlaybackId, video.status, getPlaybackToken]);
+  }, [
+    video.id,
+    video.muxPlaybackId,
+    video.status,
+    getPlaybackToken,
+    isAuthenticated,
+  ]);
 
   useEffect(() => {
     enrollRequestRef.current = false;
@@ -82,6 +118,9 @@ export function FreeVideoDetailsContent({
   };
 
   const handlePlay = () => {
+    if (shouldAutoPlay) {
+      setShouldAutoPlay(false);
+    }
     if (!isAuthenticated || details.isEnrolled || enrollRequestRef.current) {
       return;
     }
@@ -102,6 +141,25 @@ export function FreeVideoDetailsContent({
       });
   };
 
+  const openLeadModal = useCallback(() => {
+    if (isAuthenticated || leadGatePassed) return;
+    setShowLeadModal(true);
+  }, [isAuthenticated, leadGatePassed]);
+
+  const handleLeadSuccess = useCallback(async () => {
+    await markFreeVideoLeadGatePassed();
+    setLeadGatePassed(true);
+    setShouldAutoPlay(true);
+  }, []);
+
+  const handleStartPracticeClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+  ) => {
+    if (isAuthenticated || leadGatePassed) return;
+    e.preventDefault();
+    setShowLeadModal(true);
+  };
+
   const doctorsNote = {
     name: details.author.name,
     title: details.author.title,
@@ -114,12 +172,18 @@ export function FreeVideoDetailsContent({
 
   return (
     <div className="space-y-8">
+      <FreeVideoLeadModal
+        isOpen={showLeadModal}
+        onClose={() => setShowLeadModal(false)}
+        onSuccess={handleLeadSuccess}
+      />
+
       {/* Video player */}
       <div
         id="play"
         className="relative w-full overflow-hidden rounded-2xl bg-gray-900 shadow-xl aspect-video group cursor-pointer"
       >
-        {playbackId ? (
+        {playbackId && canPlay ? (
           <MuxPlayerLazy
             ref={playerRef}
             className="h-full w-full"
@@ -129,7 +193,7 @@ export function FreeVideoDetailsContent({
             {...(playbackToken ? { tokens: { playback: playbackToken } } : {})}
             onLoadedMetadata={handleLoadedMetadata}
             onPlay={handlePlay}
-            autoPlay={false}
+            autoPlay={shouldAutoPlay}
             playsInline
             style={{
               aspectRatio: "auto",
@@ -140,6 +204,27 @@ export function FreeVideoDetailsContent({
               "--media-object-position": "center",
             }}
           />
+        ) : playbackId && posterUrl ? (
+          <button
+            type="button"
+            onClick={openLeadModal}
+            className="relative block h-full w-full cursor-pointer border-0 bg-transparent p-0 text-left"
+            aria-label="Play video"
+          >
+            <Image
+              src={posterUrl}
+              alt=""
+              fill
+              className="object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, 1280px"
+              priority
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/25 transition-colors group-hover:bg-black/35">
+              <span className="material-icons-outlined text-7xl text-white drop-shadow-lg md:text-8xl">
+                play_circle
+              </span>
+            </div>
+          </button>
         ) : video.thumbnailUrl ? (
           <Image
             src={video.thumbnailUrl}
@@ -294,6 +379,7 @@ export function FreeVideoDetailsContent({
           {/* CTA */}
           <Link
             href="#play"
+            onClick={handleStartPracticeClick}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 px-6 text-lg font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-xl"
           >
             <span className="material-icons-outlined">play_arrow</span>
