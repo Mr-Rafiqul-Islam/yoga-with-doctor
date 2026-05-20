@@ -84,7 +84,7 @@ export function ArticleDetailsView({
               {/* {readTime} */} 3 min
             </span>
           </div>
-          <h1 className="mb-8 font-display text-2xl font-bold leading-tight text-foreground md:text-4xl lg:text-6xl dark:text-white">
+          <h1 className="mb-8 font-anek-bangla text-2xl font-bold leading-tight text-foreground md:text-4xl lg:text-6xl dark:text-white">
             {title}
           </h1>
           <h3 className="text-xl font-medium uppercase tracking-wide text-primary mb-4">

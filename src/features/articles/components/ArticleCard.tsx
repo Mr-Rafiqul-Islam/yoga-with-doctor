@@ -63,7 +63,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
               </span>
               <span className="text-caption text-muted">{timeAgo}</span>
             </div>
-            <h3 className="mb-3 line-clamp-2 font-display text-xl font-bold text-foreground transition-colors group-hover:text-primary dark:text-white">
+            <h3 className="mb-3 line-clamp-2 font-anek-bangla text-xl font-bold text-foreground transition-colors group-hover:text-primary dark:text-white">
               {title}
             </h3>
             <p className="mb-4 line-clamp-2 text-body-md text-muted">

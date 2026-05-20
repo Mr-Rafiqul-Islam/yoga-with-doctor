@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter } from "next/font/google";
+import { Anek_Bangla, Playfair_Display, Inter } from "next/font/google";
 import { OfflineDetector } from "@/components/OfflineDetector";
 import { Header } from "@/components/layout";
 import { NotificationSocket } from "@/components/NotificationSocket";
@@ -18,6 +18,12 @@ const playfair = Playfair_Display({
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
+});
+
+const anekBangla = Anek_Bangla({
+  subsets: ["latin", "bengali"],
+  variable: "--font-anek-bangla",
   display: "swap",
 });
 
@@ -52,7 +58,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${playfair.variable} ${inter.variable}`}
+      className={`${playfair.variable} ${inter.variable} ${anekBangla.variable}`}
       suppressHydrationWarning
     >
       <head>
