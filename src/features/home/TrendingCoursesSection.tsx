@@ -97,12 +97,12 @@ export function TrendingCoursesSection() {
         <div>
           <h2
             id="trending-courses-heading"
-            className="font-display text-3xl font-bold text-foreground dark:text-white"
+            className="font-anek-bangla text-3xl font-bold text-foreground dark:text-white"
           >
-            Trending Courses
+            Healing Programs
           </h2>
           <p className="mt-2 text-sm text-muted dark:text-gray-400">
-            Comprehensive programs to transform your health
+          Structured step-by-step programs combining medical science, therapeutic yoga, and lifestyle correction for lasting results.
           </p>
         </div>
         <Link

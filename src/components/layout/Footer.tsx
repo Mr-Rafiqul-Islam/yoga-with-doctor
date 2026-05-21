@@ -6,22 +6,30 @@ import { MdPhoneInTalk } from "react-icons/md";
 import { AiFillTikTok } from "react-icons/ai";
 import { usePathname } from "next/navigation";
 
+
+// {
+  // Frequently Asked Questions
+  // Terms & Conditions
+  // Privacy Policy
+  // Contact & Suppor
+// }
+
 const platformLinks = [
-  { href: "/courses", label: "Browse Courses", target: "_self" },
-  { href: "/videos", label: "Our Videos", target: "_self" },
-  { href: "/articles", label: "Medical Articles", target: "_self" },
+  { href: "/courses", label: "Healing Programs", target: "_self" },
+  { href: "/videos", label: "Free Video Library", target: "_self" },
+  { href: "/articles", label: "Health & Wellness Articles", target: "_self" },
   {
     href: "https://drshahalam.com/",
-    label: "Our Instructor",
+    label: "Meet Dr. Shah Alam",
     target: "_blank",
   },
 ] as const;
 
 const supportLinks = [
-  { href: "/faq", label: "FAQs" },
+  { href: "/faq", label: "Frequently Asked Questions" },
   { href: "/terms", label: "Terms & Conditions" },
   { href: "/privacy", label: "Privacy Policy" },
-  { href: "/contact", label: "Contact Us" },
+  { href: "/contact", label: "Contact & Support" },
 ] as const;
 
 const whatsappSupportUrl =
@@ -75,9 +83,7 @@ function FooterInner() {
           <div className="flex min-h-0 flex-col md:col-span-1 md:h-full">
             <SiteLogo variant="footer" />
             <p className="max-w-xs text-sm text-gray-400">
-              Bridging the gap between ancient wisdom and modern medicine for a
-              healthier you. Guided by doctors, inspired by timeless yogic
-              practices.
+            Empowering people to prevent disease, recover naturally, and live healthier lives through the integration of medical science, therapeutic yoga, and evidence-based lifestyle practices.
             </p>
             <div className="mt-auto flex flex-wrap gap-2.5 pt-6">
               {socialLinks.map(({ href, label, Icon, className }) => (
@@ -141,14 +147,14 @@ function FooterInner() {
               Quick Support
             </h3>
             <p className="shrink-0 text-sm text-gray-400">
-              Chat or call below — full details on our{" "}
-              <Link
+            Need help choosing the right program or have a health-related question? Our team is here to assist you. 
+            {/* Reach out to us on our{" "} */}
+              {/* <Link
                 href="/contact"
                 className="text-primary underline-offset-2 hover:underline focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-sm"
               >
                 contact page
-              </Link>
-              .
+              </Link> */}
             </p>
             <ul className="lg:mt-auto space-y-2 pt-4" role="list">
               <li>
@@ -166,7 +172,7 @@ function FooterInner() {
                     <FaWhatsapp className="drop-shadow-[0_0_8px_rgba(52,211,153,0.35)]" />
                   </span>
                   <span className="min-w-0 flex-1 text-left text-sm font-semibold text-white">
-                    WhatsApp support
+                  Chat on WhatsApp
                   </span>
                   <span
                     className="material-icons-outlined text-base text-gray-500 transition-colors group-hover:text-emerald-400 lg:block hidden"
@@ -189,7 +195,7 @@ function FooterInner() {
                     <MdPhoneInTalk className="drop-shadow-[0_0_10px_rgba(0,168,106,0.35)]" />
                   </span>
                   <span className="min-w-0 flex-1 text-left text-sm font-semibold text-white">
-                    Direct call
+                  Call Our Team
                   </span>
                   <span
                     className="material-icons-outlined text-base text-gray-500 transition-colors group-hover:text-primary lg:block hidden"

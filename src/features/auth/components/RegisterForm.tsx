@@ -61,10 +61,10 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
   return (
     <div className="flex w-full flex-col justify-center p-8 lg:w-1/2 lg:p-16">
       <div className="mb-10 text-center lg:text-left">
-        <h2 className="mb-3 font-serif text-4xl text-foreground">
+        <h2 className="mb-3 font-anek-bangla text-3xl lg:text-4xl text-foreground">
           Create your account
         </h2>
-        <p className="text-base text-muted dark:text-gray-400">
+        <p className="text-sm md:text-base text-muted dark:text-gray-400">
           Join over 10,000+ members on their wellness journey.
         </p>
       </div>
@@ -198,19 +198,14 @@ export function RegisterForm({ onRegisterSuccess }: RegisterFormProps = {}) {
         <div className="flex items-center gap-2 text-muted">
           <span className="material-icons-outlined text-base">lock</span>
           <span className="font-medium uppercase tracking-wide">
-            HIPAA COMPLIANT
+          Secure & Protected Privacy First
           </span>
         </div>
-        <div className="flex items-center gap-2 text-muted">
-          <span className="material-icons-outlined text-base">shield</span>
-          <span className="font-medium uppercase tracking-wide">
-            DATA PRIVACY SECURE
-          </span>
-        </div>
+        
       </div>
 
       <p className="mt-10 text-center text-sm text-muted dark:text-gray-400">
-        Already have an account?{" "}
+      Already part of our community?{" "}
         <Link
           href="/auth/login"
           className="ml-1 font-bold text-primary hover:underline"

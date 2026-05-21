@@ -31,12 +31,12 @@ export function FreeVideosSection() {
         <div>
           <h2
             id="free-videos-heading"
-            className="font-serif text-3xl font-bold text-foreground"
+            className="font-anek-bangla text-3xl font-bold text-foreground"
           >
-            Free Videos
+            Free Healing Classes
           </h2>
           <p className="mt-2 text-body-md text-muted">
-            Start your morning with these quick sessions
+          Learn practical, doctor-guided yoga techniques to reduce pain, improve mobility, and build a healthier life- completely free.
           </p>
         </div>
         <Link
