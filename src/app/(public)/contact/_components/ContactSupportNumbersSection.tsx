@@ -1,13 +1,13 @@
 import { ContactDetailItem } from "./ContactDetailItem";
 
 const WHATSAPP_SUPPORT_URL =
-  "https://wa.me/8801312353577?text=" +
+  "https://wa.me/8801349002180?text=" +
   encodeURIComponent("Hello, I need support regarding Yoga With Doctor.");
 
 const DIRECT_CALL_LINKS = [
-  { href: "tel:+8809613668866", label: "09613-668866" },
-  { href: "tel:+8801701313001", label: "01701313001" },
-  { href: "tel:+8801701313002", label: "01701313002" },
+  { href: "tel:+8801349002180", label: "+880 1349-002180" },
+  // { href: "tel:+8801701313001", label: "01701313001" },
+  // { href: "tel:+8801701313002", label: "01701313002" },
 ] as const;
 
 export function ContactSupportNumbersSection({
@@ -24,13 +24,13 @@ export function ContactSupportNumbersSection({
         id="support-numbers-heading"
         className="font-display mb-6 text-lg font-semibold text-foreground md:mb-8"
       >
-        Support numbers
+        Need Immediate Assistance?
       </h2>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-0 md:divide-x md:divide-border">
         <div className="md:min-h-0 md:pr-6 lg:pr-10">
           <ContactDetailItem
             icon="phone_in_talk"
-            label="Direct support call"
+            label="Call Our Support Team"
             value={
               <p className="leading-relaxed">
                 {DIRECT_CALL_LINKS.map(({ href, label }, i) => (
@@ -48,7 +48,7 @@ export function ContactSupportNumbersSection({
         <div className="md:min-h-0 md:pl-6 lg:pl-10">
           <ContactDetailItem
             icon="chat"
-            label="WhatsApp support"
+            label="Chat on WhatsApp"
             value={
               <a
                 href={WHATSAPP_SUPPORT_URL}
@@ -56,7 +56,7 @@ export function ContactSupportNumbersSection({
                 rel="noopener noreferrer"
                 className="inline-block hover:underline"
               >
-                +8801312-353577
+                +880 1349-002180
               </a>
             }
           />

@@ -111,7 +111,7 @@ export function ContactForm({ action }: ContactFormProps) {
           </span>
         </button>
         <p className="mt-2 text-center text-xs text-muted">
-          We respect your privacy. Your information is strictly confidential.
+          Your information is kept confidential and used only to respond to your inquiry.
         </p>
       </form>
     </div>

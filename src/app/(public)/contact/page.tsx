@@ -80,7 +80,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
 
           <section aria-labelledby="contact-form-heading">
             <h2 id="contact-form-heading" className="sr-only">
-              Send us a message
+              Send Us a Message
             </h2>
             {showSuccess && <ContactSuccessBanner />}
             {showError && (

@@ -22,7 +22,7 @@ const CONTACT_DETAILS: ContactDetail[] = [
   {
     icon: "schedule",
     label: "Working Hours",
-    value: "Mon-Fri, 9am - 5pm",
+    value: "Sat-Thu, 9am - 8pm (BST)",
   },
 ];
 
