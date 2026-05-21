@@ -30,9 +30,7 @@ export function ArticlesPageClient() {
   const featuredArticle =
     apiArticles.length > 0 ? mapToFeaturedArticle(apiArticles[0]) : null;
   const articles =
-    apiArticles.length > 1
-      ? apiArticles.slice(1).map(mapApiArticleToCard)
-      : [];
+    apiArticles.length > 1 ? apiArticles.slice(1).map(mapApiArticleToCard) : [];
 
   if (isLoading && !data) {
     return (
@@ -42,25 +40,26 @@ export function ArticlesPageClient() {
     );
   }
 
-  if (isError) {
-    return (
-      <section className="mx-auto w-full max-w-7xl flex-grow px-4 py-10 sm:px-6 lg:px-8 min-h-[400px]">
-        <p className="text-md text-red-500">
-          Unable to load articles from server or no articles has been published yet.
-        </p>
-      </section>
-    );
-  }
-
   return (
-    <ArticlesPageContent
-      featuredArticle={featuredArticle}
-      articles={articles}
-      pagination={{
-        totalPages,
-        currentPage,
-        onPageChange: setCurrentPage,
-      }}
-    />
+    <>
+      
+      <ArticlesPageContent
+        featuredArticle={featuredArticle}
+        articles={articles}
+        pagination={{
+          totalPages,
+          currentPage,
+          onPageChange: setCurrentPage,
+        }}
+      />
+      {isError && process.env.NODE_ENV === "development" && (
+        <section className="mx-auto w-full max-w-7xl flex-grow px-4 py-10 sm:px-6 lg:px-8">
+          <p className="text-md text-center text-red-500">
+            Unable to load articles from server or no articles has been
+            published yet.
+          </p>
+        </section>
+      )}
+    </>
   );
 }

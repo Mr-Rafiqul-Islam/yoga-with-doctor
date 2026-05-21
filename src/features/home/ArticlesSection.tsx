@@ -53,12 +53,12 @@ export function ArticlesSection() {
         <div>
           <h2
             id="home-articles-heading"
-            className="font-display text-3xl font-bold text-foreground dark:text-white"
+            className="font-anek-bangla text-3xl font-bold text-foreground dark:text-white"
           >
-            Wellness Articles
+           Health & Wellness Articles
           </h2>
           <p className="mt-2 text-sm text-muted dark:text-gray-400">
-            Expert reads on yoga, recovery, and mindful living
+          Evidence-based articles on healing, prevention, nutrition, movement, and healthy living.
           </p>
         </div>
         <Link

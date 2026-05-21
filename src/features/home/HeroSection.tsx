@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const HERO_IMAGE_URL = "/banner2.png";
+const HERO_IMAGE_URL = "/banner3.png";
   // "https://lh3.googleusercontent.com/aida-public/AB6AXuC8cuPVOyIENRJwhjB_sRZT1xIxdtZYlZTahw-wo7c9V0yrlXLIKFtXXtQlPUQctZGSKcHJmtZQnBzbOYTUDMOp_691EGJuWtzoMFQPi7IdVM-I21agWiPA1e65vyOw6CLKPlIQPTGEarHfiJ-ebywseIplHNa8gQN1reTcf7pXBHLlPuqj_ql1R7cCQ6xONcSf7E3miFC2F_i0BFcd00PfVdg7VnxHbdHR2opNOv9O6VyNtWHtqRYYK0odCfebeOusO6PHt5r80Q";
 
 /** Central hero copy and links — swap values here or from CMS/env without touching markup. */
@@ -48,8 +48,8 @@ export function HeroSection() {
     >
       <div className="mx-auto grid grid-cols-1 lg:grid-cols-2 max-w-7xl">
         {/* Left: content — 50% on lg, full width on small */}
-        <div className="bg-surface px-4 pb-8 pt-20 sm:px-6 sm:pb-16 lg:max-w-2xl xl:w-full lg:px-8 lg:py-8 xl:pb-32">
-          <div className="mx-auto mt-10 sm:mt-12 md:mt-16 lg:mt-20 xl:mt-28">
+        <div className="bg-surface px-4 sm:px-6 lg:max-w-2xl xl:w-full lg:px-8 lg:py-8 xl:pb-32">
+          <div className="mx-auto mt-10 sm:mt-12">
             <div className="sm:text-center lg:text-left">
               {/* Badge */}
               <span className="mb-6 inline-flex items-center rounded-radius-full border border-[#00a86b4d] bg-[#00a86b1a] px-3 py-1 text-caption font-semibold text-primary">
@@ -61,7 +61,7 @@ export function HeroSection() {
               </span>
 
               {/* Headline — Playfair Display */}
-              <h1 className="font-display text-4xl font-bold tracking-tight text-foreground sm:text-[42px] xl:text-6xl">
+              <h1 className="font-anek-bangla text-4xl font-bold tracking-tight text-foreground sm:text-[42px] xl:text-6xl">
                 <span className="block xl:inline">{headlineLine}</span>{" "}
                 <span className="block text-primary xl:inline">
                   {subHeadlineLine}
@@ -99,7 +99,7 @@ export function HeroSection() {
         </div>
 
         {/* Right: image — 50% on lg, full width below */}
-        <div className="">
+        <div className="pr-0 lg:pr-6">
           <div className="relative h-80 w-full sm:h-96 md:h-[650px] lg:h-full lg:w-full">
             <Image
               src={image.src}

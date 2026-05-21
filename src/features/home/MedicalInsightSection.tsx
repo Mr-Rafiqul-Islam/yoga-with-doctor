@@ -9,10 +9,11 @@ export function MedicalInsightSection() {
       <div className="flex flex-col items-center gap-6 rounded-xl border border-primary/20 bg-sage-light p-6 shadow-soft dark:border-white/10 dark:bg-sage-dark sm:p-10 md:flex-row">
         <div className="flex-shrink-0">
           <div
-            className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-primary shadow-sm dark:bg-sage-dark-icon-bg dark:text-primary-on-dark"
+            className="flex h-14 w-14 xl:h-16 xl:w-16 items-center justify-center rounded-full bg-white text-primary shadow-sm dark:text-primary-on-dark"
             aria-hidden
           >
-            <span className="material-icons-outlined text-3xl">lightbulb</span>
+            <span className="material-icons-outlined text-lg md:text-xl xl:text-2xl">menu_book</span>
+       
           </div>
         </div>
         <div className="flex-grow text-center md:text-left">
