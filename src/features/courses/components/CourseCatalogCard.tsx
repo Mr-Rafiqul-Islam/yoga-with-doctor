@@ -9,7 +9,7 @@ import { useCheckCourseAccessQuery } from "@/slices/courses";
 
 export type CourseCatalogCardProps = {
   title: string;
-  shortDescription: string;
+  shortDescription?: string;
   bannerImage: string;
   imageAlt: string;
   category: string;

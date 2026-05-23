@@ -9,6 +9,7 @@ import { useLazyGetMyEnrollmentsQuery } from "@/slices/enrollment";
 import { DashboardContinueLearningCard } from "./DashboardContinueLearningCard";
 
 type EnrolledCourse = EnrollmentCourseSummary & {
+  shortDescription?: string | null;
   bannerUrl?: string | null;
   level?: string | null;
 };
@@ -55,6 +56,7 @@ export function DashboardContinueLearningSection() {
         const access = catalogAccess(course.access);
         const mapped: ContinueLearningCourse = {
           title: course.title,
+          shortDescription: course.shortDescription ?? "",
           bannerImage,
           imageAlt: course.title,
           category: "Course",

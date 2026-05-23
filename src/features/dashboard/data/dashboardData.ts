@@ -11,6 +11,7 @@ export type QuickAccessItem = {
 };
 
 export type ContinueLearningCourse = CourseWithMeta & {
+  shortDescription?: string;
   progress: number;
   timeLeft?: string;
   badge?: "Popular" | "New";
