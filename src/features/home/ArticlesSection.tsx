@@ -2,34 +2,14 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { ArticleCard } from "@/features/articles/components/ArticleCard";
+import {
+  ArticleCard,
+  ArticleCardSkeleton,
+} from "@/features/articles/components/ArticleCard";
 import { mapApiArticleToCard } from "@/features/articles/lib/mapApiArticle";
 import { useGetArticlesQuery } from "@/slices/articles";
 
 const PAGE_SIZE = 4;
-
-function ArticleCardSkeleton() {
-  return (
-    <div
-      className="flex h-64 flex-row overflow-hidden rounded-2xl border border-border bg-surface shadow-elevation-sm animate-pulse"
-      aria-hidden
-    >
-      <div className="w-1/3 shrink-0 bg-muted/40" />
-      <div className="flex flex-1 flex-col justify-between p-6">
-        <div className="space-y-3">
-          <div className="h-3 w-24 rounded bg-muted/50" />
-          <div className="h-6 w-full max-w-[90%] rounded bg-muted/50" />
-          <div className="h-4 w-full rounded bg-muted/40" />
-          <div className="h-4 w-[80%] rounded bg-muted/40" />
-        </div>
-        <div className="flex justify-between border-t border-border pt-4">
-          <div className="h-3 w-28 rounded bg-muted/40" />
-          <div className="h-4 w-20 rounded bg-muted/50" />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export function ArticlesSection() {
   const { data, isLoading, isFetching } = useGetArticlesQuery({
@@ -70,7 +50,7 @@ export function ArticlesSection() {
       </div>
 
       {showSkeleton ? (
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: PAGE_SIZE }).map((_, i) => (
             <ArticleCardSkeleton key={i} />
           ))}
@@ -80,7 +60,7 @@ export function ArticlesSection() {
           No articles to show right now. Check back soon.
         </p>
       ) : (
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {articles.map((article) => (
             <ArticleCard key={article.slug} article={article} />
           ))}
