@@ -66,6 +66,7 @@ function mapAllTypeCourseToCourseWithMeta(
   return {
     // Card display props
     title: course.title,
+    shortDescription: course.shortDescription ?? "",
     bannerImage:
       course.bannerUrl ??
       dummyCourses[index % dummyCourses.length]?.bannerImage ??

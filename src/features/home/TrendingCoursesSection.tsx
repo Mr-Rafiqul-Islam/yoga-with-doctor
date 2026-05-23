@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { CourseCard, type CourseCardProps } from "./CourseCard";
+import { CourseCard, CourseCardSkeleton, type CourseCardProps } from "./CourseCard";
 import {
   useGetAllTypeCoursesQuery,
   type AllTypeCourseItem,
@@ -44,13 +44,13 @@ function mapCourseToCardProps(course: AllTypeCourseItem): CourseCardProps {
       ? course.avgRating.toFixed(1)
       : undefined;
 
-  const description =
-    course.description?.trim() ||
+  const shortDescription =
+    course.shortDescription?.trim() ||
     "Explore this course on Yoga with Doctor.";
 
   return {
     title: course.title,
-    description,
+    shortDescription,
     instructorName: course.instructorName || "Yoga with Doctor",
     instructorTitle,
     instructorAvatarSrc: FALLBACK_INSTRUCTOR_AVATAR,
@@ -112,13 +112,10 @@ export function TrendingCoursesSection() {
           View All
         </Link>
       </div>
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {showSkeleton
           ? Array.from({ length: TRENDING_LIMIT }).map((_, i) => (
-              <div
-                key={i}
-                className="h-72 animate-pulse rounded-2xl bg-gray-200 dark:bg-gray-700 sm:h-64"
-              />
+              <CourseCardSkeleton key={i} />
             ))
           : cardProps.map((course) => (
               <CourseCard key={course.slug ?? course.title} {...course} />

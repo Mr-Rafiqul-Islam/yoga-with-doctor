@@ -8,9 +8,9 @@ import { CourseCatalogCardCta } from "@/features/courses/components/CourseCatalo
 
 export type CourseCardProps = {
   title: string;
-  description: string;
+  shortDescription: string;
   instructorName: string;
-  instructorTitle: string;
+  instructorTitle?: string;
   instructorAvatarSrc: string;
   price: string;
   /** Badge on the image (e.g. BESTSELLER, MEDICAL INSIGHT) */
@@ -42,9 +42,8 @@ const CONTENT_TAG_STYLES = {
 
 export function CourseCard({
   title,
-  description,
+  shortDescription,
   instructorName,
-  instructorTitle,
   instructorAvatarSrc,
   price,
   imageBadge,
@@ -61,79 +60,74 @@ export function CourseCard({
 }: CourseCardProps) {
   const linkHref = slug ? `/courses/${slug}` : href;
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const saniTizeDescription = description.replace(/<[^>]*>?/g, '');
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl bg-surface shadow-elevation-sm transition-all hover:shadow-elevation-md dark:bg-gray-800 sm:flex-row">
+    <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-elevation-sm transition-all hover:shadow-elevation-md dark:bg-gray-800">
       <Link
         href={linkHref}
-        className="flex flex-1 flex-col outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:flex-row sm:min-w-0"
+        className="flex h-full flex-col outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       >
-        {/* Image area — left */}
-        <div className="relative h-48 flex-shrink-0 sm:w-2/5 sm:h-auto">
+        <div className="relative aspect-video w-full overflow-hidden bg-muted/40">
           <Image
             src={bannerImage}
             alt={imageAlt}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, 40vw"
+            className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
           {imageBadge && (
             <span
-              className={`absolute left-3 top-3 rounded px-2 py-1 text-xs font-bold text-white shadow-sm ${IMAGE_BADGE_STYLES[imageBadgeVariant]}`}
+              className={`absolute left-2 top-2 rounded px-2 py-0.5 text-[10px] font-bold uppercase text-white shadow-sm ${IMAGE_BADGE_STYLES[imageBadgeVariant]}`}
             >
               {imageBadge}
             </span>
           )}
         </div>
 
-        {/* Content area — right */}
-        <div className="flex flex-1 flex-col justify-between p-6 sm:w-3/5">
+        <div className="flex w-full min-w-0 flex-1 flex-col justify-between p-4">
           <div>
-            <div className="mb-2 flex items-start justify-between gap-2">
+            <div className="mb-1.5 flex items-start justify-between gap-2">
               {contentTag && (
                 <span
-                  className={`rounded px-2 py-0.5 text-xs font-medium ${CONTENT_TAG_STYLES[contentTagVariant]}`}
+                  className={`rounded px-2 py-0.5 text-[11px] font-medium ${CONTENT_TAG_STYLES[contentTagVariant]}`}
                 >
                   {contentTag}
                 </span>
               )}
               {rating && (
-                <span className="flex items-center text-sm font-bold text-yellow-500">
-                  <span className="material-icons-outlined mr-1 text-base" aria-hidden>
+                <span className="flex shrink-0 items-center text-xs font-bold text-yellow-500">
+                  <span className="material-icons-outlined mr-0.5 text-sm" aria-hidden>
                     star
                   </span>
                   {rating}
                 </span>
               )}
             </div>
-            <h3 className="mb-2 font-display text-xl font-bold text-foreground dark:text-white">
+            <h3 className="mb-2 line-clamp-2 font-display text-base font-bold leading-snug text-foreground dark:text-white">
               {title}
             </h3>
-            <p className="mb-4 line-clamp-2 text-sm text-muted dark:text-gray-400">
-              {saniTizeDescription}
+            <p className="line-clamp-2 text-sm leading-relaxed text-muted dark:text-gray-400">
+              {shortDescription}
             </p>
           </div>
-          <div>
-            <div className="mb-4 flex items-center gap-3">
+
+          <div className="mt-3 space-y-3">
+            <div className="flex items-center gap-2.5">
               <Image
                 src={instructorAvatarSrc}
                 alt=""
-                width={32}
-                height={32}
-                className="rounded-full border border-border object-cover dark:border-gray-600"
+                width={28}
+                height={28}
+                className="h-7 w-7 shrink-0 rounded-full border border-border object-cover dark:border-gray-600"
               />
-              <div className="text-sm">
-                <p className="font-medium text-foreground dark:text-white">
+              <div className="min-w-0 text-xs">
+                <p className="truncate font-medium text-foreground dark:text-white">
                   {instructorName}
-                </p>
-                <p className="text-xs text-muted dark:text-gray-400">
-                  {instructorTitle}
                 </p>
               </div>
             </div>
-            <div className="flex items-center justify-between border-t border-border pt-4 dark:border-gray-700">
-              <span className="text-xl font-bold text-foreground dark:text-white">
+            <div className="flex flex-col gap-2 border-t border-border pt-3 dark:border-gray-700 sm:flex-row sm:items-center sm:justify-between">
+              <span className="text-lg font-bold text-foreground dark:text-white">
                 {price}
               </span>
               <CourseCatalogCardCta
@@ -173,5 +167,48 @@ export function CourseCard({
         </div>
       </Modal>
     </article>
+  );
+}
+
+/**
+ * Skeleton placeholder for CourseCard during initial load.
+ */
+export function CourseCardSkeleton() {
+  return (
+    <div
+      className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-elevation-sm"
+      aria-hidden
+    >
+      <div className="aspect-video w-full bg-muted/40" />
+      <div className="flex w-full min-w-0 flex-1 flex-col justify-between p-4">
+        <div>
+          <div className="mb-1.5 flex items-start justify-between gap-2">
+            <div className="h-4 w-16 animate-pulse rounded bg-muted/50" />
+            <div className="h-4 w-10 animate-pulse rounded bg-muted/40" />
+          </div>
+          <div className="mb-2 space-y-1.5">
+            <div className="h-4 w-full max-w-[95%] animate-pulse rounded bg-muted/50" />
+            <div className="h-4 w-[75%] animate-pulse rounded bg-muted/50" />
+          </div>
+          <div className="space-y-1.5">
+            <div className="h-3 w-full animate-pulse rounded bg-muted/40" />
+            <div className="h-3 w-[85%] animate-pulse rounded bg-muted/40" />
+          </div>
+        </div>
+        <div className="mt-3 space-y-3">
+          <div className="flex items-center gap-2.5">
+            <div className="h-7 w-7 shrink-0 animate-pulse rounded-full bg-muted/40" />
+            <div className="space-y-1.5">
+              <div className="h-2.5 w-24 animate-pulse rounded bg-muted/50" />
+              <div className="h-2.5 w-20 animate-pulse rounded bg-muted/40" />
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 border-t border-border pt-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="h-5 w-16 animate-pulse rounded bg-muted/50" />
+            <div className="h-9 w-24 animate-pulse rounded-lg bg-muted/50" />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

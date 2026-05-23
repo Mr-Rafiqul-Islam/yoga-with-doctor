@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MuxBackgroundVideoLazy } from "@/components/media/MuxBackgroundVideoLazy";
+import { MuxPlayerLazy } from "@/components/media/MuxPlayerLazy";
 import { Modal } from "@/components/Modal";
 import { CourseCatalogCardCta } from "./CourseCatalogCardCta";
 import type { CourseDetailData, CourseLesson } from "../data/courseDetailData";
@@ -13,6 +13,16 @@ import { useCheckCourseAccessQuery } from "@/slices/courses";
 import { useAppSelector } from "@/stores";
 
 const TABS = ["About Course", "Curriculum", "Reviews"] as const;
+
+const COURSE_HERO_MUX_STYLE = {
+  aspectRatio: "auto",
+  height: "100%",
+  width: "100%",
+  "--controls": "none",
+  "--controls-backdrop-color": "transparent",
+  "--media-object-fit": "cover",
+  "--media-object-position": "center",
+} as const;
 
 function muxPlaybackIdFromVideo(video: unknown): string | undefined {
   if (video && typeof video === "object" && "muxPlaybackId" in video) {
@@ -72,22 +82,18 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
         {/* Video section: autoplay preview if available, otherwise locked thumbnail */}
         <div className="relative aspect-video overflow-hidden rounded-2xl bg-black shadow-lg">
           {heroMuxPlaybackId ? (
-            <MuxBackgroundVideoLazy
-              src={`https://stream.mux.com/${heroMuxPlaybackId}.m3u8`}
+            <MuxPlayerLazy
               className="h-full w-full"
+              playbackId={heroMuxPlaybackId}
+              poster={heroPosterUrl}
+              streamType="on-demand"
               maxResolution="720p"
-            >
-              {/* MuxBackgroundVideo expects a plain <img> fallback; not next/image */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={
-                  heroPosterUrl ??
-                  `https://image.mux.com/${heroMuxPlaybackId}/thumbnail.webp?time=0`
-                }
-                alt=""
-                className="h-full w-full object-cover"
-              />
-            </MuxBackgroundVideoLazy>
+              autoPlay
+              loop
+              playsInline
+              nohotkeys
+              style={COURSE_HERO_MUX_STYLE}
+            />
           ) : (
             <>
               {course.thumbnailUrl && <Image

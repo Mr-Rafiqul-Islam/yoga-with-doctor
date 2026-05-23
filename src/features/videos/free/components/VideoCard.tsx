@@ -145,7 +145,7 @@ export function VideoCard({
       </div>
 
       {title ? (
-        <h3 className="font-semibold leading-snug text-foreground line-clamp-2">
+        <h3 className="font-semibold font-anek-bangla text-h2 leading-snug text-foreground line-clamp-2">
           {title}
         </h3>
       ) : (
