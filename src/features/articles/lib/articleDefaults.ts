@@ -8,11 +8,11 @@ export const FALLBACK_ARTICLE_IMAGE = DEFAULT_IMG;
 /** Author used when mapping API articles to cards / details. */
 export const DEFAULT_AUTHOR_FOR_MAP: ArticleAuthor = {
   name: "Dr. Shah Alam",
-  title: "Orthopedics Specialist, Spine Surgeion & Yoga Instructor.",
+  title: "The Intelligent Way to Heal.",
   avatarSrc:
-    "/Dr. Shah Alam-2.jpeg",
+    "/logo-dark-bg-zoom.jpeg",
   bioSnippet:
-    "MBBS • D.Ortho (BSMMU)\n Orthopedic & Spine Surgeon.\n Life Member- Bangladesh Orthopedic Society.\n Yoga Instructor. \n Certified Life Member- Indian Yoga Association",
+    "Our mission is to empower people with evidence-based health education, therapeutic yoga, and practical lifestyle guidance- helping them prevent disease, recover naturally, and build lifelong wellness.",
   fullBio:
     "Specializing in the intersection of neuroscience and traditional yogic practices.",
   profileLink: "https://drshahalam.com/",
