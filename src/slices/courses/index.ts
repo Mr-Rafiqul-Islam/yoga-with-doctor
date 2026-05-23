@@ -286,6 +286,7 @@ export interface AllTypeCourseItem {
   title: string;
   slug: string;
   description: string | null;
+  shortDescription: string | null;
   bannerImageId: string | null;
   bannerUrl: string | null;
   level: string;

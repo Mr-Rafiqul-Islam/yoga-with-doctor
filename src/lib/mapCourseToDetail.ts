@@ -13,7 +13,7 @@ import {
 const FALLBACK_THUMBNAIL =
   "https://via.placeholder.com/640x360.png?text=Course";
 const FALLBACK_INSTRUCTOR_AVATAR =
-  "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-Hero.jpeg";
+  "/Dr. Shah Alam-2.jpeg";
 const STATIC_INSTRUCTOR_TITLE = "Orthopedics Specialist, Spine Surgeion, Yoga Instructor";
 const STATIC_LEARNING_OUTCOMES = [
   "Evidence-based techniques for wellness",
