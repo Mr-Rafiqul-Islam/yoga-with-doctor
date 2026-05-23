@@ -115,11 +115,11 @@ export function LoginForm({
       ) : null}
 
       <div className="mb-10 text-center lg:text-left">
-        <h2 className="mb-3 font-serif text-4xl text-foreground">
-          Welcome Back
+        <h2 className="mb-3 font-anek-bangla text-3xl lg:text-4xl text-foreground">
+        Welcome Back to Your Healing Journey
         </h2>
-        <p className="text-base text-muted dark:text-gray-400">
-          Enter your credentials to access your wellness dashboard.
+        <p className="text-sm md:text-base text-muted dark:text-gray-400">
+        Continue your path toward better health with doctor-guided yoga, evidence-based wellness programs, and personalized learning.
         </p>
       </div>
 

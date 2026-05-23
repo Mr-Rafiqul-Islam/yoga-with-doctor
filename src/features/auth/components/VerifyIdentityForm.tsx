@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { signInWithLoginOtp } from "@/lib/auth/client";
+import {
+  establishNextAuthSessionFromStoredTokens,
+  signInWithLoginOtp,
+} from "@/lib/auth/client";
 import { useVerifyRegisterOTPMutation } from "@/slices/auth";
 import { getDeviceId } from "@/utils/deviceId";
 
@@ -27,7 +29,6 @@ export function VerifyIdentityForm({
   onComplete,
   postLoginPath = "/dashboard",
 }: VerifyIdentityFormProps = {}) {
-  const router = useRouter();
   const [code, setCode] = useState<string[]>(["", "", "", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState(119);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -92,6 +93,18 @@ export function VerifyIdentityForm({
           deviceId,
           platform,
         }).unwrap();
+
+        const sessionRes = await establishNextAuthSessionFromStoredTokens(
+          postLoginPath
+        );
+        if (!sessionRes.ok) {
+          setError(sessionRes.error ?? "Could not start session. Try again.");
+          return;
+        }
+        window.location.assign(
+          `${window.location.origin}${postLoginPath.startsWith("/") ? postLoginPath : `/${postLoginPath}`}`
+        );
+        return;
       } else {
         setIsVerifyingLogin(true);
         try {
@@ -120,8 +133,6 @@ export function VerifyIdentityForm({
       }
       if (onComplete) {
         onComplete();
-      } else if (isFromRegister) {
-        router.push("/auth/login");
       } else {
         window.location.assign(
           `${window.location.origin}${postLoginPath.startsWith("/") ? postLoginPath : `/${postLoginPath}`}`

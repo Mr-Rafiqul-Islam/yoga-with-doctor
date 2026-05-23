@@ -43,10 +43,10 @@ export function FeaturedArticleSection({ article }: FeaturedArticleSectionProps)
             <span aria-hidden>•</span>
             <span>{readTime}</span>
           </div>
-          <h2 className="mb-6 font-anek-bangla text-2xl font-bold leading-tight text-foreground md:text-3xl lg:text-4xl">
+          <h2 className="mb-2 line-clamp-4 font-anek-bangla text-2xl font-bold leading-tight text-foreground md:text-3xl lg:text-4xl">
             {title}
           </h2>
-          <p className="mb-8 line-clamp-3 text-body-lg leading-relaxed text-muted">
+          <p className="mb-4 line-clamp-3 text-body-lg leading-relaxed text-muted">
             {description}
           </p>
           <div className="mt-auto flex items-center justify-between">

@@ -15,9 +15,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const topics: FaqTopic[] = [
   { id: "all", label: "All Topics" },
-  { id: "subscription", label: "Subscription" },
+  { id: "programs", label: "Programs" }, 
   { id: "yoga-classes", label: "Yoga Classes" },
-  { id: "technical-support", label: "Technical Support" },
+  { id: "subscription", label: "Subscription" },
+  { id: "health-safety", label: "Health & Safety" }, // Fixed string literal mismatch here
 ];
 
 const faqSections: FaqSection[] = [
@@ -26,56 +27,109 @@ const faqSections: FaqSection[] = [
     heading: "Getting Started",
     items: [
       {
-        id: "choose-plan",
-        topicId: "yoga-classes",
-        question: "How do I choose the right yoga plan for my level?",
-        answer: {
-          paragraphs: [
-            "We recommend starting with our \"Body & Mind Assessment\". Based on your flexibility, strength, and goals, our AI-driven system will suggest a personalized path.",
-          ],
-          link: {
-            href: "/courses",
-            text: "Morning Sunshine Flow",
-            suffix: " is an excellent starting point to learn the basics.",
-          },
-        },
+        id: "choose-program-health-condition",
+        topicId: "programs", // Maps to "programs" filter
+        question: "How do I choose the right program for my health condition?",
+        answer: "Start by identifying your primary health goal—whether it's back pain relief, migraine management, weight loss, stress reduction, posture correction, or general wellness. Each program includes a detailed description to help you find the best fit. If you're unsure, our support team can guide you toward the most appropriate program."
       },
       {
-        id: "download-videos",
-        topicId: "technical-support",
-        question: "Can I download videos for offline viewing?",
-        answer:
-          "Premium subscribers can download selected sessions for offline use within the app. Open a course or session and look for the download icon. Downloads are available for the duration of your subscription.",
+        id: "suitable-for-beginners",
+        topicId: "programs",
+        question: "Are these programs suitable for beginners?",
+        answer: "Yes. Most of our programs are designed for beginners and include step-by-step guidance. Sessions progress gradually so you can build confidence, mobility, and strength safely at your own pace."
       },
       {
-        id: "equipment-required",
-        topicId: "yoga-classes",
-        question: "Is equipment required for the sessions?",
-        answer:
-          "Most sessions are designed for a mat only. Some advanced or specialty classes may suggest blocks or a strap; this is noted in the class description. You can filter classes by \"No equipment\" if needed.",
+        id: "follow-from-home",
+        topicId: "programs",
+        question: "Can I follow the programs from home?",
+        answer: "Absolutely. All programs are designed to be followed from home using clear video instructions. Most sessions require little to no special equipment."
       },
-    ],
+      {
+        id: "expect-results-timeline",
+        topicId: "programs",
+        question: "How quickly can I expect results?",
+        answer: "Results vary depending on your health condition, consistency, and lifestyle habits. Many members notice improvements in flexibility, mobility, pain levels, energy, or stress management within a few weeks of regular practice."
+      }
+    ]
   },
   {
-    id: "subscription-billing",
-    heading: "Subscription & Billing",
+    id: "yoga-practice",
+    heading: "Yoga Practice",
     items: [
       {
-        id: "cancel-subscription",
-        topicId: "subscription",
-        question: "How do I cancel my subscription?",
-        answer:
-          "You can manage or cancel your subscription anytime from your account under Subscription. Cancellation takes effect at the end of your current billing period; you keep access until then.",
+        id: "previous-yoga-experience",
+        topicId: "yoga-classes", // Maps to "yoga-classes" filter
+        question: "Do I need previous yoga experience?",
+        answer: "No. Our programs are created for complete beginners as well as experienced practitioners. Every session includes clear instructions and modifications when needed."
       },
       {
-        id: "payment-methods",
-        topicId: "subscription",
-        question: "What payment methods are accepted?",
-        answer:
-          "We accept major credit and debit cards, and in-app purchases via Apple App Store and Google Play. Subscription management and payment methods can be updated in your dashboard.",
+        id: "equipment-needed",
+        topicId: "yoga-classes",
+        question: "What equipment do I need?",
+        answer: "Most sessions require only a yoga mat and comfortable clothing. Some specialized programs may suggest simple accessories such as yoga blocks, straps, or cushions, but these are usually optional."
       },
-    ],
+      {
+        id: "pain-or-medical-condition",
+        topicId: "yoga-classes",
+        question: "What if I have pain or a medical condition?",
+        answer: "Our programs are designed with medical guidance in mind. However, if you have severe symptoms, recent surgery, significant injuries, or a complex medical condition, consult your healthcare professional before starting any exercise program."
+      }
+    ]
   },
+  {
+    id: "membership-billing",
+    heading: "Membership & Billing",
+    items: [
+      {
+        id: "purchase-program",
+        topicId: "subscription", // Maps to "subscription" filter
+        question: "How do I purchase a program?",
+        answer: "Simply select your preferred program, complete the secure checkout process, and gain immediate access to the course materials from your account dashboard."
+      },
+      {
+        id: "payment-methods-accepted",
+        topicId: "subscription",
+        question: "What payment methods do you accept?",
+        answer: "We accept major local and international payment methods including mobile banking, debit cards, credit cards, and supported online payment gateways."
+      },
+      {
+        id: "lifetime-access",
+        topicId: "subscription",
+        question: "Will I have lifetime access?",
+        answer: "Access depends on the specific program. Lifetime-access courses clearly mention this on the program page, while memberships remain active during the subscription period."
+      },
+      {
+        id: "manage-cancel-subscription",
+        topicId: "subscription",
+        question: "How do I manage or cancel my subscription?",
+        answer: "You can manage your subscription settings directly from your account dashboard. If you need assistance, our support team is always available to help."
+      }
+    ]
+  },
+  {
+    id: "health-safety",
+    heading: "Health & Safety",
+    items: [
+      {
+        id: "substitute-medical-treatment",
+        topicId: "health-safety", // Fixed from "safety" to match filter id
+        question: "Are these programs a substitute for medical treatment?",
+        answer: "No. Our educational content and yoga programs are intended to support health and wellness. They do not replace professional medical diagnosis, treatment, or emergency care."
+      },
+      {
+        id: "therapeutic-yoga-safety",
+        topicId: "health-safety", // Fixed from "safety" to match filter id
+        question: "Is therapeutic yoga safe for everyone?",
+        answer: "Most people can safely participate when following instructions appropriately. However, individual conditions differ, and certain exercises may not be suitable for everyone. Always practice within your comfort level."
+      },
+      {
+        id: "prevent-future-health-problems",
+        topicId: "health-safety", // Fixed from "safety" to match filter id
+        question: "Can yoga help prevent future health problems?",
+        answer: "Regular practice can improve flexibility, posture, strength, balance, stress management, and overall well-being, which may contribute to a healthier lifestyle and reduced risk of certain health issues."
+      }
+    ]
+  }
 ];
 
 export default function FaqPage() {
@@ -85,7 +139,7 @@ export default function FaqPage() {
         {/* Header - no search bar (red marked box omitted) */}
         <header className="mb-10 text-center md:text-left">
           <span className="mb-4 inline-block rounded-md bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary dark:bg-primary/20">
-            Support
+            HELP & SUPPORT CENTER
           </span>
           <h1 className="font-display text-4xl font-bold text-foreground md:text-5xl mb-4">
             Frequently Asked
@@ -93,7 +147,7 @@ export default function FaqPage() {
             Questions
           </h1>
           <p className="max-w-2xl text-lg text-muted">
-            Find answers to common questions about your yoga journey, subscriptions, and wellness plans.
+            Find clear answers about our programs, memberships, payments, yoga sessions, health guidance, and your healing journey with Yoga With Doctor.
           </p>
         </header>
 
@@ -109,16 +163,16 @@ export default function FaqPage() {
               </span>
             </div>
             <h2 className="font-display text-3xl font-bold text-white mb-3">
-              Still have questions?
+              Still Need Personal Guidance?
             </h2>
             <p className="mb-8 max-w-md text-gray-300">
-              Our yoga specialists are here to help you with anything you need to continue your journey.
+              Our team is here to help you choose the right program, answer your questions, and support your journey toward better health.
             </p>
             <Link
               href="/contact"
               className="inline-flex w-full items-center justify-center rounded-full bg-primary px-10 py-4 font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:opacity-95 hover:shadow-primary/30 sm:w-auto"
             >
-              Contact Support
+              Contact Our Support Team
             </Link>
           </div>
         </div>
