@@ -62,7 +62,6 @@ export function CourseCatalogCard({
     skip: !courseId,
   });
   const hasAccess = access === "PAID" && data?.data?.hasAccess;
- console.log(shortDescription);
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-elevation-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation-md dark:border-gray-800 dark:bg-surface">
       <Link
