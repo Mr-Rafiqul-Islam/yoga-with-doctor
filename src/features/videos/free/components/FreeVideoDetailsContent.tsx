@@ -296,7 +296,7 @@ export function FreeVideoDetailsContent({
             <div className="flex items-center gap-4">
               {video.authorAvatarUrl ? (
                 <Image
-                  src={video.authorAvatarUrl}
+                  src={"/Dr. Shah Alam-2.jpeg"}
                   alt=""
                   width={56}
                   height={56}

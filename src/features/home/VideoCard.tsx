@@ -25,6 +25,7 @@ export function formatDuration(seconds: number) {
 }
 
 export function VideoCard({
+  description,
   thumbnailUrl,
   level,
   title,
@@ -49,17 +50,28 @@ export function VideoCard({
             src={imageSrc}
             alt="video thumbnail"
             fill
-            className="object-cover object-center"
+            className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : null}
+        <div
+          className="pointer-events-none absolute inset-0 flex items-center justify-center"
+          aria-hidden
+        >
+          <div className="rounded-full leading-none border border-white/20 bg-black/40 p-2.5 shadow-lg backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 dark:bg-white/10">
+            <span className="material-icons-outlined text-2xl text-white">
+              play_arrow
+            </span>
+          </div>
+        </div>
       </div>
       <div className="p-4">
         <h3 className="mb-1 line-clamp-1 font-anek-bangla text-h2 font-semibold text-foreground">
           {title}
         </h3>
+        <p className="text-body-md text-muted line-clamp-2 mb-2">{description}</p>
         <div className="flex items-center justify-between text-body-md text-muted">
-          <span className="capitalize">{level}</span>
+          <span className="capitalize text-primary font-semibold">{level}</span>
           <span>{authorName}</span>
         </div>
       </div>

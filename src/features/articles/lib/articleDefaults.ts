@@ -10,12 +10,12 @@ export const DEFAULT_AUTHOR_FOR_MAP: ArticleAuthor = {
   name: "Dr. Shah Alam",
   title: "The Intelligent Way to Heal.",
   avatarSrc:
-    "/logo-dark-bg-zoom.jpeg",
+    "/logo-white-bg-zoom.jpeg",
   bioSnippet:
     "Our mission is to empower people with evidence-based health education, therapeutic yoga, and practical lifestyle guidance- helping them prevent disease, recover naturally, and build lifelong wellness.",
   fullBio:
     "Specializing in the intersection of neuroscience and traditional yogic practices.",
-  profileLink: "https://drshahalam.com/",
+  profileLink: "https://doctorshahalam.com/",
 };
 
 export const YWD_TEAM_AUTHOR: ArticleAuthor = {
