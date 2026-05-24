@@ -70,10 +70,20 @@ export function VideoCard({
               src={imageSrc}
               alt=""
               fill
-              className="object-cover object-center"
+              className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           ) : null}
+          <div
+            className="pointer-events-none absolute inset-0 flex items-center justify-center"
+            aria-hidden
+          >
+            <div className="rounded-full border border-white/20 bg-black/40 leading-none p-3 shadow-lg backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 dark:bg-white/10">
+              <span className="material-icons-outlined text-2xl text-white">
+                play_arrow
+              </span>
+            </div>
+          </div>
         </>
       ) : (
         <>
@@ -168,7 +178,7 @@ export function VideoCard({
         <div className="mt-auto flex items-center gap-2">
           {authorAvatarUrl ? (
             <Image
-              src={authorAvatarUrl}
+              src={'/Dr. Shah Alam-2.jpeg'}
               alt=""
               width={32}
               height={32}
@@ -190,7 +200,7 @@ export function VideoCard({
     const isInternal = navigableHref.startsWith("/");
     if (isInternal) {
       return (
-        <Link href={navigableHref} className={`${wrapperClassName} ${focusRingClass}`}>
+        <Link href={navigableHref} className={`group ${wrapperClassName} ${focusRingClass}`}>
           {thumbnail}
           {body}
         </Link>
@@ -199,7 +209,7 @@ export function VideoCard({
     return (
       <a
         href={navigableHref}
-        className={`${wrapperClassName} ${focusRingClass}`}
+        className={`group ${wrapperClassName} ${focusRingClass}`}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -210,7 +220,7 @@ export function VideoCard({
   }
 
   return (
-    <article className={wrapperClassName}>
+    <article className={`group ${wrapperClassName}`}>
       {thumbnail}
       {body}
     </article>

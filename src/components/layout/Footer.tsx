@@ -13,7 +13,7 @@ const platformLinks = [
   { href: "/videos", label: "Free Video Library", target: "_self" },
   { href: "/articles", label: "Health & Wellness Articles", target: "_self" },
   {
-    href: "https://drshahalam.com/",
+    href: "https://doctorshahalam.com/",
     label: "Meet Dr. Shah Alam",
     target: "_blank",
   },
