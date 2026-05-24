@@ -68,7 +68,7 @@ export function WhyYogaWithDoctorSection() {
           {points.map(({ icon, title: pointTitle, description }) => (
             <div
               key={pointTitle}
-              className="group rounded-xl border border-primary/20 bg-surface p-4 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-elevation-md dark:border-white/10 dark:bg-surface dark:hover:border-primary/30 sm:p-6"
+              className="group flex flex-col items-center justify-center rounded-xl border border-primary/20 bg-surface p-4 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-elevation-md dark:border-white/10 dark:bg-surface dark:hover:border-primary/30 sm:p-6"
             >
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-all duration-300 group-hover:scale-110 group-hover:bg-primary/20 dark:text-primary-on-dark sm:mb-4 sm:h-12 sm:w-12">
                 <span className="material-icons-outlined text-xl sm:text-2xl" aria-hidden>
@@ -78,7 +78,7 @@ export function WhyYogaWithDoctorSection() {
               <h3 className="text-sm font-semibold text-foreground dark:text-white sm:text-base">
                 {pointTitle}
               </h3>
-              <p className="mt-1.5 text-xs leading-relaxed text-muted dark:text-gray-400 sm:mt-2 sm:text-sm">
+              <p className="mt-1.5 text-xs leading-relaxed text-center text-muted dark:text-gray-400 sm:mt-2 sm:text-sm">
                 {description}
               </p>
             </div>
