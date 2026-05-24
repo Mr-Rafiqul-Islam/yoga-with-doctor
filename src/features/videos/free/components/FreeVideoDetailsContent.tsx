@@ -163,10 +163,10 @@ export function FreeVideoDetailsContent({
   const doctorsNote = {
     name: details.author.name,
     title: details.author.title,
-    avatarUrl: details.author.avatarSrc,
+    avatarUrl: "/Dr. Shah Alam-2.jpeg",
     quote:
       details.author.quotes ??
-      "Gentle movement and mindful breathing can support recovery and daily function. Listen to your body and modify as needed.",
+      "True health is built through consistent movement, mindful living, and informed choices. Our videos are designed to help you move better, reduce stress, and develop healthier habits using evidence-based yoga and wellness practices. Always listen to your body and progress at a pace that feels right for you.",
     tags: details.author.tags ?? ["#Wellness", "#MindBody"],
   };
 
@@ -442,26 +442,29 @@ export function FreeVideoDetailsContent({
           {/* Doctor's Note */}
           <div className="rounded-2xl border border-blue-100 bg-blue-50 p-6 dark:border-blue-800 dark:bg-blue-900/10">
             <div className="mb-4 flex items-start gap-4">
-              <Image
+              {/* <Image
                 src={doctorsNote.avatarUrl}
                 alt={doctorsNote.name}
                 width={48}
                 height={48}
                 className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-white dark:ring-gray-800"
-              />
+              /> */}
               <div>
-                <h3 className="font-bold text-foreground">
+                <h3 className="font-bold font-display text-xl text-primary">
                   Doctor&apos;s Note
                 </h3>
-                <p className="text-xs font-medium uppercase tracking-wide text-blue-600 dark:text-blue-400">
+                {/* <p className="text-xs font-medium uppercase tracking-wide text-blue-600 dark:text-blue-400">
                   {doctorsNote.name}, {doctorsNote.title}
-                </p>
+                </p> */}
               </div>
             </div>
             <p className="mb-4 text-sm italic text-foreground/90">
               {doctorsNote.quote}
             </p>
-            <div className="flex flex-wrap gap-2">
+            <p className="mb-1 text-base font-semibold text-foreground/90">— Dr. Md Shah Alam
+            </p>
+            <span className="font-semibold text-xs text-foreground/90">Orthopedics Specialist, Spine Surgeon & Yoga Instructor</span>
+            {/* <div className="flex flex-wrap gap-2">
               {doctorsNote.tags.map((tag) => (
                 <span
                   key={tag}
@@ -470,7 +473,7 @@ export function FreeVideoDetailsContent({
                   {tag}
                 </span>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* Related Premium Commenting out for future implement*/}
