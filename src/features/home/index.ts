@@ -14,5 +14,6 @@ export { ImpactInNumbersSection } from "./ImpactInNumbersSection";
 export { HealingJourneySection } from "./HealingJourneySection";
 export { FeaturedInSection } from "./FeaturedInSection";
 export { JoinCommunitySection } from "./JoinCommunitySection";
+export { TransformationMissionSection } from "./TransformationMissionSection";
 export { CourseCard, CourseCardSkeleton } from "./CourseCard";
 export type { CourseCardProps } from "./CourseCard";

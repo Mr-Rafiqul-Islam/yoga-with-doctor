@@ -13,6 +13,7 @@ import {
   HealingJourneySection,
   FeaturedInSection,
   JoinCommunitySection,
+  TransformationMissionSection,
 } from "@/features/home";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/publicPageMetadata";
@@ -43,6 +44,7 @@ export default function Home() {
       <ArticlesSection />
       <WhyYogaWithDoctorSection />
       <ReviewsSection />
+      <TransformationMissionSection />
       <ImpactInNumbersSection />
       <HealingJourneySection />
       <FeaturedInSection />

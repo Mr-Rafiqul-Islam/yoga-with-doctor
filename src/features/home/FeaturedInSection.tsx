@@ -23,8 +23,8 @@ export const FEATURED_IN = {
     },
     {
       name: "The Daily Star",
-      src: "/featured-in/Logo_of_The_Daily_Star.svg",
-      alt: "The Daily Star",
+      src: "/featured-in/Dhaka_Tribune.svg.png",
+      alt: "Dhaka Tribune",
       width: 140,
       height: 48,
     },
