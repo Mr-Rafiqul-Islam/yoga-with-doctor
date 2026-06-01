@@ -6,6 +6,8 @@ import {
   ArticlesSection,
   // PremiumCollectionSection,
   TrendingCoursesSection,
+  WhyYogaWithDoctorSection,
+  ReviewsSection,
 } from "@/features/home";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/publicPageMetadata";
@@ -33,6 +35,8 @@ export default function Home() {
       {/* <PremiumCollectionSection /> */}
       <TrendingCoursesSection />
       <ArticlesSection />
+      <WhyYogaWithDoctorSection />
+      <ReviewsSection />
     </>
   );
 }

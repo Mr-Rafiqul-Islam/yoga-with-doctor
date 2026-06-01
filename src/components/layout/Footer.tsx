@@ -7,19 +7,13 @@ import { AiFillTikTok } from "react-icons/ai";
 import { usePathname } from "next/navigation";
 
 
-// {
-  // Frequently Asked Questions
-  // Terms & Conditions
-  // Privacy Policy
-  // Contact & Suppor
-// }
 
 const platformLinks = [
   { href: "/courses", label: "Healing Programs", target: "_self" },
   { href: "/videos", label: "Free Video Library", target: "_self" },
   { href: "/articles", label: "Health & Wellness Articles", target: "_self" },
   {
-    href: "https://drshahalam.com/",
+    href: "https://doctorshahalam.com/",
     label: "Meet Dr. Shah Alam",
     target: "_blank",
   },
@@ -33,10 +27,10 @@ const supportLinks = [
 ] as const;
 
 const whatsappSupportUrl =
-  "https://wa.me/8801312353577?text=" +
+  "https://wa.me/8801349002180?text=" +
   encodeURIComponent("Hello, I need support regarding Yoga With Doctor.");
 
-const supportPhoneHref = "tel:+8801701313001";
+const supportPhoneHref = "tel:+8801349002180";
 
 const socialLinks = [
   {

@@ -74,7 +74,7 @@ export function HeroSection() {
               </p>
 
               {/* CTAs — Inter, generous spacing */}
-              <div className="mt-8 lg:mb-4 xl:mb-0 flex flex-wrap justify-center gap-4 sm:mt-12 lg:justify-start">
+              <div className="mt-8 lg:mb-4 xl:mb-0 hidden lg:flex flex-wrap justify-center gap-4 sm:mt-12 lg:justify-start">
                 <Link
                   href={primaryCta.href}
                   className="flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-full text-white bg-primary hover:bg-primary-dark md:py-4 md:text-lg shadow-lg hover:shadow-primary/30 transition-all transform hover:-translate-y-1"
@@ -114,6 +114,26 @@ export function HeroSection() {
               aria-hidden
             />
           </div>
+          <div className="-mt-6 sm:-mt-12 flex flex-wrap justify-center gap-4 mb-12 lg:hidden w-full">
+                <Link
+                  href={primaryCta.href}
+                  className="flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-full text-white bg-primary hover:bg-primary-dark md:py-4 md:text-lg shadow-lg hover:shadow-primary/30 transition-all transform hover:-translate-y-1"
+                >
+                  {primaryCta.label}
+                </Link>
+                <Link
+                  href={secondaryCta.href}
+                  className="flex items-center justify-center px-8 py-4 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-full text-gray-700 dark:text-gray-200 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 md:py-4 md:text-lg transition-all"
+                >
+                  <span
+                    className="material-icons-outlined mr-2 text-xl"
+                    aria-hidden
+                  >
+                    {secondaryCta.icon}
+                  </span>
+                  {secondaryCta.label}
+                </Link>
+              </div>
         </div>
       </div>
     </div>

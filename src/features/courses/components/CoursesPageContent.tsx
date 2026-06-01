@@ -59,7 +59,6 @@ export function CoursesPageContent({
     () => paginateCourses(sorted, currentPage, DEFAULT_PAGE_SIZE),
     [sorted, currentPage]
   );
-
   // When filters/sort reduce results, clamp current page to valid range
   useEffect(() => {
     if (totalPages > 0 && currentPage > totalPages) {

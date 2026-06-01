@@ -7,5 +7,7 @@ export type { VideoCardProps } from "./VideoCard";
 export { PremiumCollectionSection } from "./PremiumCollectionSection";
 export { TrendingCoursesSection } from "./TrendingCoursesSection";
 export { ArticlesSection } from "./ArticlesSection";
-export { CourseCard } from "./CourseCard";
+export { WhyYogaWithDoctorSection } from "./WhyYogaWithDoctorSection";
+export { ReviewsSection } from "./ReviewsSection";
+export { CourseCard, CourseCardSkeleton } from "./CourseCard";
 export type { CourseCardProps } from "./CourseCard";
