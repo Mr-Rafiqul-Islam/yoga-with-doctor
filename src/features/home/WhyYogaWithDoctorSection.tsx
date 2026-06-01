@@ -48,7 +48,7 @@ export function WhyYogaWithDoctorSection() {
 
   return (
     <section
-      className="mx-auto mb-24 max-w-7xl px-4 sm:px-6 lg:px-8"
+      className="mx-auto mb-20 max-w-7xl px-4 sm:px-6 lg:px-8"
       aria-labelledby="why-ywd-heading"
     >
       <div className="rounded-2xl bg-sage-light/50 px-6 pb-12 dark:bg-sage-dark/30 sm:px-10 sm:pb-14">

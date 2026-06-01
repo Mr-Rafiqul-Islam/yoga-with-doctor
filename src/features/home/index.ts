@@ -1,5 +1,6 @@
 export { HeroSection } from "./HeroSection";
 export { MedicalInsightSection } from "./MedicalInsightSection";
+export { MeetOurExpertSection } from "./MeetOurExpertSection";
 export { TrendingTagsSection } from "./TrendingTagsSection";
 export { FreeVideosSection } from "./FreeVideosSection";
 export { VideoCard } from "./VideoCard";
@@ -9,5 +10,10 @@ export { TrendingCoursesSection } from "./TrendingCoursesSection";
 export { ArticlesSection } from "./ArticlesSection";
 export { WhyYogaWithDoctorSection } from "./WhyYogaWithDoctorSection";
 export { ReviewsSection } from "./ReviewsSection";
+export { ImpactInNumbersSection } from "./ImpactInNumbersSection";
+export { HealingJourneySection } from "./HealingJourneySection";
+export { FeaturedInSection } from "./FeaturedInSection";
+export { JoinCommunitySection } from "./JoinCommunitySection";
+export { TransformationMissionSection } from "./TransformationMissionSection";
 export { CourseCard, CourseCardSkeleton } from "./CourseCard";
 export type { CourseCardProps } from "./CourseCard";
