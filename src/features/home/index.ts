@@ -10,5 +10,6 @@ export { TrendingCoursesSection } from "./TrendingCoursesSection";
 export { ArticlesSection } from "./ArticlesSection";
 export { WhyYogaWithDoctorSection } from "./WhyYogaWithDoctorSection";
 export { ReviewsSection } from "./ReviewsSection";
+export { ImpactInNumbersSection } from "./ImpactInNumbersSection";
 export { CourseCard, CourseCardSkeleton } from "./CourseCard";
 export type { CourseCardProps } from "./CourseCard";

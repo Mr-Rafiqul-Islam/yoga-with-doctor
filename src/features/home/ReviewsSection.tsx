@@ -288,7 +288,7 @@ export function ReviewsSection() {
 
   return (
     <section
-      className="mx-auto mb-24 max-w-7xl px-4 sm:px-6 lg:px-8"
+      className="mx-auto mb-20 max-w-7xl px-4 sm:px-6 lg:px-8"
       aria-labelledby="member-reviews-heading"
     >
       <div className="rounded-2xl bg-sage-light/30 px-6 py-10 dark:bg-sage-dark/20 sm:px-10 sm:py-12">

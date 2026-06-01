@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const MEET_OUR_EXPERT = {
-  sectionNumber: "01",
   sectionLabel: "Meet Our Expert",
   title: "Meet Dr. Shah Alam",
   intro:
@@ -52,7 +51,6 @@ export const MEET_OUR_EXPERT = {
 
 export function MeetOurExpertSection() {
   const {
-    sectionNumber,
     sectionLabel,
     title,
     intro,
@@ -71,12 +69,6 @@ export function MeetOurExpertSection() {
       <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
           <div className="mb-4 flex items-center gap-2.5">
-            <span
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-bold text-white"
-              aria-hidden
-            >
-              {sectionNumber}
-            </span>
             <span className="text-sm font-bold uppercase tracking-wider text-primary dark:text-primary-on-dark">
               {sectionLabel}
             </span>
@@ -133,7 +125,7 @@ export function MeetOurExpertSection() {
           <div className="relative h-[320px] w-full lg:w-[550px] overflow-visible sm:h-[320px] lg:h-[380px]">
             {/* Layer 1: mint base panel — visible on top and right */}
             <div
-              className="absolute right-0 top-6 h-[calc(100%-1rem)] w-[90%] rounded-2xl bg-sage-light dark:bg-sage-dark/30 sm:top-8 sm:w-[88%]"
+              className="absolute right-0 top-6 h-[calc(100%-1rem)] w-[90%] rounded-2xl bg-sage-light dark:bg-sage-dark sm:top-8 sm:w-[88%]"
               aria-hidden
             />
 
