@@ -122,7 +122,7 @@ export function MeetOurExpertSection() {
         </div>
 
         <div className="relative mx-auto w-full max-w-md overflow-visible lg:max-w-none">
-          <div className="relative h-[320px] w-full lg:w-[550px] overflow-visible sm:h-[320px] lg:h-[380px]">
+          <div className="relative h-[320px] w-full xl:w-[550px] overflow-visible sm:h-[320px] lg:h-[380px]">
             {/* Layer 1: mint base panel — visible on top and right */}
             <div
               className="absolute right-0 top-6 h-[calc(100%-1rem)] w-[90%] rounded-2xl bg-sage-light dark:bg-sage-dark sm:top-8 sm:w-[88%]"

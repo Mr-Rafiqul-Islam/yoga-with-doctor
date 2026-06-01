@@ -10,6 +10,7 @@ import {
   WhyYogaWithDoctorSection,
   ReviewsSection,
   ImpactInNumbersSection,
+  HealingJourneySection,
 } from "@/features/home";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/publicPageMetadata";
@@ -41,6 +42,7 @@ export default function Home() {
       <WhyYogaWithDoctorSection />
       <ReviewsSection />
       <ImpactInNumbersSection />
+      <HealingJourneySection />
     </>
   );
 }
