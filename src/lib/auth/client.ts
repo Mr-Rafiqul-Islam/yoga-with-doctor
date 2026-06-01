@@ -80,7 +80,8 @@ export async function establishNextAuthSessionFromStoredTokensForGuest(
 }
 /** Password login via NextAuth only (server calls your API). */
 export async function signInWithPassword(params: {
-  phone: string;
+  phone?: string;
+  email?: string;
   password: string;
   deviceId: string;
   platform?: string;
@@ -90,7 +91,8 @@ export async function signInWithPassword(params: {
   const origin =
     typeof window !== "undefined" ? window.location.origin : "";
   return signIn("credentials", {
-    phone: params.phone,
+    ...(params.phone ? { phone: params.phone } : {}),
+    ...(params.email ? { email: params.email } : {}),
     password: params.password,
     deviceId: params.deviceId,
     platform: params.platform ?? "web",
@@ -101,7 +103,8 @@ export async function signInWithPassword(params: {
 
 /** Login OTP step via NextAuth (no RTK). */
 export async function signInWithLoginOtp(params: {
-  phone: string;
+  phone?: string;
+  email?: string;
   otp: string;
   deviceId: string;
   platform?: string;
@@ -111,7 +114,8 @@ export async function signInWithLoginOtp(params: {
   const origin =
     typeof window !== "undefined" ? window.location.origin : "";
   return signIn("credentials", {
-    phone: params.phone,
+    ...(params.phone ? { phone: params.phone } : {}),
+    ...(params.email ? { email: params.email } : {}),
     otp: params.otp,
     deviceId: params.deviceId,
     platform: params.platform ?? "web",
@@ -137,6 +141,6 @@ export async function signInWithRegisterOtp(params: {
     platform: params.platform ?? "web",
     flow: "register",
     redirect: false,
-    callbackUrl: origin ? `${origin}/auth/login` : undefined,
+    callbackUrl: origin ? `${origin}/dashboard` : undefined,
   });
 }

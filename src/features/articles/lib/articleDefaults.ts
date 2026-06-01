@@ -7,15 +7,15 @@ export const FALLBACK_ARTICLE_IMAGE = DEFAULT_IMG;
 
 /** Author used when mapping API articles to cards / details. */
 export const DEFAULT_AUTHOR_FOR_MAP: ArticleAuthor = {
-  name: "Dr Md Shah Alam",
-  title: "Orthopedics Specialist, Spine Surgeion, Yoga Instructor",
+  name: "Dr. Shah Alam",
+  title: "The Intelligent Way to Heal.",
   avatarSrc:
-    "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-Hero.jpeg",
+    "/logo-white-bg-zoom.jpeg",
   bioSnippet:
-    "Specializing in the intersection of neuroscience and traditional yogic practices.",
+    "Our mission is to empower people with evidence-based health education, therapeutic yoga, and practical lifestyle guidance- helping them prevent disease, recover naturally, and build lifelong wellness.",
   fullBio:
     "Specializing in the intersection of neuroscience and traditional yogic practices.",
-  profileLink: "https://drshahalam.com/",
+  profileLink: "https://doctorshahalam.com/",
 };
 
 export const YWD_TEAM_AUTHOR: ArticleAuthor = {

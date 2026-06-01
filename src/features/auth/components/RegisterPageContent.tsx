@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { RegisterHeroSection } from "./RegisterHeroSection";
 import { RegisterForm } from "./RegisterForm";
 import { VerifyIdentityForm } from "./VerifyIdentityForm";
@@ -12,7 +11,6 @@ import { VerifyIdentityForm } from "./VerifyIdentityForm";
  * 2. OTP verification form
  */
 export function RegisterPageContent() {
-  const router = useRouter();
   const [step, setStep] = useState<"register" | "verify">("register");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -29,11 +27,6 @@ export function RegisterPageContent() {
     setPhone("");
   };
 
-  const handleCompleteRegistration = () => {
-    // Redirect to login page after successful verification
-    router.push("/auth/login");
-  };
-
   return (
     <div className="flex w-full max-w-[1100px] flex-col overflow-hidden rounded-xl bg-surface shadow-2xl lg:flex-row dark:bg-[#1a2e26]">
       <RegisterHeroSection />
@@ -46,7 +39,6 @@ export function RegisterPageContent() {
             phone={phone}
             onBack={handleBackToRegister}
             isFromRegister={true}
-            onComplete={handleCompleteRegistration}
           />
         </div>
       )}

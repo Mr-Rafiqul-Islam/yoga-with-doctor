@@ -17,7 +17,7 @@ import { formatCheckoutPrice } from "@/features/checkout/data/checkoutReviewData
 import { pickPrimaryCategory } from "@/lib/pickPrimaryCategory";
 
 const FALLBACK_INSTRUCTOR_AVATAR =
-  "https://drshahalam.com/wp-content/uploads/2026/02/Dr-Shah-Alam-Website-About.jpeg";
+  "/Dr. Shah Alam-2.jpeg";
 
 const FALLBACK_PRICE = "$29.00";
 const FALLBACK_GOALS = [
@@ -66,6 +66,7 @@ function mapAllTypeCourseToCourseWithMeta(
   return {
     // Card display props
     title: course.title,
+    shortDescription: course.shortDescription ?? "",
     bannerImage:
       course.bannerUrl ??
       dummyCourses[index % dummyCourses.length]?.bannerImage ??

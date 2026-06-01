@@ -22,6 +22,7 @@ export function FreeVideosPageContent() {
   const { data, isLoading, isFetching } = useGetClassesQuery({
     page: currentPage,
     limit: PAGE_SIZE,
+    access: "PUBLIC",
   });
 
   // Map API classes -> VideoCardProps (includes muxPlaybackId)

@@ -19,16 +19,24 @@ export function LoginPageContent() {
     [searchParams]
   );
   const [step, setStep] = useState<"login" | "verify">("login");
-  const [phone, setPhone] = useState("");
+  const [otpIdentifier, setOtpIdentifier] = useState<{
+    phone?: string;
+    email?: string;
+    otpRecipientPhone?: string;
+  }>({});
 
-  const handleLoginSuccess = (userPhone: string) => {
-    setPhone(userPhone);
+  const handleLoginSuccess = (ctx: {
+    phone?: string;
+    email?: string;
+    otpRecipientPhone?: string;
+  }) => {
+    setOtpIdentifier(ctx);
     setStep("verify");
   };
 
   const handleBackToLogin = () => {
     setStep("login");
-    setPhone("");
+    setOtpIdentifier({});
   };
 
   return (
@@ -43,7 +51,9 @@ export function LoginPageContent() {
       ) : (
         <div className="flex w-full items-center justify-center p-8 lg:w-1/2 lg:p-16">
           <VerifyIdentityForm
-            phone={phone}
+            phone={otpIdentifier.phone}
+            email={otpIdentifier.email}
+            otpRecipientPhone={otpIdentifier.otpRecipientPhone}
             onBack={handleBackToLogin}
             postLoginPath={postLoginPath}
           />

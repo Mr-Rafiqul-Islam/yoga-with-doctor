@@ -14,10 +14,10 @@ export interface HeroSectionProps {
   className?: string;
 }
 
-const DEFAULT_TAGLINE = "CURATED BY MEDICAL PROFESSIONALS";
-const DEFAULT_TITLE = "Free Wellness Library";
+const DEFAULT_TAGLINE = "DOCTOR-GUIDED • EVIDENCE-BASED • FREE TO LEARN";
+const DEFAULT_TITLE = "Your Free Library for Healing & Healthy Living";
 const DEFAULT_DESCRIPTION =
-  "Doctor-approved routines to start your healing journey. Explore our collection of evidence-based yoga, meditation, and nutrition guides.";
+  "Explore doctor-guided videos on yoga therapy, pain relief, posture correction, stress management, nutrition, and natural healing—designed to help you move better, feel stronger, and live healthier.";
 
 export function HeroSection({
   tagline = DEFAULT_TAGLINE,
@@ -27,7 +27,7 @@ export function HeroSection({
 }: HeroSectionProps) {
   return (
     <div
-      className={`mx-auto max-w-4xl px-4 py-24 text-center sm:px-6 md:py-32 lg:px-8 ${className}`.trim()}
+      className={`mx-auto max-w-4xl px-4 py-12 text-center sm:px-6 md:py-24 lg:px-8 ${className}`.trim()}
       role="banner"
       aria-labelledby="hero-title"
     >
@@ -43,7 +43,7 @@ export function HeroSection({
 
         <h1
           id="hero-title"
-          className="mb-6 font-display text-4xl font-bold tracking-tight text-foreground sm:mb-8 sm:text-5xl md:text-6xl"
+          className="mb-6 font-anek-bangla text-4xl font-bold tracking-tight text-foreground sm:mb-8 sm:text-5xl md:text-6xl"
         >
           {title}
         </h1>

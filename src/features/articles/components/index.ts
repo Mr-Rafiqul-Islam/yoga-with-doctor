@@ -1,6 +1,6 @@
 export { ArticlesPageHeader } from "./ArticlesPageHeader";
 export { FeaturedArticleSection } from "./FeaturedArticleSection";
-export { ArticleCard } from "./ArticleCard";
+export { ArticleCard, ArticleCardSkeleton } from "./ArticleCard";
 export { ArticleDetailsView } from "./ArticleDetailsView";
 export { ArticleDetailsPageClient } from "./ArticleDetailsPageClient";
 export { ArticleGridSection } from "./ArticleGridSection";

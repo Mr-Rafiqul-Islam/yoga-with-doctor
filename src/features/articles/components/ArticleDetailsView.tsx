@@ -30,7 +30,7 @@ export function ArticleDetailsView({
     author,
     tags = [],
     detailsContent,
-    description,
+    subTitle
   } = article;
 
   const normalizedHtml = useMemo(
@@ -50,7 +50,7 @@ export function ArticleDetailsView({
   return (
     <main className="relative z-20 mx-auto mb-20 w-full max-w-7xl flex-grow px-4 sm:px-6 lg:px-8">
       {/* Hero */}
-      <div className="relative h-[50vh] min-h-[400px] w-full overflow-hidden">
+      <div className="relative aspect-video w-full overflow-hidden">
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <Image
           src={image}
@@ -63,7 +63,7 @@ export function ArticleDetailsView({
       </div>
 
       {/* Overlay card: category, read time, title, author */}
-      <div className="-mt-24 max-w-4xl mx-auto relative z-10">
+      <div className="-mt-4 md:-mt-8 lg:-mt-16 max-w-4xl mx-auto relative z-10">
         <div className="relative rounded-3xl border border-border bg-surface p-8 shadow-elevation-md md:p-12 text-center">
           <ArticleBookmarkButton
             variant="mobile"
@@ -84,32 +84,12 @@ export function ArticleDetailsView({
               {/* {readTime} */} 3 min
             </span>
           </div>
-          <h1 className="mb-8 font-display text-2xl font-bold leading-tight text-foreground md:text-4xl lg:text-6xl dark:text-white">
+          <h1 className="mb-4 lg:mb-8 font-anek-bangla text-2xl font-bold leading-tight text-foreground md:text-4xl lg:text-6xl dark:text-white">
             {title}
           </h1>
-          <div className="flex flex-col items-center justify-center gap-6 border-t border-border pt-8 md:flex-row">
-            <div className="flex items-center gap-4 text-left">
-              <Image
-                src={author.avatarSrc}
-                alt=""
-                width={56}
-                height={56}
-                className="rounded-full object-cover ring-4 ring-gray-100 dark:ring-gray-800"
-              />
-              <div>
-                <p className="text-body-lg font-bold text-foreground dark:text-white">
-                  {author.name}
-                </p>
-                <p className="text-caption uppercase tracking-wide text-muted">
-                  {author.title}
-                </p>
-              </div>
-            </div>
-            <div className="hidden h-10 w-px bg-border md:block" />
-            <p className="max-w-xs text-center text-body-md text-muted md:text-left">
-              {author.bioSnippet}
-            </p>
-          </div>
+          <h3 className="text-base lg:text-xl font-medium uppercase tracking-wide text-primary mb-4">
+           {subTitle} 
+          </h3>
         </div>
       </div>
 
@@ -162,9 +142,9 @@ export function ArticleDetailsView({
         </aside>
 
         <div className="lg:col-span-8 lg:col-start-4">
-          <p className="lead mb-8 text-body-lg leading-relaxed text-muted">
+          {/* <p className="lead mb-8 text-body-lg leading-relaxed text-muted">
             {description}
-          </p>
+          </p> */}
           <article
             className="prose prose-lg max-w-none lg:col-span-8 lg:col-start-4 dark:prose-invert prose-headings:font-display prose-headings:font-bold prose-h2:text-foreground prose-p:text-muted prose-p:leading-relaxed prose-strong:text-primary"
             dangerouslySetInnerHTML={{ __html: content }}
@@ -187,14 +167,14 @@ export function ArticleDetailsView({
 
       {/* Author bio */}
       <section className="mx-auto mt-20 max-w-4xl mb-16">
-        <div className="flex flex-col items-center gap-8 rounded-2xl border border-border bg-surface p-8 shadow-elevation-sm sm:flex-row sm:items-start">
+        <div className="flex flex-col items-center gap-4 lg:gap-8 rounded-2xl border border-border bg-surface p-8 shadow-elevation-sm sm:flex-row sm:items-start">
           <div className="relative shrink-0">
             <Image
               src={author.avatarSrc}
               alt=""
               width={128}
               height={128}
-              className="rounded-full object-cover ring-4 ring-emerald-50 dark:ring-emerald-900/30"
+              className="rounded-full w-24 h-24 lg:w-32 lg:h-32 object-cover ring-4 ring-emerald-50 dark:ring-emerald-900/30"
             />
             <div className="absolute bottom-0 right-0 rounded-full border-2 border-white bg-primary p-1 text-white dark:border-gray-800">
               <span className="material-icons-outlined text-sm">check</span>
@@ -204,11 +184,11 @@ export function ArticleDetailsView({
             <h3 className="font-display text-2xl font-bold text-foreground dark:text-white mb-2">
               {author.name}
             </h3>
-            <p className="text-body-md font-medium uppercase tracking-wide text-primary mb-4">
-              Medical Doctor & Yoga Therapist
+            <p className="text-body-md font-medium uppercase tracking-wide text-primary mb-2">
+              {author.title}
             </p>
-            <p className="mb-6 leading-relaxed text-muted">{author.fullBio}</p>
-            <Link
+            <p className="leading-relaxed text-sm text-muted">{author.bioSnippet}</p>
+            {/* <Link
               href={author.profileLink}
               className="inline-flex items-center font-semibold text-primary transition-colors hover:text-primary-dark group"
             >
@@ -216,7 +196,7 @@ export function ArticleDetailsView({
               <span className="material-icons-outlined ml-1 text-lg transition-transform group-hover:translate-x-1">
                 arrow_forward
               </span>
-            </Link>
+            </Link> */}
           </div>
         </div>
       </section>
@@ -238,7 +218,7 @@ export function ArticleDetailsView({
               </span>
             </Link>
           </div>
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
             {relatedArticles.map((related) => (
               <Link
                 key={related.slug}

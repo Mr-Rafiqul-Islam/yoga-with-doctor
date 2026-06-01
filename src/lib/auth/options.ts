@@ -43,6 +43,7 @@ export const authOptions: NextAuthOptions = {
         accessToken: { label: "Access token", type: "text" },
         refreshToken: { label: "Refresh token", type: "text" },
         phone: { label: "Phone", type: "text" },
+        email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
         otp: { label: "OTP", type: "text" },
         deviceId: { label: "Device ID", type: "text" },
@@ -85,20 +86,22 @@ export const authOptions: NextAuthOptions = {
 
         const platform = (credentials.platform as string) || "web";
 
-        if (credentials.otp && credentials.phone) {
+        if (credentials.otp && (credentials.phone || credentials.email)) {
           const isRegister = credentials.flow === "register";
           const url = isRegister
             ? `${apiBase}/api/v1/client/register/verify`
             : `${apiBase}/api/v1/client/login/verify`;
+          const verifyBody: Record<string, string> = {
+            otp: credentials.otp as string,
+            deviceId: credentials.deviceId as string,
+            platform,
+          };
+          if (credentials.phone) verifyBody.phone = credentials.phone as string;
+          if (credentials.email) verifyBody.email = credentials.email as string;
           const r = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              phone: credentials.phone,
-              otp: credentials.otp,
-              deviceId: credentials.deviceId,
-              platform,
-            }),
+            body: JSON.stringify(verifyBody),
           });
           const data = (await r.json()) as {
             success: boolean;
@@ -138,16 +141,21 @@ export const authOptions: NextAuthOptions = {
           };
         }
 
-        if (credentials.phone && credentials.password) {
+        if (
+          credentials.password &&
+          (credentials.phone || credentials.email)
+        ) {
+          const loginBody: Record<string, string> = {
+            password: credentials.password as string,
+            deviceId: credentials.deviceId as string,
+            platform,
+          };
+          if (credentials.phone) loginBody.phone = credentials.phone as string;
+          if (credentials.email) loginBody.email = credentials.email as string;
           const r = await fetch(`${apiBase}/api/v1/client/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              phone: credentials.phone,
-              password: credentials.password,
-              deviceId: credentials.deviceId,
-              platform,
-            }),
+            body: JSON.stringify(loginBody),
           });
           const data = (await r.json()) as {
             success: boolean;

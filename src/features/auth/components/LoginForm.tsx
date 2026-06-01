@@ -2,22 +2,31 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { parseLoginIdentifier } from "@/features/auth/utils/loginIdentifier";
 import { establishNextAuthSessionFromStoredTokens } from "@/lib/auth/client";
-import { useLoginMutation } from "@/slices/auth";
+import { useLoginMutation, type LoginOTPRequiredResponse } from "@/slices/auth";
 import { getDeviceId } from "@/utils/deviceId";
+
+export type LoginOtpContext = {
+  /** Identifier for `/login/verify` (either phone or email from sign-in step). */
+  phone?: string;
+  email?: string;
+  /** From API `OTP_REQUIRED` `data.phone` — recipient shown on OTP screen (always phone). */
+  otpRecipientPhone?: string;
+};
 
 export function LoginForm({
   onLoginSuccess,
   postLoginPath = "/dashboard",
   showPhoneUpdatedNotice = false,
 }: {
-  onLoginSuccess?: (phone: string) => void;
+  onLoginSuccess?: (ctx: LoginOtpContext) => void;
   /** Sanitized pathname after login (e.g. from `returnTo` query). */
   postLoginPath?: string;
   /** After changing phone on profile, user is redirected here with `phoneUpdated=1`. */
   showPhoneUpdatedNotice?: boolean;
 } = {}) {
-  const [phone, setPhone] = useState("");
+  const [contactInput, setContactInput] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -26,17 +35,41 @@ export function LoginForm({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+
+    const parsed = parseLoginIdentifier(contactInput);
+    if (!parsed.ok) {
+      setError(parsed.error);
+      return;
+    }
+
+    const deviceId = await getDeviceId();
+    const base = {
+      password,
+      deviceId,
+      platform: "web" as const,
+    };
+    const credentials =
+      "phone" in parsed.identifier
+        ? { ...base, phone: parsed.identifier.phone }
+        : { ...base, email: parsed.identifier.email };
+
     try {
-      const result = await login({
-        phone,
-        password,
-        deviceId: await getDeviceId(),
-        platform: "web",
-      }).unwrap();
+      const result = await login(credentials).unwrap();
 
       if (result.message === "OTP_REQUIRED") {
-        // Backend may return a masked phone (e.g. 018***93061). We want to show the real input phone.
-        onLoginSuccess?.(phone);
+        const { data } = result as LoginOTPRequiredResponse;
+        const otpRecipientPhone = data.phone.trim() || undefined;
+        onLoginSuccess?.(
+          "phone" in parsed.identifier
+            ? {
+                phone: parsed.identifier.phone,
+                otpRecipientPhone,
+              }
+            : {
+                email: parsed.identifier.email,
+                otpRecipientPhone,
+              }
+        );
         return;
       }
 
@@ -55,9 +88,16 @@ export function LoginForm({
         return;
       }
     } catch (err: unknown) {
+      const data = (
+        err as {
+          data?: { error?: string; message?: string };
+          error?: string;
+        }
+      )?.data;
       const message =
-        (err as { data?: { message?: string }; error?: string })?.data?.message ||
-        (err as { error?: string })?.error ||
+        (typeof data?.error === "string" ? data.error : undefined) ??
+        (typeof data?.message === "string" ? data.message : undefined) ??
+        (err as { error?: string })?.error ??
         "Login failed. Please check your credentials.";
       setError(message);
     }
@@ -75,11 +115,11 @@ export function LoginForm({
       ) : null}
 
       <div className="mb-10 text-center lg:text-left">
-        <h2 className="mb-3 font-serif text-4xl text-foreground">
-          Welcome Back
+        <h2 className="mb-3 font-anek-bangla text-3xl lg:text-4xl text-foreground">
+        Welcome Back to Your Healing Journey
         </h2>
-        <p className="text-base text-muted dark:text-gray-400">
-          Enter your credentials to access your wellness dashboard.
+        <p className="text-sm md:text-base text-muted dark:text-gray-400">
+        Continue your path toward better health with doctor-guided yoga, evidence-based wellness programs, and personalized learning.
         </p>
       </div>
 
@@ -95,22 +135,22 @@ export function LoginForm({
       <form className="space-y-5" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2">
           <label
-            htmlFor="phone"
+            htmlFor="login-contact"
             className="text-sm font-medium text-foreground dark:text-gray-200"
           >
-            Phone Number
+            Phone Number or Email Address
           </label>
           <input
-            id="phone"
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="01234567890"
+            id="login-contact"
+            type="text"
+            value={contactInput}
+            onChange={(e) => setContactInput(e.target.value)}
+            autoComplete="username"
+            placeholder="01234567890 or name@example.com"
             className="h-14 w-full rounded-xl border border-border bg-surface px-4 text-base text-foreground outline-none transition-all placeholder:text-muted focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-[#12241d]"
             required
             aria-required="true"
-            aria-label="Phone number"
-            pattern="[+]?[0-9\s\-\(\)]+"
+            aria-label="Phone number or email address"
           />
         </div>
 
@@ -135,6 +175,7 @@ export function LoginForm({
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
               placeholder="••••••••"
               className="h-14 w-full rounded-xl border border-border bg-surface px-4 pr-12 text-base text-foreground outline-none transition-all placeholder:text-muted focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-[#12241d]"
               required

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import Link from "next/link";
 import { SiteLogo } from "@/components/layout/SiteLogo";
 import { FaFacebook, FaLinkedin, FaWhatsapp, FaYoutube } from "react-icons/fa";
@@ -6,25 +6,31 @@ import { MdPhoneInTalk } from "react-icons/md";
 import { AiFillTikTok } from "react-icons/ai";
 import { usePathname } from "next/navigation";
 
+
+
 const platformLinks = [
-  { href: "/courses", label: "Browse Courses", target:"_self"},
-  { href: "/videos", label: "Our Videos", target:"_self"},
-  { href: "/articles", label: "Medical Articles", target:"_self"},
-  { href: "https://drshahalam.com/", label: "Our Instructor" , target:"_blank"},
-] as const 
+  { href: "/courses", label: "Healing Programs", target: "_self" },
+  { href: "/videos", label: "Free Video Library", target: "_self" },
+  { href: "/articles", label: "Health & Wellness Articles", target: "_self" },
+  {
+    href: "https://doctorshahalam.com/",
+    label: "Meet Dr. Shah Alam",
+    target: "_blank",
+  },
+] as const;
 
 const supportLinks = [
-  { href: "/faq", label: "FAQs" },
+  { href: "/faq", label: "Frequently Asked Questions" },
   { href: "/terms", label: "Terms & Conditions" },
   { href: "/privacy", label: "Privacy Policy" },
-  { href: "/contact", label: "Contact Us" },
+  { href: "/contact", label: "Contact & Support" },
 ] as const;
 
 const whatsappSupportUrl =
-  "https://wa.me/8801312353577?text=" +
+  "https://wa.me/8801349002180?text=" +
   encodeURIComponent("Hello, I need support regarding Yoga With Doctor.");
 
-const supportPhoneHref = "tel:+8801701313001";
+const supportPhoneHref = "tel:+8801349002180";
 
 const socialLinks = [
   {
@@ -71,8 +77,7 @@ function FooterInner() {
           <div className="flex min-h-0 flex-col md:col-span-1 md:h-full">
             <SiteLogo variant="footer" />
             <p className="max-w-xs text-sm text-gray-400">
-              Bridging the gap between ancient wisdom and modern medicine for a healthier you.
-              Guided by doctors, inspired by timeless yogic practices.
+            Empowering people to prevent disease, recover naturally, and live healthier lives through the integration of medical science, therapeutic yoga, and evidence-based lifestyle practices.
             </p>
             <div className="mt-auto flex flex-wrap gap-2.5 pt-6">
               {socialLinks.map(({ href, label, Icon, className }) => (
@@ -89,54 +94,61 @@ function FooterInner() {
               ))}
             </div>
           </div>
+          <div className="md:col-span-2 grid grid-cols-2">
+            {/* Platform */}
+            <div className="flex min-h-0 h-full flex-col">
+              <h3 className="mb-4 shrink-0 font-semibold text-white">
+                Platform
+              </h3>
+              <ul className="lg:mt-auto space-y-3 text-sm">
+                {platformLinks.map(({ href, label, target }) => (
+                  <li key={label}>
+                    <Link
+                      href={href}
+                      target={target}
+                      className="inline-block py-1.5 text-gray-400 transition-colors hover:text-primary focus:outline-none focus:ring-offset-gray-900 rounded-radius-sm"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Platform */}
-          <div className="flex min-h-0 h-full flex-col">
-            <h3 className="mb-4 shrink-0 font-semibold text-white">Platform</h3>
-            <ul className="lg:mt-auto space-y-3 text-sm">
-              {platformLinks.map(({ href, label, target }) => (
-                <li key={label}>
-                  <Link
-                    href={href}
-                    target={target}
-                    className="inline-block py-1.5 text-gray-400 transition-colors hover:text-primary focus:outline-none focus:ring-offset-gray-900 rounded-radius-sm"
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div className="flex min-h-0 h-full flex-col">
-            <h3 className="mb-4 shrink-0 font-semibold text-white">Support</h3>
-            <ul className="lg:mt-auto space-y-3 text-sm">
-              {supportLinks.map(({ href, label }) => (
-                <li key={label}>
-                  <Link
-                    href={href}
-                    className="inline-block py-1.5 text-gray-400 transition-colors hover:text-primary focus:outline-none focus:ring-offset-gray-900 rounded-radius-sm"
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {/* Support */}
+            <div className="flex min-h-0 h-full flex-col">
+              <h3 className="mb-4 shrink-0 font-semibold text-white">
+                Support
+              </h3>
+              <ul className="lg:mt-auto space-y-3 text-sm">
+                {supportLinks.map(({ href, label }) => (
+                  <li key={label}>
+                    <Link
+                      href={href}
+                      className="inline-block py-1.5 text-gray-400 transition-colors hover:text-primary focus:outline-none focus:ring-offset-gray-900 rounded-radius-sm"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Quick support */}
           <div className="flex min-h-0 h-full flex-col">
-            <h3 className="mb-4 shrink-0 font-semibold text-white">Quick Support</h3>
+            <h3 className="mb-4 shrink-0 font-semibold text-white">
+              Quick Support
+            </h3>
             <p className="shrink-0 text-sm text-gray-400">
-              Chat or call below — full details on our{" "}
-              <Link
+            Need help choosing the right program or have a health-related question? Our team is here to assist you. 
+            {/* Reach out to us on our{" "} */}
+              {/* <Link
                 href="/contact"
                 className="text-primary underline-offset-2 hover:underline focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-sm"
               >
                 contact page
-              </Link>
-              .
+              </Link> */}
             </p>
             <ul className="lg:mt-auto space-y-2 pt-4" role="list">
               <li>
@@ -154,7 +166,7 @@ function FooterInner() {
                     <FaWhatsapp className="drop-shadow-[0_0_8px_rgba(52,211,153,0.35)]" />
                   </span>
                   <span className="min-w-0 flex-1 text-left text-sm font-semibold text-white">
-                    WhatsApp support
+                  Chat on WhatsApp
                   </span>
                   <span
                     className="material-icons-outlined text-base text-gray-500 transition-colors group-hover:text-emerald-400 lg:block hidden"
@@ -177,7 +189,7 @@ function FooterInner() {
                     <MdPhoneInTalk className="drop-shadow-[0_0_10px_rgba(0,168,106,0.35)]" />
                   </span>
                   <span className="min-w-0 flex-1 text-left text-sm font-semibold text-white">
-                    Direct call
+                  Call Our Team
                   </span>
                   <span
                     className="material-icons-outlined text-base text-gray-500 transition-colors group-hover:text-primary lg:block hidden"
@@ -194,7 +206,6 @@ function FooterInner() {
         {/* Bottom bar */}
         <div className="flex flex-col items-center justify-center border-t border-gray-800 pt-8 text-sm text-gray-500 md:flex-row">
           <p>© {currentYear} Yoga With Doctor. All rights reserved.</p>
-          
         </div>
       </div>
     </footer>

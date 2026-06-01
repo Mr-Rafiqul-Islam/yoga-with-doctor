@@ -9,6 +9,7 @@ import { useCheckCourseAccessQuery } from "@/slices/courses";
 
 export type CourseCatalogCardProps = {
   title: string;
+  shortDescription?: string;
   bannerImage: string;
   imageAlt: string;
   category: string;
@@ -37,6 +38,7 @@ export type CourseCatalogCardProps = {
 
 export function CourseCatalogCard({
   title,
+  shortDescription,
   bannerImage,
   imageAlt,
   category,
@@ -60,7 +62,6 @@ export function CourseCatalogCard({
     skip: !courseId,
   });
   const hasAccess = access === "PAID" && data?.data?.hasAccess;
-
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-elevation-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-elevation-md dark:border-gray-800 dark:bg-surface">
       <Link
@@ -148,17 +149,19 @@ export function CourseCatalogCard({
             )}
           </div>
 
-          <h3 className="mb-4 font-display text-xl font-bold leading-tight text-foreground transition-colors group-hover:text-primary dark:text-white">
+          <h3 className="mb-3 font-anek-bangla text-xl font-bold leading-tight text-foreground transition-colors group-hover:text-primary dark:text-white">
             {title}
           </h3>
-
+          <p className="line-clamp-2 text-sm mb-2 text-muted dark:text-gray-400">
+            {shortDescription}
+          </p>
           <div className="mb-4 flex items-center gap-2">
             <Image
               src={instructorAvatarSrc}
               alt=""
               width={24}
               height={24}
-              className="rounded-full border border-border object-cover dark:border-gray-600"
+              className="rounded-full h-7 w-7 shrink-0 border border-border object-cover dark:border-gray-600"
             />
             <p className="text-xs text-muted dark:text-gray-400">
               {instructorName}

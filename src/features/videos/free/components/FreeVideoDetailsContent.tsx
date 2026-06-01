@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -16,8 +16,21 @@ import { ClassReviewSection } from "@/features/reviews/components/ClassReviewSec
 import { useAppDispatch, useAppSelector } from "@/stores";
 import { useAddEnrollmentByItemIdMutation } from "@/slices/enrollment";
 import { classApi } from "@/slices/classes";
+import {
+  getFreeVideoLeadGateStatus,
+  markFreeVideoLeadGatePassed,
+} from "@/lib/freeVideoLeadGate";
+import { FreeVideoLeadModal } from "./FreeVideoLeadModal";
 
 const TAB_IDS = ["overview", "equipment", "reviews"] as const;
+
+function getPosterUrl(video: VideoCardProps): string | null {
+  if (video.thumbnailUrl) return video.thumbnailUrl;
+  if (video.muxPlaybackId) {
+    return `https://image.mux.com/${video.muxPlaybackId}/thumbnail.webp?time=0`;
+  }
+  return null;
+}
 
 export interface FreeVideoDetailsContentProps {
   video: VideoCardProps;
@@ -33,6 +46,13 @@ export function FreeVideoDetailsContent({
   const [addEnrollmentByItemId] = useAddEnrollmentByItemIdMutation();
   const enrollRequestRef = useRef(false);
 
+  const [leadGatePassed, setLeadGatePassed] = useState(isAuthenticated);
+  const [showLeadModal, setShowLeadModal] = useState(false);
+  const [shouldAutoPlay, setShouldAutoPlay] = useState(false);
+
+  const canPlay = isAuthenticated || leadGatePassed;
+  const posterUrl = getPosterUrl(video);
+
   const [activeTab, setActiveTab] =
     useState<(typeof TAB_IDS)[number]>("overview");
   // const [followed, setFollowed] = useState(false);
@@ -44,8 +64,18 @@ export function FreeVideoDetailsContent({
   const [getPlaybackToken] = useLazyGetVideoPlaybackTokenQuery();
 
   useEffect(() => {
+    if (isAuthenticated) {
+      setLeadGatePassed(true);
+      return;
+    }
+    getFreeVideoLeadGateStatus().then((status) =>
+      setLeadGatePassed(status.passed),
+    );
+  }, [isAuthenticated]);
+
+  useEffect(() => {
     // Fetch playback token if video exists and has muxPlaybackId
-    if (video.id && video.muxPlaybackId && video.status === "READY") {
+    if (video.id && video.muxPlaybackId && video.status === "READY" && isAuthenticated) {
       getPlaybackToken(video.id)
         .unwrap()
         .then((result) => {
@@ -66,7 +96,13 @@ export function FreeVideoDetailsContent({
       setPlaybackId(video.muxPlaybackId);
       setPlaybackToken(null);
     }
-  }, [video.id, video.muxPlaybackId, video.status, getPlaybackToken]);
+  }, [
+    video.id,
+    video.muxPlaybackId,
+    video.status,
+    getPlaybackToken,
+    isAuthenticated,
+  ]);
 
   useEffect(() => {
     enrollRequestRef.current = false;
@@ -82,6 +118,9 @@ export function FreeVideoDetailsContent({
   };
 
   const handlePlay = () => {
+    if (shouldAutoPlay) {
+      setShouldAutoPlay(false);
+    }
     if (!isAuthenticated || details.isEnrolled || enrollRequestRef.current) {
       return;
     }
@@ -102,24 +141,49 @@ export function FreeVideoDetailsContent({
       });
   };
 
+  const openLeadModal = useCallback(() => {
+    if (isAuthenticated || leadGatePassed) return;
+    setShowLeadModal(true);
+  }, [isAuthenticated, leadGatePassed]);
+
+  const handleLeadSuccess = useCallback(async () => {
+    await markFreeVideoLeadGatePassed();
+    setLeadGatePassed(true);
+    setShouldAutoPlay(true);
+  }, []);
+
+  const handleStartPracticeClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+  ) => {
+    if (isAuthenticated || leadGatePassed) return;
+    e.preventDefault();
+    setShowLeadModal(true);
+  };
+
   const doctorsNote = {
     name: details.author.name,
     title: details.author.title,
-    avatarUrl: details.author.avatarSrc,
+    avatarUrl: "/Dr. Shah Alam-2.jpeg",
     quote:
       details.author.quotes ??
-      "Gentle movement and mindful breathing can support recovery and daily function. Listen to your body and modify as needed.",
+      "True health is built through consistent movement, mindful living, and informed choices. Our videos are designed to help you move better, reduce stress, and develop healthier habits using evidence-based yoga and wellness practices. Always listen to your body and progress at a pace that feels right for you.",
     tags: details.author.tags ?? ["#Wellness", "#MindBody"],
   };
 
   return (
     <div className="space-y-8">
+      <FreeVideoLeadModal
+        isOpen={showLeadModal}
+        onClose={() => setShowLeadModal(false)}
+        onSuccess={handleLeadSuccess}
+      />
+
       {/* Video player */}
       <div
         id="play"
-        className="relative w-full overflow-hidden rounded-2xl bg-gray-900 shadow-xl aspect-video md:aspect-[21/9] group cursor-pointer"
+        className="relative w-full overflow-hidden rounded-2xl bg-gray-900 shadow-xl aspect-video group cursor-pointer"
       >
-        {playbackId ? (
+        {playbackId && canPlay ? (
           <MuxPlayerLazy
             ref={playerRef}
             className="h-full w-full"
@@ -129,7 +193,7 @@ export function FreeVideoDetailsContent({
             {...(playbackToken ? { tokens: { playback: playbackToken } } : {})}
             onLoadedMetadata={handleLoadedMetadata}
             onPlay={handlePlay}
-            autoPlay={false}
+            autoPlay={shouldAutoPlay}
             playsInline
             style={{
               aspectRatio: "auto",
@@ -140,6 +204,27 @@ export function FreeVideoDetailsContent({
               "--media-object-position": "center",
             }}
           />
+        ) : playbackId && posterUrl ? (
+          <button
+            type="button"
+            onClick={openLeadModal}
+            className="relative block h-full w-full cursor-pointer border-0 bg-transparent p-0 text-left"
+            aria-label="Play video"
+          >
+            <Image
+              src={posterUrl}
+              alt=""
+              fill
+              className="object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, 1280px"
+              priority
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/25 transition-colors group-hover:bg-black/35">
+              <span className="material-icons-outlined text-7xl text-white drop-shadow-lg md:text-8xl">
+                play_circle
+              </span>
+            </div>
+          </button>
         ) : video.thumbnailUrl ? (
           <Image
             src={video.thumbnailUrl}
@@ -211,7 +296,7 @@ export function FreeVideoDetailsContent({
             <div className="flex items-center gap-4">
               {video.authorAvatarUrl ? (
                 <Image
-                  src={video.authorAvatarUrl}
+                  src={"/Dr. Shah Alam-2.jpeg"}
                   alt=""
                   width={56}
                   height={56}
@@ -230,7 +315,7 @@ export function FreeVideoDetailsContent({
               </div>
             </div>
             <Link
-              href="https://drshahalam.com/"
+              href="https://doctorshahalam.com/"
               target="_blank"
               type="button"
               // onClick={() => setFollowed((v) => !v)}
@@ -274,7 +359,7 @@ export function FreeVideoDetailsContent({
                 {details.shortDescription}
               </p>
               <article
-                className="prose prose-sm prose-invert max-w-none"
+                className="prose prose-sm dark:prose-invert prose-headings:font-display prose-headings:font-bold prose-h2:text-foreground prose-p:text-muted prose-p:leading-relaxed prose-strong:text-primary max-w-none"
                 dangerouslySetInnerHTML={{ __html: details.description }}
               />
             </div>
@@ -294,6 +379,7 @@ export function FreeVideoDetailsContent({
           {/* CTA */}
           <Link
             href="#play"
+            onClick={handleStartPracticeClick}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 px-6 text-lg font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-xl"
           >
             <span className="material-icons-outlined">play_arrow</span>
@@ -356,26 +442,29 @@ export function FreeVideoDetailsContent({
           {/* Doctor's Note */}
           <div className="rounded-2xl border border-blue-100 bg-blue-50 p-6 dark:border-blue-800 dark:bg-blue-900/10">
             <div className="mb-4 flex items-start gap-4">
-              <Image
+              {/* <Image
                 src={doctorsNote.avatarUrl}
                 alt={doctorsNote.name}
                 width={48}
                 height={48}
                 className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-white dark:ring-gray-800"
-              />
+              /> */}
               <div>
-                <h3 className="font-bold text-foreground">
+                <h3 className="font-bold font-display text-xl text-primary">
                   Doctor&apos;s Note
                 </h3>
-                <p className="text-xs font-medium uppercase tracking-wide text-blue-600 dark:text-blue-400">
+                {/* <p className="text-xs font-medium uppercase tracking-wide text-blue-600 dark:text-blue-400">
                   {doctorsNote.name}, {doctorsNote.title}
-                </p>
+                </p> */}
               </div>
             </div>
             <p className="mb-4 text-sm italic text-foreground/90">
               {doctorsNote.quote}
             </p>
-            <div className="flex flex-wrap gap-2">
+            <p className="mb-1 text-base font-semibold text-foreground/90">— Dr. Md Shah Alam
+            </p>
+            <span className="font-semibold text-xs text-foreground/90">Orthopedics Specialist, Spine Surgeon & Yoga Instructor</span>
+            {/* <div className="flex flex-wrap gap-2">
               {doctorsNote.tags.map((tag) => (
                 <span
                   key={tag}
@@ -384,7 +473,7 @@ export function FreeVideoDetailsContent({
                   {tag}
                 </span>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* Related Premium Commenting out for future implement*/}

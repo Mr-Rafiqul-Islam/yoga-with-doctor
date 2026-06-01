@@ -1,11 +1,19 @@
 import {
   HeroSection,
   MedicalInsightSection,
+  MeetOurExpertSection,
   // TrendingTagsSection,
   FreeVideosSection,
   ArticlesSection,
   // PremiumCollectionSection,
   TrendingCoursesSection,
+  WhyYogaWithDoctorSection,
+  ReviewsSection,
+  ImpactInNumbersSection,
+  HealingJourneySection,
+  FeaturedInSection,
+  JoinCommunitySection,
+  TransformationMissionSection,
 } from "@/features/home";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/publicPageMetadata";
@@ -28,11 +36,19 @@ export default function Home() {
     <>
       <HeroSection />
       <MedicalInsightSection />
+      <MeetOurExpertSection />
       {/* <TrendingTagsSection /> */}
       <FreeVideosSection />
       {/* <PremiumCollectionSection /> */}
       <TrendingCoursesSection />
       <ArticlesSection />
+      <WhyYogaWithDoctorSection />
+      <ReviewsSection />
+      <TransformationMissionSection />
+      <ImpactInNumbersSection />
+      <HealingJourneySection />
+      <FeaturedInSection />
+      <JoinCommunitySection />
     </>
   );
 }

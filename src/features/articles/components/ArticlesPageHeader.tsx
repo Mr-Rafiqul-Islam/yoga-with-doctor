@@ -17,10 +17,10 @@ export function ArticlesPageHeader({
     >
       <div>
         <p className="mb-2 text-caption font-medium uppercase tracking-wider text-primary">
-          Wellness & Wisdom
+        SCIENCE • YOGA • HEALTH WISDOM
         </p>
-        <h1 className="font-display text-3xl font-bold leading-tight text-foreground md:text-4xl lg:text-5xl">
-          Health & Yoga Articles
+        <h1 className="font-anek-bangla text-3xl font-bold leading-tight text-foreground md:text-4xl lg:text-5xl">
+        Health & Wellness Articles
         </h1>
       </div>
       <div className="flex gap-2">

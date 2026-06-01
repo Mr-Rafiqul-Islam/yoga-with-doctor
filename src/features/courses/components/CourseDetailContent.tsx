@@ -3,14 +3,26 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MuxBackgroundVideoLazy } from "@/components/media/MuxBackgroundVideoLazy";
+import { MuxPlayerLazy } from "@/components/media/MuxPlayerLazy";
 import { Modal } from "@/components/Modal";
 import { CourseCatalogCardCta } from "./CourseCatalogCardCta";
 import type { CourseDetailData, CourseLesson } from "../data/courseDetailData";
 import { formatHumanMediaDuration } from "@/lib/formatMediaDuration";
 import { CourseReviewSection } from "@/features/reviews/components/CourseReviewSection";
+import { useCheckCourseAccessQuery } from "@/slices/courses";
+import { useAppSelector } from "@/stores";
 
 const TABS = ["About Course", "Curriculum", "Reviews"] as const;
+
+const COURSE_HERO_MUX_STYLE = {
+  aspectRatio: "auto",
+  height: "100%",
+  width: "100%",
+  "--controls": "none",
+  "--controls-backdrop-color": "transparent",
+  "--media-object-fit": "cover",
+  "--media-object-position": "center",
+} as const;
 
 function muxPlaybackIdFromVideo(video: unknown): string | undefined {
   if (video && typeof video === "object" && "muxPlaybackId" in video) {
@@ -27,6 +39,25 @@ export interface CourseDetailContentProps {
 export function CourseDetailContent({ course }: CourseDetailContentProps) {
   const [activeTab, setActiveTab] = useState<(typeof TABS)[0]>("About Course");
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { unlockedCourseIds } = useAppSelector((state) => state.entitlements);
+  const {
+    data: accessData,
+    isLoading: accessLoading,
+    isFetching: accessFetching,
+  } = useCheckCourseAccessQuery(course.courseId ?? "", {
+    skip: !course.courseId || !isAuthenticated,
+  });
+  const hasAccessFromApi = accessData?.data?.hasAccess ?? false;
+  const isUnlocked =
+    !!course.courseId && unlockedCourseIds.includes(course.courseId);
+  const userOwnsCourse =
+    isAuthenticated && (hasAccessFromApi || isUnlocked);
+  const accessCheckPending =
+    Boolean(course.courseId) &&
+    isAuthenticated &&
+    (accessLoading || accessFetching);
+
   const previewLesson = useMemo(() => {
     const allLessons = course.curriculum.flatMap((m) => m.lessons);
     return allLessons.find(
@@ -51,22 +82,18 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
         {/* Video section: autoplay preview if available, otherwise locked thumbnail */}
         <div className="relative aspect-video overflow-hidden rounded-2xl bg-black shadow-lg">
           {heroMuxPlaybackId ? (
-            <MuxBackgroundVideoLazy
-              src={`https://stream.mux.com/${heroMuxPlaybackId}.m3u8`}
+            <MuxPlayerLazy
               className="h-full w-full"
+              playbackId={heroMuxPlaybackId}
+              poster={heroPosterUrl}
+              streamType="on-demand"
               maxResolution="720p"
-            >
-              {/* MuxBackgroundVideo expects a plain <img> fallback; not next/image */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={
-                  heroPosterUrl ??
-                  `https://image.mux.com/${heroMuxPlaybackId}/thumbnail.webp?time=0`
-                }
-                alt=""
-                className="h-full w-full object-cover"
-              />
-            </MuxBackgroundVideoLazy>
+              autoPlay
+              loop
+              playsInline
+              nohotkeys
+              style={COURSE_HERO_MUX_STYLE}
+            />
           ) : (
             <>
               {course.thumbnailUrl && <Image
@@ -160,7 +187,7 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
         {/* Tab content: About (What you will learn) */}
         {activeTab === "About Course" && (
           <div className="space-y-4">
-          <article className="prose prose-sm prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: course.description }} />
+          <article className="prose prose-sm dark:prose-invert prose-headings:font-display prose-headings:font-bold prose-h2:text-foreground prose-p:text-muted prose-p:leading-relaxed prose-strong:text-primary max-w-none" dangerouslySetInnerHTML={{ __html: course.description }} />
           <div className="rounded-2xl border border-border bg-surface p-6 shadow-soft dark:border-gray-800 dark:bg-surface">
             <h3 className="font-display text-xl font-bold text-foreground dark:text-white mb-6">
               What you will learn
@@ -218,15 +245,30 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
             id="sidebar-enroll"
             className="rounded-2xl border border-border bg-surface p-6 shadow-soft dark:border-gray-800 dark:bg-surface"
           >
-            <div className="mb-6 flex items-end gap-3">
-              <span className="text-3xl font-bold text-foreground dark:text-white">
-                {course.price}
-              </span>
-              <span className="mb-1 text-lg text-muted line-through">{course.originalPrice}</span>
-              <span className="mb-1.5 rounded bg-secondary px-2 py-1 text-xs font-bold text-primary dark:bg-sage-dark dark:text-primary-on-dark">
-                -{course.discountPercent}%
-              </span>
-            </div>
+            {accessCheckPending ? (
+              <div
+                className="mb-6 h-10 max-w-[200px] animate-pulse rounded-lg bg-muted/60 dark:bg-gray-800/60"
+                aria-hidden
+              />
+            ) : userOwnsCourse ? (
+              <div className="mb-6">
+                <span className="text-sm font-semibold uppercase tracking-wide text-primary dark:text-primary-on-dark">
+                  Owned
+                </span>
+              </div>
+            ) : (
+              <div className="mb-6 flex items-end gap-3">
+                <span className="text-3xl font-bold text-foreground dark:text-white">
+                  {course.price}
+                </span>
+                <span className="mb-1 text-lg text-muted line-through">
+                  {course.originalPrice}
+                </span>
+                <span className="mb-1.5 rounded bg-secondary px-2 py-1 text-xs font-bold text-primary dark:bg-sage-dark dark:text-primary-on-dark">
+                  -{course.discountPercent}%
+                </span>
+              </div>
+            )}
             <div className="mb-6 [&>button]:w-full [&>button]:py-3.5">
               <CourseCatalogCardCta
                 courseId={course.courseId}
