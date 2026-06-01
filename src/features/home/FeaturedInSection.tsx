@@ -46,7 +46,6 @@ export const FEATURED_IN = {
 } as const;
 
 function FeaturedLogoItem({ logo }: { logo: FeaturedLogo }) {
-  console.log(logo);
   return (
     <li className="flex items-center justify-center">
       <Image

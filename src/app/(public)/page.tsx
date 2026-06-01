@@ -12,6 +12,7 @@ import {
   ImpactInNumbersSection,
   HealingJourneySection,
   FeaturedInSection,
+  JoinCommunitySection,
 } from "@/features/home";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/publicPageMetadata";
@@ -45,6 +46,7 @@ export default function Home() {
       <ImpactInNumbersSection />
       <HealingJourneySection />
       <FeaturedInSection />
+      <JoinCommunitySection />
     </>
   );
 }
