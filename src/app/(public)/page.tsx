@@ -11,6 +11,7 @@ import {
   ReviewsSection,
   ImpactInNumbersSection,
   HealingJourneySection,
+  FeaturedInSection,
 } from "@/features/home";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/publicPageMetadata";
@@ -43,6 +44,7 @@ export default function Home() {
       <ReviewsSection />
       <ImpactInNumbersSection />
       <HealingJourneySection />
+      <FeaturedInSection />
     </>
   );
 }

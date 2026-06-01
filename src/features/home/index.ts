@@ -12,5 +12,6 @@ export { WhyYogaWithDoctorSection } from "./WhyYogaWithDoctorSection";
 export { ReviewsSection } from "./ReviewsSection";
 export { ImpactInNumbersSection } from "./ImpactInNumbersSection";
 export { HealingJourneySection } from "./HealingJourneySection";
+export { FeaturedInSection } from "./FeaturedInSection";
 export { CourseCard, CourseCardSkeleton } from "./CourseCard";
 export type { CourseCardProps } from "./CourseCard";
