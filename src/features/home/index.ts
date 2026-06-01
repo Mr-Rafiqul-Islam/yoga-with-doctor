@@ -1,5 +1,6 @@
 export { HeroSection } from "./HeroSection";
 export { MedicalInsightSection } from "./MedicalInsightSection";
+export { MeetOurExpertSection } from "./MeetOurExpertSection";
 export { TrendingTagsSection } from "./TrendingTagsSection";
 export { FreeVideosSection } from "./FreeVideosSection";
 export { VideoCard } from "./VideoCard";

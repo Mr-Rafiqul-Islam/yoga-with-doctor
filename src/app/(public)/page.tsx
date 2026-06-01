@@ -1,6 +1,7 @@
 import {
   HeroSection,
   MedicalInsightSection,
+  MeetOurExpertSection,
   // TrendingTagsSection,
   FreeVideosSection,
   ArticlesSection,
@@ -30,6 +31,7 @@ export default function Home() {
     <>
       <HeroSection />
       <MedicalInsightSection />
+      <MeetOurExpertSection />
       {/* <TrendingTagsSection /> */}
       <FreeVideosSection />
       {/* <PremiumCollectionSection /> */}
