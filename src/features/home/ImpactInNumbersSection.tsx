@@ -11,43 +11,50 @@ type StatItemData = {
   icon: MaterialIconName | "youtube";
   value: string;
   label: string;
+  description: string;
 };
 
 export const IMPACT_IN_NUMBERS = {
   sectionLabel: "Our Impact in Numbers",
-  title: "Trusted by Thousands, Impacting Millions",
+  title: "Transforming Lives Through Science, Yoga & Natural Remedy System",
   subtitle:
-    "Our growing community is a reflection of the trust and results we deliver.",
+    "Thousands of people have trusted Yoga With Doctor to improve their health, reduce pain, and build healthier lives through evidence-based education and therapeutic yoga.",
   stats: [
     {
       icon: "groups" as const,
       value: "10,000+",
-      label: "Patients Helped Naturally",
+      label: "Lives Impacted",
+      description: "Through education, movement, and wellness programs",
     },
     {
       icon: "youtube" as const,
       value: "100,000+",
-      label: "YouTube Subscribers",
+      label: "Community Members",
+      description: "Learning and growing across our platforms",
     },
     {
       icon: "visibility" as const,
-      value: "1M+",
+      value: "10M+",
       label: "Video Views",
+      description: "Accessing trusted health and wellness content",
     },
     {
       icon: "school" as const,
       value: "5,000+",
-      label: "Course Students",
+      label: "Program Participants",
+      description: "Enrolled in doctor-guided courses and workshops",
     },
     {
       icon: "chat_bubble" as const,
       value: "500+",
       label: "Success Stories",
+      description: "Shared by members of our community",
     },
     {
       icon: "public" as const,
       value: "15+",
       label: "Countries Reached",
+      description: "Building a global movement for healthier living",
     },
   ] satisfies StatItemData[],
 } as const;
@@ -109,9 +116,10 @@ function StatItem({
       <p className="font-anek-bangla text-2xl font-bold text-primary dark:text-primary-on-dark sm:text-3xl">
         {stat.value}
       </p>
-      <p className="mt-1 max-w-[9rem] text-xs leading-snug text-muted dark:text-gray-400 sm:text-sm">
+      <p className="mt-1 max-w-[9rem] text-sm leading-snug">
         {stat.label}
       </p>
+      <p className="mt-1 max-w-[9rem] text-xs leading-snug text-muted dark:text-gray-400 ">{stat.description}</p>
     </li>
   );
 }

@@ -16,46 +16,46 @@ type JourneyStep = {
 };
 
 export const HEALING_JOURNEY = {
-  sectionLabel: "Your Path to Recovery",
-  title: "Your Healing Journey",
+  sectionLabel: "YOUR PATH TO BETTER HEALTH",
+  title: "Your Journey to Lifelong Wellness",
   subtitle:
-    "A simple step-by-step process to help you heal, transform, and live better.",
+    "A simple, doctor-guided roadmap designed to help you learn, heal, build healthy habits, and create lasting transformation.",
   steps: [
     {
       number: "01",
       icon: "assignment" as const,
-      title: "Assess Your Condition",
-      description: "Understand your problem and get expert guidance.",
+      title: "Discover Your Health Needs",
+      description: "Understand your challenges, health goals, and the right path forward through trusted guidance.",
     },
     {
       number: "02",
       icon: "play_circle" as const,
-      title: "Watch & Learn",
-      description: "Access free videos and classes to learn the basics.",
+      title: "Learn the Fundamentals",
+      description: "Explore free videos, articles, and practical wellness education based on medical science and therapeutic yoga.",
     },
     {
       number: "03",
       icon: "menu_book" as const,
       title: "Choose Your Program",
-      description: "Pick the right program for your specific condition.",
+      description: "Select the program that best matches your condition, lifestyle, and health objectives.",
     },
     {
       number: "04",
       icon: "groups" as const,
-      title: "Join the Community",
-      description: "Be part of a supportive healing community.",
+      title: "Practice & Apply",
+      description: "Follow structured lessons, yoga sessions, and lifestyle recommendations designed for real-life results.",
     },
     {
       number: "05",
       icon: "trending_up" as const,
       title: "Track Your Progress",
-      description: "Follow the plan, track improvements & stay motivated.",
+      description: "Build consistency, monitor improvements, and stay motivated as your health evolves.",
     },
     {
       number: "06",
       icon: "favorite" as const,
-      title: "Live a Pain-Free Life",
-      description: "Build long-term health, flexibility & well-being.",
+      title: "Thrive & Live Better",
+      description: "Enjoy greater mobility, reduced pain, healthier habits, and long-term physical and mental well-being.",
     },
   ] satisfies JourneyStep[],
 } as const;
@@ -68,7 +68,7 @@ function StepItem({ step }: { step: JourneyStep }) {
         aria-hidden
       >
         <span className="material-icons-outlined text-2xl sm:text-3xl">
-          {step.icon}
+        {step.icon}
         </span>
       </div>
       <p className="mt-3 text-sm font-bold text-primary dark:text-primary-on-dark">

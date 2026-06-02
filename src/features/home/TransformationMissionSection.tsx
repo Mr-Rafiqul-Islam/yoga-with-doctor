@@ -10,32 +10,32 @@ type MissionPillarData = {
 
 export const TRANSFORMATION_MISSION = {
   sectionLabel: "Our Mission",
-  title: "Our Transformation Mission",
+  title: "Empowering Health Through Science & Yoga",
   intro:
-    "We combine modern medical science, therapeutic yoga, and lifestyle medicine to create a healthier, stronger, and pain-free Bangladesh.",
+    "We combine medical science, therapeutic yoga, and evidence-based lifestyle education to help people prevent disease, recover naturally, and build lifelong wellness.",
   pillars: [
     {
       icon: "health_and_safety" as const,
       title: "Prevent Disease",
-      description: "Help people prevent diseases through lifestyle & exercise.",
+      description: "Help people reduce health risks through movement, healthy habits, preventive care, and informed lifestyle choices.",
     },
     {
       icon: "spa" as const,
-      title: "Natural Healing",
+      title: "Promote Natural Healing",
       description:
-        "Promote natural healing without dependency on medication or surgery.",
+        "Support the body's natural ability to heal through therapeutic yoga, healthy living, and evidence-based wellness practices.",
     },
     {
       icon: "person" as const,
       title: "Educate & Empower",
       description:
-        "Educate people with evidence-based knowledge & practical solutions.",
+        "Provide trusted health education that helps people make informed decisions and take control of their well-being.",
     },
     {
       icon: "public" as const,
-      title: "Build a Healthier Nation",
+      title: "Build a Healthier Future",
       description:
-        "Our vision is a healthier Bangladesh for today and future generations.",
+        "Create a world where medical science, therapeutic yoga, and preventive healthcare are accessible to everyone.",
     },
   ] satisfies MissionPillarData[],
   image: {
@@ -74,7 +74,7 @@ function MissionPillar({
   return (
     <li
       className={[
-        "flex flex-col items-start px-3 py-2 sm:px-4",
+        "flex flex-col items-center px-3 py-2 sm:px-4",
         getPillarBorderClass(index, total),
       ]
         .filter(Boolean)
@@ -86,10 +86,10 @@ function MissionPillar({
       >
         {pillar.icon}
       </span>
-      <h3 className="mt-3 text-sm font-bold text-foreground dark:text-white">
+      <h3 className="mt-3 text-center text-sm font-bold text-foreground dark:text-white">
         {pillar.title}
       </h3>
-      <p className="mt-1.5 text-xs leading-relaxed text-muted dark:text-gray-400 sm:text-sm">
+      <p className="mt-1.5 text-center text-xs leading-relaxed text-muted dark:text-gray-400 ">
         {pillar.description}
       </p>
     </li>
