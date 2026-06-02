@@ -16,15 +16,15 @@ const WHATSAPP_COMMUNITY_URL =
   encodeURIComponent("Hello, I would like to join the Yoga With Doctor community.");
 
 export const JOIN_COMMUNITY = {
-  sectionLabel: "Join Our Community",
-  title: "Stronger Together",
+  sectionLabel: "JOIN THE MOVEMENT",
+  title: "Heal Better Together",
   subtitle:
-    "Join our growing health community and stay motivated on your healing journey.",
+    "Connect with thousands of health-conscious individuals, get expert guidance, stay accountable, and make your wellness journey easier with the support of our growing community.",
   channels: [
     {
       id: "whatsapp",
       title: "WhatsApp Community",
-      description: "Get daily tips, updates & support",
+      description: "Get daily wellness tips, program updates, healing strategies, and direct community support.",
       href: WHATSAPP_COMMUNITY_URL,
       Icon: FaWhatsapp,
       iconClassName: "bg-[#25D366]/10 text-[#25D366]",
@@ -32,25 +32,25 @@ export const JOIN_COMMUNITY = {
     {
       id: "facebook",
       title: "Facebook Group",
-      description: "Join discussions & share experiences",
-      href: "https://www.facebook.com/yogawithdoctor",
+      description: "Connect with fellow members, share experiences, ask questions, and celebrate progress together.",
+      href: "https://www.facebook.com/groups/548284146954517/",
       Icon: FaFacebook,
       iconClassName: "bg-[#1877F2]/10 text-[#1877F2]",
     },
     {
       id: "telegram",
       title: "Telegram Channel",
-      description: "Get instant updates & live session alerts",
+      description: "Receive announcements, live session alerts, educational content, and exclusive wellness resources.",
       href: "https://t.me/yogawithdoctor",
       Icon: FaTelegram,
       iconClassName: "bg-[#0088cc]/10 text-[#0088cc]",
     },
   ] satisfies CommunityChannel[],
   ctaCard: {
-    title: "Be Part of a Movement",
+    title: "Be Part of a Healthier Future",
     description:
-      "Thousands are already on their journey to better health. Don't do it alone—join our community today!",
-    memberCountLabel: "+2K",
+      "Join thousands of people who are improving their health through doctor-guided education, therapeutic yoga, and healthier lifestyle habits.",
+    memberCountLabel: "5k+",
     backgroundImage: "/movement.jpg",
     button: {
       href: "/",

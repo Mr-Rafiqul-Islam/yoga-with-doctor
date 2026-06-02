@@ -1,135 +1,138 @@
-import { Fragment } from "react";
-
 type MaterialIconName =
   | "assignment"
   | "play_circle"
   | "menu_book"
   | "groups"
   | "trending_up"
-  | "favorite";
+  | "emoji_events";
 
 type JourneyStep = {
   number: string;
   icon: MaterialIconName;
   title: string;
+  titleLines: readonly [string, string];
   description: string;
 };
 
 export const HEALING_JOURNEY = {
-  sectionLabel: "Your Path to Recovery",
-  title: "Your Healing Journey",
+  sectionLabel: "YOUR PATH TO BETTER HEALTH",
+  title: "Your Journey to Lifelong Wellness",
   subtitle:
-    "A simple step-by-step process to help you heal, transform, and live better.",
+    "A simple, doctor-guided roadmap designed to help you learn, heal, build healthy habits, and create lasting transformation.",
   steps: [
     {
       number: "01",
       icon: "assignment" as const,
-      title: "Assess Your Condition",
-      description: "Understand your problem and get expert guidance.",
+      title: "Discover Your Health Needs",
+      titleLines: ["Discover Your", "Health Needs"],
+      description:
+        "Understand your challenges, health goals, and the right path forward through trusted guidance.",
     },
     {
       number: "02",
       icon: "play_circle" as const,
-      title: "Watch & Learn",
-      description: "Access free videos and classes to learn the basics.",
+      title: "Learn the Fundamentals",
+      titleLines: ["Learn the", "Fundamentals"],
+      description:
+        "Explore free videos, articles, and practical wellness education based on medical science and therapeutic yoga.",
     },
     {
       number: "03",
       icon: "menu_book" as const,
       title: "Choose Your Program",
-      description: "Pick the right program for your specific condition.",
+      titleLines: ["Choose Your", "Program"],
+      description:
+        "Select the program that best matches your condition, lifestyle, and health objectives.",
     },
     {
       number: "04",
       icon: "groups" as const,
-      title: "Join the Community",
-      description: "Be part of a supportive healing community.",
+      title: "Practice & Apply",
+      titleLines: ["Practice &", "Apply"],
+      description:
+        "Follow structured lessons, yoga sessions, and lifestyle recommendations designed for real-life results.",
     },
     {
       number: "05",
       icon: "trending_up" as const,
       title: "Track Your Progress",
-      description: "Follow the plan, track improvements & stay motivated.",
+      titleLines: ["Track Your", "Progress"],
+      description:
+        "Build consistency, monitor improvements, and stay motivated as your health evolves.",
     },
     {
       number: "06",
-      icon: "favorite" as const,
-      title: "Live a Pain-Free Life",
-      description: "Build long-term health, flexibility & well-being.",
+      icon: "emoji_events" as const,
+      title: "Thrive & Live Better",
+      titleLines: ["Thrive & Live", "Better"],
+      description:
+        "Enjoy greater mobility, reduced pain, healthier habits, and long-term physical and mental well-being.",
     },
   ] satisfies JourneyStep[],
 } as const;
 
-function StepItem({ step }: { step: JourneyStep }) {
+
+
+function RoadmapStep({
+  step,
+  isLast,
+}: {
+  step: JourneyStep;
+  isLast: boolean;
+}) {
   return (
-    <div className="flex min-w-0 flex-col items-center text-center">
+    <div className="relative flex w-full flex-row items-start lg:w-1/6 lg:flex-col lg:items-center">
+      {!isLast ? (
+        <>
+          <div
+            className="absolute left-1/2 top-8 z-0 hidden h-0.5 w-full bg-border dark:bg-white/10 lg:block"
+            aria-hidden
+          >
+          </div>
+          <div
+            className="absolute left-8 top-1/2 z-0 h-full w-0.5 bg-border dark:bg-white/10 lg:hidden"
+            aria-hidden
+          />
+        </>
+      ) : null}
+
       <div
-        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-primary shadow-soft dark:border-white/10 dark:bg-surface dark:text-primary-on-dark sm:h-16 sm:w-16"
+        className="relative z-10 mr-6 flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-border/30 bg-surface text-primary shadow-sm dark:border-white/10 dark:bg-surface dark:text-primary-on-dark lg:mr-0 lg:mb-4"
         aria-hidden
       >
-        <span className="material-icons-outlined text-2xl sm:text-3xl">
-          {step.icon}
-        </span>
+        <span className="material-icons-outlined text-2xl">{step.icon}</span>
       </div>
-      <p className="mt-3 text-sm font-bold text-primary dark:text-primary-on-dark">
-        {step.number}
-      </p>
-      <h3 className="mt-2 text-sm font-bold text-foreground dark:text-white sm:text-base">
-        {step.title}
-      </h3>
-      <p className="mt-1.5 max-w-[11rem] text-xs leading-relaxed text-muted dark:text-gray-400 sm:text-sm">
-        {step.description}
-      </p>
+
+      <div className="mt-2 flex min-w-0 flex-col lg:mt-0 lg:items-center lg:text-center">
+        <span className="mb-2 text-sm font-extrabold text-primary dark:text-primary-on-dark">
+          {step.number}
+        </span>
+        <h3 className="mb-2 text-base font-bold text-foreground dark:text-white lg:text-lg">
+          {step.titleLines[0]}
+          <br className="hidden lg:block" />{" "}
+          {step.titleLines[1]}
+        </h3>
+        <p className="text-xs leading-relaxed text-muted dark:text-gray-400 lg:text-sm">
+          {step.description}
+        </p>
+      </div>
     </div>
   );
 }
 
-function StepConnector() {
-  return (
-    <li
-      className="flex min-w-0 flex-[0.45] list-none items-center self-start pt-8"
-      aria-hidden
-    >
-      <div className="h-px flex-1 bg-primary dark:bg-primary" />
-      <span className="material-icons-outlined shrink-0 text-base text-primary dark:text-primary-on-dark">
-        arrow_forward
-      </span>
-    </li>
-  );
-}
-
-function DesktopTimeline({ steps }: { steps: readonly JourneyStep[] }) {
-  return (
-    <ol className="hidden list-none lg:flex lg:items-start">
-      {steps.map((step, index) => (
-        <Fragment key={step.number}>
-          {index > 0 ? <StepConnector /> : null}
-          <li className="flex min-w-0 flex-1 flex-col items-center text-center">
-            <StepItem step={step} />
-          </li>
-        </Fragment>
-      ))}
-    </ol>
-  );
-}
-
 export function HealingJourneySection() {
-  const {  sectionLabel, title, subtitle, steps } =
-    HEALING_JOURNEY;
+  const { sectionLabel, title, subtitle, steps } = HEALING_JOURNEY;
 
   return (
     <section
-      className="mb-20 bg-background xl:py-16 dark:bg-sage-dark/20 "
+      className="mb-20 bg-background xl:py-16 dark:bg-sage-dark/20"
       aria-labelledby="healing-journey-heading"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 max-w-2xl sm:mb-12">
-          <div className="mb-5 flex items-center gap-3">
-            
-            <span className="text-sm font-bold uppercase tracking-wider text-primary dark:text-primary-on-dark">
-              {sectionLabel}
-            </span>
-          </div>
+        <div className="mb-16 max-w-3xl md:mb-24">
+          <p className="mb-4 text-sm font-bold uppercase tracking-wider text-primary dark:text-primary-on-dark">
+            {sectionLabel}
+          </p>
 
           <h2
             id="healing-journey-heading"
@@ -137,20 +140,22 @@ export function HealingJourneySection() {
           >
             {title}
           </h2>
-          <p className="mt-2 text-sm text-muted dark:text-gray-400 sm:text-base">
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted dark:text-gray-400 sm:text-base">
             {subtitle}
           </p>
         </div>
 
-        <DesktopTimeline steps={steps} />
-
-        <ol className="grid grid-cols-2 gap-y-8 md:grid-cols-3 lg:hidden">
-          {steps.map((step) => (
-            <li key={step.number}>
-              <StepItem step={step} />
-            </li>
-          ))}
-        </ol>
+        <div className="relative w-full">
+          <div className="relative flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between lg:gap-4">
+            {steps.map((step, index) => (
+              <RoadmapStep
+                key={step.number}
+                step={step}
+                isLast={index === steps.length - 1}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -10,36 +10,36 @@ type MissionPillarData = {
 
 export const TRANSFORMATION_MISSION = {
   sectionLabel: "Our Mission",
-  title: "Our Transformation Mission",
+  title: "Empowering Health Through Science & Yoga",
   intro:
-    "We combine modern medical science, therapeutic yoga, and lifestyle medicine to create a healthier, stronger, and pain-free Bangladesh.",
+    "We combine medical science, therapeutic yoga, and evidence-based lifestyle education to help people prevent disease, recover naturally, and build lifelong wellness.",
   pillars: [
     {
       icon: "health_and_safety" as const,
       title: "Prevent Disease",
-      description: "Help people prevent diseases through lifestyle & exercise.",
+      description: "Help people reduce health risks through movement, healthy habits, preventive care, and informed lifestyle choices.",
     },
     {
       icon: "spa" as const,
-      title: "Natural Healing",
+      title: "Promote Natural Healing",
       description:
-        "Promote natural healing without dependency on medication or surgery.",
+        "Support the body's natural ability to heal through therapeutic yoga, healthy living, and evidence-based wellness practices.",
     },
     {
       icon: "person" as const,
       title: "Educate & Empower",
       description:
-        "Educate people with evidence-based knowledge & practical solutions.",
+        "Provide trusted health education that helps people make informed decisions and take control of their well-being.",
     },
     {
       icon: "public" as const,
-      title: "Build a Healthier Nation",
+      title: "Build a Healthier Future",
       description:
-        "Our vision is a healthier Bangladesh for today and future generations.",
+        "Create a world where medical science, therapeutic yoga, and preventive healthcare are accessible to everyone.",
     },
   ] satisfies MissionPillarData[],
   image: {
-    src: "/banner3.png",
+    src: "/meditation1.png",
     alt: "Yoga instructor demonstrating a therapeutic yoga pose",
     width: 520,
     height: 640,
@@ -74,7 +74,7 @@ function MissionPillar({
   return (
     <li
       className={[
-        "flex flex-col items-start px-3 py-2 sm:px-4",
+        "flex flex-col items-center px-3 py-2 sm:px-4",
         getPillarBorderClass(index, total),
       ]
         .filter(Boolean)
@@ -86,10 +86,10 @@ function MissionPillar({
       >
         {pillar.icon}
       </span>
-      <h3 className="mt-3 text-sm font-bold text-foreground dark:text-white">
+      <h3 className="mt-3 text-center text-sm font-bold text-foreground dark:text-white">
         {pillar.title}
       </h3>
-      <p className="mt-1.5 text-xs leading-relaxed text-muted dark:text-gray-400 sm:text-sm">
+      <p className="mt-1.5 text-center text-xs leading-relaxed text-muted dark:text-gray-400 ">
         {pillar.description}
       </p>
     </li>
@@ -120,24 +120,25 @@ export function TransformationMissionSection() {
       className="mx-auto mb-24 max-w-7xl px-4 sm:px-6 lg:px-8"
       aria-labelledby="transformation-mission-heading"
     >
-      <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-3 lg:gap-16">
-        <div className="col-span-2">
-          <div className="mb-5 flex items-center gap-3">
-            <span className="text-sm font-bold uppercase tracking-wider text-primary dark:text-primary-on-dark">
-              {sectionLabel}
-            </span>
-          </div>
+      <div className="">
+        <div className="mb-5 flex items-center gap-3">
+          <span className="text-sm font-bold uppercase tracking-wider text-primary dark:text-primary-on-dark">
+            {sectionLabel}
+          </span>
+        </div>
 
-          <h2
-            id="transformation-mission-heading"
-            className="font-anek-bangla text-3xl font-bold text-foreground dark:text-white sm:text-4xl"
-          >
-            {title}
-          </h2>
-          <p className="mt-3 max-w-xl text-body-md text-muted dark:text-gray-400">
-            {intro}
-          </p>
-
+        <h2
+          id="transformation-mission-heading"
+          className="font-anek-bangla text-3xl font-bold text-foreground dark:text-white sm:text-4xl"
+        >
+          {title}
+        </h2>
+        <p className="mt-3 max-w-xl text-body-md text-muted dark:text-gray-400">
+          {intro}
+        </p>
+      </div>
+      <div className="grid grid-cols-1 items-center lg:grid-cols-3 lg:gap-8">
+        <div className="col-span-2 order-2 lg:order-1">
           <ul className="mt-8 grid grid-cols-2 gap-y-8 md:grid-cols-4 md:gap-y-0">
             {pillars.map((pillar, index) => (
               <MissionPillar
@@ -150,21 +151,21 @@ export function TransformationMissionSection() {
           </ul>
         </div>
 
-        <div className="relative mx-auto w-full max-w-md lg:max-w-none col-span-1">
+        <div className="mx-auto w-full max-w-md lg:max-w-none col-span-1 order-1 lg:order-2">
           <div className="relative min-h-[250px] sm:min-h-[320px]">
             <div
               className="absolute left-4 top-8 h-[75%] w-[70%] rounded-[2rem] bg-sage-light dark:bg-sage-dark sm:left-8 sm:w-[65%]"
               aria-hidden
             />
             <DotGrid />
-            <div className="absolute inset-x-0 bottom-0 z-10 flex justify-center lg:justify-end">
+            <div className="absolute w-full bottom-0 z-10 flex justify-center lg:justify-end">
               <Image
-              src={image.src}
+                src={image.src}
                 alt={image.alt}
                 width={image.width}
                 height={image.height}
                 sizes={image.sizes}
-                className="h-auto w-[85%] max-w-[520px] object-contain object-bottom lg:w-[90%]"
+                className="h-auto w-[64%] object-contain object-bottom lg:w-[90%]"
               />
             </div>
           </div>

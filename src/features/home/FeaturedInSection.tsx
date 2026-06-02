@@ -9,10 +9,10 @@ type FeaturedLogo = {
 };
 
 export const FEATURED_IN = {
-  sectionLabel: "Our Featured In",
-  title: "Featured In",
+  sectionLabel: "AS FEATURED IN",
+  title: "Recognized by Leading Media Platforms",
   description:
-    "Recognized by leading media & platforms for our contribution to health & wellness.",
+    "Our mission to promote evidence-based health education, therapeutic yoga, and preventive wellness has been featured by respected media organizations.",
   logos: [
     {
       name: "ATN NEWS",
