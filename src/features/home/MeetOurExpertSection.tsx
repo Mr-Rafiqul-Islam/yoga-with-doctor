@@ -198,7 +198,7 @@ export function MeetOurExpertSection() {
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-md overflow-visible lg:max-w-none order-1 lg:order-2">
+        <div className="relative mx-auto w-full max-w-md overflow-hidden md:overflow-visible lg:max-w-none order-1 lg:order-2">
           <div className="relative h-[320px] w-full xl:w-[550px] overflow-visible sm:h-[320px] lg:h-[380px]">
             {/* Layer 1: mint base panel — visible on top and right */}
             <div
@@ -219,7 +219,7 @@ export function MeetOurExpertSection() {
             </div>
 
             {/* Layer 3: cutout portrait — overlaps quote block and mint base */}
-            <div className="absolute -top-2 bottom-0 -right-10 z-20 w-[78%] sm:-top-4 sm:w-[74%] lg:w-[72%]">
+            <div className="absolute -top-2 bottom-0 -right-8 z-20 w-[78%] sm:-top-4 sm:w-[74%] lg:w-[72%]">
               <Image
                 src={image.src}
                 alt={image.alt}
