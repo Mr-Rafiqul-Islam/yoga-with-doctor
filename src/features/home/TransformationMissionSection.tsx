@@ -39,7 +39,7 @@ export const TRANSFORMATION_MISSION = {
     },
   ] satisfies MissionPillarData[],
   image: {
-    src: "/banner3.png",
+    src: "/meditation1.png",
     alt: "Yoga instructor demonstrating a therapeutic yoga pose",
     width: 520,
     height: 640,
@@ -120,24 +120,25 @@ export function TransformationMissionSection() {
       className="mx-auto mb-24 max-w-7xl px-4 sm:px-6 lg:px-8"
       aria-labelledby="transformation-mission-heading"
     >
-      <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-3 lg:gap-16">
-        <div className="col-span-2">
-          <div className="mb-5 flex items-center gap-3">
-            <span className="text-sm font-bold uppercase tracking-wider text-primary dark:text-primary-on-dark">
-              {sectionLabel}
-            </span>
-          </div>
+      <div className="">
+        <div className="mb-5 flex items-center gap-3">
+          <span className="text-sm font-bold uppercase tracking-wider text-primary dark:text-primary-on-dark">
+            {sectionLabel}
+          </span>
+        </div>
 
-          <h2
-            id="transformation-mission-heading"
-            className="font-anek-bangla text-3xl font-bold text-foreground dark:text-white sm:text-4xl"
-          >
-            {title}
-          </h2>
-          <p className="mt-3 max-w-xl text-body-md text-muted dark:text-gray-400">
-            {intro}
-          </p>
-
+        <h2
+          id="transformation-mission-heading"
+          className="font-anek-bangla text-3xl font-bold text-foreground dark:text-white sm:text-4xl"
+        >
+          {title}
+        </h2>
+        <p className="mt-3 max-w-xl text-body-md text-muted dark:text-gray-400">
+          {intro}
+        </p>
+      </div>
+      <div className="grid grid-cols-1 items-center lg:grid-cols-3 lg:gap-8">
+        <div className="col-span-2 order-2 lg:order-1">
           <ul className="mt-8 grid grid-cols-2 gap-y-8 md:grid-cols-4 md:gap-y-0">
             {pillars.map((pillar, index) => (
               <MissionPillar
@@ -150,21 +151,21 @@ export function TransformationMissionSection() {
           </ul>
         </div>
 
-        <div className="relative mx-auto w-full max-w-md lg:max-w-none col-span-1">
+        <div className="mx-auto w-full max-w-md lg:max-w-none col-span-1 order-1 lg:order-2">
           <div className="relative min-h-[250px] sm:min-h-[320px]">
             <div
               className="absolute left-4 top-8 h-[75%] w-[70%] rounded-[2rem] bg-sage-light dark:bg-sage-dark sm:left-8 sm:w-[65%]"
               aria-hidden
             />
             <DotGrid />
-            <div className="absolute inset-x-0 bottom-0 z-10 flex justify-center lg:justify-end">
+            <div className="absolute w-full bottom-0 z-10 flex justify-center lg:justify-end">
               <Image
-              src={image.src}
+                src={image.src}
                 alt={image.alt}
                 width={image.width}
                 height={image.height}
                 sizes={image.sizes}
-                className="h-auto w-[85%] max-w-[520px] object-contain object-bottom lg:w-[90%]"
+                className="h-auto w-[64%] object-contain object-bottom lg:w-[90%]"
               />
             </div>
           </div>
