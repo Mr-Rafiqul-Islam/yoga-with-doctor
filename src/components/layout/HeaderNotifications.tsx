@@ -180,7 +180,7 @@ export function HeaderNotifications({ sessionOk }: HeaderNotificationsProps) {
           id={menuId}
           role="menu"
           aria-labelledby={buttonId}
-          className="absolute right-0 top-full z-[60] mt-2 w-[min(100vw-2rem,22rem)] max-h-[min(70vh,28rem)] overflow-hidden rounded-radius-md border border-border bg-surface shadow-elevation-md dark:bg-[#1a2e26]"
+          className="absolute -right-10 md:right-0 top-full z-[60] mt-2 w-[min(100vw-2rem,22rem)] max-h-[min(70vh,28rem)] overflow-hidden rounded-radius-md border border-border bg-surface shadow-elevation-md dark:bg-[#1a2e26]"
         >
           <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2 dark:border-gray-700">
             <p className="text-sm font-semibold text-foreground">Notifications</p>
