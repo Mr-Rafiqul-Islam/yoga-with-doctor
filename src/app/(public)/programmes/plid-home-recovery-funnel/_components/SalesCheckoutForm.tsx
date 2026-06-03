@@ -333,6 +333,7 @@ export function SalesCheckoutForm({
       setPaymentError("Payment gateway URL not received. Please try again.");
     } catch (err) {
       setPaymentError("Failed to initialize payment. Please try again.");
+      console.error("Failed to initialize payment", err);
     }
   };
 

@@ -166,7 +166,7 @@ function HeaderInner({ pathname }: { pathname: string }) {
           aria-label="Main navigation"
           className="hidden shrink-0 md:flex"
         >
-          <ul className="flex items-center gap-8">
+          <ul className="flex items-center lg:gap-8 gap-4">
             {mainNavItems.map((item) => {
               const { href, label } = item;
               const external = "external" in item && item.external;
@@ -201,7 +201,7 @@ function HeaderInner({ pathname }: { pathname: string }) {
         </nav>
 
         {/* Right: search + utility icons */}
-        <div className="flex flex-1 items-center justify-end gap-4 md:min-w-0">
+        <div className="flex flex-1 items-center justify-end lg:gap-4 gap-2 md:min-w-0">
           <button
             type="button"
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-radius-sm text-muted transition-colors hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary lg:hidden"
@@ -215,6 +215,7 @@ function HeaderInner({ pathname }: { pathname: string }) {
               search
             </span>
           </button>
+          
           {/* Search — inline on lg+ */}
           <div ref={searchWrapRef} className="relative hidden w-64 lg:block">
             <div className="flex w-full items-center gap-2 rounded-radius-full bg-background px-4 py-2">
@@ -263,8 +264,6 @@ function HeaderInner({ pathname }: { pathname: string }) {
               </div>
             ) : null}
           </div>
-
-          {sessionOk ? <HeaderNotifications sessionOk={sessionOk} /> : null}
 
           {/* Profile / Login */}
           {isRestoringSession ? (
@@ -377,6 +376,9 @@ function HeaderInner({ pathname }: { pathname: string }) {
               {isDark ? "light_mode" : "dark_mode"}
             </span>
           </button>
+
+          {/* notifications icon */}
+          {sessionOk ? <HeaderNotifications sessionOk={sessionOk} /> : null}
 
           {/* Mobile menu button */}
           <button

@@ -78,7 +78,7 @@ export function VideoCard({
             className="pointer-events-none absolute inset-0 flex items-center justify-center"
             aria-hidden
           >
-            <div className="rounded-full border border-white/20 bg-black/40 leading-none p-3 shadow-lg backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 dark:bg-white/10">
+            <div className="rounded-full border border-white/20 bg-black/40 leading-none h-12 w-12 flex items-center justify-center shadow-lg backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 dark:bg-white/10">
               <span className="material-icons-outlined text-2xl text-white">
                 play_arrow
               </span>
