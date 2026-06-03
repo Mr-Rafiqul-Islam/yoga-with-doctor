@@ -117,7 +117,7 @@ export function TransformationMissionSection() {
 
   return (
     <section
-      className="mx-auto mb-24 max-w-7xl px-4 sm:px-6 lg:px-8"
+      className="mx-auto mb-20 max-w-7xl px-4 sm:px-6 lg:px-8"
       aria-labelledby="transformation-mission-heading"
     >
       <div className="">

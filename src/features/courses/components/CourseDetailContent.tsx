@@ -51,8 +51,7 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
   const hasAccessFromApi = accessData?.data?.hasAccess ?? false;
   const isUnlocked =
     !!course.courseId && unlockedCourseIds.includes(course.courseId);
-  const userOwnsCourse =
-    isAuthenticated && (hasAccessFromApi || isUnlocked);
+  const userOwnsCourse = isAuthenticated && (hasAccessFromApi || isUnlocked);
   const accessCheckPending =
     Boolean(course.courseId) &&
     isAuthenticated &&
@@ -96,17 +95,22 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
             />
           ) : (
             <>
-              {course.thumbnailUrl && <Image
-                src={course.thumbnailUrl ?? null}
-                alt=""
-                fill
-                className="object-cover opacity-60"
-                sizes="(max-width: 1024px) 100vw, 66vw"
-                priority
-              />}
-              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
+              {course.thumbnailUrl && (
+                <Image
+                  src={course.thumbnailUrl ?? null}
+                  alt=""
+                  fill
+                  className={`object-cover ${course.access === "PUBLIC" ? "opacity-100" : "opacity-60"}`}
+                  sizes="(max-width: 1024px) 100vw, 66vw"
+                  priority
+                />
+              )}
+              {course.access === "PUBLIC" ? null : (
+                <div className="absolute lg:hidden inset-0 z-10 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
                 <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 ring-1 ring-white/30 backdrop-blur-md">
-                  <span className="material-icons-outlined text-3xl text-white">lock</span>
+                  <span className="material-icons-outlined text-3xl text-white">
+                    lock
+                  </span>
                 </div>
                 <h3 className="mb-2 font-display text-xl font-semibold text-white">
                   This course is locked
@@ -115,9 +119,10 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
                   href="#sidebar-enroll"
                   className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white shadow-lg shadow-primary/30 transition-colors hover:bg-primary-dark"
                 >
-                  Enroll to Unlock
+                  Go to Access
                 </a>
               </div>
+              )}
             </>
           )}
         </div>
@@ -129,17 +134,21 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
               {course.category}
             </span>
             <div className="flex items-center text-accent">
-              <span className="material-icons-outlined fill-current text-sm">star</span>
+              <span className="material-icons-outlined fill-current text-sm">
+                star
+              </span>
               <span className="ml-1 text-sm font-bold text-foreground dark:text-white">
                 {course.rating}
               </span>
-              <span className="ml-1 text-xs text-muted">({course.reviewCount} reviews)</span>
+              <span className="ml-1 text-xs text-muted">
+                ({course.reviewCount} reviews)
+              </span>
             </div>
           </div>
           <h1 className="font-display text-3xl font-bold text-foreground dark:text-white md:text-4xl mb-4">
             {course.title}
           </h1>
-          
+
           <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-surface p-4 shadow-sm dark:border-gray-800 dark:bg-surface">
             <Image
               src={course.instructorAvatarUrl}
@@ -152,7 +161,9 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
               <p className="text-sm font-bold text-foreground dark:text-white">
                 {course.instructorName}
               </p>
-              <p className="text-xs text-muted dark:text-gray-400">{course.instructorTitle}</p>
+              <p className="text-xs text-muted dark:text-gray-400">
+                {course.instructorTitle}
+              </p>
             </div>
             <Link
               href="https://drshahalam.com"
@@ -187,22 +198,28 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
         {/* Tab content: About (What you will learn) */}
         {activeTab === "About Course" && (
           <div className="space-y-4">
-          <article className="prose prose-sm dark:prose-invert prose-headings:font-display prose-headings:font-bold prose-h2:text-foreground prose-p:text-muted prose-p:leading-relaxed prose-strong:text-primary max-w-none" dangerouslySetInnerHTML={{ __html: course.description }} />
-          <div className="rounded-2xl border border-border bg-surface p-6 shadow-soft dark:border-gray-800 dark:bg-surface">
-            <h3 className="font-display text-xl font-bold text-foreground dark:text-white mb-6">
-              What you will learn
-            </h3>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {course.learningOutcomes.map((outcome) => (
-                <div key={outcome} className="flex items-center gap-3">
-                  <span className="material-icons-outlined mt-0.5 text-xl text-primary">
-                    check_circle
-                  </span>
-                  <span className="text-sm text-muted dark:text-gray-300">{outcome}</span>
-                </div>
-              ))}
+            <article
+              className="prose prose-sm dark:prose-invert prose-headings:font-display prose-headings:font-bold prose-h2:text-foreground prose-p:text-muted prose-p:leading-relaxed prose-strong:text-primary max-w-none"
+              dangerouslySetInnerHTML={{ __html: course.description }}
+            />
+            <div className="rounded-2xl border border-border bg-surface p-6 shadow-soft dark:border-gray-800 dark:bg-surface">
+              <h3 className="font-display text-xl font-bold text-foreground dark:text-white mb-6">
+                What you will learn
+              </h3>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {course.learningOutcomes.map((outcome) => (
+                  <div key={outcome} className="flex items-center gap-3">
+                    <span className="material-icons-outlined mt-0.5 text-xl text-primary">
+                      check_circle
+                    </span>
+                    <span className="text-sm text-muted dark:text-gray-300">
+                      {outcome}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div></div>
+          </div>
         )}
 
         {activeTab === ("Curriculum" as (typeof TABS)[0]) && (
@@ -222,10 +239,7 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
                     </span>
                   </div>
                   {module.lessons.map((lesson) => (
-                    <LessonRow
-                      key={lesson.id}
-                      lesson={lesson}
-                    />
+                    <LessonRow key={lesson.id} lesson={lesson} />
                   ))}
                 </div>
               ))}
@@ -234,7 +248,10 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
         )}
 
         {activeTab === ("Reviews" as (typeof TABS)[0]) && (
-          <CourseReviewSection slug={course.slug} courseId={course.courseId ?? ""} />
+          <CourseReviewSection
+            slug={course.slug}
+            courseId={course.courseId ?? ""}
+          />
         )}
       </div>
 
@@ -287,7 +304,9 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
                     <span className="material-icons-outlined text-muted text-sm">
                       {item.icon as "play_circle"}
                     </span>
-                    <span className="text-sm text-muted dark:text-gray-300">{item.text}</span>
+                    <span className="text-sm text-muted dark:text-gray-300">
+                      {item.text}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -296,7 +315,9 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
 
           <div className="rounded-2xl border border-border bg-surface p-6 text-center shadow-soft dark:border-gray-800 dark:bg-surface">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-secondary dark:bg-sage-dark">
-              <span className="material-icons-outlined text-xl text-primary">security</span>
+              <span className="material-icons-outlined text-xl text-primary">
+                security
+              </span>
             </div>
             <h4 className="mb-1 text-sm font-bold text-foreground dark:text-white">
               30-Day Money-Back Guarantee
@@ -311,7 +332,9 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
             onClose={() => setShowLoginModal(false)}
             title="Login required"
           >
-            <p className="mb-6 text-muted">Please log in to enroll in this course.</p>
+            <p className="mb-6 text-muted">
+              Please log in to enroll in this course.
+            </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
               <button
                 type="button"
@@ -335,11 +358,7 @@ export function CourseDetailContent({ course }: CourseDetailContentProps) {
   );
 }
 
-function LessonRow({
-  lesson,
-}: {
-  lesson: CourseLesson;
-}) {
+function LessonRow({ lesson }: { lesson: CourseLesson }) {
   const locked = lesson.isLocked ?? !lesson.isPreview;
 
   return (
@@ -365,7 +384,9 @@ function LessonRow({
         <div>
           <p
             className={`text-sm font-medium ${
-              locked ? "text-muted dark:text-gray-400" : "text-foreground dark:text-white"
+              locked
+                ? "text-muted dark:text-gray-400"
+                : "text-foreground dark:text-white"
             }`}
           >
             {lesson.title}
@@ -375,9 +396,11 @@ function LessonRow({
           </p>
         </div>
       </div>
-      
+
       {locked && (
-        <span className="material-icons-outlined text-gray-300 dark:text-gray-500">lock</span>
+        <span className="material-icons-outlined text-gray-300 dark:text-gray-500">
+          lock
+        </span>
       )}
     </div>
   );

@@ -53,6 +53,7 @@ function FeaturedLogoItem({ logo }: { logo: FeaturedLogo }) {
         alt={logo.alt}
         width={logo.width}
         height={logo.height}
+        style={{ width: logo.width, height: logo.height }}
         className="h-10 w-auto max-w-[8.5rem] object-contain grayscale hover:grayscale-0 transition-all duration-300 opacity-80 dark:opacity-70 sm:h-12 sm:max-w-[9.5rem]"
         sizes="(max-width: 1024px) 25vw, 120px"
       />
