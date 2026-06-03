@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  Breadcrumbs,
-  CoursesPageContent,
-} from "@/features/courses/components";
+import { Breadcrumbs, CoursesPageContent } from "@/features/courses/components";
 import { dummyCourses } from "@/features/courses/data/dummyCourses";
 import type { CourseWithMeta } from "@/types/course";
 import type { LevelOption } from "@/features/courses/components";
@@ -16,8 +13,7 @@ import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { formatCheckoutPrice } from "@/features/checkout/data/checkoutReviewData";
 import { pickPrimaryCategory } from "@/lib/pickPrimaryCategory";
 
-const FALLBACK_INSTRUCTOR_AVATAR =
-  "/Dr. Shah Alam-2.jpeg";
+const FALLBACK_INSTRUCTOR_AVATAR = "/Dr. Shah Alam-2.jpeg";
 
 const FALLBACK_PRICE = "$29.00";
 const FALLBACK_GOALS = [
@@ -38,14 +34,13 @@ function mapLevel(level: string | null): LevelOption {
 
 function mapAllTypeCourseToCourseWithMeta(
   course: AllTypeCourseItem,
-  index: number
+  index: number,
 ): CourseWithMeta {
   const firstProduct = course.products?.[0];
   const productPrice = firstProduct?.price ?? null;
   const productCurrency = firstProduct?.currency ?? null;
 
-  const isFreeAccess =
-    course.access === "FREE" || course.access === "PUBLIC";
+  const isFreeAccess = course.access === "FREE" || course.access === "PUBLIC";
 
   const price =
     productPrice != null && productCurrency
@@ -60,8 +55,9 @@ function mapAllTypeCourseToCourseWithMeta(
     primaryCategory ??
     FALLBACK_GOALS[index % FALLBACK_GOALS.length] ??
     FALLBACK_GOALS[0];
-    const STATIC_DISCOUNT_PERCENT = 20;
-    const STATIC_ORIGINAL_PRICE = (productPrice! * STATIC_DISCOUNT_PERCENT) / 100 + productPrice!;
+  const STATIC_DISCOUNT_PERCENT = 20;
+  const STATIC_ORIGINAL_PRICE =
+    (productPrice! * STATIC_DISCOUNT_PERCENT) / 100 + productPrice!;
 
   return {
     // Card display props
@@ -72,12 +68,14 @@ function mapAllTypeCourseToCourseWithMeta(
       dummyCourses[index % dummyCourses.length]?.bannerImage ??
       "https://via.placeholder.com/640x360.png?text=Course",
     imageAlt: course.title,
-    category: (goal ?? "Wellness"),
+    category: goal ?? "Wellness",
     instructorName: course.instructorName ?? "Yoga with Doctor",
     instructorAvatarSrc: FALLBACK_INSTRUCTOR_AVATAR,
     price,
     originalPrice:
-      course.access === "PAID" ? formatCheckoutPrice(STATIC_ORIGINAL_PRICE, productCurrency ?? "BDT") : undefined,
+      course.access === "PAID"
+        ? formatCheckoutPrice(STATIC_ORIGINAL_PRICE, productCurrency ?? "BDT")
+        : undefined,
     courseId: course.id,
     access: course.access,
     slug: course.slug,
@@ -93,15 +91,18 @@ function mapAllTypeCourseToCourseWithMeta(
 }
 
 export default function CoursesPage() {
-  const { data, isError,isLoading } = useGetAllTypeCoursesQuery();
+  const { data, isError, isLoading } = useGetAllTypeCoursesQuery();
 
   const courses: CourseWithMeta[] = useMemo(() => {
-
-    return data?.data?.courses.filter((item) => item.access !== "PREMIUM").map(mapAllTypeCourseToCourseWithMeta) ?? [];
+    return (
+      data?.data?.courses
+        .filter((item) => item.access !== "PREMIUM")
+        .map(mapAllTypeCourseToCourseWithMeta) ?? []
+    );
   }, [data]);
 
   const searchQuery = "";
-  if(isLoading) {
+  if (isLoading) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <LoadingScreen message="Loading courses" />
@@ -116,12 +117,9 @@ export default function CoursesPage() {
           { label: "Home", href: "/", icon: "home" },
           { label: "Courses", href: null },
         ]}
+        className="mb-0"
       />
-
-      <CoursesPageContent
-        courses={courses}
-        searchQuery={searchQuery}
-      />
+      <CoursesPageContent courses={courses} searchQuery={searchQuery} />
 
       {isError && (
         <p className="mt-4 text-sm text-red-600">

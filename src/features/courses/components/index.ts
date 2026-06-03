@@ -1,10 +1,16 @@
 export { Breadcrumbs, type BreadcrumbItem } from "./Breadcrumbs";
 export {
   FilterSidebar,
+  CourseFilterPanels,
   type FilterSidebarProps,
+  type CourseFilterPanelsProps,
   type CourseFilters,
   type LevelOption,
 } from "./FilterSidebar";
+export {
+  CourseFilterPopup,
+  type CourseFilterPopupProps,
+} from "./CourseFilterPopup";
 export {
   SortBar,
   type SortBarProps,
